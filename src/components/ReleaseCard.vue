@@ -4,8 +4,8 @@
             <v-flex xs4 >
                 <router-link :to="'/release/' + release.id">
                 <v-img
-                    :src="release.coverUrl"
-                    :alt="release.title"
+                    :src="release.thumbnail.url"
+                    :alt="release.release.text"
                     width="imageHeight"
                     max-height="imageHeight"
                     class="ma-1"
@@ -17,8 +17,8 @@
                 <div>
                     <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    
                     <v-rating @click.native="ratingChanged" @change.native="ratingChanged" v-model="release.rating" class="pointer release-rating" background-color="orange lighten-3" color="orange" small dense hover clearable></v-rating>
-                    <router-link :to="'/release/' + release.id"><div :title="release.title" class="release-title subheading font-weight-medium info--text pointer">{{ release.title }}</div></router-link>
-                    <router-link :to="'/artist/' + release.artistId"><div :title="release.artist" class="release-artist body-1 white--text pointer" >{{ release.artist }}</div></router-link>
+                    <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
+                    <router-link :to="'/artist/' + release.artist.value"><div :title="release.artist.text" class="release-artist body-1 white--text pointer" >{{ release.artist.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Release Date">{{ release.year }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
                 </div>
                 </v-card-title>

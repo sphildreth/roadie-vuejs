@@ -87,20 +87,7 @@
         EventBus.$emit("loadingStarted"); 
           this.$axios.get(process.env.VUE_APP_API_URL + `/artists?page=${ this.pagination.page }&limit=${ this.pagination.rowsPerPage }&order=${ this.pagination.sortOrder  }&sort=${ this.pagination.sortBy }&doRandomize=${ this.doRandomize}&filterFavoriteOnly=${ this.filterFavoriteOnly}`)
           .then(response => {
-            var items = [];
-            response.data.rows.forEach(function(row) {
-              items.push({
-                id:  row.id,
-                thumbnail: row.thumbnail.url,
-                name: row.artist.text,
-                playedCount: row.playedCount,
-                trackCount: row.trackCount,
-                releaseCount: row.releaseCount,
-                rating: row.rating,
-                isFavorite: row.userRating ? row.userRating.isFavorite : false
-              })
-            });
-            this.items = items;
+            this.items = response.data.rows;
             this.pagination.totalItems = response.data.totalCount;    
             EventBus.$emit("loadingComplete");    
           });        
