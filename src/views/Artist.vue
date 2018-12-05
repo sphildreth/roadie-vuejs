@@ -146,6 +146,24 @@
                 <v-card-text v-html="artist.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
+            <v-tab v-if="artist.profile">Metadata Sources</v-tab>
+            <v-tab-item>
+            <v-data-table
+              :headers="metaDataHeaders"
+              :items="metaDataSources()"
+              class="elevation-1"
+              total-items="1"
+              hide-actions
+            >
+              <template slot="items" slot-scope="props">
+                <td>{{ props.item.source }}</td>
+                <td><a
+                      v-bind:href="props.item.url + props.item.sourceId"
+                      target="_blank"
+                    >{{ props.item.sourceId }}</a></td>
+              </template>
+            </v-data-table>
+            </v-tab-item>            
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -244,63 +262,7 @@
             </v-card>
           </v-flex>
           <v-flex xs5>
-            <v-card class="metadataSources" dark>
-              <v-card-title class="primary caption white--text">Metadata Sources</v-card-title>
-              <v-card-text>
-                <ul class="metadataSources">
-                  <li v-if="artist.amgId">
-                    <span class="name">AllMusic</span>
-                    <span class="key">
-                      <a
-                        class="white--text"
-                        v-bind:href="'http://www.allmusic.com/artist/' + artist.amgId"
-                        target="_blank"
-                      >{{ artist.amgId }}</a>
-                    </span>
-                  </li>
-                  <li v-if="artist.discogsId">
-                    <span class="name">Discogs</span>
-                    <span class="key">
-                      <a
-                        class="white--text"
-                        v-bind:href="'https://www.discogs.com/artist/' + artist.discogsId"
-                        target="_blank"
-                      >{{ artist.discogsId }}</a>
-                    </span>
-                  </li>
-                  <li v-if="artist.iTunesId">
-                    <span class="name">iTunes</span>
-                    <span class="key">
-                      <a
-                        class="white--text"
-                        v-bind:href="'https://itunes.apple.com/artist/id' + artist.iTunesId"
-                        target="_blank"
-                      >{{ artist.iTunesId }}</a>
-                    </span>
-                  </li>
-                  <li v-if="artist.musicBrainzId">
-                    <span class="name">MusicBrainz</span>
-                    <span class="key">
-                      <a
-                        class="white--text"
-                        v-bind:href="'https://musicbrainz.org/artist/' + artist.musicBrainzId"
-                        target="_blank"
-                      >{{ artist.musicBrainzId }}</a>
-                    </span>
-                  </li>
-                  <li v-if="artist.spotifyId">
-                    <span class="name">Spotify</span>
-                    <span class="key">
-                      <a
-                        class="white--text"
-                        v-bind:href="'https://open.spotify.com/artist/' + artist.spotifyId"
-                        target="_blank"
-                      >{{ artist.spotifyId }}</a>
-                    </span>
-                  </li>
-                </ul>
-              </v-card-text>
-            </v-card>
+ 
           </v-flex>
         </v-flex>
       </v-layout>
@@ -457,7 +419,35 @@ export default {
           newVal: this.artist.userRating.rating
         });
       });
-    }
+    },
+    metaDataSources: function() {
+      return [
+      {
+        source: "All Music",        
+        sourceId: this.artist.amgId,
+        url: "http://www.allmusic.com/artist/"
+      },
+      {
+        source: "Discogs",
+        sourceId: this.artist.discogsId,
+        url: "https://www.discogs.com/artist/"
+      },
+      {
+        source: "iTunes",
+        sourceId: this.artist.iTunesId,
+        url: "https://itunes.apple.com/artist/id"
+      },
+      {
+        source: "MusicBrainz",
+        sourceId: this.artist.musicBrainzId,
+        url: "https://musicbrainz.org/artist/"
+      },
+      {
+        source: "Spotify",
+        sourceId: this.artist.spotifyId,
+        url: "https://open.spotify.com/artist/"
+      }];
+    }                      
   },
   filters: {
     // shortDate: function(date) {
@@ -494,6 +484,20 @@ export default {
       profile: null,
       bioContext: null
     },
+    metaDataHeaders:[
+      {
+        text: 'Source',
+        align: 'left',
+        sortable: false,
+        value: 'source'
+      },
+      {
+        text: 'Source Id',
+        align: 'left',
+        sortable: false,
+        value: 'sourceId'
+      }
+    ],
     menuItems: [
       {
         title: "Add All To Que",
