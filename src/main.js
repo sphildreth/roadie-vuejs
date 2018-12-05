@@ -36,6 +36,10 @@ Vue.filter("formatNumber", function (value) {
   return numeral(value).format("0,0"); 
 });
 
+Vue.filter("padNumber2", function (value) {
+  return numeral(value).format("00"); 
+});
+
 Vue.filter("padNumber3", function (value) {
   return numeral(value).format("000"); 
 });

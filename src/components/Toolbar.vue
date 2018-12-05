@@ -1,6 +1,6 @@
 <template>
     <nav>
-    <v-toolbar class="secondary lighten-4" dense>
+    <v-toolbar class="" dense>
       <v-icon v-html="toolbarIcon"></v-icon>
       <v-toolbar-items>
         <v-btn flat v-for="item in menuItems" :class="item.class" :key="item.title" :data-eventmessage="item.click" @click="clicked">
@@ -9,18 +9,18 @@
       </v-toolbar-items>
       <v-spacer></v-spacer>                                                                                     
       <v-toolbar-items>
-        <v-btn dark icon v-if="loading">
+        <v-btn icon v-if="loading">
           <img src="@/assets/img/loading.gif" alt="Loading..." class="loading">
         </v-btn>    
-        <v-btn v-if="doShowBookmark" dark icon data-eventmessage="bookmarkToogle" @click="bookmarkToogle">
+        <v-btn v-if="doShowBookmark" icon data-eventmessage="bookmarkToogle" @click="bookmarkToogle">
           <v-icon v-if="bookmarked" color="info" title="Remove from bookmarks">bookmark</v-icon>
           <v-icon v-if="!bookmarked" title="Add to bookmarks">bookmark_border</v-icon>
         </v-btn>               
-        <v-btn dark icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
+        <v-btn icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
           <v-icon title="Refresh">refresh</v-icon>
         </v-btn>        
         <v-menu bottom left class="hidden-lg-and-up">
-          <v-btn slot="activator" dark icon>
+          <v-btn slot="activator" icon>
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>

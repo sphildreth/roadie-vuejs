@@ -8,7 +8,7 @@
     ></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>
-        <v-flex xs12 sm6 md6>
+        <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="accent" class="profile white--text darken-2">
@@ -32,26 +32,6 @@
                     class="ma-1"
                     aspect-ratio="1"
                   ></v-img>
-                  <v-rating
-                    v-model="rating"
-                    background-color="orange lighten-3"
-                    color="orange"
-                    readonly
-                    small
-                    dense
-                  ></v-rating>
-                  <v-rating
-                    @click.native="ratingChanged"
-                    @change.native="ratingChanged"
-                    v-model="userRating"
-                    class="pointer artist-rating"
-                    background-color="orange lighten-3"
-                    color="orange"
-                    medium
-                    dense
-                    hover
-                    clearable
-                  ></v-rating>
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-text-field
@@ -102,7 +82,7 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex d-flex xs12 sm6 md6>
+        <v-flex d-flex xs12 sm5 md5>
           <v-tabs right color="primary" dark v-model="tab" slider-color="accent">
             <v-tab v-if="artist.images.length">Images</v-tab>
             <v-tab v-if="artist.bioContext">Biography</v-tab>
@@ -161,6 +141,131 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
+        <!-- <v-flex d-flex xs4>
+          <v-rating
+            v-model="rating"
+            background-color="orange lighten-3"
+            color="orange"
+            readonly
+            small
+            dense
+          ></v-rating>
+          <v-rating
+            @click.native="ratingChanged"
+            @change.native="ratingChanged"
+            v-model="userRating"
+            class="pointer artist-rating"
+            background-color="orange lighten-3"
+            color="orange"
+            medium
+            dense
+            hover
+            clearable
+          ></v-rating>          
+        </v-flex> -->
+        <v-flex d-flex xs12>
+          <div class="stats-container">
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>stars</v-icon>
+                </v-avatar>
+                  <v-rating
+                    v-model="rating"
+                    background-color="orange lighten-3"
+                    color="orange"
+                    readonly
+                    small
+                    dense
+                  ></v-rating>
+              </v-chip>
+              <span>Artist Average Rating</span>
+            </v-tooltip>             
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>library_music</v-icon>
+                </v-avatar>
+                {{ artist.statistics.releaseCount | padNumber3 }}
+              </v-chip>
+              <span>Artist Releases</span>
+            </v-tooltip>       
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>album</v-icon>
+                </v-avatar>
+                {{ artist.statistics.releaseMediaCount | padNumber4 }}
+              </v-chip>
+              <span>Artist Release Medias</span>
+            </v-tooltip>  
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>audiotrack</v-icon>
+                </v-avatar>
+                {{ artist.statistics.trackCount | padNumber4 }}
+              </v-chip>
+              <span>Artist Release Tracks</span>
+            </v-tooltip>      
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>play_circle_outline</v-icon>
+                </v-avatar>
+                {{ artist.statistics.trackPlayedCount  | padNumber5 }}
+              </v-chip>
+              <span>Artist Played Count</span>
+            </v-tooltip>      
+            <v-tooltip bottom>
+              <v-chip v-if="artist.statistics.missingTrackCount" slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>play_circle_outline</v-icon>
+                </v-avatar>
+                {{ artist.statistics.missingTrackCount }}
+              </v-chip>
+              <span>Artist Tracks Missing</span>
+            </v-tooltip>      
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>speaker</v-icon>
+                </v-avatar>
+                {{ artist.statistics.trackTime }}
+              </v-chip>
+              <span>Artist Track Playtime</span>
+            </v-tooltip>  
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>folder_open</v-icon>
+                </v-avatar>
+                {{ artist.statistics.fileSize }}
+              </v-chip>
+              <span>Artist Media File Size</span>
+            </v-tooltip>      
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>date_range</v-icon>
+                </v-avatar>
+                {{ artist.createdDate | formatTimeStamp(this.$store.getters.user) }}
+              </v-chip>
+              <span>Artist Created Date</span>
+            </v-tooltip>      
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
+                <v-avatar >
+                  <v-icon>update</v-icon>
+                </v-avatar>
+                {{ artist.lastUpdated | formatTimeStamp(this.$store.getters.user) }}
+              </v-chip>
+              <span>Artist Updated Date</span>
+            </v-tooltip>                                                                             
+          </div>
+        </v-flex>
+      </v-layout>      
+      <v-layout row wrap>
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
             <v-tab v-if="artist.alternateNamesList.length">Alternate Names</v-tab>
@@ -175,7 +280,7 @@
                       <v-list-tile-title>{{ name }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.alternateNamesList.length" :key="`divider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.alternateNamesList.length" :key="`adivider-${index}`"></v-divider>                      
                 </template>
               </v-list>                  
             </v-tab-item>
@@ -187,7 +292,7 @@
                       <v-list-tile-title>{{ name.text }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.genres.length" :key="`divider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.genres.length" :key="`gdivider-${index}`"></v-divider>                      
                 </template>
               </v-list>               
             </v-tab-item>
@@ -199,19 +304,19 @@
                       <v-list-tile-title>{{ name }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.tagsList.length" :key="`divider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.tagsList.length" :key="`tdivider-${index}`"></v-divider>                      
                 </template>
               </v-list>               
             </v-tab-item>
             <v-tab-item v-if="artist.urLsList.length">
               <v-list dark>
                 <template v-for="(name, index) in artist.urLsList">
-                  <v-list-tile :key="name">
+                  <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
                       <v-list-tile-title><a class="white--text" v-bind:href="name" target="_blank">{{ name }}</a></v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.urLsList.length" :key="`divider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.urLsList.length" :key="`uaadivider-${index}`"></v-divider>                      
                 </template>
               </v-list>               
             </v-tab-item>                       
@@ -244,7 +349,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+          <v-tabs class="artist-lists" color="primary" v-model="releaseTab" dark slider-color="accent">
             <v-tab>Collections</v-tab>
             <v-tab>Contributions</v-tab>
             <v-tab>Playlists</v-tab>            
@@ -278,7 +383,11 @@
             </v-tab-item>        
             <v-tab-item>
               <v-card flat dark class="releases">
-                 Release cards go here
+                <v-data-iterator :items="releases" :total-items="releases ? releases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs3>
+                        <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
+                    </v-flex>
+                </v-data-iterator> 
               </v-card>                        
             </v-tab-item>                                       
           </v-tabs>                        
@@ -295,13 +404,14 @@ import ArtistCard from '@/components/ArtistCard';
 import ReleaseCard from '@/components/ReleaseCard';
 import CollectionCard from '@/components/CollectionCard';
 import PlaylistCard from '@/components/PlaylistCard';
+import ReleaseWithTracksCard from '@/components/ReleaseWithTracksCard';
 
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
 
 export default {
   store,
-  components: { Toolbar, LabelCard, ArtistCard, ReleaseCard, CollectionCard, PlaylistCard },
+  components: { Toolbar, LabelCard, ArtistCard, ReleaseCard, CollectionCard, PlaylistCard, ReleaseWithTracksCard },
   props: {
     id: String
   },
@@ -348,7 +458,25 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/artists/${this.id}`)
         .then(response => {
           this.artist = response.data.data;
-          EventBus.$emit("loadingComplete");
+          this.artist.genres = this.artist.genres || [];
+          this.artist.alternateNamesList = this.artist.alternateNamesList || [];
+          this.artist.images = this.artist.images || [];     
+          this.artist.associatedArtists= this.artist.associatedArtists || [];     
+          this.artist.alternateNamesList= this.artist.alternateNamesList || [];     
+          this.artist.genres= this.artist.genres || [];     
+          this.artist.collectionsWithArtistReleases= this.artist.collectionsWithArtistReleases || [];     
+          this.artist.playlistsWithArtistReleases= this.artist.playlistsWithArtistReleases || [];     
+          this.artist.artistContributionReleases= this.artist.artistContributionReleases || [];     
+          this.artist.artistLabels= this.artist.artistLabels || [];     
+          this.artist.tagsList= this.artist.tagsList || [];     
+          this.artist.urLsList= this.artist.urLsList || [];   
+          
+          this.$axios
+          .get(process.env.VUE_APP_API_URL + `/releases?filterToArtistId=${this.id}&inc=tracks&limit=100`)
+          .then(rr => {
+            this.releases = rr.data.rows;
+            EventBus.$emit("loadingComplete");
+          })
         });
     },
     shortDateWithAge: function(date, toDate) {
@@ -397,6 +525,9 @@ export default {
     }                      
   },
   filters: {
+    // formatTimeStamp: function(timestamp) {
+    //     return moment.utc(timestamp).tz(this.$store.getters.user.timezone).format(this.$store.getters.user.timeFormat);
+    // },    
     // shortDate: function(date) {
     //   return moment(date).format("MM-DD-YYYY");
     // },
@@ -415,6 +546,7 @@ export default {
   watch: {},
   data: () => ({
     tab: 0,
+    releaseTab: 3,
     showModal: false,
     modalImage: {},
     artist: {
@@ -434,6 +566,7 @@ export default {
       profile: null,
       bioContext: null
     },
+    releases: [],
     metaDataHeaders:[
       {
         text: 'Source',
@@ -484,14 +617,11 @@ export default {
   max-height: 300px;
   overflow: auto;
 }
-ul.data-tokens,
-ul.statistics,
 ul.metadataSources {
   list-style: none;
   padding: 0;
 }
-ul.data-tokens li,
-ul.statistics li {
+ul.data-tokens li {
   border: 1px solid;
   padding: 2px 5px;
   margin: 3px;
@@ -499,7 +629,6 @@ ul.statistics li {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-ul.statistics span.stat,
 ul.metadataSources span.key {
   float: right;
 }
@@ -508,4 +637,5 @@ img.modal-image {
   overflow: hidden;
   max-width: 100%;
 }
+
 </style>
