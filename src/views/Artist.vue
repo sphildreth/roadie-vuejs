@@ -185,6 +185,15 @@
                       <span class="name">File Size</span>
                       <span class="stat">{{ artist.statistics.fileSize }}</span>
                     </li>
+                    <li>
+                      <span class="name">Created</span>
+                      <span class="stat">{{ artist.createdDate | formatTimeStamp(this.$store.getters.user) }}</span>
+                    </li>              
+                    <li>
+                      <span class="name">Last Updated</span>
+                      <span class="stat">{{ artist.lastUpdated | formatTimeStamp(this.$store.getters.user) }}</span>
+                    </li>                    
+
                   </ul>
                 </v-card-text>
               </v-card>
@@ -296,7 +305,7 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12 sm6 md6>
+        <v-flex d-flex xs12 sm5 md5>
             <v-flex xs5>
               <v-card class="release-labels" dark>
                 <v-card-title class="primary caption white--text">Labels</v-card-title>
@@ -320,13 +329,49 @@
                     </v-data-iterator>                    
                 </v-card-text>
               </v-card>
-            </v-flex>                   
+            </v-flex>                          
         </v-flex>
-        <v-flex d-flex xs12 sm6 md6></v-flex>
+        <v-flex d-flex xs12 sm7 md7>
+            <v-flex xs6>
+              <v-card class="collections" dark>
+                <v-card-title class="primary caption white--text">Collections</v-card-title>
+                <v-card-text>
+                    <v-data-iterator :items="artist.collectionsWithArtistReleases" :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                        <v-flex slot="item" slot-scope="props" xs12>
+                            <CollectionCard :collection="props.item"></CollectionCard>
+                        </v-flex>
+                    </v-data-iterator>                    
+                </v-card-text>
+              </v-card>
+            </v-flex>   
+            <v-flex xs6>
+              <v-card class="playlists" dark>
+                <v-card-title class="primary caption white--text">Playlists</v-card-title>
+                <v-card-text>
+                    <v-data-iterator :items="artist.playlistsWithArtistReleases" :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                        <v-flex slot="item" slot-scope="props" xs12>
+                            <PlaylistCard :playlist="props.item"></PlaylistCard>
+                        </v-flex>
+                    </v-data-iterator>                    
+                </v-card-text>
+              </v-card>
+            </v-flex>                       
+        </v-flex>
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6 md6>
-            
+            <v-flex xs6>
+              <v-card class="contributions" dark>
+                <v-card-title class="primary caption white--text">Contributions</v-card-title>
+                <v-card-text>
+                    <v-data-iterator :items="artist.artistContributionReleases" :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                        <v-flex slot="item" slot-scope="props" xs12>
+                            <ReleaseCard :release="props.item"></ReleaseCard>
+                        </v-flex>
+                    </v-data-iterator>                    
+                </v-card-text>
+              </v-card>
+            </v-flex>               
         </v-flex>
         <v-flex d-flex xs12 sm6 md6></v-flex>
       </v-layout>      
@@ -338,13 +383,16 @@
 import Toolbar from "@/components/Toolbar";
 import LabelCard from "@/components/LabelCard";
 import ArtistCard from '@/components/ArtistCard';
+import ReleaseCard from '@/components/ReleaseCard';
+import CollectionCard from '@/components/CollectionCard';
+import PlaylistCard from '@/components/PlaylistCard';
+
 import { EventBus } from "@/event-bus.js";
-import moment from "moment";
 import store from "@/store";
 
 export default {
   store,
-  components: { Toolbar, LabelCard, ArtistCard },
+  components: { Toolbar, LabelCard, ArtistCard, ReleaseCard, CollectionCard, PlaylistCard },
   props: {
     id: String
   },
@@ -412,20 +460,20 @@ export default {
     }
   },
   filters: {
-    shortDate: function(date) {
-      return moment(date).format("MM-DD-YYYY");
-    },
-    formatTimeStamp: function(timestamp) {
-      return moment
-        .utc(timestamp)
-        .tz(this.$store.getters.user.timezone)
-        .format(this.$store.getters.user.timeFormat);
-    },
-    yearsFromDate: function(fromDate, toDate) {
-      fromDate = fromDate || new Date();
-      toDate = toDate || new Date();
-      return moment(fromDate).diff(toDate, "years");
-    }
+    // shortDate: function(date) {
+    //   return moment(date).format("MM-DD-YYYY");
+    // },
+    // formatTimeStamp: function(timestamp) {
+    //   return moment
+    //     .utc(timestamp)
+    //     .tz(this.$store.getters.user.timezone)
+    //     .format(this.$store.getters.user.timeFormat);
+    // },
+    // yearsFromDate: function(fromDate, toDate) {
+    //   fromDate = fromDate || new Date();
+    //   toDate = toDate || new Date();
+    //   return moment(fromDate).diff(toDate, "years");
+    // }
   },
   watch: {},
   data: () => ({
@@ -438,6 +486,9 @@ export default {
       statistics: {},
       images: [],      
       associatedArtists: [],
+      collectionsWithArtistReleases: [],
+      playlistsWithArtistReleases: [],
+      artistContributionReleases: [],
       artistLabels: [],
       tagsList: [],
       profile: null,

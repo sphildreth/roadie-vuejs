@@ -4,6 +4,7 @@ import home from './views/Home.vue';
 import store from './store';
 import release from './views/Release.vue';
 import artist from './views/Artist.vue';
+import label from './views/Label.vue';
 
 Vue.use(VueRouter);
 
@@ -46,6 +47,15 @@ var router = new VueRouter({
         guest: false
       }
     },      
+    {
+      path: '/label/:id',
+      name: 'label',
+      props: true,
+      component: label,
+      meta: {
+        guest: false
+      }
+    },       
     {
       path: '/statistics',
       name: 'statistics',
