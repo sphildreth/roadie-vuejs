@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
 import home from './views/Home.vue';
 import store from './store';
 import release from './views/Release.vue';
 import artist from './views/Artist.vue';
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-var router = new Router({
+var router = new VueRouter({
   store,
   mode: 'history',
   base: process.env.BASE_URL,

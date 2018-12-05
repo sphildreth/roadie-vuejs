@@ -301,7 +301,7 @@
               <v-card class="release-labels" dark>
                 <v-card-title class="primary caption white--text">Labels</v-card-title>
                 <v-card-text>
-                    <v-data-iterator :items="artist.artistLabels" :total-items="artist.artistLabels.length" content-tag="v-layout" hide-actions row wrap>
+                    <v-data-iterator :items="artist.artistLabels" :total-items="artist.artistLabels ? artist.artistLabels.length : 0" content-tag="v-layout" hide-actions row wrap>
                         <v-flex slot="item" slot-scope="props" xs12>
                             <LabelCard :label="props.item"></LabelCard>
                         </v-flex>
@@ -313,7 +313,7 @@
               <v-card class="associated-artists" dark>
                 <v-card-title class="primary caption white--text">Associated Artists</v-card-title>
                 <v-card-text>
-                    <v-data-iterator :items="artist.associatedArtists" :total-items="artist.associatedArtists.length" content-tag="v-layout" hide-actions row wrap>
+                    <v-data-iterator :items="artist.associatedArtists" :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0" content-tag="v-layout" hide-actions row wrap>
                         <v-flex slot="item" slot-scope="props" xs12>
                             <ArtistCard :artist="props.item"></ArtistCard>
                         </v-flex>
