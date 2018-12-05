@@ -1,18 +1,17 @@
 <template>
     <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="release.id" >
         <v-layout>
-            <v-flex xs4 >
+            <v-flex xs2 >
                 <router-link :to="'/release/' + release.id">
                 <v-img
                     :src="release.thumbnail.url"
                     :alt="release.release.text"
-                    width="imageHeight"
-                    max-height="imageHeight"
+                    max-width="80"
                     class="ma-1"
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs8>
+            <v-flex xs10>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    
@@ -58,15 +57,6 @@ export default {
     computed: {
         rating() {
             return this.release.rating;
-        },
-        imageHeight () {
-            switch (this.$vuetify.breakpoint.name) {
-                case 'xs': 
-                case 'sm':
-                case 'md':
-                    return '60px';
-            }
-            return '80px';
         }
     }
 }

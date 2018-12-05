@@ -6,13 +6,12 @@
                 <v-img
                     :src="label.thumbnail.url"
                     :alt="label.label.text"
-                    width="60"
-                    max-height="60"
-                    class="ma-2"
+                    max-width="80"
+                    class="ma-1"
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs10 class="pl-4 pt-2">
+            <v-flex xs10>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <router-link :to="'/label/' + label.label.value"><div :title="label.label.text" class="label-title subheading font-weight-medium info--text pointer">{{ label.label.text }}</div></router-link>

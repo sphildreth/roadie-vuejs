@@ -105,8 +105,11 @@
         <v-flex d-flex xs12 sm6 md6>
           <v-tabs right color="primary" dark v-model="tab" slider-color="accent">
             <v-tab v-if="artist.images.length">Images</v-tab>
+            <v-tab v-if="artist.bioContext">Biography</v-tab>
+            <v-tab v-if="artist.profile">Profile</v-tab>            
+            <v-tab>Metadata Sources</v-tab>            
             <v-tab-item v-if="artist.images.length">
-              <v-card flat class="images darken-3">
+              <v-card dark flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
                   <v-layout row wrap>
                     <v-flex v-for="(image, index) in artist.images" :key="image.url" xs2>
@@ -134,209 +137,153 @@
                 </v-container>
               </v-card>
             </v-tab-item>
-            <v-tab v-if="artist.bioContext">Biography</v-tab>
             <v-tab-item v-if="artist.bioContext">
-              <v-card max-height="290px" flat class="biography darken-3">
+              <v-card dark max-height="290px" flat class="biography darken-3">
                 <v-card-text v-html="'<p>' + artist.bioContext + '</p>'">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab v-if="artist.profile">Profile</v-tab>
             <v-tab-item v-if="artist.profile">
-              <v-card flat class="profile darken-3">
+              <v-card dark flat class="profile darken-3">
                 <v-card-text v-html="artist.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab v-if="artist.profile">Metadata Sources</v-tab>
-            <v-tab-item>
-            <v-data-table
-              :headers="metaDataHeaders"
-              :items="metaDataSources()"
-              class="elevation-1"
-              total-items="1"
-              hide-actions
-            >
-              <template slot="items" slot-scope="props">
-                <td>{{ props.item.source }}</td>
-                <td><a
-                      v-bind:href="props.item.url + props.item.sourceId"
-                      target="_blank"
-                    >{{ props.item.sourceId }}</a></td>
-              </template>
-            </v-data-table>
+            <v-tab-item>          
+              <v-data-table dark :headers="metaDataHeaders" :items="metaDataSources()" class="elevation-1" hide-actions>
+                <template slot="items" slot-scope="props">
+                  <td v-if="props.item.sourceId">{{ props.item.source }}</td>
+                  <td v-if="props.item.sourceId">
+                    <a class="white--text" v-bind:href="props.item.url + props.item.sourceId" target="_blank">{{ props.item.sourceId }}</a>
+                  </td>
+                </template>
+              </v-data-table>
             </v-tab-item>            
           </v-tabs>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12 sm6 md6>
-          <v-layout row wrap>
-            <v-flex xs3>
-              <v-card class="tags" dark>
-                <v-card-title class="info caption white--text">Statistics</v-card-title>
-                <v-card-text>
-                  <ul class="statistics">
-                    <li>
-                      <span class="name">Releases</span>
-                      <span class="stat">{{ artist.statistics.releaseCount }}</span>
-                    </li>
-                    <li>
-                      <span class="name">Media</span>
-                      <span class="stat">{{ artist.statistics.releaseMediaCount }}</span>
-                    </li>
-                    <li>
-                      <span class="name">Tracks</span>
-                      <span class="stat">{{ artist.statistics.trackCount }}</span>
-                    </li>
-                    <li>
-                      <span class="name">Played Count</span>
-                      <span class="stat">{{ artist.statistics.trackPlayedCount }}</span>
-                    </li>
-                    <li v-if="artist.statistics.missingTrackCount">
-                      <span class="name">Missing Tracks</span>
-                      <span class="red stat">{{ artist.statistics.missingTrackCount }}</span>
-                    </li>
-                    <li>
-                      <span class="name">Play Time</span>
-                      <span class="stat">{{ artist.statistics.trackTime }}</span>
-                    </li>
-                    <li>
-                      <span class="name">File Size</span>
-                      <span class="stat">{{ artist.statistics.fileSize }}</span>
-                    </li>
-                    <li>
-                      <span class="name">Created</span>
-                      <span class="stat">{{ artist.createdDate | formatTimeStamp(this.$store.getters.user) }}</span>
-                    </li>              
-                    <li>
-                      <span class="name">Last Updated</span>
-                      <span class="stat">{{ artist.lastUpdated | formatTimeStamp(this.$store.getters.user) }}</span>
-                    </li>                    
-
-                  </ul>
-                </v-card-text>
-              </v-card>
-            </v-flex>
-            <v-flex xs6>
-              <v-card class="alternate-names" dark>
-                <v-card-title class="primary caption white--text">Alternate Names</v-card-title>
-                <v-card-text>
-                  <ul class="data-tokens">
-                    <li v-for="name in artist.alternateNamesList" :key="name">{{ name }}</li>
-                  </ul>
-                </v-card-text>
-              </v-card>
-            </v-flex>
-            <v-flex xs3>
-              <v-card class="genres" dark>
-                <v-card-title class="primary caption white--text">Genres</v-card-title>
-                <v-card-text>
-                  <ul class="data-tokens">
-                    <li v-for="genre in artist.genres" :key="genre.value">{{ genre.text }}</li>
-                  </ul>
-                </v-card-text>
-              </v-card>
-            </v-flex>
-          </v-layout>
+        <v-flex d-flex xs12 sm6>
+          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+            <v-tab v-if="artist.alternateNamesList.length">Alternate Names</v-tab>
+            <v-tab v-if="artist.genres.length">Genres</v-tab>
+            <v-tab v-if="artist.tagsList.length">Tags</v-tab>
+            <v-tab v-if="artist.urLsList.length">Urls</v-tab>
+            <v-tab-item v-if="artist.alternateNamesList.length">
+              <v-list dark>
+                <template v-for="(name, index) in artist.alternateNamesList">
+                  <v-list-tile :key="`al-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < artist.alternateNamesList.length" :key="`divider-${index}`"></v-divider>                      
+                </template>
+              </v-list>                  
+            </v-tab-item>
+            <v-tab-item v-if="artist.genres.length">
+              <v-list dark>
+                <template v-for="(name, index) in artist.genres">
+                  <v-list-tile :key="`g-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name.text }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < artist.genres.length" :key="`divider-${index}`"></v-divider>                      
+                </template>
+              </v-list>               
+            </v-tab-item>
+            <v-tab-item v-if="artist.tagsList.length">
+              <v-list dark>
+                <template v-for="(name, index) in artist.tagsList">
+                  <v-list-tile :key="`t-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < artist.tagsList.length" :key="`divider-${index}`"></v-divider>                      
+                </template>
+              </v-list>               
+            </v-tab-item>
+            <v-tab-item v-if="artist.urLsList.length">
+              <v-list dark>
+                <template v-for="(name, index) in artist.urLsList">
+                  <v-list-tile :key="name">
+                    <v-list-tile-content>
+                      <v-list-tile-title><a class="white--text" v-bind:href="name" target="_blank">{{ name }}</a></v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < artist.urLsList.length" :key="`divider-${index}`"></v-divider>                      
+                </template>
+              </v-list>               
+            </v-tab-item>                       
+          </v-tabs>          
         </v-flex>
-        <v-flex d-flex xs12 sm6 md6>
-          <v-flex xs3>
-            <v-card class="tags" dark>
-              <v-card-title class="primary caption white--text">Tags</v-card-title>
-              <v-card-text>
-                <ul class="data-tokens">
-                  <li v-for="tag in artist.tagsList" :key="tag">{{ tag }}</li>
-                </ul>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-          <v-flex xs4>
-            <v-card class="urls" dark>
-              <v-card-title class="primary caption white--text">Urls</v-card-title>
-              <v-card-text>
-                <ul class="data-tokens">
-                  <li v-for="url in artist.urLsList" :key="url">
-                    <a class="white--text" v-bind:href="url" target="_blank">{{ url }}</a>
-                  </li>
-                </ul>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-          <v-flex xs5>
- 
-          </v-flex>
+        <v-flex d-flex xs12 sm6>
+          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+            <v-tab v-if="artist.associatedArtists.length">Associated Artists</v-tab>
+            <v-tab>Labels</v-tab>
+            <v-tab-item v-if="artist.associatedArtists.length">
+              <v-card flat dark class="labels">
+                <v-data-iterator :items="artist.associatedArtists" :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs4>
+                        <ArtistCard :artist="props.item"></ArtistCard>
+                    </v-flex>
+                </v-data-iterator>                  
+              </v-card>
+            </v-tab-item>
+            <v-tab-item>
+              <v-card flat dark class="associated-artists">
+                <v-data-iterator :items="artist.artistLabels" :total-items="artist.artistLabels ? artist.artistLabels.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs4>
+                        <LabelCard :label="props.item"></LabelCard>
+                    </v-flex>
+                </v-data-iterator>   
+              </v-card>                          
+            </v-tab-item>                      
+          </v-tabs>            
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12 sm5 md5>
-            <v-flex xs5>
-              <v-card class="release-labels" dark>
-                <v-card-title class="primary caption white--text">Labels</v-card-title>
-                <v-card-text>
-                    <v-data-iterator :items="artist.artistLabels" :total-items="artist.artistLabels ? artist.artistLabels.length : 0" content-tag="v-layout" hide-actions row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <LabelCard :label="props.item"></LabelCard>
-                        </v-flex>
-                    </v-data-iterator>                  
-                </v-card-text>
+        <v-flex d-flex xs12>
+          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+            <v-tab>Collections</v-tab>
+            <v-tab>Contributions</v-tab>
+            <v-tab>Playlists</v-tab>            
+            <v-tab>Releases</v-tab>            
+            <v-tab-item>
+              <v-card flat dark class="collections">
+                <v-data-iterator :items="artist.collectionsWithArtistReleases" :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs4>
+                        <CollectionCard :collection="props.item"></CollectionCard>
+                    </v-flex>
+                </v-data-iterator>                    
               </v-card>
-            </v-flex>     
-            <v-flex xs5>
-              <v-card class="associated-artists" dark>
-                <v-card-title class="primary caption white--text">Associated Artists</v-card-title>
-                <v-card-text>
-                    <v-data-iterator :items="artist.associatedArtists" :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0" content-tag="v-layout" hide-actions row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <ArtistCard :artist="props.item"></ArtistCard>
-                        </v-flex>
-                    </v-data-iterator>                    
-                </v-card-text>
-              </v-card>
-            </v-flex>                          
+            </v-tab-item>
+            <v-tab-item>
+              <v-card flat dark class="contributions">
+                <v-data-iterator :items="artist.artistContributionReleases" :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs4>
+                        <ReleaseCard :release="props.item"></ReleaseCard>
+                    </v-flex>
+                </v-data-iterator>                 
+              </v-card>                        
+            </v-tab-item>   
+            <v-tab-item>
+              <v-card flat dark class="playlists">
+                <v-data-iterator :items="artist.playlistsWithArtistReleases" :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
+                    <v-flex slot="item" slot-scope="props" xs4>
+                        <PlaylistCard :playlist="props.item"></PlaylistCard>
+                    </v-flex>
+                </v-data-iterator>                   
+              </v-card>                        
+            </v-tab-item>        
+            <v-tab-item>
+              <v-card flat dark class="releases">
+                 Release cards go here
+              </v-card>                        
+            </v-tab-item>                                       
+          </v-tabs>                        
         </v-flex>
-        <v-flex d-flex xs12 sm7 md7>
-            <v-flex xs6>
-              <v-card class="collections" dark>
-                <v-card-title class="primary caption white--text">Collections</v-card-title>
-                <v-card-text>
-                    <v-data-iterator :items="artist.collectionsWithArtistReleases" :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <CollectionCard :collection="props.item"></CollectionCard>
-                        </v-flex>
-                    </v-data-iterator>                    
-                </v-card-text>
-              </v-card>
-            </v-flex>   
-            <v-flex xs6>
-              <v-card class="playlists" dark>
-                <v-card-title class="primary caption white--text">Playlists</v-card-title>
-                <v-card-text>
-                    <v-data-iterator :items="artist.playlistsWithArtistReleases" :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <PlaylistCard :playlist="props.item"></PlaylistCard>
-                        </v-flex>
-                    </v-data-iterator>                    
-                </v-card-text>
-              </v-card>
-            </v-flex>                       
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex d-flex xs12 sm6 md6>
-            <v-flex xs6>
-              <v-card class="contributions" dark>
-                <v-card-title class="primary caption white--text">Contributions</v-card-title>
-                <v-card-text>
-                    <v-data-iterator :items="artist.artistContributionReleases" :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                        <v-flex slot="item" slot-scope="props" xs12>
-                            <ReleaseCard :release="props.item"></ReleaseCard>
-                        </v-flex>
-                    </v-data-iterator>                    
-                </v-card-text>
-              </v-card>
-            </v-flex>               
-        </v-flex>
-        <v-flex d-flex xs12 sm6 md6></v-flex>
-      </v-layout>      
+      </v-layout>     
     </v-container>
   </div>
 </template>
@@ -476,11 +423,14 @@ export default {
       statistics: {},
       images: [],      
       associatedArtists: [],
+      alternateNamesList: [],
+      genres: [],
       collectionsWithArtistReleases: [],
       playlistsWithArtistReleases: [],
       artistContributionReleases: [],
       artistLabels: [],
       tagsList: [],
+      urLsList: [],
       profile: null,
       bioContext: null
     },
@@ -499,11 +449,7 @@ export default {
       }
     ],
     menuItems: [
-      {
-        title: "Add All To Que",
-        class: "hidden-xs-only",
-        click: "aa:AddAllToQue"
-      },
+      { title: "Add All To Que", class: "hidden-xs-only", click: "aa:AddAllToQue" },
       { title: "Play All", class: "hidden-xs-only", click: "aa:PlayAll" },
       { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "aa:Shuffle" }
@@ -533,6 +479,10 @@ export default {
 .artist-detail-container .biography p {
     max-height: 266px;
     overflow: auto;
+}
+.artist-detail-container .artist-lists .v-list {
+  max-height: 300px;
+  overflow: auto;
 }
 ul.data-tokens,
 ul.statistics,

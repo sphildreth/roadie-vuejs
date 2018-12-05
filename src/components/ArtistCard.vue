@@ -6,8 +6,7 @@
                 <v-img
                     :src="artist.thumbnail.url"
                     :alt="artist.artist.text"
-                    width="imageHeight"
-                    max-height="imageHeight"
+                    max-width="80"
                     class="ma-1"
                 ></v-img>                  
                 </router-link>
@@ -57,15 +56,6 @@ export default {
     computed: {
         rating() {
             return this.artist.rating;
-        },
-        imageHeight () {
-            switch (this.$vuetify.breakpoint.name) {
-                case 'xs': 
-                case 'sm':
-                case 'md':
-                    return '60px';
-            }
-            return '80px';
         }
     },
     data: () => ({
