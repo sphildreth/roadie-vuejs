@@ -5,6 +5,11 @@
       :toolbarIcon="'fas' +' '+ 'fa-user'"
       :doShowBookmark="true"
       :bookmarked="artist.userBookmarked"
+      :doShowFavorite="true"
+      :favorited="artist.userRating && artist.userRating.isFavorite"      
+      :doShowHated="true"
+      :hated="artist.userRating && artist.userRating.isDisliked"      
+
     ></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>

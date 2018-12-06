@@ -13,9 +13,17 @@
           <img src="@/assets/img/loading.gif" alt="Loading..." class="loading">
         </v-btn>    
         <v-btn v-if="doShowBookmark" icon data-eventmessage="bookmarkToogle" @click="bookmarkToogle">
-          <v-icon v-if="bookmarked" color="info" title="Remove from bookmarks">bookmark</v-icon>
+          <v-icon v-if="bookmarked" color="info" title="Click to remove from bookmarks">bookmark</v-icon>
           <v-icon v-if="!bookmarked" title="Add to bookmarks">bookmark_border</v-icon>
-        </v-btn>               
+        </v-btn>    
+        <v-btn v-if="doShowFavorite" icon data-eventmessage="favoriteToogle" @click="favoriteToogle">
+          <v-icon v-if="favorited" color="red" title="Click to remove from favorites">fas fa-heart</v-icon>
+          <v-icon v-if="!favorited" title="Add to favorites">far fa-heart</v-icon>
+        </v-btn>          
+        <v-btn v-if="doShowHated" icon data-eventmessage="hateToogle" @click="hateToogle">
+          <v-icon v-if="hated" color="lime" title="Click to remove hate">fas fa-thumbs-down</v-icon>
+          <v-icon v-if="!hated" title="Click to hate">far fa-thumbs-down</v-icon>
+        </v-btn>                       
         <v-btn icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
           <v-icon title="Refresh">refresh</v-icon>
         </v-btn>        
@@ -45,7 +53,11 @@ export default {
       toolbarIcon: String,
       doMenuSelected: Boolean,
       doShowBookmark: Boolean,
-      bookmarked: Boolean
+      doShowFavorite: Boolean,
+      doShowHated: Boolean,
+      bookmarked: Boolean,
+      favorited: Boolean,
+      hated: Boolean
     },
     async mounted() {
       EventBus.$on('loadingStarted', () =>{ this.loading = true; }); 
@@ -58,6 +70,12 @@ export default {
       bookmarkToogle: function(e) {
         EventBus.$emit(e.currentTarget.dataset.eventmessage);
       },      
+      favoriteToogle: function(e) {
+        EventBus.$emit(e.currentTarget.dataset.eventmessage);
+      },     
+      hateToogle: function(e) {
+        EventBus.$emit(e.currentTarget.dataset.eventmessage);
+      },          
       clicked: function(e) {
         if(this.doMenuSelected) {
           var elements = document.getElementsByClassName('selected-toolbar-item');
