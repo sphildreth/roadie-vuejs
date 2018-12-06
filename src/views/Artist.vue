@@ -2,6 +2,7 @@
   <div class="artist-detail-container">
     <Toolbar
       :menuItems="menuItems"
+      :searchItems="seachMenuItems"
       :toolbarIcon="'fas' +' '+ 'fa-user'"
       :doShowBookmark="true"
       :bookmarked="artist.userBookmarked"
@@ -172,6 +173,23 @@
           <div class="stats-container">
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
+                  <v-rating
+                    @click.native="setRating"
+                    @change.native="setRating"
+                    v-model="artist.userRating.rating"
+                    class="pointer artist-rating"
+                    background-color="orange lighten-3"
+                    color="orange"
+                    medium
+                    dense
+                    hover
+                    clearable
+                  ></v-rating>
+              </v-chip>
+              <span>Rate Artist</span>
+            </v-tooltip>               
+            <v-tooltip bottom>
+              <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar >
                   <v-icon>stars</v-icon>
                 </v-avatar>
@@ -223,9 +241,9 @@
               <span>Artist Played Count</span>
             </v-tooltip>      
             <v-tooltip bottom>
-              <v-chip v-if="artist.statistics.missingTrackCount" slot="activator" color="secondary" text-color="white">
+              <v-chip v-if="artist.statistics.missingTrackCount" slot="activator" color="warning">
                 <v-avatar >
-                  <v-icon>play_circle_outline</v-icon>
+                  <v-icon>error</v-icon>
                 </v-avatar>
                 {{ artist.statistics.missingTrackCount }}
               </v-chip>
@@ -410,12 +428,14 @@ import ReleaseCard from '@/components/ReleaseCard';
 import CollectionCard from '@/components/CollectionCard';
 import PlaylistCard from '@/components/PlaylistCard';
 import ReleaseWithTracksCard from '@/components/ReleaseWithTracksCard';
-
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
 
+import artistMixin from '@/mixins/artist.js';
+
 export default {
   store,
+  mixins: [artistMixin],
   components: { Toolbar, LabelCard, ArtistCard, ReleaseCard, CollectionCard, PlaylistCard, ReleaseWithTracksCard },
   props: {
     id: String
@@ -425,6 +445,8 @@ export default {
     EventBus.$on("aa:PlayAll", this.playAll);
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
     EventBus.$on("aa:Comment", this.comment);
+    EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
+    EventBus.$on("aa:favoriteToogle", this.toggleFavorite);    
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   async mounted() {
@@ -433,26 +455,42 @@ export default {
   computed: {
     rating() {
       return this.artist.rating;
-    },
-    userRating: {
-      get: function() {
-        return this.artist && this.artist.userRating
-          ? this.artist.userRating.rating
-          : 0;
-      },
-      set: function(newValue) {
-        if (!this.artist.userRating) {
-          this.artist.userRating = {};
-        }
-        this.artist.userRating.rating = newValue;
-      }
     }
   },
   methods: {
+    internetArtistSearch: function () {
+      var q = this.artist.name;
+      if (this.artist.artistType === 'Person') {
+          q += ' artist';
+      } else {
+          q += ' band';
+      }
+        var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+        window.open(url, "_blank");
+    },
     shuffle: function() {},
     addAllToQue: function() {},
     playAll: function() {},
     comment: function() {},
+    setRating: async function(e) {
+      this.$nextTick(() => {
+        this.ratingChange({
+                artistId: this.artist.id,
+                newVal: this.artist.userRating.rating
+        })
+        .then(response => {         
+          this.updateData();
+        });  
+       });
+    },
+    toggleFavorite: async function() {
+       this.favoriteToggle({
+              artistId: this.artist.id,
+              isFavorite: this.artist.userRating ? !this.artist.userRating.isFavorite : true
+       }).then(response => {
+         this.updateData();
+       });  
+    },
     showImageModal: function(e) {
       this.modalImage = e;
       this.showModal = true;
@@ -474,8 +512,9 @@ export default {
           this.artist.artistContributionReleases= this.artist.artistContributionReleases || [];     
           this.artist.artistLabels= this.artist.artistLabels || [];     
           this.artist.tagsList= this.artist.tagsList || [];     
-          this.artist.urLsList= this.artist.urLsList || [];   
-          
+          this.artist.urLsList= this.artist.urLsList || [];       
+          this.artist.userRating = this.artist.userRating || { rating: 0, isFavorite: false, isDisliked: false };
+
           this.$axios
           .get(process.env.VUE_APP_API_URL + `/releases?filterToArtistId=${this.id}&inc=tracks&limit=100`)
           .then(rr => {
@@ -492,14 +531,14 @@ export default {
         ")"
       );
     },
-    ratingChanged: function() {
-      this.$nextTick(() => {
-        EventBus.$emit("a:ratingChange", {
-          releaseId: this.$el.dataset.id,
-          newVal: this.artist.userRating.rating
-        });
-      });
-    },
+    // ratingChanged: function() {
+    //   this.$nextTick(() => {
+    //     EventBus.$emit("a:ratingChange", {
+    //       releaseId: this.$el.dataset.id,
+    //       newVal: this.artist.userRating.rating
+    //     });
+    //   });
+    // },
     metaDataSources: function() {
       return [
       {
@@ -528,25 +567,6 @@ export default {
         url: "https://open.spotify.com/artist/"
       }];
     }                      
-  },
-  filters: {
-    // formatTimeStamp: function(timestamp) {
-    //     return moment.utc(timestamp).tz(this.$store.getters.user.timezone).format(this.$store.getters.user.timeFormat);
-    // },    
-    // shortDate: function(date) {
-    //   return moment(date).format("MM-DD-YYYY");
-    // },
-    // formatTimeStamp: function(timestamp) {
-    //   return moment
-    //     .utc(timestamp)
-    //     .tz(this.$store.getters.user.timezone)
-    //     .format(this.$store.getters.user.timeFormat);
-    // },
-    // yearsFromDate: function(fromDate, toDate) {
-    //   fromDate = fromDate || new Date();
-    //   toDate = toDate || new Date();
-    //   return moment(fromDate).diff(toDate, "years");
-    // }
   },
   watch: {},
   data: () => ({
@@ -589,8 +609,14 @@ export default {
     menuItems: [
       { title: "Add All To Que", class: "hidden-xs-only", click: "aa:AddAllToQue" },
       { title: "Play All", class: "hidden-xs-only", click: "aa:PlayAll" },
+      { title: "Play Top Rated", class: "hidden-xs-only", click: "aa:PlayTopRated" },
+      { title: "Play Most Popular", class: "hidden-xs-only", click: "aa:PlayMostPopular" },
       { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "aa:Shuffle" }
+    ],
+    seachMenuItems: [
+      { title: "Browse Artists with Name", click: "aa:searchArtistsWithName"},
+      { title: "Internet Artist Name", click: "aa:searchInternetArtist"},
     ]
   })
 };

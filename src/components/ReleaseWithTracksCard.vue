@@ -11,11 +11,12 @@
             </v-flex>
             <v-flex xs9>
                 <v-card-title primary-title class="pa-0 ma-0">
-                <div>
-                    <v-rating v-model="release.rating" background-color="orange lighten-3" color="orange" readonly small dense></v-rating>                    
-                    <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
-                    <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
-                </div>
+                    <div>
+                        <v-rating v-model="release.rating" background-color="orange lighten-3" color="orange" readonly small dense></v-rating>                    
+                        <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
+                        <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
+                        <v-icon v-if="release.libraryStatus != 1" :class="release.libraryStatus" color="warning">warning</v-icon>                                            
+                    </div>
                 </v-card-title>
             </v-flex>
         </v-layout>
@@ -27,7 +28,7 @@
                             <div v-if="release.media.length > 1" class="media-number accent--text">{{ media.mediaNumber | padNumber2 }}</div>
                             <table>
                                 <tbody>
-                                    <tr v-for="track in media.tracks" :key="track.id" class="track">
+                                    <tr v-for="track in media.tracks" :disabled="track.cssClass != 'Ok'" :key="track.id"  :class="track.cssClass == 'Missing' ? 'warning black--text' : 'dark'">
                                         <td class="track-number">{{ track.trackNumber | padNumber3 }}</td>
                                         <td class="track-title">{{ track.title}}</td>
                                         <td class="track-time right">{{ track.durationTime}}</td>
@@ -118,6 +119,9 @@ export default {
     }    
     .release-with-tracks td.right {
         text-align: right;
+    }
+    tr.Missing td {
+        border: 1px solid red;
     }
     .release-with-tracks .media-number {
         float:right;
