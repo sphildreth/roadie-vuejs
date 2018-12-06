@@ -7,10 +7,9 @@
       :doShowBookmark="true"
       :bookmarked="artist.userBookmarked"
       :doShowFavorite="true"
-      :favorited="artist.userRating && artist.userRating.isFavorite"      
+      :favorited="artist.userRating && artist.userRating.isFavorite"
       :doShowHated="true"
-      :hated="artist.userRating && artist.userRating.isDisliked"      
-
+      :hated="artist.userRating && artist.userRating.isDisliked"
     ></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>
@@ -92,8 +91,8 @@
           <v-tabs right color="primary" dark v-model="tab" slider-color="accent">
             <v-tab v-if="artist.images.length">Images</v-tab>
             <v-tab v-if="artist.bioContext">Biography</v-tab>
-            <v-tab v-if="artist.profile">Profile</v-tab>            
-            <v-tab>Metadata Sources</v-tab>            
+            <v-tab v-if="artist.profile">Profile</v-tab>
+            <v-tab>Metadata Sources</v-tab>
             <v-tab-item v-if="artist.images.length">
               <v-card dark flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
@@ -133,161 +132,149 @@
                 <v-card-text v-html="artist.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab-item>          
-              <v-data-table dark :headers="metaDataHeaders" :items="metaDataSources()" class="elevation-1" hide-actions>
+            <v-tab-item>
+              <v-data-table
+                dark
+                :headers="metaDataHeaders"
+                :items="metaDataSources()"
+                class="elevation-1"
+                hide-actions
+              >
                 <template slot="items" slot-scope="props">
                   <td v-if="props.item.sourceId">{{ props.item.source }}</td>
                   <td v-if="props.item.sourceId">
-                    <a class="white--text" v-bind:href="props.item.url + props.item.sourceId" target="_blank">{{ props.item.sourceId }}</a>
+                    <a
+                      class="white--text"
+                      v-bind:href="props.item.url + props.item.sourceId"
+                      target="_blank"
+                    >{{ props.item.sourceId }}</a>
                   </td>
                 </template>
               </v-data-table>
-            </v-tab-item>            
+            </v-tab-item>
           </v-tabs>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <!-- <v-flex d-flex xs4>
-          <v-rating
-            v-model="rating"
-            background-color="orange lighten-3"
-            color="orange"
-            readonly
-            small
-            dense
-          ></v-rating>
-          <v-rating
-            @click.native="ratingChanged"
-            @change.native="ratingChanged"
-            v-model="userRating"
-            class="pointer artist-rating"
-            background-color="orange lighten-3"
-            color="orange"
-            medium
-            dense
-            hover
-            clearable
-          ></v-rating>          
-        </v-flex> -->
         <v-flex d-flex xs12>
           <div class="stats-container">
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                  <v-rating
-                    @click.native="setRating"
-                    @change.native="setRating"
-                    v-model="artist.userRating.rating"
-                    class="pointer artist-rating"
-                    background-color="orange lighten-3"
-                    color="orange"
-                    medium
-                    dense
-                    hover
-                    clearable
-                  ></v-rating>
+                <v-rating
+                  @click.native="setRating"
+                  @change.native="setRating"
+                  v-model="artist.userRating.rating"
+                  class="pointer artist-rating"
+                  background-color="orange lighten-3"
+                  color="orange"
+                  medium
+                  dense
+                  hover
+                  clearable
+                ></v-rating>
               </v-chip>
               <span>Rate Artist</span>
-            </v-tooltip>               
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>stars</v-icon>
                 </v-avatar>
-                  <v-rating
-                    v-model="rating"
-                    background-color="orange lighten-3"
-                    color="orange"
-                    readonly
-                    small
-                    dense
-                  ></v-rating>
+                <v-rating
+                  v-model="rating"
+                  background-color="orange lighten-3"
+                  color="orange"
+                  readonly
+                  small
+                  dense
+                ></v-rating>
               </v-chip>
               <span>Artist Average Rating</span>
-            </v-tooltip>             
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>library_music</v-icon>
                 </v-avatar>
                 {{ artist.statistics.releaseCount | padNumber3 }}
               </v-chip>
               <span>Artist Releases</span>
-            </v-tooltip>       
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>album</v-icon>
                 </v-avatar>
                 {{ artist.statistics.releaseMediaCount | padNumber4 }}
               </v-chip>
               <span>Artist Release Medias</span>
-            </v-tooltip>  
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>audiotrack</v-icon>
                 </v-avatar>
                 {{ artist.statistics.trackCount | padNumber4 }}
               </v-chip>
               <span>Artist Release Tracks</span>
-            </v-tooltip>      
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>play_circle_outline</v-icon>
                 </v-avatar>
-                {{ artist.statistics.trackPlayedCount  | padNumber5 }}
+                {{ artist.statistics.trackPlayedCount | padNumber5 }}
               </v-chip>
               <span>Artist Played Count</span>
-            </v-tooltip>      
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip v-if="artist.statistics.missingTrackCount" slot="activator" color="warning">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>error</v-icon>
                 </v-avatar>
                 {{ artist.statistics.missingTrackCount }}
               </v-chip>
               <span>Artist Tracks Missing</span>
-            </v-tooltip>      
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>speaker</v-icon>
                 </v-avatar>
                 {{ artist.statistics.trackTime }}
               </v-chip>
               <span>Artist Track Playtime</span>
-            </v-tooltip>  
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>folder_open</v-icon>
                 </v-avatar>
                 {{ artist.statistics.fileSize }}
               </v-chip>
               <span>Artist Media File Size</span>
-            </v-tooltip>      
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>date_range</v-icon>
                 </v-avatar>
                 {{ artist.createdDate | formatTimeStamp(this.$store.getters.user) }}
               </v-chip>
               <span>Artist Created Date</span>
-            </v-tooltip>      
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
-                <v-avatar >
+                <v-avatar>
                   <v-icon>update</v-icon>
                 </v-avatar>
                 {{ artist.lastUpdated | formatTimeStamp(this.$store.getters.user) }}
               </v-chip>
               <span>Artist Updated Date</span>
-            </v-tooltip>                                                                             
+            </v-tooltip>
           </div>
         </v-flex>
-      </v-layout>      
+      </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
@@ -303,9 +290,12 @@
                       <v-list-tile-title>{{ name }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.alternateNamesList.length" :key="`adivider-${index}`"></v-divider>                      
+                  <v-divider
+                    v-if="index + 1 < artist.alternateNamesList.length"
+                    :key="`adivider-${index}`"
+                  ></v-divider>
                 </template>
-              </v-list>                  
+              </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.genres.length">
               <v-list dark>
@@ -315,9 +305,9 @@
                       <v-list-tile-title>{{ name.text }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.genres.length" :key="`gdivider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.genres.length" :key="`gdivider-${index}`"></v-divider>
                 </template>
-              </v-list>               
+              </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.tagsList.length">
               <v-list dark>
@@ -327,23 +317,25 @@
                       <v-list-tile-title>{{ name }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.tagsList.length" :key="`tdivider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.tagsList.length" :key="`tdivider-${index}`"></v-divider>
                 </template>
-              </v-list>               
+              </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.urLsList.length">
               <v-list dark>
                 <template v-for="(name, index) in artist.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
-                      <v-list-tile-title><a class="white--text" v-bind:href="name" target="_blank">{{ name }}</a></v-list-tile-title>
+                      <v-list-tile-title>
+                        <a class="white--text" v-bind:href="name" target="_blank">{{ name }}</a>
+                      </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.urLsList.length" :key="`uaadivider-${index}`"></v-divider>                      
+                  <v-divider v-if="index + 1 < artist.urLsList.length" :key="`uaadivider-${index}`"></v-divider>
                 </template>
-              </v-list>               
-            </v-tab-item>                       
-          </v-tabs>          
+              </v-list>
+            </v-tab-item>
+          </v-tabs>
         </v-flex>
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
@@ -351,98 +343,152 @@
             <v-tab>Labels</v-tab>
             <v-tab-item v-if="artist.associatedArtists.length">
               <v-card flat dark class="labels">
-                <v-data-iterator :items="artist.associatedArtists" :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs4>
-                        <ArtistCard :artist="props.item"></ArtistCard>
-                    </v-flex>
-                </v-data-iterator>                  
+                <v-data-iterator
+                  :items="artist.associatedArtists"
+                  :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <ArtistCard :artist="props.item"></ArtistCard>
+                  </v-flex>
+                </v-data-iterator>
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat dark class="associated-artists">
-                <v-data-iterator :items="artist.artistLabels" :total-items="artist.artistLabels ? artist.artistLabels.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs4>
-                        <LabelCard :label="props.item"></LabelCard>
-                    </v-flex>
-                </v-data-iterator>   
-              </v-card>                          
-            </v-tab-item>                      
-          </v-tabs>            
+              <v-card flat dark class="artist-labels">
+                <v-data-iterator
+                  :items="artist.artistLabels"
+                  :total-items="artist.artistLabels ? artist.artistLabels.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <LabelCard :label="props.item"></LabelCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
         </v-flex>
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <v-tabs class="artist-lists" color="primary" v-model="releaseTab" dark slider-color="accent">
+          <v-tabs
+            class="artist-lists"
+            color="primary"
+            v-model="releaseTab"
+            dark
+            slider-color="accent"
+          >
             <v-tab>Collections</v-tab>
             <v-tab>Contributions</v-tab>
-            <v-tab>Playlists</v-tab>            
-            <v-tab>Releases</v-tab>            
+            <v-tab>Playlists</v-tab>
+            <v-tab>Releases</v-tab>
             <v-tab-item>
               <v-card flat dark class="collections">
-                <v-data-iterator :items="artist.collectionsWithArtistReleases" :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs4>
-                        <CollectionCard :collection="props.item"></CollectionCard>
-                    </v-flex>
-                </v-data-iterator>                    
+                <v-data-iterator
+                  :items="artist.collectionsWithArtistReleases"
+                  :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <CollectionCard :collection="props.item"></CollectionCard>
+                  </v-flex>
+                </v-data-iterator>
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-card flat dark class="contributions">
-                <v-data-iterator :items="artist.artistContributionReleases" :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs4>
-                        <ReleaseCard :release="props.item"></ReleaseCard>
-                    </v-flex>
-                </v-data-iterator>                 
-              </v-card>                        
-            </v-tab-item>   
+                <v-data-iterator
+                  :items="artist.artistContributionReleases"
+                  :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <ReleaseCard :release="props.item"></ReleaseCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
             <v-tab-item>
               <v-card flat dark class="playlists">
-                <v-data-iterator :items="artist.playlistsWithArtistReleases" :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs4>
-                        <PlaylistCard :playlist="props.item"></PlaylistCard>
-                    </v-flex>
-                </v-data-iterator>                   
-              </v-card>                        
-            </v-tab-item>        
+                <v-data-iterator
+                  :items="artist.playlistsWithArtistReleases"
+                  :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <PlaylistCard :playlist="props.item"></PlaylistCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
             <v-tab-item>
               <v-card flat dark class="releases">
-                <v-data-iterator :items="releases" :total-items="releases ? releases.length : 0" content-tag="v-layout" hide-actions row wrap>
-                    <v-flex slot="item" slot-scope="props" xs3>
-                        <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
-                    </v-flex>
-                </v-data-iterator> 
-              </v-card>                        
-            </v-tab-item>                                       
-          </v-tabs>                        
+                <v-data-iterator
+                  :items="releases"
+                  :total-items="releases ? releases.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs3>
+                    <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
         </v-flex>
-      </v-layout>     
+      </v-layout>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout=1000 :top=true>
+    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
       {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>    
+      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import Toolbar from "@/components/Toolbar";
 import LabelCard from "@/components/LabelCard";
-import ArtistCard from '@/components/ArtistCard';
-import ReleaseCard from '@/components/ReleaseCard';
-import CollectionCard from '@/components/CollectionCard';
-import PlaylistCard from '@/components/PlaylistCard';
-import ReleaseWithTracksCard from '@/components/ReleaseWithTracksCard';
+import ArtistCard from "@/components/ArtistCard";
+import ReleaseCard from "@/components/ReleaseCard";
+import CollectionCard from "@/components/CollectionCard";
+import PlaylistCard from "@/components/PlaylistCard";
+import ReleaseWithTracksCard from "@/components/ReleaseWithTracksCard";
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
 
-import artistMixin from '@/mixins/artist.js';
+import artistMixin from "@/mixins/artist.js";
 
 export default {
   store,
   mixins: [artistMixin],
-  components: { Toolbar, LabelCard, ArtistCard, ReleaseCard, CollectionCard, PlaylistCard, ReleaseWithTracksCard },
+  components: {
+    Toolbar,
+    LabelCard,
+    ArtistCard,
+    ReleaseCard,
+    CollectionCard,
+    PlaylistCard,
+    ReleaseWithTracksCard
+  },
   props: {
     id: String
   },
@@ -452,7 +498,7 @@ export default {
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
     EventBus.$on("aa:Comment", this.comment);
     EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$on("aa:favoriteToogle", this.toggleFavorite);    
+    EventBus.$on("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   async mounted() {
@@ -464,15 +510,15 @@ export default {
     }
   },
   methods: {
-    internetArtistSearch: function () {
+    internetArtistSearch: function() {
       var q = this.artist.name;
-      if (this.artist.artistType === 'Person') {
-          q += ' artist';
+      if (this.artist.artistType === "Person") {
+        q += " artist";
       } else {
-          q += ' band';
+        q += " band";
       }
-        var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
-        window.open(url, "_blank");
+      var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
     },
     shuffle: function() {},
     addAllToQue: function() {},
@@ -481,23 +527,25 @@ export default {
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
-                artistId: this.artist.id,
-                newVal: this.artist.userRating.rating
+          artistId: this.artist.id,
+          newVal: this.artist.userRating.rating
         })
-        // eslint-disable-next-line 
-        .then(r => {         
-          this.updateData();
-        });  
-       });
+          // eslint-disable-next-line
+          .then(r => {
+            this.updateData();
+          });
+      });
     },
     toggleFavorite: async function() {
-       this.favoriteToggle({
-              artistId: this.artist.id,
-              isFavorite: this.artist.userRating ? !this.artist.userRating.isFavorite : true
-       // eslint-disable-next-line 
-       }).then(r => {
-         this.updateData();
-       });  
+      this.favoriteToggle({
+        artistId: this.artist.id,
+        isFavorite: this.artist.userRating
+          ? !this.artist.userRating.isFavorite
+          : true
+        // eslint-disable-next-line
+      }).then(r => {
+        this.updateData();
+      });
     },
     showImageModal: function(e) {
       this.modalImage = e;
@@ -511,73 +559,72 @@ export default {
           this.artist = response.data.data;
           this.artist.genres = this.artist.genres || [];
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
-          this.artist.images = this.artist.images || [];     
-          this.artist.associatedArtists= this.artist.associatedArtists || [];     
-          this.artist.alternateNamesList= this.artist.alternateNamesList || [];     
-          this.artist.genres= this.artist.genres || [];     
-          this.artist.collectionsWithArtistReleases= this.artist.collectionsWithArtistReleases || [];     
-          this.artist.playlistsWithArtistReleases= this.artist.playlistsWithArtistReleases || [];     
-          this.artist.artistContributionReleases= this.artist.artistContributionReleases || [];     
-          this.artist.artistLabels= this.artist.artistLabels || [];     
-          this.artist.tagsList= this.artist.tagsList || [];     
-          this.artist.urLsList= this.artist.urLsList || [];       
-          this.artist.userRating = this.artist.userRating || { rating: 0, isFavorite: false, isDisliked: false };
+          this.artist.images = this.artist.images || [];
+          this.artist.associatedArtists = this.artist.associatedArtists || [];
+          this.artist.alternateNamesList = this.artist.alternateNamesList || [];
+          this.artist.genres = this.artist.genres || [];
+          this.artist.collectionsWithArtistReleases =
+            this.artist.collectionsWithArtistReleases || [];
+          this.artist.playlistsWithArtistReleases =
+            this.artist.playlistsWithArtistReleases || [];
+          this.artist.artistContributionReleases =
+            this.artist.artistContributionReleases || [];
+          this.artist.artistLabels = this.artist.artistLabels || [];
+          this.artist.tagsList = this.artist.tagsList || [];
+          this.artist.urLsList = this.artist.urLsList || [];
+          this.artist.userRating = this.artist.userRating || {
+            rating: 0,
+            isFavorite: false,
+            isDisliked: false
+          };
 
           this.$axios
-          .get(process.env.VUE_APP_API_URL + `/releases?filterToArtistId=${this.id}&inc=tracks&limit=100`)
-          .then(rr => {
-            this.releases = rr.data.rows;
-            EventBus.$emit("loadingComplete");
-          })
+            .get(
+              process.env.VUE_APP_API_URL +
+                `/releases?filterToArtistId=${this.id}&inc=tracks&limit=100`
+            )
+            .then(rr => {
+              this.releases = rr.data.rows;
+              EventBus.$emit("loadingComplete");
+            });
         });
     },
     shortDateWithAge: function(date, toDate) {
       return (
-        this.$options.filters.shortDate(date) +
-        " (" +
-        this.$options.filters.yearsFromDate(toDate, date) +
-        ")"
-      );
+        this.$options.filters.shortDate(date) + " (" + this.$options.filters.yearsFromDate(toDate, date) + ")");
     },
-    // ratingChanged: function() {
-    //   this.$nextTick(() => {
-    //     EventBus.$emit("a:ratingChange", {
-    //       releaseId: this.$el.dataset.id,
-    //       newVal: this.artist.userRating.rating
-    //     });
-    //   });
-    // },
     metaDataSources: function() {
       return [
-      {
-        source: "All Music",        
-        sourceId: this.artist.amgId,
-        url: "http://www.allmusic.com/artist/"
-      },
-      {
-        source: "Discogs",
-        sourceId: this.artist.discogsId,
-        url: "https://www.discogs.com/artist/"
-      },
-      {
-        source: "iTunes",
-        sourceId: this.artist.iTunesId,
-        url: "https://itunes.apple.com/artist/id"
-      },
-      {
-        source: "MusicBrainz",
-        sourceId: this.artist.musicBrainzId,
-        url: "https://musicbrainz.org/artist/"
-      },
-      {
-        source: "Spotify",
-        sourceId: this.artist.spotifyId,
-        url: "https://open.spotify.com/artist/"
-      }];
-    }                      
+        {
+          source: "All Music",
+          sourceId: this.artist.amgId,
+          url: "http://www.allmusic.com/artist/"
+        },
+        {
+          source: "Discogs",
+          sourceId: this.artist.discogsId,
+          url: "https://www.discogs.com/artist/"
+        },
+        {
+          source: "iTunes",
+          sourceId: this.artist.iTunesId,
+          url: "https://itunes.apple.com/artist/id"
+        },
+        {
+          source: "MusicBrainz",
+          sourceId: this.artist.musicBrainzId,
+          url: "https://musicbrainz.org/artist/"
+        },
+        {
+          source: "Spotify",
+          sourceId: this.artist.spotifyId,
+          url: "https://open.spotify.com/artist/"
+        }
+      ];
+    }
   },
   watch: {
-    '$route' (to, from) {
+    $route(to) {
       this.id = to.params.id;
       this.updateData();
     }
@@ -591,7 +638,7 @@ export default {
       mediumThumbnail: {},
       userRating: {},
       statistics: {},
-      images: [],      
+      images: [],
       associatedArtists: [],
       alternateNamesList: [],
       genres: [],
@@ -605,31 +652,43 @@ export default {
       bioContext: null
     },
     releases: [],
-    metaDataHeaders:[
+    metaDataHeaders: [
       {
-        text: 'Source',
-        align: 'left',
+        text: "Source",
+        align: "left",
         sortable: false,
-        value: 'source'
+        value: "source"
       },
       {
-        text: 'Source Id',
-        align: 'left',
+        text: "Source Id",
+        align: "left",
         sortable: false,
-        value: 'sourceId'
+        value: "sourceId"
       }
     ],
     menuItems: [
-      { title: "Add All To Que", class: "hidden-xs-only", click: "aa:AddAllToQue" },
+      {
+        title: "Add All To Que",
+        class: "hidden-xs-only",
+        click: "aa:AddAllToQue"
+      },
       { title: "Play All", class: "hidden-xs-only", click: "aa:PlayAll" },
-      { title: "Play Top Rated", class: "hidden-xs-only", click: "aa:PlayTopRated" },
-      { title: "Play Most Popular", class: "hidden-xs-only", click: "aa:PlayMostPopular" },
+      {
+        title: "Play Top Rated",
+        class: "hidden-xs-only",
+        click: "aa:PlayTopRated"
+      },
+      {
+        title: "Play Most Popular",
+        class: "hidden-xs-only",
+        click: "aa:PlayMostPopular"
+      },
       { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "aa:Shuffle" }
     ],
     seachMenuItems: [
-      { title: "Browse Artists with Name", click: "aa:searchArtistsWithName"},
-      { title: "Internet Artist Name", click: "aa:searchInternetArtist"},
+      { title: "Browse Artists with Name", click: "aa:searchArtistsWithName" },
+      { title: "Internet Artist Name", click: "aa:searchInternetArtist" }
     ]
   })
 };
@@ -654,8 +713,8 @@ export default {
   overflow-y: auto;
 }
 .artist-detail-container .biography p {
-    max-height: 266px;
-    overflow: auto;
+  max-height: 266px;
+  overflow: auto;
 }
 .artist-detail-container .artist-lists .v-list {
   max-height: 300px;
@@ -681,5 +740,4 @@ img.modal-image {
   overflow: hidden;
   max-width: 100%;
 }
-
 </style>

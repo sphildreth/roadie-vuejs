@@ -15,7 +15,8 @@
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <router-link :to="'/label/' + label.label.value"><div :title="label.label.text" class="label-title subheading font-weight-medium info--text pointer">{{ label.label.text }}</div></router-link>
-                    <div class="caption accent--text"><span title="Artist Count">{{ label.artistCount }}</span> |<span title="Release Count">{{ label.releaseCount }}</span> | <span title="Track Count">{{ label.trackCount | padNumber5 }}</span></div>
+                    <div class="caption accent--text"><span title="Artist Count">{{ label.artistCount }}</span> | <span title="Release Count">{{ label.releaseCount }}</span> | <span title="Track Count">{{ label.trackCount | padNumber5 }}</span></div>
+                    <div v-if="catalogNumber" class="caption accent--text"><span title="Catalog Number">{{ catalogNumber }}</span><span v-if="beginDate" title="Begin Date"> Begin: {{ beginDate | shortDate }}</span><span v-if="endDate" title="End Date"> End: {{ endDate | shortDate }}</span></div>
                 </div>
                 </v-card-title>
             </v-flex>
@@ -28,7 +29,10 @@
 export default {
     name: 'LabelCard',
     props: {
-        label: Object
+        label: Object,
+        catalogNumber: String,
+        beginDate: String,
+        endDate: String
     },
     methods: {
     },
