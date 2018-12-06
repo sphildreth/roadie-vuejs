@@ -417,6 +417,12 @@
         </v-flex>
       </v-layout>     
     </v-container>
+    <v-snackbar v-model="snackbar" color="success" :timeout=1000 :top=true>
+      {{ snackbarText }}
+      <v-btn color="black" flat @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>    
   </div>
 </template>
 
@@ -472,13 +478,14 @@ export default {
     addAllToQue: function() {},
     playAll: function() {},
     comment: function() {},
-    setRating: async function(e) {
+    setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
                 artistId: this.artist.id,
                 newVal: this.artist.userRating.rating
         })
-        .then(response => {         
+        // eslint-disable-next-line 
+        .then(r => {         
           this.updateData();
         });  
        });
@@ -487,7 +494,8 @@ export default {
        this.favoriteToggle({
               artistId: this.artist.id,
               isFavorite: this.artist.userRating ? !this.artist.userRating.isFavorite : true
-       }).then(response => {
+       // eslint-disable-next-line 
+       }).then(r => {
          this.updateData();
        });  
     },
@@ -568,7 +576,12 @@ export default {
       }];
     }                      
   },
-  watch: {},
+  watch: {
+    '$route' (to, from) {
+      this.id = to.params.id;
+      this.updateData();
+    }
+  },
   data: () => ({
     tab: 0,
     releaseTab: 3,

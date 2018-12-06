@@ -1,4 +1,8 @@
 export default {
+    data: () => ({
+        snackbar: false,
+        snackbarText: "",            
+    }),
     methods: {
         ratingChange(changeInfo) {
             return new Promise(resolve => {

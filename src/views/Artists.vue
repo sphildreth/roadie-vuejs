@@ -22,7 +22,10 @@
   import ArtistCard from '@/components/ArtistCard';
   import { EventBus } from '@/event-bus.js';
 
+  import artistMixin from '@/mixins/artist.js';
+
   export default {
+    mixins: [artistMixin],    
     components: { ArtistCard, Toolbar }, 
     created() {
       EventBus.$on('a:viewRandom', this.viewRandom);
@@ -36,8 +39,8 @@
     },    
     async mounted() {
       this.viewRandom();
-      EventBus.$on('a:ratingChange', (info) => this.ratingChange(info));      
-      EventBus.$on('a:favoriteToggle', (info) => this.favoriteToggle(info));      
+      EventBus.$on('a:ratingChange', (info) => this.setRating(info));      
+      EventBus.$on('a:favoriteToggle', (info) => this.toggleFavorite(info));      
     },  
     methods: {
       resetView: function(){
@@ -92,39 +95,21 @@
             EventBus.$emit("loadingComplete");    
           });        
       },
-      ratingChange: async function(changeInfo) {
-        var that = this;
-        if(changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistRating/' + changeInfo.artistId + '/' + changeInfo.newVal)
-          .then(response => {
-              if(response.data.isSuccess && changeInfo.newVal > 0) {
-                that.snackbarText = "Successfully set rating";
-                that.snackbar = true;
-              } else if (response.data.isSuccess) {
-                that.snackbarText = "Successfully removed rating";
-                that.snackbar = true;
-              }
-          });
-        }
+      setRating: async function(changeInfo) {
+      this.$nextTick(() => {
+        this.ratingChange(changeInfo);
+       });        
       },
-      favoriteToggle: async function(toggleInfo) {
-        var that = this;
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistFavorite/' + toggleInfo.artistId + '/' + toggleInfo.isFavorite)
-        .then(response => {
-          if(response.data.isSuccess && toggleInfo.isFavorite > 0) {
-            that.snackbarText = "Artist is now a favorite";
-            that.snackbar = true;
-          } else if (response.data.isSuccess) {
-            that.snackbarText = "Artist is no longer a favorite";
-            that.snackbar = true;
-          }
-          if(that.currentView == "favorite") {
+      toggleFavorite: async function(toggleInfo) {
+        // eslint-disable-next-line
+        this.favoriteToggle(toggleInfo).then(r => {
+          if(this.currentView == "favorite") {
             this.$nextTick(() => {
-              that.updateData();
+              this.updateData();
             });
-          }            
-        });
-      }
+          }  
+        });  
+      }     
     },
     watch: {
       pagination: { 
@@ -137,8 +122,6 @@
       rowsPerPageItems: [12, 36, 60, 120],
       doRandomize: false,
       filterFavoriteOnly: false,
-      snackbar: false,
-      snackbarText: "",
       currentView: "",
       pagination: {
         page: 1,
