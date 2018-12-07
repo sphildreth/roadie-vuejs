@@ -4,7 +4,7 @@
             <v-card dark  v-if="artistItems.length > 0">
                 <v-card-title class="subheading accent--text">Artists</v-card-title>
                 <v-card-text>
-                    <v-data-iterator :items="artistItems" :rows-per-page-items="rowsPerPageItems" :total-items="artistPagination.totalItems"  :pagination.sync="artistPagination" content-tag="v-layout" :loading="true" row wrap>
+                    <v-data-iterator :items="artistItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage" :total-items="artistPagination.totalItems"  :pagination.sync="artistPagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
                             <ArtistCard :artist="props.item"></ArtistCard>
                         </v-flex>
@@ -14,7 +14,7 @@
             <v-card dark v-if="releaseItems.length > 0">
                 <v-card-title class="subheading accent--text">Releases</v-card-title>
                 <v-card-text>
-                    <v-data-iterator :items="releaseItems" :rows-per-page-items="rowsPerPageItems" :total-items="releasePagination.totalItems"  :pagination.sync="releasePagination" content-tag="v-layout" :loading="true" row wrap>
+                    <v-data-iterator :items="releaseItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="releasePagination.totalItems < releasePagination.rowsPerPage" :total-items="releasePagination.totalItems"  :pagination.sync="releasePagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
                             <ReleaseCard :release="props.item"></ReleaseCard>
                         </v-flex>
@@ -24,7 +24,7 @@
             <v-card dark v-if="trackItems.length > 0">
                 <v-card-title class="subheading accent--text">Tracks</v-card-title>
                 <v-card-text>
-                    <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
+                    <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6>
                             <TrackCard :track="props.item"></TrackCard>
                         </v-flex>
@@ -49,6 +49,8 @@
     },
     created() {
     },    
+    computed: {
+    },
     async mounted() {   
         this.updateData();
     },  
@@ -98,7 +100,7 @@
       },   
       trackPagination: {
         page: 1,
-        rowsPerPage: 36,
+        rowsPerPage: 12,
         totalItems: 0,
         sortBy: 'Track.Text',
         sortOrder: "ASC"

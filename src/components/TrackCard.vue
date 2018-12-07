@@ -29,7 +29,16 @@ export default {
     name: 'TrackCard',
     components: { ArtistCard },
     props: {
-        track: Object,
+        track: {
+            type: Object,
+            default: {                
+                userRating: {
+                    rating: 0,
+                    isFavorite: false,
+                    isDisliked: false
+                }
+            }
+        },
         mediaNumber: Number,
         mediaCount: Number
     },
@@ -65,17 +74,11 @@ export default {
         }
     },
     computed: {
-        userRating: function() {
-            this.track = this.track || {};
-            this.track.userRating = this.track.userRating || {
-                rating: 0,
-                isFavorite: false,
-                isDisliked: false
-            };             
-            return this.track.userRating;
+        userRating: function() {        
+            return this.track && this.track.userRating ? this.track.userRating : 0;
         }
     },
-    data: () => ({
+    data: () => ({        
     })    
 }
 </script>
