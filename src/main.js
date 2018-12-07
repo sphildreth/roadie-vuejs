@@ -56,6 +56,10 @@ Vue.filter("shortDate", function (date) {
   return moment(date).format("MM-DD-YYYY");
 });
 
+Vue.filter("formattedYear", function (date) {
+  return moment(date).format("YYYY");
+});
+
 Vue.filter("formatTimeStamp", function (timestamp, user) {
   return moment
     .utc(timestamp)

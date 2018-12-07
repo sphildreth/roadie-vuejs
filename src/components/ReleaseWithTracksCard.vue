@@ -63,17 +63,17 @@ export default {
 </script>
 
 <style>
-    .v-card--hover {
+    .release-with-tracks .v-card--hover {
         cursor:default !important;
     }
-    .v-rating.release-rating {
+    .release-with-tracks .v-rating.release-rating {
         width: 115px;
     }
-    i.favorite {
+    .release-with-tracks i.favorite {
         float:left;
         margin-top:2px;        
     }
-    .numberCircle {
+    .release-with-tracks .numberCircle {
         width: 12px;
         line-height: 12px;
         border-radius: 50%;

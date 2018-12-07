@@ -44,11 +44,11 @@
                       <ArtistCard :artist="release.artist"></ArtistCard>
 										</v-flex>
 									</v-layout>
-                  <v-layout row wrap>
+                  <v-layout row wrap>                  
                     <v-flex xs2>
                       <v-text-field
-                        v-bind:value="release.releaseType"
-                        label="Release Type"
+                        v-bind:value="release.releaseDate | shortDate"
+                        label="Release Date"
                         readonly
                       ></v-text-field>
                     </v-flex>
@@ -58,6 +58,15 @@
                     <v-flex xs2>
                       <v-text-field v-bind:value="release.trackCount" label="Track Count" readonly></v-text-field>
                     </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs2>
+                      <v-text-field
+                        v-bind:value="release.releaseType"
+                        label="Release Type"
+                        readonly
+                      ></v-text-field>
+                    </v-flex>                    
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -152,7 +161,7 @@
                   <v-icon>stars</v-icon>
                 </v-avatar>
                 <v-rating
-                  v-model="rating"
+                  v-model="release.rating"
                   background-color="orange lighten-3"
                   color="orange"
                   readonly
@@ -325,7 +334,7 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12>
+        <v-flex d-flex xs5>
           <v-tabs
             class="release-lists"
             color="primary"
@@ -333,10 +342,35 @@
             dark
             slider-color="accent"
           >
-            <v-tab>Collections</v-tab>
-            <v-tab>Playlists</v-tab>
             <v-tab>Tracks</v-tab>
             <v-tab-item>
+              <v-card flat dark class="tracks">
+                <v-data-iterator
+                  :items="release.medias"
+                  :total-items="release.medias ? release.medias.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs12>
+                    <MediaCard :media="props.item"></MediaCard>
+                  </v-flex>
+                </v-data-iterator>                
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
+        </v-flex>
+        <v-flex d-flex xs7>
+          <v-tabs
+            class="release-lists"
+            color="primary"
+            dark
+            slider-color="accent"
+          >
+            <v-tab v-if="release.collections.length > 0">Collections</v-tab>
+            <v-tab>Playlists</v-tab>
+            <v-tab-item v-if="release.collections > 0">
               <v-card flat dark class="collections">
                 <v-data-iterator
                   :items="release.collections"
@@ -368,11 +402,8 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
-              <v-card flat dark class="tracks">Tracks Go here</v-card>
-            </v-tab-item>
           </v-tabs>
-        </v-flex>
+        </v-flex>        
       </v-layout>
     </v-container>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
@@ -383,17 +414,18 @@
 </template>
 
 <script>
-import Toolbar from "@/components/Toolbar";
-import LabelCard from "@/components/LabelCard";
+import Toolbar from '@/components/Toolbar';
+import LabelCard from '@/components/LabelCard';
 import ArtistCard from '@/components/ArtistCard';
-import CollectionCard from "@/components/CollectionCard";
-import PlaylistCard from "@/components/PlaylistCard";
+import CollectionCard from '@/components/CollectionCard';
+import PlaylistCard from '@/components/PlaylistCard';
+import MediaCard from '@/components/MediaCard';
 
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
 
 export default {
-  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard },
+  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard },
   props: {
     id: String
   },
@@ -408,9 +440,6 @@ export default {
     this.updateData();
   },
   computed: {
-    rating() {
-      return this.release.rating;
-    }
   },
   methods: {
     shuffle: function() {},
