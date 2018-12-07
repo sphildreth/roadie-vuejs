@@ -282,11 +282,11 @@
             slider-color="accent"
           >
             <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
+            <v-tab v-if="release.tagsList.length > 0">Tags</v-tab>            
             <v-tab v-if="release.collections.length > 0">Collections</v-tab>
             <v-tab v-if="release.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="release.genres.length">Genres</v-tab>
             <v-tab v-if="release.labels.length > 0">Labels</v-tab>            
-            <v-tab v-if="release.tagsList.length">Tags</v-tab>
             <v-tab v-if="release.urLsList.length">Urls</v-tab>            
             <v-tab-item v-if="release.playlists.length > 0">
               <v-card flat dark class="playlists">
@@ -304,6 +304,18 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
+            <v-tab-item v-if="release.tagsList.length > 0">
+              <v-list dark>
+                <template v-for="(name, index) in release.tagsList">
+                  <v-list-tile :key="`t-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < release.tagsList.length" :key="`tdivider-${index}`"></v-divider>
+                </template>
+              </v-list>
+            </v-tab-item>            
             <v-tab-item v-if="release.collections.length > 0">
               <v-card flat dark class="collections">
                 <v-data-iterator
@@ -363,18 +375,6 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>              
-            <v-tab-item v-if="release.tagsList.length">
-              <v-list dark>
-                <template v-for="(name, index) in release.tagsList">
-                  <v-list-tile :key="`t-${name}-${index}`">
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ name }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index + 1 < release.tagsList.length" :key="`tdivider-${index}`"></v-divider>
-                </template>
-              </v-list>
-            </v-tab-item>
             <v-tab-item v-if="release.urLsList.length">
               <v-list dark>
                 <template v-for="(name, index) in release.urLsList">
@@ -424,18 +424,34 @@ export default {
     EventBus.$on("rr:AddToQue", this.addToQue);
     EventBus.$on("rr:Download", this.download);
     EventBus.$on("rr:Comment", this.comment);
+    EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("toolbarRefresh", this.updateData);
   },
+  beforeDestroy() {
+    EventBus.$off();
+  },  
   async mounted() {
     this.updateData();
   },
   computed: {
+    searchQuery() {
+      return this.release.title;
+    }    
   },
   methods: {
+    internetTitleSearch: function() {
+      var q = this.searchQuery + ' album';
+      var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
+    },    
     shuffle: function() {},
     addToQue: function() {},
     download: function() {},
     comment: function() {},
+    showImageModal: function(e) {
+      this.modalImage = e;
+      this.showModal = true;
+    },    
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios

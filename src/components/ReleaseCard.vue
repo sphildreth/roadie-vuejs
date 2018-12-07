@@ -18,7 +18,7 @@
                     <v-rating @click.native="ratingChanged" @change.native="ratingChanged" v-model="release.rating" class="pointer release-rating" background-color="orange lighten-3" color="orange" small dense hover clearable></v-rating>
                     <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
                     <router-link :to="'/artist/' + release.artist.value"><div :title="release.artist.text" class="release-artist body-1 white--text pointer" >{{ release.artist.text }}</div></router-link>
-                    <div class="caption accent--text"><span title="Release Date">{{ release.year }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
+                    <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
                 </div>
                 </v-card-title>
             </v-flex>

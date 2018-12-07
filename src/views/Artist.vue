@@ -501,17 +501,23 @@ export default {
     EventBus.$on("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
   },
+  beforeDestroy() {
+    EventBus.$off();
+  },
   async mounted() {
     this.updateData();
   },
   computed: {
     rating() {
       return this.artist.rating;
+    },
+    searchQuery() {
+      return this.artist.name;
     }
   },
   methods: {
     internetArtistSearch: function() {
-      var q = this.artist.name;
+      var q = this.searchQuery;
       if (this.artist.artistType === "Person") {
         q += " artist";
       } else {
