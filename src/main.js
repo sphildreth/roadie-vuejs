@@ -73,6 +73,8 @@ Vue.filter("yearsFromDate", function (fromDate, toDate) {
   return moment(fromDate).diff(toDate, "years");
 });
 
+Vue.prototype.$filters = Vue.options.filters
+
 // new Vue({
 //   el: '#app',
 //   router,

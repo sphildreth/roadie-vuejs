@@ -247,12 +247,79 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12 sm6>
-          <v-tabs class="release-lists" color="primary" dark slider-color="accent">
+        <v-flex d-flex xs5>
+          <v-tabs
+            class="release-lists"
+            color="primary"
+            v-model="releaseTab"
+            dark
+            slider-color="accent"
+          >
+            <v-tab>Tracks</v-tab>
+            <v-tab-item>
+              <v-card flat dark class="tracks">
+                <v-data-iterator
+                  :items="release.medias"
+                  :total-items="release.medias ? release.medias.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs12>
+                    <MediaCard :media="props.item" :mediaCount="release.mediaCount"></MediaCard>
+                  </v-flex>
+                </v-data-iterator>                
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
+        </v-flex>
+        <v-flex d-flex xs7>
+          <v-tabs
+            class="release-lists"
+            color="primary"
+            dark
+            slider-color="accent"
+          >
+            <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
+            <v-tab v-if="release.collections.length > 0">Collections</v-tab>
             <v-tab v-if="release.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="release.genres.length">Genres</v-tab>
+            <v-tab v-if="release.labels.length > 0">Labels</v-tab>            
             <v-tab v-if="release.tagsList.length">Tags</v-tab>
-            <v-tab v-if="release.urLsList.length">Urls</v-tab>
+            <v-tab v-if="release.urLsList.length">Urls</v-tab>            
+            <v-tab-item v-if="release.playlists.length > 0">
+              <v-card flat dark class="playlists">
+                <v-data-iterator
+                  :items="release.playlists"
+                  :total-items="release.playlists ? release.playlists.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <PlaylistCard :playlist="props.item"></PlaylistCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
+            <v-tab-item v-if="release.collections.length > 0">
+              <v-card flat dark class="collections">
+                <v-data-iterator
+                  :items="release.collections"
+                  :total-items="release.collections ? release.collections.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <CollectionCard :collection="props.item.collection" :listNumber="props.item.listNumber"></CollectionCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>
             <v-tab-item v-if="release.alternateNamesList.length">
               <v-list dark>
                 <template v-for="(name, index) in release.alternateNamesList">
@@ -280,6 +347,22 @@
                 </template>
               </v-list>
             </v-tab-item>
+            <v-tab-item v-if="release.labels.length > 0">
+              <v-card flat dark class="labels">
+                <v-data-iterator
+                  :items="release.labels"
+                  :total-items="release.labels ? release.labels.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <LabelCard :label="props.item.label" :catalogNumber="props.item.catalogNumber" :beginDate="props.item.beginDate" :endDate="props.item.endDate"></LabelCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>              
             <v-tab-item v-if="release.tagsList.length">
               <v-list dark>
                 <template v-for="(name, index) in release.tagsList">
@@ -308,100 +391,7 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-tab-item>
-          </v-tabs>
-        </v-flex>
-        <v-flex d-flex xs12 sm6>
-          <v-tabs class="release-lists" color="primary" dark slider-color="accent">
-            <v-tab>Labels</v-tab>
-            <v-tab-item v-if="release.labels.length">
-              <v-card flat dark class="labels">
-                <v-data-iterator
-                  :items="release.labels"
-                  :total-items="release.labels ? release.labels.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs4>
-                    <LabelCard :label="props.item.label" :catalogNumber="props.item.catalogNumber" :beginDate="props.item.beginDate" :endDate="props.item.endDate"></LabelCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex d-flex xs5>
-          <v-tabs
-            class="release-lists"
-            color="primary"
-            v-model="releaseTab"
-            dark
-            slider-color="accent"
-          >
-            <v-tab>Tracks</v-tab>
-            <v-tab-item>
-              <v-card flat dark class="tracks">
-                <v-data-iterator
-                  :items="release.medias"
-                  :total-items="release.medias ? release.medias.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs12>
-                    <MediaCard :media="props.item"></MediaCard>
-                  </v-flex>
-                </v-data-iterator>                
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-flex>
-        <v-flex d-flex xs7>
-          <v-tabs
-            class="release-lists"
-            color="primary"
-            dark
-            slider-color="accent"
-          >
-            <v-tab v-if="release.collections.length > 0">Collections</v-tab>
-            <v-tab>Playlists</v-tab>
-            <v-tab-item v-if="release.collections > 0">
-              <v-card flat dark class="collections">
-                <v-data-iterator
-                  :items="release.collections"
-                  :total-items="release.collections ? release.collections.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs4>
-                    <CollectionCard :collection="props.item.collection" :listNumber="props.item.listNumber"></CollectionCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <v-card flat dark class="playlists">
-                <v-data-iterator
-                  :items="release.playlists"
-                  :total-items="release.playlists ? release.playlists.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs4>
-                    <PlaylistCard :playlist="props.item"></PlaylistCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
-            </v-tab-item>
+            </v-tab-item>                     
           </v-tabs>
         </v-flex>        
       </v-layout>
@@ -570,7 +560,7 @@ export default {
 
 
 <style>
-.v-rating.release-rating {
+.release-detail-container .v-rating.release-rating {
   width: 100%;
 }
 .release-detail-container .bio,

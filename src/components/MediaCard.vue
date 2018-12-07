@@ -1,6 +1,6 @@
 <template>
     <v-card color="secondary darken-1" class="media-card white--text mb-3" hover :data-id="media.id">
-        <v-layout>
+        <v-layout row wrap>
             <v-data-iterator
                 :items="media.tracks"
                 :total-items="media.tracks ? media.tracks.length : 0"
@@ -10,7 +10,7 @@
                 wrap
             >
                 <v-flex slot="item" slot-scope="props" xs12>
-                    <TrackCard :track="props.item"></TrackCard>
+                    <TrackCard :track="props.item" :mediaNumber="media.mediaNumber" :mediaCount="mediaCount"></TrackCard>
                 </v-flex>
             </v-data-iterator>
         </v-layout>
@@ -25,7 +25,8 @@ export default {
     name: 'mediaCard',
     components: { TrackCard },
     props: {
-        media: Object
+        media: Object,
+        mediaCount: Number
     },
     methods: {
     },

@@ -1,7 +1,7 @@
 <template>
     <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="release.id" >
         <v-layout>
-            <v-flex xs2 >
+            <v-flex xs4 >
                 <router-link :to="'/release/' + release.id">
                 <v-img
                     :src="release.thumbnail.url"
@@ -11,7 +11,7 @@
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs10>
+            <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    

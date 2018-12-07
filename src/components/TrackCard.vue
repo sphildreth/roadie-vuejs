@@ -10,6 +10,7 @@
                         <v-icon dark small class="hated pointer" @click.native="dislikeToggle" :color="userRating.isDisliked ? 'green' : 'white'" @change.native="dislikeToggle">far fa-thumbs-down</v-icon>                                        
                         <div class="track-title white--text">{{ track.title}}</div>
                         <div class="caption accent--text"><span title="Played Count">{{ track.playedCount | padNumber4 }}</span> | <span title="Track Play Time">{{ track.durationTime }}</span></div>
+                        <div v-if="mediaCount > 1" class="caption accent-text">{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}</div>
                     </v-flex>
                     <v-flex xs4>
                         <ArtistCard v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>                
@@ -28,7 +29,9 @@ export default {
     name: 'TrackCard',
     components: { ArtistCard },
     props: {
-        track: Object
+        track: Object,
+        mediaNumber: Number,
+        mediaCount: Number
     },
     async mounted() {
     },
