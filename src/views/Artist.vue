@@ -502,7 +502,13 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
-    EventBus.$off();
+    EventBus.$off("aa:Shuffle");
+    EventBus.$off("aa:PlayAll");
+    EventBus.$off("aa:AddAllToQue");
+    EventBus.$off("aa:Comment");
+    EventBus.$off("aa:searchInternetArtist");
+    EventBus.$off("aa:favoriteToogle");
+    EventBus.$off("toolbarRefresh");
   },
   async mounted() {
     this.updateData();

@@ -428,7 +428,12 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
-    EventBus.$off();
+    EventBus.$off("rr:Shuffle");
+    EventBus.$off("rr:AddToQue");
+    EventBus.$off("rr:Download");
+    EventBus.$off("rr:Comment");
+    EventBus.$off("rr:searchInternetTitle");
+    EventBus.$off("toolbarRefresh");
   },  
   async mounted() {
     this.updateData();
