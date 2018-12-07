@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-2" class="track-card white--text ma-1 ml-2 pa-2" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
+    <v-card color="secondary darken-2" class="track-card white--text ma-1 ml-2 pa-2" height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
         <v-layout>
             <v-flex d-flex xs12>
                 <v-layout row wrap>
@@ -34,6 +34,7 @@ export default {
         mediaCount: Number
     },
     async mounted() {
+     
     },
     methods: {
         favoriteToggle: function() {
@@ -65,11 +66,12 @@ export default {
     },
     computed: {
         userRating: function() {
+            this.track = this.track || {};
             this.track.userRating = this.track.userRating || {
                 rating: 0,
                 isFavorite: false,
                 isDisliked: false
-            };
+            };             
             return this.track.userRating;
         }
     },

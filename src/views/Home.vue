@@ -163,16 +163,4 @@
 </script>
 
 <style>
-  .release-title { 
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 190px;
-  }
-  .release-artist { 
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 190px;
-  }
 </style>

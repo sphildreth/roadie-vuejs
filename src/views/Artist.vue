@@ -575,12 +575,9 @@ export default {
           this.artist.associatedArtists = this.artist.associatedArtists || [];
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
           this.artist.genres = this.artist.genres || [];
-          this.artist.collectionsWithArtistReleases =
-            this.artist.collectionsWithArtistReleases || [];
-          this.artist.playlistsWithArtistReleases =
-            this.artist.playlistsWithArtistReleases || [];
-          this.artist.artistContributionReleases =
-            this.artist.artistContributionReleases || [];
+          this.artist.collectionsWithArtistReleases = this.artist.collectionsWithArtistReleases || [];
+          this.artist.playlistsWithArtistReleases = this.artist.playlistsWithArtistReleases || [];
+          this.artist.artistContributionReleases = this.artist.artistContributionReleases || [];
           this.artist.artistLabels = this.artist.artistLabels || [];
           this.artist.tagsList = this.artist.tagsList || [];
           this.artist.urLsList = this.artist.urLsList || [];

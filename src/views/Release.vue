@@ -412,7 +412,6 @@ import PlaylistCard from '@/components/PlaylistCard';
 import MediaCard from '@/components/MediaCard';
 
 import { EventBus } from "@/event-bus.js";
-import store from "@/store";
 
 export default {
   components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard },
@@ -479,6 +478,8 @@ export default {
             isFavorite: false,
             isDisliked: false
           };
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
         });
     },

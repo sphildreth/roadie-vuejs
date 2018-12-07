@@ -14,6 +14,8 @@
             single-line
             solo
             dark
+            @keyup.native="search"
+            v-model="searchQuery"
           ></v-text-field>
     </v-toolbar>
     <v-navigation-drawer app v-model="drawer" dark disable-resize-watcher>
@@ -69,6 +71,11 @@ export default {
     signout() {
       this.$store.dispatch('signout')
       this.$router.go('/');  
+    },
+    search(e) {
+      if(e.key === "Enter") {
+        router.push({ name: 'search', params: { q: this.searchQuery}});
+      }
     }
   },
   computed: {
@@ -85,6 +92,7 @@ export default {
   data() {
     return {
       drawer: false,   
+      searchQuery: "",
       appName: process.env.VUE_APP_APP_NAME,
       links: [
         { icon: 'library_music', text: 'Releases', route: '/' },

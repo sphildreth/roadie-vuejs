@@ -5,6 +5,7 @@ import store from './store';
 import release from './views/Release.vue';
 import artist from './views/Artist.vue';
 import label from './views/Label.vue';
+import search from './views/Search.vue';
 
 Vue.use(VueRouter);
 
@@ -55,7 +56,16 @@ var router = new VueRouter({
       meta: {
         guest: false
       }
-    },       
+    },   
+    {
+      path: '/search/:q',
+      name: 'search',
+      props: true,
+      component: search,
+      meta: {
+        guest: false
+      }
+    },           
     {
       path: '/statistics',
       name: 'statistics',
