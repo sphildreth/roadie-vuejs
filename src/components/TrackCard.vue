@@ -11,10 +11,16 @@
                         <div class="track-title white--text">{{ track.title}}</div>
                         <div class="caption accent--text"><span title="Played Count">{{ track.playedCount | padNumber4 }}</span> | <span title="Track Play Time">{{ track.durationTime }}</span></div>
                         <div v-if="mediaCount > 1" class="caption accent-text">{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}</div>
+                        <div v-if="track.partTitlesList && track.partTitlesList.length > 0" class="caption font-italic text-no-wrap text-truncate">
+                            <span class="pr-2" v-for="partTitle in track.partTitlesList" :key="partTitle">{{ partTitle }}</span>
+                        </div>
                     </v-flex>
-                    <v-flex xs4>
+                    <v-flex xs4 v-if="track.trackArtist">
                         <ArtistCard v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>                
                     </v-flex>
+                    <v-flex xs4 v-if="release && !track.trackArtist">
+                        <ReleaseCard v-if="release" :release="release"></ReleaseCard>                
+                    </v-flex>                                 
                 </v-layout>
             </v-flex>
         </v-layout>
@@ -23,22 +29,26 @@
 
 <script>
 import ArtistCard from '@/components/ArtistCard';
+import ReleaseCard from '@/components/ReleaseCard'
 import { EventBus } from '@/event-bus.js';
 
 export default {
     name: 'TrackCard',
-    components: { ArtistCard },
+    components: { ArtistCard, ReleaseCard },
     props: {
         track: {
             type: Object,
-            default: {                
-                userRating: {
-                    rating: 0,
-                    isFavorite: false,
-                    isDisliked: false
+            default: function() {  
+                return {             
+                    userRating: {
+                        rating: 0,
+                        isFavorite: false,
+                        isDisliked: false
+                    }
                 }
             }
         },
+        release: Object,
         mediaNumber: Number,
         mediaCount: Number
     },

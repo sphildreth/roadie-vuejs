@@ -1,7 +1,7 @@
 <template>
     <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="label.id" >
         <v-layout>
-            <v-flex xs2 >
+            <v-flex xs4 >
                 <router-link :to="'/label/' + label.label.value">
                 <v-img
                     :src="label.thumbnail.url"
@@ -11,7 +11,7 @@
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs10>
+            <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <router-link :to="'/label/' + label.label.value"><div :title="label.label.text" class="label-title subheading font-weight-medium info--text pointer">{{ label.label.text }}</div></router-link>

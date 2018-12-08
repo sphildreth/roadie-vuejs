@@ -1,8 +1,8 @@
 <template>
     <div class="search-results-container">
         <v-container fluid grid-list-md>
-            <v-card dark  v-if="artistItems.length > 0">
-                <v-card-title class="subheading accent--text">Artists</v-card-title>
+            <v-card dark v-if="artistItems.length > 0">
+                <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Artists</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="artistItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage" :total-items="artistPagination.totalItems"  :pagination.sync="artistPagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
@@ -12,7 +12,7 @@
                 </v-card-text>
             </v-card>      
             <v-card dark v-if="releaseItems.length > 0">
-                <v-card-title class="subheading accent--text">Releases</v-card-title>
+                <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Releases</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="releaseItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="releasePagination.totalItems < releasePagination.rowsPerPage" :total-items="releasePagination.totalItems"  :pagination.sync="releasePagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
@@ -22,11 +22,11 @@
                 </v-card-text>
             </v-card>    
             <v-card dark v-if="trackItems.length > 0">
-                <v-card-title class="subheading accent--text">Tracks</v-card-title>
+                <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Tracks</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
                         <v-flex slot="item" slot-scope="props" xs12 sm6>
-                            <TrackCard :track="props.item"></TrackCard>
+                            <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
                         </v-flex>
                     </v-data-iterator>        
                 </v-card-text>

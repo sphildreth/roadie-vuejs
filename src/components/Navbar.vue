@@ -75,6 +75,7 @@ export default {
     search(e) {
       if(e.key === "Enter") {
         router.push({ name: 'search', params: { q: this.searchQuery}});
+        this.searchQuery = "";
       }
     }
   },

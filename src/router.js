@@ -23,15 +23,6 @@ var router = new VueRouter({
       }
     },
     {
-      path: '/release/:id',
-      name: 'release',
-      props: true,
-      component: release,
-      meta: {
-        guest: false
-      }
-    },    
-    {
       path: '/artists',
       name: 'artists',
       component: () => import(/* webpackChunkName: "artists" */ './views/Artists.vue'),
@@ -49,6 +40,15 @@ var router = new VueRouter({
       }
     },      
     {
+      path: '/labels',
+      name: 'labels',
+      props: true,
+      component: () => import(/* webpackChunkName: "labels" */ './views/Labels.vue'),
+      meta: {
+        guest: false
+      }
+    },     
+    {
       path: '/label/:id',
       name: 'label',
       props: true,
@@ -56,7 +56,25 @@ var router = new VueRouter({
       meta: {
         guest: false
       }
-    },   
+    }, 
+    {
+      path: '/playlists',
+      name: 'playlists',
+      props: true,
+      component: () => import(/* webpackChunkName: "playlists" */ './views/Playlists.vue'),
+      meta: {
+        guest: false
+      }
+    },         
+    {
+      path: '/release/:id',
+      name: 'release',
+      props: true,
+      component: release,
+      meta: {
+        guest: false
+      }
+    },       
     {
       path: '/search/:q',
       name: 'search',
@@ -81,7 +99,15 @@ var router = new VueRouter({
       meta: { 
           guest: true
       }
-    }     
+    },    
+    {
+      path: '/tracks',
+      name: 'tracks',
+      component: () => import(/* webpackChunkName: "tracks" */ './views/Tracks.vue'),
+      meta: {
+        guest: true
+      }      
+    },     
   ]
 });
 

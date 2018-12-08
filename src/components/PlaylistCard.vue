@@ -1,7 +1,7 @@
 <template>
     <v-card max-height="100px" color="secondary darken-1" class="white--text mb-3" hover :data-id="playlist.id" >
         <v-layout>
-            <v-flex xs2 >
+            <v-flex xs4 >
                 <router-link :to="'/playlist/' + playlist.id">
                 <v-img
                     :src="playlist.thumbnail.url"
@@ -11,7 +11,7 @@
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs10>
+            <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <router-link :to="'/playlist/' + playlist.id"><div :title="playlist.playlist.text" class="artist-name subheading font-weight-medium info--text pointer">{{ playlist.playlist.text }}</div></router-link>
