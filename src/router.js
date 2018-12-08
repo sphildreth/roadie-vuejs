@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import home from './views/Home.vue';
 import store from './store';
 import release from './views/Release.vue';
 import artist from './views/Artist.vue';
@@ -17,7 +16,7 @@ var router = new VueRouter({
     {
       path: '/',
       name: 'home',
-      component: home,
+      component: () => import(/* webpackChunkName: "releases" */ './views/Releases.vue'),
       meta: {
         guest: false
       }
@@ -39,6 +38,23 @@ var router = new VueRouter({
         guest: false
       }
     },      
+    {
+      path: '/collections',
+      name: 'collections',
+      component: () => import(/* webpackChunkName: "collections" */ './views/Collections.vue'),
+      meta: {
+        guest: false
+      }      
+    },     
+    {
+      path: '/collection/:id',
+      name: 'collection',
+      props: true,
+      component: () => import(/* webpackChunkName: "collection" */ './views/Collection.vue'),
+      meta: {
+        guest: false
+      }      
+    },    
     {
       path: '/labels',
       name: 'labels',
@@ -108,6 +124,15 @@ var router = new VueRouter({
         guest: true
       }      
     },     
+    {
+      path: '/track/:id',
+      name: 'track',
+      props: true,
+      component: () => import(/* webpackChunkName: "track" */ './views/Track.vue'),
+      meta: {
+        guest: true
+      }      
+    }    
   ]
 });
 

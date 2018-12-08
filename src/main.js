@@ -15,7 +15,7 @@ Vue.config.productionTip = false;
 
 var myApi = Axios.create({
   baseURL: process.env.VUE_APP_API_URL,
-  timeout: 10000
+  timeout: 60000
 });
 
 // This sets the bearer token on each axios request
