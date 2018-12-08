@@ -288,7 +288,7 @@
             <v-tab v-if="release.labels.length > 0">Labels</v-tab>            
             <v-tab v-if="release.urLsList.length">Urls</v-tab>            
             <v-tab-item v-if="release.playlists.length > 0">
-              <v-card flat dark class="playlists">
+              <v-card flat :dark="$vuetify.dark" class="playlists">
                 <v-data-iterator
                   :items="release.playlists"
                   :total-items="release.playlists ? release.playlists.length : 0"

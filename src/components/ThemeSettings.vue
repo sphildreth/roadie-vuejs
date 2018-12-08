@@ -1,6 +1,6 @@
 <template>
 <div id="themeSetting">
-  <v-toolbar color="primary" >
+  <v-toolbar :dark="$vuetify.dark" >
     <v-toolbar-title>
       Theme Settings
     </v-toolbar-title>
@@ -139,8 +139,7 @@ export default {
         this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
         this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
         this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
-        this.$vuetify.theme.success = this.themeColorOptions[val].value.success;
-        
+        this.$vuetify.theme.success = this.themeColorOptions[val].value.success;        
       },
       immediate: true
     },
