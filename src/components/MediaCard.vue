@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-1" class="media-card white--text mb-3" hover :data-id="media.id">
+    <v-card :dark="$vuetify.dark" color="darken-1" class="media-card mb-3" hover :data-id="media.id">
         <v-layout row wrap>
             <v-data-iterator
                 :items="media.tracks"

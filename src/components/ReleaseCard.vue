@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="release.id" >
+    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="release.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/release/' + release.id">
@@ -16,8 +16,8 @@
                 <div>
                     <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    
                     <v-rating v-model="release.rating" class="" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
-                    <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title text-no-wrap text-truncate subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
-                    <router-link :to="'/artist/' + release.artist.value"><div :title="release.artist.text" class="release-artist text-no-wrap text-truncate body-1 white--text pointer" >{{ release.artist.text }}</div></router-link>
+                    <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer">{{ release.release.text }}</div></router-link>
+                    <router-link :to="'/artist/' + release.artist.value"><div :title="release.artist.text" class="release-artist text-no-wrap text-truncate body-1 pointer" >{{ release.artist.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
                 </div>
                 </v-card-title>

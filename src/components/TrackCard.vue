@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-2" class="track-card white--text ma-1 ml-2 pa-2" height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
+    <v-card :dark="$vuetify.dark" class="track-card ma-1 ml-2 pa-2" height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
         <v-layout>
             <v-flex d-flex xs12>
                 <v-layout row wrap>
@@ -8,7 +8,7 @@
                         <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="userRating.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    
                         <v-rating v-model="track.rating" class="track-rating" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
                         <v-icon dark small class="hated pointer" @click.native="dislikeToggle" :color="userRating.isDisliked ? 'green' : 'white'" @change.native="dislikeToggle">far fa-thumbs-down</v-icon>                                        
-                        <router-link :to="'/track/' + track.id"><div class="track-title white--text">{{ track.title}}</div></router-link>
+                        <router-link :to="'/track/' + track.id"><div class="track-title ">{{ track.title}}</div></router-link>
                         <div class="caption accent--text"><span title="Played Count">{{ track.playedCount | padNumber4 }}</span> | <span title="Track Play Time">{{ track.durationTime }}</span></div>
                         <div v-if="mediaCount > 1" class="caption accent-text">{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}</div>
                         <div v-if="track.partTitlesList && track.partTitlesList.length > 0" class="caption font-italic text-no-wrap text-truncate">

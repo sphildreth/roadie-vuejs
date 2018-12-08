@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="artist.id" >
+    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="artist.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/artist/' + artist.id">
@@ -16,7 +16,7 @@
                 <div>
                     <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="artist.userRating && artist.userRating.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>
                     <v-rating v-model="artist.rating" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
-                    <router-link :to="'/artist/' + artist.id"><div :title="artist.artist.text" class="artist-name text-no-wrap text-truncate subheading font-weight-medium info--text pointer">{{ artist.artist.text }}</div></router-link>
+                    <router-link :to="'/artist/' + artist.id"><div :title="artist.artist.text" class="artist-name text-no-wrap text-truncate subheading font-weight-medium pointer">{{ artist.artist.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Releases Count">{{ artist.releaseCount | padNumber3 }}</span> | <span title="Track Count">{{ artist.trackCount | padNumber4 }}</span> | <span title="Played Count">{{ artist.playedCount | padNumber5 }}</span></div>
                 </div>
                 </v-card-title>

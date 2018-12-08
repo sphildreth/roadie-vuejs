@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-1" class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id" >
+    <v-card :dark="$vuetify.dark" class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id" >
         <v-layout>
             <v-flex xs3 >
                <v-img
@@ -13,7 +13,7 @@
                 <v-card-title primary-title class="pa-0 ma-0">
                     <div>
                         <v-rating v-model="release.rating" background-color="orange lighten-3" color="orange" readonly small dense></v-rating>                    
-                        <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium info--text pointer">{{ release.release.text }}</div></router-link>
+                        <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title subheading font-weight-medium pointer">{{ release.release.text }}</div></router-link>
                         <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
                         <v-icon v-if="release.libraryStatus != 1" :class="release.libraryStatus" color="warning">warning</v-icon>                                            
                     </div>

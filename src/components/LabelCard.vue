@@ -1,5 +1,5 @@
 <template>
-    <v-card color="secondary darken-1" class="white--text mb-3" hover :data-id="label.id" >
+    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="label.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/label/' + label.label.value">
@@ -14,7 +14,7 @@
             <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
-                    <router-link :to="'/label/' + label.label.value"><div :title="label.label.text" class="label-title subheading font-weight-medium info--text pointer">{{ label.label.text }}</div></router-link>
+                    <router-link :to="'/label/' + label.label.value"><div :title="label.label.text" class="label-title subheading font-weight-medium pointer">{{ label.label.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Artist Count">{{ label.artistCount }}</span> | <span title="Release Count">{{ label.releaseCount }}</span> | <span title="Track Count">{{ label.trackCount | padNumber5 }}</span></div>
                     <div v-if="catalogNumber" class="caption accent--text"><span title="Catalog Number">{{ catalogNumber }}</span><span v-if="beginDate" title="Begin Date"> Begin: {{ beginDate | shortDate }}</span><span v-if="endDate" title="End Date"> End: {{ endDate | shortDate }}</span></div>
                 </div>
@@ -37,15 +37,6 @@ export default {
     methods: {
     },
     computed: {
-        imageHeight () {
-            switch (this.$vuetify.breakpoint.name) {
-                case 'xs': 
-                case 'sm':
-                case 'md':
-                    return '60px';
-            }
-            return '80px';
-        }
     }
 }
 </script>

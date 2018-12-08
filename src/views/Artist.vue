@@ -16,7 +16,7 @@
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
-              <v-card color="accent" class="profile white--text darken-2">
+              <v-card color="primary" class="profile darken-1">
                 <v-card-text class="title">
                   {{ artist.name }}
                   <v-icon
@@ -88,13 +88,13 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary" dark v-model="tab" slider-color="accent">
+          <v-tabs right color="primary" :dark="$vuetify.dark" v-model="tab" slider-color="accent">
             <v-tab v-if="artist.images.length">Images</v-tab>
             <v-tab v-if="artist.bioContext">Biography</v-tab>
             <v-tab v-if="artist.profile">Profile</v-tab>
             <v-tab>Metadata Sources</v-tab>
             <v-tab-item v-if="artist.images.length">
-              <v-card dark flat class="images darken-3">
+              <v-card :dark="$vuetify.dark" flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
                   <v-layout row wrap>
                     <v-flex v-for="(image, index) in artist.images" :key="image.url" xs2>
@@ -123,18 +123,18 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
-              <v-card dark max-height="290px" flat class="biography darken-3">
+              <v-card :dark="$vuetify.dark" max-height="290px" flat class="biography darken-3">
                 <v-card-text v-html="'<p>' + artist.bioContext + '</p>'">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
-              <v-card dark flat class="profile darken-3">
+              <v-card :dark="$vuetify.dark" flat class="profile darken-3">
                 <v-card-text v-html="artist.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-data-table
-                dark
+                :dark="$vuetify.dark"
                 :headers="metaDataHeaders"
                 :items="metaDataSources()"
                 class="elevation-1"
@@ -144,7 +144,6 @@
                   <td v-if="props.item.sourceId">{{ props.item.source }}</td>
                   <td v-if="props.item.sourceId">
                     <a
-                      class="white--text"
                       v-bind:href="props.item.url + props.item.sourceId"
                       target="_blank"
                     >{{ props.item.sourceId }}</a>
@@ -277,13 +276,13 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6>
-          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+          <v-tabs class="artist-lists" color="primary" :dark="$vuetify.dark" slider-color="accent">
             <v-tab v-if="artist.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="artist.genres.length">Genres</v-tab>
             <v-tab v-if="artist.tagsList.length">Tags</v-tab>
             <v-tab v-if="artist.urLsList.length">Urls</v-tab>
             <v-tab-item v-if="artist.alternateNamesList.length">
-              <v-list dark>
+              <v-list :dark="$vuetify.dark">
                 <template v-for="(name, index) in artist.alternateNamesList">
                   <v-list-tile :key="`al-${name}-${index}`">
                     <v-list-tile-content>
@@ -298,7 +297,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.genres.length">
-              <v-list dark>
+              <v-list :dark="$vuetify.dark">
                 <template v-for="(name, index) in artist.genres">
                   <v-list-tile :key="`g-${name}-${index}`">
                     <v-list-tile-content>
@@ -310,7 +309,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.tagsList.length">
-              <v-list dark>
+              <v-list :dark="$vuetify.dark">
                 <template v-for="(name, index) in artist.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -322,12 +321,12 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.urLsList.length">
-              <v-list dark>
+              <v-list :dark="$vuetify.dark">
                 <template v-for="(name, index) in artist.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        <a class="white--text" v-bind:href="name" target="_blank">{{ name }}</a>
+                        <a v-bind:href="name" target="_blank">{{ name }}</a>
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
@@ -338,11 +337,11 @@
           </v-tabs>
         </v-flex>
         <v-flex d-flex xs12 sm6>
-          <v-tabs class="artist-lists" color="primary" dark slider-color="accent">
+          <v-tabs class="artist-lists" color="primary" :dark="$vuetify.dark" slider-color="accent">
             <v-tab v-if="artist.associatedArtists.length">Associated Artists</v-tab>
             <v-tab>Labels</v-tab>
             <v-tab-item v-if="artist.associatedArtists.length">
-              <v-card flat dark class="labels">
+              <v-card flat :dark="$vuetify.dark" class="labels">
                 <v-data-iterator
                   :items="artist.associatedArtists"
                   :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0"
@@ -358,7 +357,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat dark class="artist-labels">
+              <v-card flat :dark="$vuetify.dark" class="artist-labels">
                 <v-data-iterator
                   :items="artist.artistLabels"
                   :total-items="artist.artistLabels ? artist.artistLabels.length : 0"
@@ -382,7 +381,7 @@
             class="artist-lists"
             color="primary"
             v-model="releaseTab"
-            dark
+            :dark="$vuetify.dark"
             slider-color="accent"
           >
             <v-tab>Collections</v-tab>
@@ -390,7 +389,7 @@
             <v-tab>Playlists</v-tab>
             <v-tab>Releases</v-tab>
             <v-tab-item>
-              <v-card flat dark class="collections">
+              <v-card flat :dark="$vuetify.dark" class="collections">
                 <v-data-iterator
                   :items="artist.collectionsWithArtistReleases"
                   :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0"
@@ -406,7 +405,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat dark class="contributions">
+              <v-card flat :dark="$vuetify.dark" class="contributions">
                 <v-data-iterator
                   :items="artist.artistContributionReleases"
                   :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0"
@@ -422,7 +421,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat dark class="playlists">
+              <v-card flat :dark="$vuetify.dark" class="playlists">
                 <v-data-iterator
                   :items="artist.playlistsWithArtistReleases"
                   :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0"
@@ -438,7 +437,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat dark class="releases">
+              <v-card flat :dark="$vuetify.dark" class="releases">
                 <v-data-iterator
                   :items="releases"
                   :total-items="releases ? releases.length : 0"
