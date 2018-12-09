@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "d3": "^5.7.0",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.23",
     "numeral": "^2.0.6",
+    "topojson": "^3.0.2",
     "vue": "^2.5.17",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",

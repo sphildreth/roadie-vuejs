@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
-import release from './views/Release.vue';
-import artist from './views/Artist.vue';
-import label from './views/Label.vue';
-import search from './views/Search.vue';
 
 Vue.use(VueRouter);
 
@@ -15,7 +11,15 @@ var router = new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'dashboard',
+      component: () => import(/* webpackChunkName: "dashboard" */ './views/Dashboard.vue'),
+      meta: {
+        guest: false
+      }
+    },    
+    {
+      path: '/releases',
+      name: 'releases',
       component: () => import(/* webpackChunkName: "releases" */ './views/Releases.vue'),
       meta: {
         guest: false
@@ -33,7 +37,7 @@ var router = new VueRouter({
       path: '/artist/:id',
       name: 'artist',
       props: true,
-      component: artist,
+      component: () => import(/* webpackChunkName: "artist" */ './views/Artist.vue'),
       meta: {
         guest: false
       }
@@ -68,7 +72,7 @@ var router = new VueRouter({
       path: '/label/:id',
       name: 'label',
       props: true,
-      component: label,
+      component: () => import(/* webpackChunkName: "label" */ './views/Label.vue'),
       meta: {
         guest: false
       }
@@ -81,12 +85,21 @@ var router = new VueRouter({
       meta: {
         guest: false
       }
+    },     
+    {
+      path: '/playlist/:id',
+      name: 'playlist',
+      props: true,
+      component: () => import(/* webpackChunkName: "playlist" */ './views/Playlist.vue'),
+      meta: {
+        guest: false
+      }
     },         
     {
       path: '/release/:id',
       name: 'release',
       props: true,
-      component: release,
+      component: () => import(/* webpackChunkName: "release" */ './views/Release.vue'),
       meta: {
         guest: false
       }
@@ -95,7 +108,7 @@ var router = new VueRouter({
       path: '/search/:q',
       name: 'search',
       props: true,
-      component: search,
+      component: () => import(/* webpackChunkName: "search" */ './views/Search.vue'),
       meta: {
         guest: false
       }
@@ -103,15 +116,15 @@ var router = new VueRouter({
     {
       path: '/statistics',
       name: 'statistics',
-      component: () => import(/* webpackChunkName: "about" */ './views/Statistics.vue'),
+      component: () => import(/* webpackChunkName: "statistics" */ './views/Statistics.vue'),
       meta: {
-        guest: true
+        guest: false
       }      
     },
     {
       path: '/signin',
       name: 'signin',
-      component: () => import(/* webpackChunkName: "about" */ './views/SignIn.vue'),
+      component: () => import(/* webpackChunkName: "signin" */ './views/SignIn.vue'),
       meta: { 
           guest: true
       }
@@ -121,7 +134,7 @@ var router = new VueRouter({
       name: 'tracks',
       component: () => import(/* webpackChunkName: "tracks" */ './views/Tracks.vue'),
       meta: {
-        guest: true
+        guest: false
       }      
     },     
     {
@@ -130,7 +143,7 @@ var router = new VueRouter({
       props: true,
       component: () => import(/* webpackChunkName: "track" */ './views/Track.vue'),
       meta: {
-        guest: true
+        guest: false
       }      
     }    
   ]

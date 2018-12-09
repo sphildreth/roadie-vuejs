@@ -52,6 +52,15 @@ Vue.filter("padNumber5", function (value) {
   return numeral(value).format("00000"); 
 });
 
+Vue.filter("padNumber6", function (value) {
+  return numeral(value).format("000000"); 
+});
+
+Vue.filter("padNumber7", function (value) {
+  return numeral(value).format("0000000"); 
+});
+
+
 Vue.filter("shortDate", function (date) {
   return moment(date).format("MM-DD-YYYY");
 });

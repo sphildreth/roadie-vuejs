@@ -10,7 +10,7 @@
            <!-- App Footer -->
           <v-footer height="auto" class="white pa-3 app--footer">
             <v-spacer></v-spacer>
-            <span class="caption mr-1"> Roadie v1.0 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
+            <span class="caption mr-1"> Roadie v.01 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
         </v-content>    
       </v-app>

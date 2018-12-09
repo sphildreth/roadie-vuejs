@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     hide () {
-      return this.$route.path === '/login' || this.$route.path === '/register' || this.$route.path === '/statistics'; 
+      return this.$route.path === '/signin' || this.$route.path === '/register'; 
     },
     currentUserUsername () {
       return this.$store.state.isLoggedIn ? this.$store.getters.user.username : "";
@@ -121,8 +121,9 @@ export default {
       searchQuery: "",
       rightDrawer: false,
       appName: process.env.VUE_APP_APP_NAME,
-      links: [
-        { icon: 'library_music', text: 'Releases', route: '/' },
+      links: [        
+        { icon: 'dashboard', text: 'Dashboard', route: '/' },
+        { icon: 'library_music', text: 'Releases', route: '/releases' },
         { icon: 'fas fa-users', text: 'Artists', route: '/artists' },
         { icon: 'bookmarks', text: 'Bookmarks', route: '/bookmarks' },
         { icon: 'collections', text: 'Collections', route: '/collections' },
