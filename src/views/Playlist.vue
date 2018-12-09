@@ -116,7 +116,7 @@
                 <v-avatar>
                   <v-icon>folder_open</v-icon>
                 </v-avatar>
-                {{ playlist.statistics.trackSize }}
+                {{ playlist.statistics.fileSize }}
               </v-chip>
               <span>Playlist Media File Size</span>
             </v-tooltip>
@@ -143,7 +143,6 @@
       </v-layout>
       <v-layout row wrap>
         <v-card :dark="$vuetify.dark" v-if="trackItems.length > 0">
-            <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Tracks</v-card-title>
             <v-card-text>
                 <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
                     <v-flex slot="item" slot-scope="props" xs12 sm6>
@@ -206,10 +205,15 @@ export default {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
-    }
+    },
+    trackPagination: { 
+        async handler() {
+            this.updateData();
+        }
+    }   
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120],
+    rowsPerPageItems: [6, 12, 24, 36, 60, 120],
     snackbar: false,
     snackbarText: "",    
     playlist: {

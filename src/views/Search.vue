@@ -67,34 +67,80 @@
     },  
     methods: {
       updateData: async function() {
-        EventBus.$emit("loadingStarted"); 
+        this.updateArtistData();
+        this.updateReleaseData();
+        this.updateTracksData();
+        this.updatePlaylistData();
+      },
+      updateArtistData: async function() {
+        EventBus.$emit("loadingStarted");           
         this.$axios.get(process.env.VUE_APP_API_URL + `/artists?page=${ this.artistPagination.page }&limit=${ this.artistPagination.rowsPerPage }&order=${ this.artistPagination.sortOrder  }&sort=${ this.artistPagination.sortBy }&filter=${ this.q }`)
         .then(response => {
             this.artistItems = response.data.rows;
             this.artistPagination.totalItems = response.data.totalCount;    
-        });   
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });        
+      },
+      updateReleaseData: async function() {
+        EventBus.$emit("loadingStarted");                     
         this.$axios.get(process.env.VUE_APP_API_URL + `/releases?page=${ this.releasePagination.page }&limit=${ this.releasePagination.rowsPerPage }&order=${ this.releasePagination.sortOrder  }&sort=${ this.releasePagination.sortBy }&filter=${ this.q }`)
         .then(response => {
             this.releaseItems = response.data.rows;
             this.releasePagination.totalItems = response.data.totalCount;    
-        });    
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });        
+      },
+      updateTracksData: async function() {
+        EventBus.$emit("loadingStarted");                               
         this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?page=${ this.trackPagination.page }&limit=${ this.trackPagination.rowsPerPage }&order=${ this.trackPagination.sortOrder  }&sort=${ this.trackPagination.sortBy }&filter=${ this.q }`)
         .then(response => {
             this.trackItems = response.data.rows;
             this.trackPagination.totalItems = response.data.totalCount;    
-        });    
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });              
+      },
+      updatePlaylistData: async function() {
+        EventBus.$emit("loadingStarted");              
         this.$axios.get(process.env.VUE_APP_API_URL + `/playlists?page=${ this.playlistPagination.page }&limit=${ this.playlistPagination.rowsPerPage }&order=${ this.playlistPagination.sortOrder  }&sort=${ this.playlistPagination.sortBy }&filter=${ this.q }`)
         .then(response => {
             this.playlistItems = response.data.rows;
             this.playlistPagination.totalItems = response.data.totalCount;    
-            EventBus.$emit("loadingComplete");    
-        });                            
-      },
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });           
+      }
     },
     watch: {
         $route(to) {
             this.q = to.params.q;
             this.updateData();
+        },
+        artistPagination: { 
+            async handler() {
+                this.updateArtistData();
+            }
+        },
+        releasePagination: { 
+            async handler() {
+                this.updateReleaseData();
+            }
+        },
+        trackPagination: { 
+            async handler() {
+                this.updateTracksData();
+            }
+        },        
+        playlistPagination: {
+            async handler() {
+                this.updatePlaylistData();
+            }            
         }
     },
     data: () => ({

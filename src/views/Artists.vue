@@ -2,7 +2,7 @@
   <div>
     <Toolbar :menuItems="menuItems" :doMenuSelected=true :toolbarIcon="'fas' +' '+ 'fa-users'"></Toolbar>
     <v-container fluid grid-list-md>
-      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
+      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :total-items="pagination.totalItems" :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
           <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
             <ArtistCard :artist="props.item"></ArtistCard>
           </v-flex>
