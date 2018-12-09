@@ -1,5 +1,5 @@
 <template>
-  <v-app class="grey lighten-1"> 
+  <v-app> 
     <template>
       <v-app>
         <v-content>
@@ -9,6 +9,7 @@
           </div>                   
            <!-- App Footer -->
           <v-footer height="auto" class="white pa-3 app--footer">
+            <v-icon color="pink" class="mr-1" small>fas fa-archive</v-icon><span class="caption mr-1"> Last Scan: {{ this.$store.getters.lastScanDate }}</span>            
             <v-spacer></v-spacer>
             <span class="caption mr-1"> Roadie v.01 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>

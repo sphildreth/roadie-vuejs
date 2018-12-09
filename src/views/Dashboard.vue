@@ -8,7 +8,7 @@
             <v-avatar>
               <v-icon>supervisor_account</v-icon>
             </v-avatar>
-            {{ statistics.userCount | padNumber2 }}
+            {{ statistics.userCount | formatNumber }}
           </v-chip>
           <span>Total Users in the system</span>
         </v-tooltip>
@@ -17,7 +17,7 @@
             <v-avatar>
               <v-icon>collections</v-icon>
             </v-avatar>
-            {{ statistics.collectionCount | padNumber3 }}
+            {{ statistics.collectionCount | formatNumber }}
           </v-chip>
           <span>Total Collections in the system</span>
         </v-tooltip>
@@ -26,7 +26,7 @@
             <v-avatar>
               <v-icon>playlist_play</v-icon>
             </v-avatar>
-            {{ statistics.playlistCount | padNumber3 }}
+            {{ statistics.playlistCount | formatNumber }}
           </v-chip>
           <span>Total Playlists in the system</span>
         </v-tooltip>
@@ -35,7 +35,7 @@
             <v-avatar>
               <v-icon>label</v-icon>
             </v-avatar>
-            {{ statistics.labelCount | padNumber5 }}
+            {{ statistics.labelCount | formatNumber }}
           </v-chip>
           <span>Total Labels in the system</span>
         </v-tooltip>
@@ -44,7 +44,7 @@
             <v-avatar>
               <v-icon>fas fa-users</v-icon>
             </v-avatar>
-            {{ statistics.artistCount | padNumber6 }}
+            {{ statistics.artistCount | formatNumber }}
           </v-chip>
           <span>Total Artists in the system</span>
         </v-tooltip>
@@ -53,7 +53,7 @@
             <v-avatar>
               <v-icon>library_music</v-icon>
             </v-avatar>
-            {{ statistics.releaseCount | padNumber6 }}
+            {{ statistics.releaseCount | formatNumber }}
           </v-chip>
           <span>Total Releases in the Library</span>
         </v-tooltip>
@@ -62,7 +62,7 @@
             <v-avatar>
               <v-icon>album</v-icon>
             </v-avatar>
-            {{ statistics.releaseMediaCount | padNumber6 }}
+            {{ statistics.releaseMediaCount | formatNumber }}
           </v-chip>
           <span>Total Release Medias in the Library</span>
         </v-tooltip>
@@ -71,7 +71,7 @@
             <v-avatar>
               <v-icon>audiotrack</v-icon>
             </v-avatar>
-            {{ statistics.trackCount | padNumber7 }}
+            {{ statistics.trackCount | formatNumber }}
           </v-chip>
           <span>Total Tracks in Library</span>
         </v-tooltip>
@@ -80,7 +80,7 @@
             <v-avatar>
               <v-icon>play_circle_outline</v-icon>
             </v-avatar>
-            {{ statistics.playedCount | padNumber6 }}
+            {{ statistics.playedCount | formatNumber }}
           </v-chip>
           <span>Total number of times Tracks have been played</span>
         </v-tooltip>
@@ -136,7 +136,10 @@ import Toolbar from '@/components/Toolbar';
 import ReleaseCard from '@/components/ReleaseCard';
 import ArtistCard from '@/components/ArtistCard';
 import { EventBus } from "@/event-bus.js";
+import store from '@/store';
+
 export default {
+  store,
   components: { Toolbar, ReleaseCard, ArtistCard },
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
@@ -151,6 +154,7 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/stats/library`)
         .then(rr => {
           this.statistics = rr.data.data;
+          this.$store.commit("updateLastScan",rr.data.data.lastScanDate);
             this.$axios
               this.$axios.get(process.env.VUE_APP_API_URL + `/releases?page=1&limit=8&sort=CreatedDate&order=DESC`)
               .then(rr => {
@@ -177,4 +181,7 @@ export default {
 
 
 <style>
+.playlist-detail-container .v-chip {
+  padding: 4px;
+}
 </style>

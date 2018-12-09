@@ -5,6 +5,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   getters: {
+    lastScanDate: (state) => {
+      return state.lastScanDate ? state.lastScanDate : "Never";
+    },
     user: (state) => {
       if(!state.isLoggedIn) {
         return {};
@@ -48,6 +51,7 @@ export default new Vuex.Store({
   },  
   state: {
     isLoggedIn: !!localStorage.getItem("user"),
+    lastScanDate: null,
     authToken: null,
     user: {
       id: null,
@@ -60,6 +64,9 @@ export default new Vuex.Store({
   mutations: {
     signin (state) {
       state.pending = true;
+    },
+    updateLastScan (state, lastScanDate) {
+      state.lastScanDate = lastScanDate;
     },
     signinSuccess (state, user) {
       state.isLoggedIn = true;
