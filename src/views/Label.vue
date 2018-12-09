@@ -37,7 +37,7 @@
             <v-tab>Profile</v-tab>
             <v-tab v-if="label.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="label.urLsList.length">Urls</v-tab>
-            <v-tab>Metadata Sources</v-tab>            
+            <v-tab>Metadata Sources</v-tab>
             <v-tab-item>
               <v-card :dark="$vuetify.dark" flat class="profile darken-3">
                 <v-card-text v-html="label.profile">Loading...</v-card-text>
@@ -65,10 +65,7 @@
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider
-                    v-if="index + 1 < label.urLsList.length"
-                    :key="`uaadivider-${index}`"
-                  ></v-divider>
+                  <v-divider v-if="index + 1 < label.urLsList.length" :key="`uaadivider-${index}`"></v-divider>
                 </template>
               </v-list>
             </v-tab-item>
@@ -92,7 +89,6 @@
                 </template>
               </v-data-table>
             </v-tab-item>
-
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -107,7 +103,7 @@
                 {{ label.statistics.artistCount | padNumber4 }}
               </v-chip>
               <span>Label Artist Count</span>
-            </v-tooltip>                
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -116,7 +112,7 @@
                 {{ label.statistics.releaseCount | padNumber4 }}
               </v-chip>
               <span>Label Release Count</span>
-            </v-tooltip>            
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -165,8 +161,25 @@
           </div>
         </v-flex>
       </v-layout>
-      <v-layout row wrap>
-      </v-layout>
+      <v-container fluid grid-list-md>
+        <v-card flat class="artists mt-2">
+          <v-data-iterator
+            :items="artistItems"
+            :rows-per-page-items="rowsPerPageItems"
+            :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage"
+            :total-items="artistPagination.totalItems"
+            :pagination.sync="artistPagination"
+            content-tag="v-layout"
+            :loading="true"
+            row
+            wrap
+          >
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg3>
+              <ArtistCard :artist="props.item"></ArtistCard>
+            </v-flex>
+          </v-data-iterator>
+        </v-card>
+      </v-container>
     </v-container>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
       {{ snackbarText }}
@@ -176,11 +189,12 @@
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar';
+import Toolbar from "@/components/Toolbar";
+import ArtistCard from "@/components/ArtistCard";
 
 import { EventBus } from "@/event-bus.js";
 export default {
-  components: { Toolbar },
+  components: { Toolbar, ArtistCard },
   props: {
     id: String
   },
@@ -188,8 +202,8 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
-    EventBus.$off('toolbarRefresh', this.updateData);  
-  },    
+    EventBus.$off("toolbarRefresh", this.updateData);
+  },
   async mounted() {
     this.updateData();
   },
@@ -205,7 +219,27 @@ export default {
         .then(response => {
           this.label = response.data.data;
           this.label.tagsList = this.label.tagsList || [];
-          this.label.urLsList = this.label.urLsList || [];                 
+          this.label.urLsList = this.label.urLsList || [];
+          this.updateArtistData();
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },
+    updateArtistData: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL +
+            `/artists?page=${this.artistPagination.page}&limit=${
+              this.artistPagination.rowsPerPage
+            }&order=${this.artistPagination.sortOrder}&sort=${
+              this.artistPagination.sortBy
+            }&filterToLabelId=${this.id}`
+        )
+        .then(response => {
+          this.artistItems = response.data.rows;
+          this.artistPagination.totalItems = response.data.totalCount;
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -219,38 +253,40 @@ export default {
           url: "https://musicbrainz.org/label/"
         }
       ];
-    }    
+    }
   },
   watch: {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
     },
-    trackPagination: { 
-        async handler() {
-            this.updateData();
-        }
-    }   
+    artistPagination: {
+      async handler() {
+        this.updateArtistData();
+      }
+    }
   },
   data: () => ({
     rowsPerPageItems: [6, 12, 24, 36, 60, 120],
     snackbar: false,
-    snackbarText: "",    
+    snackbarText: "",
     label: {
       maintainer: {
         thumbnail: {},
-        user: {}        
+        user: {}
       },
       mediumThumbnail: {},
       statistics: {},
       tagsList: [],
       urLsList: []
     },
-      trackPagination: {
-        page: 1,
-        rowsPerPage: 36,
-        totalItems: 0
-    },      
+    artistPagination: {
+      page: 1,
+      rowsPerPage: 36,
+      totalItems: 0,
+      sortBy: "Artist.Text",
+      sortOrder: "ASC"
+    },
     metaDataHeaders: [
       {
         text: "Source",
@@ -264,11 +300,11 @@ export default {
         sortable: false,
         value: "sourceId"
       }
-    ],    
+    ],
     menuItems: [
       { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" }
     ],
-    trackItems: []
+    artistItems: []
   })
 };
 </script>
