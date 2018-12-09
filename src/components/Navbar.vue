@@ -117,7 +117,7 @@ export default {
   },    
   data() {
     return {
-      drawer: false,   
+      drawer: false,  
       searchQuery: "",
       rightDrawer: false,
       appName: process.env.VUE_APP_APP_NAME,
