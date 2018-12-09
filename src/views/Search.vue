@@ -32,6 +32,16 @@
                 </v-card-text>
             </v-card>                              
                
+            <v-card :dark="$vuetify.dark" v-if="playlistItems.length > 0">
+                <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Playlists</v-card-title>
+                <v-card-text>
+                    <v-data-iterator :items="playlistItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="playlistPagination.totalItems < playlistPagination.rowsPerPage"  :total-items="playlistPagination.totalItems"  :pagination.sync="playlistPagination" content-tag="v-layout" :loading="true" row wrap>
+                        <v-flex slot="item" slot-scope="props" xs12 sm6 lg4>
+                            <PlaylistCard :playlist="props.item"></PlaylistCard>
+                        </v-flex>
+                    </v-data-iterator>        
+                </v-card-text>
+            </v-card>                     
         </v-container> 
     </div>
 </template>
@@ -41,9 +51,10 @@
     import ArtistCard from '@/components/ArtistCard';
     import ReleaseCard from '@/components/ReleaseCard';
     import TrackCard from '@/components/TrackCard';
+    import PlaylistCard from '@/components/PlaylistCard';
 
     export default {
-    components: { ArtistCard, ReleaseCard, TrackCard }, 
+    components: { ArtistCard, ReleaseCard, TrackCard, PlaylistCard }, 
     props: {
         q: String
     },
@@ -71,8 +82,13 @@
         .then(response => {
             this.trackItems = response.data.rows;
             this.trackPagination.totalItems = response.data.totalCount;    
+        });    
+        this.$axios.get(process.env.VUE_APP_API_URL + `/playlists?page=${ this.playlistPagination.page }&limit=${ this.playlistPagination.rowsPerPage }&order=${ this.playlistPagination.sortOrder  }&sort=${ this.playlistPagination.sortBy }&filter=${ this.q }`)
+        .then(response => {
+            this.playlistItems = response.data.rows;
+            this.playlistPagination.totalItems = response.data.totalCount;    
             EventBus.$emit("loadingComplete");    
-        });                       
+        });                            
       },
     },
     watch: {
@@ -104,10 +120,18 @@
         totalItems: 0,
         sortBy: 'Track.Text',
         sortOrder: "ASC"
-      },                      
+      },       
+      playlistPagination: {
+        page: 1,
+        rowsPerPage: 12,
+        totalItems: 0,
+        sortBy: 'Playlist.Text',
+        sortOrder: "ASC"
+      },                        
       artistItems: [],
       releaseItems: [],
-      trackItems: []
+      trackItems: [],
+      playlistItems: []
     })
     }
 
