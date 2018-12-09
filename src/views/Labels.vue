@@ -59,7 +59,7 @@
       },              
       viewAll: function() {
           this.resetView();                
-          this.pagination.sortBy = "Artist.Text";
+          this.pagination.sortBy = "Label.Text";
           this.pagination.sortOrder = "ASC";
           this.updateData();
       },        

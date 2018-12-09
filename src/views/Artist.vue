@@ -501,13 +501,13 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
-    EventBus.$off("aa:Shuffle");
-    EventBus.$off("aa:PlayAll");
-    EventBus.$off("aa:AddAllToQue");
-    EventBus.$off("aa:Comment");
-    EventBus.$off("aa:searchInternetArtist");
-    EventBus.$off("aa:favoriteToogle");
-    EventBus.$off("toolbarRefresh");
+    EventBus.$off("aa:Shuffle", this.shuffle);
+    EventBus.$off("aa:PlayAll", this.playAll);
+    EventBus.$off("aa:AddAllToQue", this.addAllToQue);
+    EventBus.$off("aa:Comment", this.comment);
+    EventBus.$off("aa:searchInternetArtist", this.internetArtistSearch);
+    EventBus.$off("aa:favoriteToogle", this.toggleFavorite);
+    EventBus.$off("toolbarRefresh", this.updateData);
   },
   async mounted() {
     this.updateData();

@@ -36,7 +36,10 @@
       EventBus.$off('t:viewMostPlayed', this.viewMostPlayed);
       EventBus.$off('t:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$off('t:viewAll', this.viewAll);
-      EventBus.$off('toolbarRefresh', this.updateData);   
+      EventBus.$off('toolbarRefresh', this.updateData);  
+      EventBus.$off('t:ratingChange', (info) => this.ratingChange(info));   
+      EventBus.$off('t:dislikeToggle', (info) => this.dislikeToggle(info));   
+      EventBus.$off('t:favoriteToggle', (info) => this.favoriteToggle(info));          
     },      
     async mounted() {
       this.viewRandom();

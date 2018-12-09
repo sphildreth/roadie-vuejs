@@ -187,6 +187,9 @@ export default {
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
   },
+  beforeDestroy() {
+    EventBus.$off('toolbarRefresh', this.updateData);  
+  },    
   async mounted() {
     this.updateData();
   },

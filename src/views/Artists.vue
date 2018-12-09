@@ -46,6 +46,8 @@
       EventBus.$off('a:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$off('a:viewAll', this.viewAll);
       EventBus.$off('toolbarRefresh', this.updateData);
+      EventBus.$off('a:ratingChange', (info) => this.setRating(info));      
+      EventBus.$off('a:favoriteToggle', (info) => this.toggleFavorite(info));           
     },        
     async mounted() {
       this.viewRandom();
