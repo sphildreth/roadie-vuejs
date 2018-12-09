@@ -37,6 +37,16 @@
       EventBus.$on('a:viewAll', this.viewAll);
       EventBus.$on('toolbarRefresh', this.updateData);
     },    
+    beforeDestroy() {
+      EventBus.$off('a:viewRandom', this.viewRandom);
+      EventBus.$off('a:viewRecentlyAdded', this.viewRecentlyAdded);
+      EventBus.$off('a:viewStarred', this.viewStarred);
+      EventBus.$off('a:viewTopRated', this.viewTopRated);
+      EventBus.$off('a:viewMostPlayed', this.viewMostPlayed);
+      EventBus.$off('a:viewRecentlyPlayed', this.viewRecentlyPlayed);
+      EventBus.$off('a:viewAll', this.viewAll);
+      EventBus.$off('toolbarRefresh', this.updateData);
+    },        
     async mounted() {
       this.viewRandom();
       EventBus.$on('a:ratingChange', (info) => this.setRating(info));      

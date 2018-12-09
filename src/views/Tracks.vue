@@ -28,6 +28,16 @@
       EventBus.$on('t:viewAll', this.viewAll);
       EventBus.$on('toolbarRefresh', this.updateData);
     },    
+    beforeDestroy() {
+      EventBus.$off('t:viewRandom', this.viewRandom);
+      EventBus.$off('t:viewRecentlyAdded', this.viewRecentlyAdded);
+      EventBus.$off('t:viewStarred', this.viewStarred);
+      EventBus.$off('t:viewTopRated', this.viewTopRated);
+      EventBus.$off('t:viewMostPlayed', this.viewMostPlayed);
+      EventBus.$off('t:viewRecentlyPlayed', this.viewRecentlyPlayed);
+      EventBus.$off('t:viewAll', this.viewAll);
+      EventBus.$off('toolbarRefresh', this.updateData);   
+    },      
     async mounted() {
       this.viewRandom();
       EventBus.$on('t:ratingChange', (info) => this.ratingChange(info));   
