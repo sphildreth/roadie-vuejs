@@ -220,7 +220,6 @@ export default {
           this.label = response.data.data;
           this.label.tagsList = this.label.tagsList || [];
           this.label.urLsList = this.label.urLsList || [];
-          this.updateArtistData();
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");

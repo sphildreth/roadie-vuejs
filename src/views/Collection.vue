@@ -28,6 +28,17 @@
                     aspect-ratio="1"
                   ></v-img>
                 </v-flex>
+
+                <v-flex xs9 class="title">
+                  <v-text-field
+                    v-if="collection.edition"
+                    v-bind:value="collection.edition"
+                    label="Edition"
+                    readonly
+                  ></v-text-field>
+                </v-flex>
+
+
               </v-layout>
             </v-flex>
           </v-layout>
@@ -207,7 +218,6 @@ export default {
           this.collection = response.data.data;
           this.collection.tagsList = this.collection.tagsList || [];
           this.collection.urLsList = this.collection.urLsList || [];
-          this.updateReleaseData();
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
