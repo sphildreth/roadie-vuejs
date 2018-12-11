@@ -16,7 +16,7 @@
                 <div>
                     <router-link :to="'/collection/' + collection.id"><div :title="collection.collection.text" class="artist-name subheading font-weight-medium pointer">{{ collection.collection.text }}</div></router-link>
                     <div><v-progress-linear class="ma-0 mt-1 mb-1" :color="collection.percentComplete == 100 ? 'green' : 'secondary'" height="6" :value="collection.percentComplete" ></v-progress-linear></div>
-                    <div class="caption accent--text"><span title="Releases Count">{{ collection.collectionCount | padNumber3 }}</span> | <span title="Releases Found Count">{{ collection.collectionFoundCount | padNumber4 }}</span> | <span title="Percentage Count">{{ collection.percentComplete | padNumber3 }}</span></div>
+                    <div class="caption accent--text"><span title="Releases Count">{{ collection.collectionCount | padNumber3 }}</span> | <span title="Releases Found Count">{{ collection.collectionFoundCount | padNumber4 }}</span></div>
                     <div v-if="listNumber" class="caption accent--text"><span title="Rank/Number in Collection">&num;{{ listNumber | padNumber3 }} of {{ collection.collectionCount | padNumber3 }}</span></div>
                 </div>
                 </v-card-title>

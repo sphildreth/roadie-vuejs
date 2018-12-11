@@ -51,7 +51,7 @@
         page: 1,
         rowsPerPage: 36,
         totalItems: 0,
-        sortBy: 'Collection.Text',
+        sortBy: 'CreatedDate',
         sortOrder: "DESC"
       },
       selected: [],
