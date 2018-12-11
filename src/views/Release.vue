@@ -198,7 +198,7 @@
               <span>Release Played Count</span>
             </v-tooltip>
             <v-tooltip bottom>
-              <v-chip v-if="release.statistics.missingTrackCount" slot="activator" color="warning">
+              <v-chip v-if="release.statistics.missingTrackCount" slot="activator" color="warning" text-color="black">
                 <v-avatar>
                   <v-icon>error</v-icon>
                 </v-avatar>

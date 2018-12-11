@@ -1,5 +1,5 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="release.id" >
+    <v-card :dark="$vuetify.dark" class="mb-3" height="92" :color="!release.isValid ? 'warning' : ''" hover :data-id="release.id" :disabled="!release.isValid" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/release/' + release.id">
@@ -13,15 +13,23 @@
             </v-flex>
             <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
-                <div>
-                    <v-icon dark small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'white'" @change.native="favoriteToggle">favorite</v-icon>                    
+              <!-- <div v-if="listNumber" class="caption info--text">{{ '#' + this.$filters.padNumber4(listNumber) }}</div>                   -->
+                <div v-if="release.isValid">                  
+                    <v-icon small class="favorite pointer" @click.native="favoriteToggle" :color="release.isFavorite ? 'red' : 'accent'" @change.native="favoriteToggle">favorite</v-icon>                    
                     <v-rating v-model="release.rating" class="" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
-                    <router-link :to="'/release/' + release.id"><div :title="release.release.text" class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer">{{ release.release.text }}</div></router-link>
+                    <router-link :to="'/release/' + release.id">
+                      <div :title="release.release.text" class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer">{{ release.release.text }}</div>
+                    </router-link>
                     <router-link :to="'/artist/' + release.artist.value">
                         <div :title="release.artist.text" class="release-artist text-no-wrap text-truncate body-1 pointer" >{{ release.artist.text }}</div>
                     </router-link>
                     <div class="caption accent--text"><span title="Release Date">{{ release.releaseYear }}</span> | <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> | <span title="Release Play Time">{{ release.durationTime }}</span></div>
                 </div>
+                <div v-if="!release.isValid" class="black--text">                  
+                    <div :title="release.release.text" class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer">{{ release.release.text }}</div>
+                    <div :title="release.artist.text" class="release-artist text-no-wrap text-truncate body-1 pointer" >{{ release.artist.text }}</div>
+                </div>
+
                 </v-card-title>
             </v-flex>
         </v-layout>
@@ -35,7 +43,8 @@ import { EventBus } from '@/event-bus.js';
 export default {
     name: 'ReleaseCard',
     props: {
-        release: Object
+        release: Object,
+        listNumber: Number
     },
     methods: {
         favoriteToggle: function() {

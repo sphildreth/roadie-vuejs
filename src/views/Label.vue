@@ -215,7 +215,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/Labels/${this.id}`)
+        .get(process.env.VUE_APP_API_URL + `/labels/${this.id}`)
         .then(response => {
           this.label = response.data.data;
           this.label.tagsList = this.label.tagsList || [];
