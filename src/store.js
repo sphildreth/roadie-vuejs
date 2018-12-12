@@ -18,8 +18,12 @@ export default new Vuex.Store({
           return {};
         }
         state.user = JSON.parse(data);
+        state.theme.dark = true;
       }
       return state.user;
+    },
+    theme: (state) => {
+      return state.theme;
     },
     authToken:(state) => {
       if(!state.isLoggedIn) {
@@ -59,6 +63,18 @@ export default new Vuex.Store({
       token: null,
       avatarUrl: null,
       isAdmin: false
+    },
+    theme: {
+      colors: {
+        primary: '#1976D2',
+        secondary: '#424242',
+        accent: '#82B1FF',
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107'            
+      },
+      dark: true
     }
   },
   mutations: {
@@ -77,6 +93,9 @@ export default new Vuex.Store({
     signout(state) {
       state.isLoggedIn = false;
       state.user = null;
+    },
+    saveTheme(state, data) {
+      localStorage.setItem("theme", JSON.stringify(data));    
     }
   },
   actions: {

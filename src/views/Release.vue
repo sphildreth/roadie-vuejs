@@ -424,6 +424,7 @@ export default {
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("bookmarkToogle", this.bookmarkToogle);
   },
   beforeDestroy() {
     EventBus.$off("rr:Shuffle");
@@ -432,6 +433,7 @@ export default {
     EventBus.$off("rr:Comment");
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("toolbarRefresh");
+    EventBus.$off("bookmarkToogle", this.bookmarkToogle);
   },  
   async mounted() {
     this.updateData();
@@ -455,6 +457,22 @@ export default {
       this.modalImage = e;
       this.showModal = true;
     },    
+    bookmarkToogle: async function() {
+      this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseBookmark/' + this.release.id + '/' + this.release.userBookmarked)
+      .then(response => {
+          if(!this.release.userBookmarked) {
+              this.snackbarText = "Successfully bookmarked";
+              this.snackbar = true;
+          } else if (response.data.isSuccess) {
+              this.snackbarText = "Successfully removed bookmark";
+              this.snackbar = true;
+          }                   
+          this.release.userBookmarked = !this.release.userBookmarked;          
+      })
+      .finally(() => {
+        EventBus.$emit("loadingComplete");
+      });
+    },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios

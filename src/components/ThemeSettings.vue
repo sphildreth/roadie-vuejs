@@ -15,21 +15,21 @@
           <v-layout wrap>
             <label class="color-option--label flex xs6 pa-1" v-for="(option,index) in themeColorOptions" :key="index">
               <input type="radio" name="color" v-bind:value="option.key" v-model="themeColor">              
-              <span class="color-option--item bg">
+              <span class="color-option--item bg" :style="{ background: option.value.primary }">
                   {{option.name}}
                 <span class="overlay">
                   <span class="material-icons">check</span>
                 </span>
-                <span class="color-option--item--header"  :style="{ color: option.value.primary }"></span>
-                <span class="color-option--item--header" :style="{ color: option.value.secondary }"></span>
-                <span class="sideMenu" :class="option.value.accent"></span>
+                <span class="color-option--item--header"  :style="{ background: option.value.secondary }"></span>
+                <span class="color-option--item--header" :style="{ background: option.value.accent }"></span>
+                <span class="sideMenu" :class="option.value.info"></span>
               </span>
             </label>
           </v-layout>
         </div>
         <div class="theme-options">
           <v-subheader class="px-1 my-2">
-            Sidebar Option
+            Background/Sidebar Option
           </v-subheader>
           <v-divider></v-divider>
           <div class="my-3">
@@ -50,8 +50,10 @@
 </template>
 
 <script>
+import store from '@/store';
 import colors from 'vuetify/es5/util/colors';
 export default {
+  store,
   data () {
     return {
       themeColor: 0,
@@ -64,7 +66,7 @@ export default {
       return [
         {
           key: 0,
-          name: 'Roadie',
+          name: 'Default',
           value: {
             primary: '#1976D2',
             secondary: '#424242',
@@ -127,30 +129,73 @@ export default {
                 warning: "#FFC107"      
             }
         }, 
+        {
+            key: 5,
+            name: "Pink",
+            value: {
+              primary: "#e91e63",
+              secondary: "#f06292",
+              accent: "#c51162",
+              error: "#FF5252",
+              info: "#2196F3",
+              success: "#8bc34a",
+              warning: "#FFC107"  
+            }
+        },         
       ];
     }
   },  
+  // watch: {
+  //   themeColor: {
+  //     handler (val) {  
+  //       this.$store.commit("saveTheme", {
+  //         colors: this.$vuetify.theme,
+  //         dark: this.$vuetify.dark
+  //       });
+  //     },
+  //     immediate: true
+  //   },
+  //   sideBarOption: {
+  //     handler (val) {
+  //       this.$store.commit("saveTheme", {
+  //         colors: this.$vuetify.theme,
+  //         dark: this.$store.getters.theme.dark = (val === 'dark')
+  //       });
+  //       this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
+  //       this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
+  //       this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
+  //       this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
+  //       this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
+  //       this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
+  //       this.$vuetify.theme.success = this.themeColorOptions[val].value.success;                      
+  //     },
+  //     immediate: true      
+  //   }
+  // },  
   watch: {
-    themeColor: {
-      handler (val) {
-        this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
-        this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
-        this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
-        this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
-        this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
-        this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
-        this.$vuetify.theme.success = this.themeColorOptions[val].value.success;        
+      themeColor: {
+        handler (val) {
+          this.$store.commit("saveTheme", {
+            colors: this.$vuetify.theme,
+            dark: this.$store.getters.theme.dark = (val === 'dark')
+          });          
+          this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
+          this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
+          this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
+          this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
+          this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
+          this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
+          this.$vuetify.theme.success = this.themeColorOptions[val].value.success;        
+        },
+        immediate: true
       },
-      immediate: true
-    },
-    sideBarOption: {
-      handler (val) {
-        this.$vuetify.dark = (val === 'dark');
-      },
-      immediate: true      
+      sideBarOption: {
+        handler (val) {
+          this.$vuetify.dark = (val === 'dark');
+        },
+        immediate: true      
+      }
     }
-  },  
-
 };
 </script>
 <style lang="stylus" scoped>

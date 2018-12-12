@@ -43,6 +43,14 @@ var router = new VueRouter({
       }
     },      
     {
+      path: '/bookmarks',
+      name: 'bookmarks',
+      component: () => import(/* webpackChunkName: "bookmarks" */ './views/Bookmarks.vue'),
+      meta: {
+        guest: false
+      }      
+    },      
+    {
       path: '/collections',
       name: 'collections',
       component: () => import(/* webpackChunkName: "collections" */ './views/Collections.vue'),

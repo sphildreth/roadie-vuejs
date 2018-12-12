@@ -24,15 +24,15 @@
             </v-list>
           </v-menu>        
         </div>            
-        <v-btn v-if="doShowBookmark" icon data-eventmessage="a:bookmarkToogle" @click="bookmarkToogle">
+        <v-btn v-if="doShowBookmark" icon data-eventmessage="bookmarkToogle" @click="bookmarkToogle">
           <v-icon v-if="bookmarked" color="info" title="Click to remove from bookmarks">bookmark</v-icon>
           <v-icon v-if="!bookmarked" title="Add to bookmarks">bookmark_border</v-icon>
         </v-btn>    
-        <v-btn v-if="doShowFavorite" icon data-eventmessage="a:favoriteToogle" @click="favoriteToogle">
+        <v-btn v-if="doShowFavorite" icon data-eventmessage="favoriteToogle" @click="favoriteToogle">
           <v-icon v-if="favorited" color="red" title="Click to remove from favorites">fas fa-heart</v-icon>
           <v-icon v-if="!favorited" title="Add to favorites">far fa-heart</v-icon>
         </v-btn>          
-        <v-btn v-if="doShowHated" icon data-eventmessage="a:hateToogle" @click="hateToogle">
+        <v-btn v-if="doShowHated" icon data-eventmessage="hateToogle" @click="hateToogle">
           <v-icon v-if="hated" color="lime" title="Click to remove hate">fas fa-thumbs-down</v-icon>
           <v-icon v-if="!hated" title="Click to hate">far fa-thumbs-down</v-icon>
         </v-btn>                       

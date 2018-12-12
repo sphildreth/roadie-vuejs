@@ -499,6 +499,7 @@ export default {
     EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
     EventBus.$on("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("bookmarkToogle", this.bookmarkToogle);
   },
   beforeDestroy() {
     EventBus.$off("aa:Shuffle", this.shuffle);
@@ -508,6 +509,7 @@ export default {
     EventBus.$off("aa:searchInternetArtist", this.internetArtistSearch);
     EventBus.$off("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
+    EventBus.$off("bookmarkToogle", this.bookmarkToogle);
   },
   async mounted() {
     this.updateData();
@@ -562,6 +564,22 @@ export default {
       this.modalImage = e;
       this.showModal = true;
     },
+    bookmarkToogle: async function() {
+      this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistBookmark/' + this.artist.id + '/' + this.artist.userBookmarked)
+      .then(response => {
+          if(!this.artist.userBookmarked) {
+              this.snackbarText = "Successfully bookmarked";
+              this.snackbar = true;
+          } else if (response.data.isSuccess) {
+              this.snackbarText = "Successfully removed bookmark";
+              this.snackbar = true;
+          }                   
+          this.artist.userBookmarked = !this.artist.userBookmarked;          
+      })
+      .finally(() => {
+        EventBus.$emit("loadingComplete");
+      });
+    },    
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios

@@ -80,6 +80,7 @@
 </template>
 
 <script>
+
 import store from '@/store';
 import router from '@/router';
 import ThemeSettings from '@/components/ThemeSettings';
@@ -87,8 +88,6 @@ export default {
   store,
   router,
   components: { ThemeSettings }, 
-  mounted() {
-  },
   methods: {
     signout() {
       this.$store.dispatch('signout')

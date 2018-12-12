@@ -30,6 +30,14 @@ myApi.interceptors.request.use (
   }
 )
 
+myApi.interceptors.response.use((response) => { return response }, function (error) {
+  if (error.response.status === 401) {
+    store.dispatch('signout')
+    return;
+  }
+  return Promise.reject(error)
+});
+
 Vue.prototype.$axios = myApi;
 
 Vue.filter("formatNumber", function (value) {
@@ -84,17 +92,36 @@ Vue.filter("yearsFromDate", function (fromDate, toDate) {
 
 Vue.prototype.$filters = Vue.options.filters;
 
-
-// new Vue({
-//   el: '#app',
-//   router,
-//   store,
-//   render: h => h(App)
-// })
-
-
 new Vue({
+  el: '#app',
   router,
   store,
+  created: function(){
+    this.$vuetify.dark = this.$store.getters.theme.dark;    
+    this.$vuetify.theme.primary = this.$store.getters.theme.colors.primary;
+    this.$vuetify.theme.secondary = this.$store.getters.theme.colors.secondary;
+    this.$vuetify.theme.accent = this.$store.getters.theme.colors.accent;
+    this.$vuetify.theme.error = this.$store.getters.theme.colors.error;
+    this.$vuetify.theme.warning = this.$store.getters.theme.colors.warning;
+    this.$vuetify.theme.info = this.$store.getters.theme.colors.info;
+    this.$vuetify.theme.success = this.$store.getters.theme.colors.success;    
+  },  
   render: h => h(App)
-}).$mount('#app')
+})
+
+// new Vue({
+//   router,
+//   store,
+//   render: h => h(App),
+//   mounted: function(){
+//     this.$vuetify.dark = this.$store.getters.theme.dark;    
+//     this.$vuetify.theme.primary = this.$store.getters.theme.colors.primary;
+//     this.$vuetify.theme.secondary = this.$store.getters.theme.colors.secondary;
+//     this.$vuetify.theme.accent = this.$store.getters.theme.colors.accent;
+//     this.$vuetify.theme.error = this.$store.getters.theme.colors.error;
+//     this.$vuetify.theme.warning = this.$store.getters.theme.colors.warning;
+//     this.$vuetify.theme.info = this.$store.getters.theme.colors.info;
+//     this.$vuetify.theme.success = this.$store.getters.theme.colors.success;    
+//   }
+// }).$mount('#app')
+
