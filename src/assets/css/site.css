@@ -21,3 +21,14 @@
     bottom: 0;
     left: 0;
    }
+
+/* Incomplete */
+.release-status-3 { 
+  border: 1px solid lightcoral;
+}
+
+/* Missing */
+.release-status-4 {
+  border: 1px solid red;
+}
+

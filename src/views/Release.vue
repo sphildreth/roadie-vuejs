@@ -25,6 +25,12 @@
                     title="Release is locked!"
                     color="warning"
                   >lock</v-icon>
+                  <v-icon
+                    v-if="release.status > 2"
+                    style="float: right;"
+                    title="Release has issues!"
+                    color="warning"
+                  >warning</v-icon>                  
                 </v-card-text>
               </v-card>
             </v-flex>
@@ -66,7 +72,14 @@
                         label="Release Type"
                         readonly
                       ></v-text-field>
-                    </v-flex>                    
+                    </v-flex>        
+                    <v-flex xs2>
+                      <v-text-field
+                        v-bind:value="release.statusVerbose"
+                        label="Release Status"
+                        readonly
+                      ></v-text-field>
+                    </v-flex>                                 
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -544,6 +557,7 @@ export default {
     showModal: false,
     modalImage: {},
     release: {
+      status: 0,
       artist: { 
         thumbnail: {},
         artist: {}

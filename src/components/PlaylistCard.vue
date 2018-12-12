@@ -14,7 +14,7 @@
             <v-flex xs8>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
-                    <router-link :to="'/playlist/' + playlist.id"><div :title="playlist.playlist.text" class="artist-name subheading font-weight-medium pointer">{{ playlist.playlist.text }}</div></router-link>
+                    <router-link :to="'/playlist/' + playlist.id"><div :title="playlist.playlist.text" class="secondary--text text--lighten-1 playlist-name subheading font-weight-medium pointer">{{ playlist.playlist.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Playlist Tracks">{{ playlist.playlistCount | padNumber4 }}</span> | <span title="Playlist Play time">{{ playlist.durationTime }}</span></div>
                 </div>
                 </v-card-title>
