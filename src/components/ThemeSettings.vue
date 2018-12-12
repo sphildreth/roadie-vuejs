@@ -167,7 +167,59 @@ export default {
               success: "#8bc34a",
               warning: "#FFC107"  
             }
+        },     
+        {
+            key: 6,
+            name: "B&W",
+            value: {
+              primary: "#212121",
+              secondary: "#757575",
+              accent: "#BDBDBD",
+              error: "#D50000",
+              warning: "#F57C00",
+              info: "#2196f3",
+              success: "#4caf50"
+            }
+        },       
+        {
+            key: 7,
+            name: "Grape",
+            value: {
+              primary: "#3E3A47",
+              secondary: "#66587B",
+              accent: "#8873A8",
+              error: "#D50000",
+              warning: "#F57C00",
+              info: "#2196f3",
+              success: "#4caf50"
+            }
         },         
+        {
+            key: 8,
+            name: "Tangy",
+            value: {
+              primary: "#FF7E13",
+              secondary: "#E66800",
+              accent: "#B35100",
+              error: "#D50000",
+              warning: "#F57C00",
+              info: "#2196f3",
+              success: "#4caf50"
+            }
+        },     
+        {
+            key: 9,
+            name: "Stryper",
+            value: {
+              primary: "#FFD600",
+              secondary: "#000000",
+              accent: "#FFFF00",
+              error: "#D50000",
+              warning: "#F57C00",
+              info: "#2196f3",
+              success: "#4caf50"
+            }
+        },                    
       ];
     }
   }
