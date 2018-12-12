@@ -1,20 +1,21 @@
 <template>
   <div>
     <Toolbar :menuItems="menuItems" :toolbarIcon="'assessment'"></Toolbar>
-      <v-container fluid grid-list-md>
-          <div class="col-12">
-
-          </div>
-      </v-container>
+    <v-container fluid grid-list-md>
+        <div class="col-12">
+            <ReleasesByDateChart v-if="loaded" :chartdata="releasesByDate" :options="options"></ReleasesByDateChart>
+        </div>
+    </v-container>
   </div>  
 </template>
 
 <script>
   import Toolbar from '@/components/Toolbar';
   import { EventBus } from '@/event-bus.js';
-  
+  import ReleasesByDateChart from '@/components/ReleasesByDateChart';
+
   export default {
-    components: { Toolbar }, 
+    components: { Toolbar, ReleasesByDateChart }, 
     created() {
       EventBus.$on('toolbarRefresh', this.updateData);
     },    
@@ -29,7 +30,21 @@
          EventBus.$emit("loadingStarted"); 
           this.$axios.get(process.env.VUE_APP_API_URL + `/stats/releasesByDate`)
           .then(response => {
-            this.releasesByDate = response.data;
+            let labels = [];
+            let data = [];
+            response.data.data.forEach((v) => {
+               labels.push(v.date);
+               data.push(v.count);
+            });            
+            this.releasesByDate = {
+              labels: labels,
+              datasets: [{
+                label: 'Release Count',
+                backgroundColor: 'secondary',
+                data: data
+              }]
+            } 
+            this.loaded = true;
             EventBus.$emit("loadingComplete");    
           });       
       }
@@ -42,22 +57,12 @@
       }
     },
     data: () => ({
-      releasesByDate: [],
-      // areaChartData: {
-      //   chartType: "areaChart",
-      //   selector: "areaChart",
-      //   title: "Releases By Release Year",
-      //   width: 600,
-      //   height: 500,
-      //   metric: ["total"],
-      //   dim: "month",
-      //   data: this.releasesByDate,
-      //   legends: {
-      //     enabled: true,
-      //     height: 25,
-      //     width: 50
-      //   }
-      // },
+      loaded: false,      
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false
+      },
+      releasesByDate: null,
       menuItems: []
     })
   }
