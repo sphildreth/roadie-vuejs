@@ -1,5 +1,5 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id" >
+    <v-card  class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id" >
         <v-layout>
             <v-flex xs3 >
                <v-img

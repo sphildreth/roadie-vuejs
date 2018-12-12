@@ -105,7 +105,7 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-card :dark="$vuetify.dark" xs12 class="ma-3">
+      <v-card  xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Releases</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator :items="latestReleases" :total-items="6"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
@@ -117,7 +117,7 @@
       </v-card>
     </v-layout>
     <v-layout row wrap>
-      <v-card :dark="$vuetify.dark" xs12 class="ma-3">
+      <v-card  xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Artists</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator :items="latestArtists" :total-items="6"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>

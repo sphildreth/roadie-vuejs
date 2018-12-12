@@ -33,18 +33,18 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary" :dark="$vuetify.dark" slider-color="accent">
+          <v-tabs right color="primary"  slider-color="accent">
             <v-tab>Profile</v-tab>
             <v-tab v-if="label.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="label.urLsList.length">Urls</v-tab>
             <v-tab>Metadata Sources</v-tab>
             <v-tab-item>
-              <v-card :dark="$vuetify.dark" flat class="profile darken-3">
+              <v-card  flat class="profile darken-3">
                 <v-card-text v-html="label.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="label.tagsList.length > 0">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in label.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -56,7 +56,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="label.urLsList.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in label.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -72,7 +72,7 @@
 
             <v-tab-item>
               <v-data-table
-                :dark="$vuetify.dark"
+                
                 :headers="metaDataHeaders"
                 :items="metaDataSources()"
                 class="elevation-1"

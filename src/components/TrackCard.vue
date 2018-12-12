@@ -1,13 +1,13 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="track-card ma-1 ml-2 pa-2" height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
+    <v-card  class="track-card ma-1 ml-2 pa-2" height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
         <v-layout>
             <v-flex d-flex xs12>
                 <v-layout row wrap>
                     <v-flex xs8>
                         <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>                                
-                        <v-icon :dark="$vuetify.dark" small class="favorite pointer" @click.native="favoriteToggle" :color="userRating.isFavorite ? 'red' : 'accent'" @change.native="favoriteToggle">favorite</v-icon>                    
+                        <v-icon  small class="favorite pointer" @click.native="favoriteToggle" :color="userRating.isFavorite ? 'red' : 'accent'" @change.native="favoriteToggle">favorite</v-icon>                    
                         <v-rating v-model="track.rating" class="track-rating" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
-                        <v-icon :dark="$vuetify.dark" small class="hated pointer" @click.native="dislikeToggle" :color="userRating.isDisliked ? 'green' : 'accent'" @change.native="dislikeToggle">far fa-thumbs-down</v-icon>                                        
+                        <v-icon  small class="hated pointer" @click.native="dislikeToggle" :color="userRating.isDisliked ? 'green' : 'accent'" @change.native="dislikeToggle">far fa-thumbs-down</v-icon>                                        
                         <router-link :to="'/track/' + track.id"><div class="track-title ">{{ track.title}}</div></router-link>
                         <div class="caption accent--text"><span title="Played Count">{{ track.playedCount | padNumber4 }}</span> | <span title="Track Play Time">{{ track.durationTime }}</span></div>
                         <div v-if="mediaCount > 1" class="caption accent-text">{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}</div>

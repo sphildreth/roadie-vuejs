@@ -44,17 +44,17 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary" :dark="$vuetify.dark" slider-color="accent">
+          <v-tabs right color="primary"  slider-color="accent">
             <v-tab>Description</v-tab>
             <v-tab v-if="collection.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="collection.urLsList.length">Urls</v-tab>
             <v-tab-item>
-              <v-card :dark="$vuetify.dark" flat class="description darken-3">
+              <v-card  flat class="description darken-3">
                 <v-card-text v-html="collection.description">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="collection.tagsList.length > 0">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in collection.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -66,7 +66,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="collection.urLsList.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in collection.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>

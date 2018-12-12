@@ -40,17 +40,17 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary" :dark="$vuetify.dark" slider-color="accent">
+          <v-tabs right color="primary"  slider-color="accent">
             <v-tab>Description</v-tab>
             <v-tab v-if="playlist.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="playlist.urLsList.length">Urls</v-tab>
             <v-tab-item>
-              <v-card :dark="$vuetify.dark" flat class="description darken-3">
+              <v-card  flat class="description darken-3">
                 <v-card-text v-html="playlist.description">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="playlist.tagsList.length > 0">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in playlist.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -62,7 +62,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="playlist.urLsList.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in playlist.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -142,7 +142,7 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-card :dark="$vuetify.dark" v-if="trackItems.length > 0">
+        <v-card  v-if="trackItems.length > 0">
             <v-card-text>
                 <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
                     <v-flex slot="item" slot-scope="props" xs12 sm6>

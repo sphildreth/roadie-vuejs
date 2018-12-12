@@ -1,6 +1,6 @@
 <template>
   <nav v-if="!hide">
-    <v-toolbar flat app :dark="$vuetify.dark" dense>
+    <v-toolbar flat app  dense>
       <v-toolbar-side-icon @click="drawer = !drawer" ></v-toolbar-side-icon>
       <router-link to="/" tag="div">
         <v-toolbar-title class="text-uppercase pointer funky">          
@@ -13,12 +13,12 @@
             append-icon="search"
             single-line
             solo
-            :dark="$vuetify.dark"
+            
             @keyup.native="search"
             v-model="searchQuery"
           ></v-text-field>
     </v-toolbar>
-    <v-navigation-drawer class="app-side-drawer" app v-model="drawer" :dark="$vuetify.dark" disable-resize-watcher>
+    <v-navigation-drawer class="app-side-drawer" app v-model="drawer"  disable-resize-watcher>
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>

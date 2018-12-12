@@ -1,5 +1,5 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="artist.id" >
+    <v-card class="mb-3" hover :data-id="artist.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/artist/' + artist.id">

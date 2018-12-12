@@ -1,14 +1,14 @@
 <template>
-  <v-app :dark="$vuetify.dark"> 
+  <v-app> 
     <template>
-      <v-app>
+      <v-app :dark="$vuetify.dark" >
         <v-content>
           <Navbar />   
           <div class="page-wrapper">
             <router-view></router-view>
           </div>                   
            <!-- App Footer -->
-          <v-footer height="auto" :dark="$vuetify.dark" class="pa-3 app--footer">
+          <v-footer :dark="$vuetify.dark" height="auto" class="pa-3 app--footer">
             <v-icon color="pink" class="mr-1" small>fas fa-archive</v-icon><span class="caption mr-1"> Last System Scan: {{ this.$store.getters.lastScanDate }}</span>            
             <v-spacer></v-spacer>
             <span class="caption mr-1"> Roadie v.01 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>

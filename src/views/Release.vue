@@ -74,12 +74,12 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary" :dark="$vuetify.dark" v-model="tab" slider-color="accent">
+          <v-tabs right color="primary"  v-model="tab" slider-color="accent">
             <v-tab v-if="release.images.length">Images</v-tab>
             <v-tab v-if="release.profile">Profile</v-tab>
             <v-tab>Metadata Sources</v-tab>
             <v-tab-item v-if="release.images.length">
-              <v-card :dark="$vuetify.dark" flat class="images darken-3">
+              <v-card  flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
                   <v-layout row wrap>
                     <v-flex v-for="(image, index) in release.images" :key="image.url" xs2>
@@ -108,13 +108,13 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.profile">
-              <v-card :dark="$vuetify.dark" flat class="profile darken-3">
+              <v-card  flat class="profile darken-3">
                 <v-card-text v-html="release.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-data-table
-                :dark="$vuetify.dark"
+                
                 :headers="metaDataHeaders"
                 :items="metaDataSources()"
                 class="elevation-1"
@@ -251,12 +251,12 @@
             class="release-lists"
             color="primary"
             v-model="releaseTab"
-            :dark="$vuetify.dark"
+            
             slider-color="accent"
           >
             <v-tab>Tracks</v-tab>
             <v-tab-item>
-              <v-card flat :dark="$vuetify.dark" class="tracks">
+              <v-card flat  class="tracks">
                 <v-data-iterator
                   :items="release.medias"
                   :total-items="release.medias ? release.medias.length : 0"
@@ -277,7 +277,7 @@
           <v-tabs
             class="release-lists"
             color="primary"
-            :dark="$vuetify.dark"
+            
             slider-color="accent"
           >
             <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
@@ -288,7 +288,7 @@
             <v-tab v-if="release.labels.length > 0">Labels</v-tab>            
             <v-tab v-if="release.urLsList.length">Urls</v-tab>            
             <v-tab-item v-if="release.playlists.length > 0">
-              <v-card flat :dark="$vuetify.dark" class="playlists">
+              <v-card flat  class="playlists">
                 <v-data-iterator
                   :items="release.playlists"
                   :total-items="release.playlists ? release.playlists.length : 0"
@@ -304,7 +304,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.tagsList.length > 0">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in release.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -316,7 +316,7 @@
               </v-list>
             </v-tab-item>            
             <v-tab-item v-if="release.collections.length > 0">
-              <v-card flat :dark="$vuetify.dark" class="collections">
+              <v-card flat  class="collections">
                 <v-data-iterator
                   :items="release.collections"
                   :total-items="release.collections ? release.collections.length : 0"
@@ -332,7 +332,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.alternateNamesList.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in release.alternateNamesList">
                   <v-list-tile :key="`al-${name}-${index}`">
                     <v-list-tile-content>
@@ -347,7 +347,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="release.genres.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in release.genres">
                   <v-list-tile :key="`g-${name}-${index}`">
                     <v-list-tile-content>
@@ -359,7 +359,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="release.labels.length > 0">
-              <v-card flat :dark="$vuetify.dark" class="labels">
+              <v-card flat  class="labels">
                 <v-data-iterator
                   :items="release.labels"
                   :total-items="release.labels ? release.labels.length : 0"
@@ -375,7 +375,7 @@
               </v-card>
             </v-tab-item>              
             <v-tab-item v-if="release.urLsList.length">
-              <v-list :dark="$vuetify.dark">
+              <v-list >
                 <template v-for="(name, index) in release.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>

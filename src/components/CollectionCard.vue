@@ -1,5 +1,5 @@
 <template>
-    <v-card max-height="100px" :dark="$vuetify.dark" class="mb-3 collection-card" hover :data-id="collection.id" >
+    <v-card max-height="100px"  class="mb-3 collection-card" hover :data-id="collection.id" >
         <v-layout>
             <v-flex xs2 >
                 <router-link :to="'/collection/' + collection.id">

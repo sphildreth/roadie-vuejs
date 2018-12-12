@@ -1,5 +1,5 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="mb-3" height="92" :color="!release.isValid ? 'warning' : ''" hover :data-id="release.id" :disabled="!release.isValid" >
+    <v-card  class="mb-3" height="92" :color="!release.isValid ? 'warning' : ''" hover :data-id="release.id" :disabled="!release.isValid" >
         <v-layout>
             <v-flex xs4 >
                 <!-- <div v-if="listNumber" class="caption list-number info--text">{{ this.$filters.padNumber4(listNumber) }}</div>                                                                                                  -->

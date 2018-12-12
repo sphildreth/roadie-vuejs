@@ -1,7 +1,7 @@
 <template>
     <div class="search-results-container">
         <v-container fluid grid-list-md>
-            <v-card :dark="$vuetify.dark" v-if="artistItems.length > 0">
+            <v-card  v-if="artistItems.length > 0">
                 <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Artists</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="artistItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage" :total-items="artistPagination.totalItems"  :pagination.sync="artistPagination" content-tag="v-layout" :loading="true" row wrap>
@@ -11,7 +11,7 @@
                     </v-data-iterator>               
                 </v-card-text>
             </v-card>      
-            <v-card :dark="$vuetify.dark" v-if="releaseItems.length > 0">
+            <v-card  v-if="releaseItems.length > 0">
                 <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Releases</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="releaseItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="releasePagination.totalItems < releasePagination.rowsPerPage" :total-items="releasePagination.totalItems"  :pagination.sync="releasePagination" content-tag="v-layout" :loading="true" row wrap>
@@ -21,7 +21,7 @@
                     </v-data-iterator>         
                 </v-card-text>
             </v-card>    
-            <v-card :dark="$vuetify.dark" v-if="trackItems.length > 0">
+            <v-card  v-if="trackItems.length > 0">
                 <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Tracks</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
@@ -32,7 +32,7 @@
                 </v-card-text>
             </v-card>                              
                
-            <v-card :dark="$vuetify.dark" v-if="playlistItems.length > 0">
+            <v-card  v-if="playlistItems.length > 0">
                 <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Playlists</v-card-title>
                 <v-card-text>
                     <v-data-iterator :items="playlistItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="playlistPagination.totalItems < playlistPagination.rowsPerPage"  :total-items="playlistPagination.totalItems"  :pagination.sync="playlistPagination" content-tag="v-layout" :loading="true" row wrap>

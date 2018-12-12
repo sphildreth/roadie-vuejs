@@ -1,5 +1,5 @@
 <template>
-    <v-card :dark="$vuetify.dark" class="mb-3" hover :data-id="label.id" >
+    <v-card  class="mb-3" hover :data-id="label.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/label/' + label.label.value">

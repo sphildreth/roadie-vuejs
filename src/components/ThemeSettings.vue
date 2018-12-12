@@ -1,6 +1,6 @@
 <template>
 <div id="themeSetting">
-  <v-toolbar :dark="$vuetify.dark" >
+  <v-toolbar  >
     <v-toolbar-title>
       Theme Settings
     </v-toolbar-title>
@@ -33,7 +33,7 @@
           </v-subheader>
           <v-divider></v-divider>
           <div class="my-3">
-            <v-btn-toggle v-model="sideBarOption">
+            <v-btn-toggle v-model="themeDark">
               <v-btn flat value="dark">
                 Dark
               </v-btn>
@@ -56,12 +56,38 @@ export default {
   store,
   data () {
     return {
-      themeColor: 0,
-      sideBarOption: 'dark',
       colors: colors
     };
   },
   computed: {
+    themeColor: {
+      get: function() {
+        return this.$store.getters.theme.id;
+      },
+      set: function(val) {
+          this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
+          this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
+          this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
+          this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
+          this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
+          this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
+          this.$vuetify.theme.success = this.themeColorOptions[val].value.success;        
+          this.$store.commit("saveTheme", {
+            id: val,
+            colors: this.$vuetify.theme,
+            dark: this.$vuetify.dark
+          }); 
+      }      
+    },
+    themeDark: {
+      get: function() {
+        return this.$vuetify.dark ? 'dark' : 'light';
+      },
+      set: function(newValue) {
+          this.$vuetify.dark = ( newValue === 'dark' );
+          this.$store.commit("saveThemeDark", this.$vuetify.dark);   
+      }
+    },
     themeColorOptions () {
       return [
         {
@@ -144,58 +170,7 @@ export default {
         },         
       ];
     }
-  },  
-  // watch: {
-  //   themeColor: {
-  //     handler (val) {  
-  //       this.$store.commit("saveTheme", {
-  //         colors: this.$vuetify.theme,
-  //         dark: this.$vuetify.dark
-  //       });
-  //     },
-  //     immediate: true
-  //   },
-  //   sideBarOption: {
-  //     handler (val) {
-  //       this.$store.commit("saveTheme", {
-  //         colors: this.$vuetify.theme,
-  //         dark: this.$store.getters.theme.dark = (val === 'dark')
-  //       });
-  //       this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
-  //       this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
-  //       this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
-  //       this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
-  //       this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
-  //       this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
-  //       this.$vuetify.theme.success = this.themeColorOptions[val].value.success;                      
-  //     },
-  //     immediate: true      
-  //   }
-  // },  
-  watch: {
-      themeColor: {
-        handler (val) {
-          this.$store.commit("saveTheme", {
-            colors: this.$vuetify.theme,
-            dark: this.$store.getters.theme.dark = (val === 'dark')
-          });          
-          this.$vuetify.theme.primary = this.themeColorOptions[val].value.primary;
-          this.$vuetify.theme.secondary = this.themeColorOptions[val].value.secondary;
-          this.$vuetify.theme.accent = this.themeColorOptions[val].value.accent;
-          this.$vuetify.theme.error = this.themeColorOptions[val].value.error;
-          this.$vuetify.theme.warning = this.themeColorOptions[val].value.warning;
-          this.$vuetify.theme.info = this.themeColorOptions[val].value.info;
-          this.$vuetify.theme.success = this.themeColorOptions[val].value.success;        
-        },
-        immediate: true
-      },
-      sideBarOption: {
-        handler (val) {
-          this.$vuetify.dark = (val === 'dark');
-        },
-        immediate: true      
-      }
-    }
+  }
 };
 </script>
 <style lang="stylus" scoped>

@@ -96,8 +96,8 @@ new Vue({
   el: '#app',
   router,
   store,
-  created: function(){
-    this.$vuetify.dark = this.$store.getters.theme.dark;    
+  mounted: function(){
+    this.$vuetify.dark = this.$store.getters.theme.dark;   
     this.$vuetify.theme.primary = this.$store.getters.theme.colors.primary;
     this.$vuetify.theme.secondary = this.$store.getters.theme.colors.secondary;
     this.$vuetify.theme.accent = this.$store.getters.theme.colors.accent;

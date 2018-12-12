@@ -18,11 +18,32 @@ export default new Vuex.Store({
           return {};
         }
         state.user = JSON.parse(data);
-        state.theme.dark = true;
       }
       return state.user;
     },
     theme: (state) => {
+      if(!state.theme) {
+        let data = localStorage.getItem("theme");
+        if(!data) {
+          data = {
+            id: 0,
+            colors: {
+              primary: '#1976D2',
+              secondary: '#424242',
+              accent: '#82B1FF',
+              error: '#FF5252',
+              info: '#2196F3',
+              success: '#4CAF50',
+              warning: '#FFC107'            
+            },
+            dark: true
+          };
+          localStorage.setItem("theme", JSON.stringify(data));
+          state.theme = data;
+        } else {
+          state.theme = JSON.parse(data);
+        }        
+      }
       return state.theme;
     },
     authToken:(state) => {
@@ -63,18 +84,6 @@ export default new Vuex.Store({
       token: null,
       avatarUrl: null,
       isAdmin: false
-    },
-    theme: {
-      colors: {
-        primary: '#1976D2',
-        secondary: '#424242',
-        accent: '#82B1FF',
-        error: '#FF5252',
-        info: '#2196F3',
-        success: '#4CAF50',
-        warning: '#FFC107'            
-      },
-      dark: true
     }
   },
   mutations: {
@@ -96,6 +105,32 @@ export default new Vuex.Store({
     },
     saveTheme(state, data) {
       localStorage.setItem("theme", JSON.stringify(data));    
+      state.theme = data;
+    },
+    saveThemeDark(state, dark) {
+      let data = localStorage.getItem("theme");
+      let theme = null;
+      if(!data) {
+        data = {
+          id: 0,
+          colors: {
+            primary: '#1976D2',
+            secondary: '#424242',
+            accent: '#82B1FF',
+            error: '#FF5252',
+            info: '#2196F3',
+            success: '#4CAF50',
+            warning: '#FFC107'            
+          },
+          dark: true
+        };      
+        theme = data;        
+      } else  {
+        theme = JSON.parse(data);
+      }      
+      theme.dark = dark;
+      localStorage.setItem("theme", JSON.stringify(theme)); 
+      state.dark = dark;
     }
   },
   actions: {

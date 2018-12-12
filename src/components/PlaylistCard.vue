@@ -1,5 +1,5 @@
 <template>
-    <v-card max-height="100px" :dark="$vuetify.dark" class="mb-3" hover :data-id="playlist.id" >
+    <v-card max-height="100px"  class="mb-3" hover :data-id="playlist.id" >
         <v-layout>
             <v-flex xs4 >
                 <router-link :to="'/playlist/' + playlist.id">
