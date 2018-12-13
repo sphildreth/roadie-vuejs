@@ -387,7 +387,10 @@
             <v-tab>Collections</v-tab>
             <v-tab>Contributions</v-tab>
             <v-tab>Playlists</v-tab>
-            <v-tab>Releases</v-tab>
+            <v-tab>Releases 
+              <v-btn icon><v-icon :color="showReleaseTable ? '' : 'accent'" title="Show Release List" @click="showReleaseTable=true">view_list</v-icon></v-btn>
+              <v-btn icon><v-icon :color="showReleaseTable ? 'accent' : ''" title="Show Release Cards" @click="showReleaseTable=false">view_module</v-icon></v-btn>
+            </v-tab>
             <v-tab-item>
               <v-card flat  class="collections">
                 <v-data-iterator
@@ -438,7 +441,47 @@
             </v-tab-item>
             <v-tab-item>
               <v-card flat  class="releases">
+                  <v-text-field
+                    v-if="showReleaseTable"
+                    class="ml-4 mr-4"
+                    v-model="releaseTableSearch"
+                    append-icon="search"
+                    label="Filter"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                <v-data-table
+                  v-if="showReleaseTable"
+                  :headers="releaseHeaders"
+                  :items="releaseTableData"
+                  hide-actions
+                  class="elevation-1"
+                >
+                  <template slot="items" slot-scope="props">
+                    <td>
+                      <router-link :to="'/release/' + props.item.id">
+                      <v-img
+                        :src="props.item.thumbnailUrl"
+                        :alt="props.item.title"
+                        width="40"
+                        height="40"
+                        class="mt-1 release-grid-image"></v-img>                      
+                      <span class="release-grid-title secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer">                      
+                      {{ props.item.title }}
+                      </span>
+                      </router-link>
+                      </td>
+                    <td>{{ props.item.year }}</td>
+                    <td>{{ props.item.trackCount }}</td>
+                    <td>{{ props.item.duration }}</td>
+                    <td>{{ props.item.rating }}</td>
+                    <td>{{ props.item.lastPlayed }}</td>
+                    <td>{{ props.item.playedCount }}</td>
+                  </template>
+                </v-data-table>
+
                 <v-data-iterator
+                  v-if="!showReleaseTable"
                   :items="releases"
                   :total-items="releases ? releases.length : 0"
                   content-tag="v-layout"
@@ -607,10 +650,24 @@ export default {
           this.$axios
             .get(
               process.env.VUE_APP_API_URL +
-                `/releases?filterToArtistId=${this.id}&inc=tracks&limit=100`
+                `/releases?filterToArtistId=${this.id}&inc=tracks&limit=500`
             )
             .then(rr => {
               this.releases = rr.data.rows;
+              this.releaseTableData = [];
+              rr.data.rows.forEach((r) => {
+                  this.releaseTableData.push({
+                    id: r.id,
+                    thumbnailUrl: r.thumbnail.url,
+                    title: r.release.text,
+                    year: parseInt(r.releaseYear),
+                    trackCount: r.trackCount,
+                    duration: r.durationTime,
+                    rating: r.rating,
+                    lastPlayed: this.$options.filters.formatTimeStamp(r.lastPlayed, this.$store.getters.user),
+                    playedCount: r.trackPlayedCount
+                  })
+              });
               EventBus.$emit("loadingComplete");
             });
         });
@@ -653,9 +710,32 @@ export default {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
-    }
+    },
+    releaseTableSearch: { 
+      async handler() {
+        this.releaseTableData = [];
+        this.releases.forEach((r) => {
+            if(!this.releaseTableSearch || 
+                r.release.text.toLowerCase().includes(this.releaseTableSearch.toLowerCase()) ||
+                r.releaseYear.includes(this.releaseTableSearch)) {
+              this.releaseTableData.push({
+                id: r.id,
+                thumbnailUrl: r.thumbnail.url,
+                title: r.release.text,
+                year: parseInt(r.releaseYear),
+                trackCount: r.trackCount,
+                duration: r.durationTime,
+                rating: r.rating,
+                lastPlayed: this.$options.filters.formatTimeStamp(r.lastPlayed, this.$store.getters.user),
+                playedCount: r.trackPlayedCount
+              })
+            }
+        });
+      }
+    }  
   },
   data: () => ({
+    showReleaseTable: false,
     tab: 0,
     releaseTab: 3,
     showModal: false,
@@ -715,7 +795,18 @@ export default {
     seachMenuItems: [
       { title: "Browse Artists with Name", click: "aa:searchArtistsWithName" },
       { title: "Internet Artist Name", click: "aa:searchInternetArtist" }
-    ]
+    ],
+    releaseTableSearch: '',
+    releaseHeaders: [
+      { text: 'Title', align: 'left',  value: 'title'},
+      { text: 'Year', value: 'year' },
+      { text: 'Tracks', value: 'trackCount' },
+      { text: 'Time', value: 'duration' },
+      { text: 'Avg Rating', value: 'rating' },
+      { text: 'Last Played', value: 'lastPlayed' },
+      { text: 'Played Count', value: 'playedCount' }
+    ],
+    releaseTableData: []
   })
 };
 </script>
@@ -745,6 +836,14 @@ export default {
 .artist-detail-container .artist-lists .v-list {
   max-height: 300px;
   overflow: auto;
+}
+.artist-detail-container .release-grid-image {
+  float: left;
+  margin-right: 6px;
+}
+.artist-detail-container .release-grid-title {
+  padding-top: 11px;
+  display: inline-block;
 }
 ul.metadataSources {
   list-style: none;

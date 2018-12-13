@@ -1,5 +1,5 @@
 <template>
-    <v-card  class="track-card ma-1 ml-2 pa-2 " height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
+    <v-card  :class="track.cssClass" class="track-card ma-1 ml-2 pa-2 " height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
         <v-layout>
             <v-flex d-flex xs12>
                 <v-layout row wrap>
@@ -110,6 +110,9 @@ export default {
         margin: 0px 15px 0px 5px;
         height: 74px;
         padding-top: 15px;
+    }
+    .track-card.Missing {
+      border:1px solid yellow !important;
     }
 
 </style>
