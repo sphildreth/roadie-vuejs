@@ -26,6 +26,14 @@ var router = new VueRouter({
       }
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: () => import(/* webpackChunkName: "admin" */ './views/Admin.vue'),
+      meta: {
+        guest: false
+      }      
+    },        
+    {
       path: '/artists',
       name: 'artists',
       component: () => import(/* webpackChunkName: "artists" */ './views/Artists.vue'),

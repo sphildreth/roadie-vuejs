@@ -63,10 +63,9 @@ export default new Vuex.Store({
       }      
       return state.authToken;
     },
-    isUserAdmin() {
-      // var jwtData = this.jwtData();
-      // return false;
-      return false;
+    isUserAdmin: (state, getters) => {
+      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]))
+      return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
     },
     isUserEditor() {
       return false;
