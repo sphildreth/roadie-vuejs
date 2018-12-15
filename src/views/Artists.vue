@@ -33,6 +33,7 @@
       EventBus.$on('a:viewStarred', this.viewStarred);
       EventBus.$on('a:viewTopRated', this.viewTopRated);
       EventBus.$on('a:viewMostPlayed', this.viewMostPlayed);
+      EventBus.$on('a:viewMostReleases', this.viewMostReleases);
       EventBus.$on('a:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$on('a:viewAll', this.viewAll);
       EventBus.$on('toolbarRefresh', this.updateData);
@@ -43,6 +44,7 @@
       EventBus.$off('a:viewStarred', this.viewStarred);
       EventBus.$off('a:viewTopRated', this.viewTopRated);
       EventBus.$off('a:viewMostPlayed', this.viewMostPlayed);
+      EventBus.$off('a:viewMostReleases', this.viewMostReleases);
       EventBus.$off('a:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$off('a:viewAll', this.viewAll);
       EventBus.$off('toolbarRefresh', this.updateData);
@@ -81,6 +83,11 @@
           this.pagination.sortBy = "PlayedCount";
           this.updateData();
       },      
+      viewMostReleases: function() {
+                  this.resetView();                
+          this.pagination.sortBy = "ReleaseCount";
+          this.updateData();
+      },
       viewRecentlyPlayed: function() {
           this.resetView();                
           this.pagination.sortBy = "LastPlayed";
@@ -146,6 +153,7 @@
       menuItems: [
         { title: "Favorite", class: "hidden-xs-only", click: "a:viewStarred" },
         { title: "Most Played", class: "hidden-sm-and-down", click: "a:viewMostPlayed" },       
+        { title: "Most Releases", class: "hidden-sm-and-down", click: "a:viewMostReleases" },       
         { title: "Random", class:"selected-toolbar-item", click: "a:viewRandom" },
         { title: "Recently Added", class: "hidden-xs-only", click:"a:viewRecentlyAdded" },
         { title: "Recently Played", class: "hidden-md-and-down", click: "a:viewRecentlyPlayed" },

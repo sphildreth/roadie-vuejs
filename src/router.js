@@ -112,6 +112,15 @@ var router = new VueRouter({
       }
     },         
     {
+      path: '/register',
+      name: 'register',
+      props: true,
+      component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
+      meta: {
+        guest: true
+      }
+    },      
+    {
       path: '/release/:id',
       name: 'release',
       props: true,

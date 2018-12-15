@@ -36,6 +36,7 @@
         .build();   
         
       this.connection.start().catch(function (err) {
+          /* eslint-disable no-console */
           return console.error(err.toString());
       });
 
@@ -54,6 +55,7 @@
 
         this.$axios
           .get(process.env.VUE_APP_API_URL + `/admin/scan`)
+          // eslint-disable-next-line
           .then(response => {   
             this.isScanning = true;            
           });       

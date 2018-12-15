@@ -2,19 +2,26 @@
     <v-container>
         <v-layout row class="text-xs-center">
             <v-flex xs3>
-                <v-card height="500px"></v-card>
+                <v-card height="500px">
+                <v-img
+                    :src='logoUrl'
+                    class="ma-1"
+                ></v-img>                  
+                </v-card>
             </v-flex>
-            <v-flex xs4 class="grey lighten-4">
-                <v-container style="position: relative;top: 13%;" class="text-xs-center">
+            <v-flex xs4 class="grey darken-2">
+                <v-container class="text-xs-center">
                 <v-card flat>
                     <v-card-title primary-title>
                     <h4>Sign In</h4>
                     </v-card-title>
-                    <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-form ref="form" class="ma-2" v-model="valid" lazy-validation>
                         <v-text-field prepend-icon="person" v-model="username" :rules="usernameRules" :counter="20" label="Username" required></v-text-field>
                         <v-text-field prepend-icon="lock" v-model="password" :rules="passwordRules" label="Password" type="password" required></v-text-field>
                         <v-card-actions>
-                            <v-btn :disabled="!valid" @click="submit" primary large block>Login</v-btn>
+                            <v-btn to="/register" round large>Register</v-btn>
+                            <v-spacer></v-spacer>                          
+                            <v-btn :disabled="!valid" @click="submit" round large>Login</v-btn>
                         </v-card-actions>                
                     </v-form>            
                 </v-card>
@@ -37,6 +44,11 @@
         v => !!v || 'Password is required'
       ]
     }),
+    computed: {
+      logoUrl () {
+        return require('@/assets/img/logo.png')
+      }
+    },      
     methods : {
       submit () {
         if (this.$refs.form.validate()) {

@@ -16,6 +16,7 @@
     "moment-timezone": "^0.5.23",
     "numeral": "^2.0.6",
     "topojson": "^3.0.2",
+    "vee-validate": "^2.1.4",
     "vue": "^2.5.17",
     "vue-chartjs": "^3.4.0",
     "vue-moment": "^4.0.0",

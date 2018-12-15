@@ -384,15 +384,15 @@
             
             slider-color="accent"
           >
-            <v-tab>Collections</v-tab>
-            <v-tab>Contributions</v-tab>
-            <v-tab>Playlists</v-tab>
-            <v-tab>Releases 
+            <v-tab v-if="artist.collectionsWithArtistReleases.length > 0">Collections</v-tab>
+            <v-tab v-if="artist.artistContributionReleases.length > 0">Contributions</v-tab>
+            <v-tab v-if="artist.playlistsWithArtistReleases.length > 0">Playlists</v-tab>
+            <v-tab v-if="releases.length > 0">Releases 
               <v-btn icon><v-icon :color="showReleaseTable ? '' : 'accent'" title="Show Release List" @click="showReleaseTable=true">view_list</v-icon></v-btn>
               <v-btn icon><v-icon :color="showReleaseTable ? 'accent' : ''" title="Show Release Cards" @click="showReleaseTable=false">view_module</v-icon></v-btn>
             </v-tab>
-            <v-tab-item>
-              <v-card flat  class="collections">
+            <v-tab-item v-if="artist.collectionsWithArtistReleases.length > 0">
+              <v-card flat class="collections">
                 <v-data-iterator
                   :items="artist.collectionsWithArtistReleases"
                   :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0"
@@ -407,7 +407,7 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="artist.artistContributionReleases.length > 0">
               <v-card flat  class="contributions">
                 <v-data-iterator
                   :items="artist.artistContributionReleases"
@@ -423,7 +423,7 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="artist.playlistsWithArtistReleases.length > 0">
               <v-card flat  class="playlists">
                 <v-data-iterator
                   :items="artist.playlistsWithArtistReleases"
@@ -439,7 +439,7 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="releases.length > 0">
               <v-card flat  class="releases">
                   <v-text-field
                     v-if="showReleaseTable"

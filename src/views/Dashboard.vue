@@ -108,7 +108,7 @@
       <v-card  xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Releases</v-card-title>
         <v-container fluid grid-list-md>
-          <v-data-iterator :items="latestReleases" :total-items="6"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
+          <v-data-iterator :items="latestReleases" :total-items="latestReleases.length"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
               <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
                 <ReleaseCard :release="props.item"></ReleaseCard>
               </v-flex>
@@ -120,7 +120,7 @@
       <v-card  xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Artists</v-card-title>
         <v-container fluid grid-list-md>
-          <v-data-iterator :items="latestArtists" :total-items="6"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
+          <v-data-iterator :items="latestArtists" :total-items="latestArtists.length"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
               <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
                 <ArtistCard :artist="props.item"></ArtistCard>
               </v-flex>
