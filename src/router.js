@@ -26,6 +26,14 @@ var router = new VueRouter({
       }
     },
     {
+      path: '/accountsettings',
+      name: 'accountsettings',
+      component: () => import(/* webpackChunkName: "accountsettings" */ './views/AccountSettings.vue'),
+      meta: {
+        guest: false
+      }      
+    },        
+    {
       path: '/admin',
       name: 'admin',
       component: () => import(/* webpackChunkName: "admin" */ './views/Admin.vue'),

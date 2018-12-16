@@ -71,9 +71,9 @@
         return require('@/assets/img/logo.png')
       }
     },    
-  mounted () {
-    this.$validator.localize('en', this.dictionary);
-  },    
+    mounted () {
+      this.$validator.localize('en', this.dictionary);
+    },    
     methods : {
       submit () {
         let that = this;

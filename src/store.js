@@ -72,12 +72,19 @@ export default new Vuex.Store({
       }      
       return state.authToken;
     },
+    userId: (state, getters) => {
+      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
+      return jwt["roadie_id"];
+    },
     isUserAdmin: (state, getters) => {
-      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]))
+      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
       return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
     },
     isUserEditor() {
       return false;
+    },
+    usersAvatarUrl: (state) => {
+      return (state.user && state.user.avatarUrl) ? state.user.avatarUrl + '?ts=' + new Date().getTime() : '';
     }
   },
   computed: {  

@@ -36,7 +36,7 @@
           <v-icon v-if="hated" color="lime" title="Click to remove hate">fas fa-thumbs-down</v-icon>
           <v-icon v-if="!hated" title="Click to hate">far fa-thumbs-down</v-icon>
         </v-btn>                       
-        <v-btn icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
+        <v-btn v-if="doShowRefresh" icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
           <v-icon title="Refresh">refresh</v-icon>
         </v-btn>        
         <v-menu bottom left class="hidden-lg-and-up">
@@ -68,9 +68,13 @@ export default {
       doShowBookmark: Boolean,
       doShowFavorite: Boolean,
       doShowHated: Boolean,
+      doShowRefresh: {
+        type: Boolean,
+        default: true
+      },
       bookmarked: Boolean,
       favorited: Boolean,
-      hated: Boolean
+      hated: Boolean    
     },
     async mounted() {
       EventBus.$on('loadingStarted', () =>{ this.loading = true; }); 

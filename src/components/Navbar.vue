@@ -12,8 +12,7 @@
             label="Search"
             append-icon="search"
             single-line
-            solo
-            
+            solo            
             @keyup.native="search"
             v-model="searchQuery"
           ></v-text-field>
@@ -38,7 +37,7 @@
       <v-list>
         <v-list-tile to='/admin' v-if="isAdmin" >
           <v-list-tile-action>
-            <v-icon>settings</v-icon>
+            <v-icon>fas fa-cogs</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Admin</v-list-tile-title>
@@ -56,6 +55,14 @@
       </v-list>
       <v-divider></v-divider>     
       <v-list>
+        <v-list-tile to='/accountSettings' >
+          <v-list-tile-action>
+            <v-icon>settings</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Account Settings</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>           
         <v-list-tile @click="openThemeSettings" >
           <v-list-tile-action>
             <v-icon>color_lens</v-icon>
@@ -63,7 +70,7 @@
           <v-list-tile-content>
             <v-list-tile-title>Change Theme</v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>        
+        </v-list-tile>           
         <v-list-tile @click="signout" >
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
@@ -120,7 +127,7 @@ export default {
       return this.$store.state.isLoggedIn ? this.$store.getters.user.username : "";
     },
     currentUserAvatarUrl () {
-      return this.$store.state.isLoggedIn ? this.$store.getters.user.avatarUrl : "";
+        return this.$store.getters.usersAvatarUrl;
     },
     isAdmin () {
       return this.$store.state.isLoggedIn && this.$store.getters.isUserAdmin;

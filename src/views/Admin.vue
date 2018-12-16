@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'settings'"></Toolbar>
+    <Toolbar :menuItems="menuItems" :doShowRefresh=false :toolbarIcon="'settings'"></Toolbar>
     <v-container fluid grid-list-md>
         <div class="col-12">
           <v-card v-show="isScanning">
