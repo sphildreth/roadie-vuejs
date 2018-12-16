@@ -157,7 +157,7 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/stats/library`)
         .then(rr => {
           this.statistics = rr.data.data;
-          this.$store.commit("updateLastScan",rr.data.data.lastScanDate);
+          this.$store.commit("updateLastScan",rr.data.data.lastScan);
             this.$axios
               this.$axios.get(process.env.VUE_APP_API_URL + `/releases?page=1&limit=8&sort=CreatedDate&order=DESC`)
               .then(rr => {

@@ -6,7 +6,16 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   getters: {
     lastScanDate: (state) => {
-      return state.lastScanDate ? state.lastScanDate : "Never";
+      if(!state.lastScanDate) {
+        state.lastScanDate = localStorage.getItem("lastScanDate");
+      }
+      if(!state.lastScanDate) {
+        return "Never";        
+      }
+      if(state.user && state.user.timezone && state.user.timeformat) {        
+        return Vue.options.filters.formatTimeStamp( state.lastScanDate, state.user) + ' [ ' + Vue.options.filters.hoursFromDate(new Date(), state.lastScanDate) + ' hours ago ]';
+      }
+      return state.lastScanDate;
     },
     user: (state) => {
       if(!state.isLoggedIn) {
@@ -82,7 +91,9 @@ export default new Vuex.Store({
       username: null,
       token: null,
       avatarUrl: null,
-      isAdmin: false
+      isAdmin: false,
+      timezone: null,
+      timeformat: null
     }
   },
   mutations: {
@@ -91,6 +102,7 @@ export default new Vuex.Store({
     },
     updateLastScan (state, lastScanDate) {
       state.lastScanDate = lastScanDate;
+      localStorage.setItem("lastScanDate", lastScanDate);
     },
     signinSuccess (state, user) {
       state.isLoggedIn = true;

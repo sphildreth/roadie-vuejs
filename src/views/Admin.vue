@@ -78,4 +78,8 @@
 </script>
 
 <style>
+  #messagesList {
+    max-height: 600px;
+    overflow: auto;
+  }
 </style>

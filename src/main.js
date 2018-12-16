@@ -68,7 +68,6 @@ Vue.filter("padNumber7", function (value) {
   return numeral(value).format("0000000"); 
 });
 
-
 Vue.filter("shortDate", function (date) {
   return moment(date).format("MM-DD-YYYY");
 });
@@ -82,6 +81,12 @@ Vue.filter("formatTimeStamp", function (timestamp, user) {
     .utc(timestamp)
     .tz(user.timezone)
     .format(user.timeformat);
+});
+
+Vue.filter("hoursFromDate", function (fromDate, toDate) {
+  fromDate = fromDate || new Date();
+  toDate = toDate || new Date();
+  return moment(fromDate).diff(toDate, "hours");
 });
 
 Vue.filter("yearsFromDate", function (fromDate, toDate) {
@@ -108,20 +113,3 @@ new Vue({
   },  
   render: h => h(App)
 })
-
-// new Vue({
-//   router,
-//   store,
-//   render: h => h(App),
-//   mounted: function(){
-//     this.$vuetify.dark = this.$store.getters.theme.dark;    
-//     this.$vuetify.theme.primary = this.$store.getters.theme.colors.primary;
-//     this.$vuetify.theme.secondary = this.$store.getters.theme.colors.secondary;
-//     this.$vuetify.theme.accent = this.$store.getters.theme.colors.accent;
-//     this.$vuetify.theme.error = this.$store.getters.theme.colors.error;
-//     this.$vuetify.theme.warning = this.$store.getters.theme.colors.warning;
-//     this.$vuetify.theme.info = this.$store.getters.theme.colors.info;
-//     this.$vuetify.theme.success = this.$store.getters.theme.colors.success;    
-//   }
-// }).$mount('#app')
-
