@@ -64,6 +64,7 @@
                   <v-layout row>
                     <v-flex xs4>
                       <v-switch
+                        color="success"
                         label="Keep Your Activity Private"
                         v-model="profile.isPrivate"
                         data-vv-name="profile.isPrivate" 
@@ -71,6 +72,7 @@
                     </v-flex>
                     <v-flex xs4>
                       <v-switch
+                        color="success"
                         label="Use HTML Player"
                         v-model="profile.doUseHtmlPlayer"
                         data-vv-name="profile.doUseHtmlPlayer" 
