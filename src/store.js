@@ -13,7 +13,7 @@ export default new Vuex.Store({
         return "Never";        
       }
       if(state.user && state.user.timezone && state.user.timeformat) {        
-        return Vue.options.filters.formatTimeStamp( state.lastScanDate, state.user) + ' [ ' + Vue.options.filters.hoursFromDate(new Date(), state.lastScanDate) + ' hours ago ]';
+        return Vue.options.filters.formatTimeStamp( state.lastScanDate, state.user) + ' [ ' + Vue.options.filters.hoursFromDate(null, state.lastScanDate) + ' hours ago ]';
       }
       return state.lastScanDate;
     },

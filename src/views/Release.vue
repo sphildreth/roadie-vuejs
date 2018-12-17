@@ -2,6 +2,7 @@
   <div class="release-detail-container">
     <Toolbar
       :menuItems="menuItems"
+      :adminItems="adminMenuItems"
       :searchItems="seachMenuItems"
       :toolbarIcon="'music_video'"
       :doShowBookmark="true"
@@ -38,7 +39,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img
-                    :src="release.mediumThumbnail.url"
+                    :src="releaseCoverUrl"
                     :alt="release.title"
                     class="ma-1"
                     aspect-ratio="1"
@@ -438,6 +439,7 @@ export default {
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$on("rr:Rescan", this.rescan);
   },
   beforeDestroy() {
     EventBus.$off("rr:Shuffle");
@@ -447,6 +449,7 @@ export default {
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("toolbarRefresh");
     EventBus.$off("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$on("rr:Rescan", this.rescan);
   },  
   async mounted() {
     this.updateData();
@@ -454,7 +457,15 @@ export default {
   computed: {
     searchQuery() {
       return this.release.title;
-    }    
+    },
+    releaseCoverUrl() {
+      return this.release.mediumThumbnail.url ? this.release.mediumThumbnail.url + '?ts' + new Date().getTime() : '';
+    },
+    adminMenuItems() {
+      return !this.$store.getters.isUserAdmin ? [] : [
+        { title: "Rescan", class: "hidden-xs-only", click: "rr:Rescan" },
+      ]
+    }
   },
   methods: {
     internetTitleSearch: function() {
@@ -470,6 +481,13 @@ export default {
       this.modalImage = e;
       this.showModal = true;
     },    
+    rescan: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/release/' + this.release.id)
+      .then(response => {
+        this.updateData();
+      })
+    },
     bookmarkToogle: async function() {
       this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseBookmark/' + this.release.id + '/' + this.release.userBookmarked)
       .then(response => {

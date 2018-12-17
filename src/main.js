@@ -84,9 +84,10 @@ Vue.filter("formatTimeStamp", function (timestamp, user) {
 });
 
 Vue.filter("hoursFromDate", function (fromDate, toDate) {
-  fromDate = fromDate || new Date();
-  toDate = toDate || new Date();
-  return moment(fromDate).diff(toDate, "hours");
+  fromDate = fromDate ? moment.utc(fromDate) : moment.utc();
+  toDate = toDate ?  moment.utc(toDate) : moment.utc();
+  let diff = moment(fromDate).diff(toDate, "hours");
+  return diff < 0 ? 0 : diff ;
 });
 
 Vue.filter("yearsFromDate", function (fromDate, toDate) {

@@ -2,6 +2,7 @@
   <div class="artist-detail-container">
     <Toolbar
       :menuItems="menuItems"
+      :adminItems="adminMenuItems"
       :searchItems="seachMenuItems"
       :toolbarIcon="'fas' +' '+ 'fa-user'"
       :doShowBookmark="true"
@@ -32,7 +33,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img
-                    :src="artist.mediumThumbnail.url"
+                    :src="artistThumbnailUrl"
                     :alt="artist.name"
                     class="ma-1"
                     aspect-ratio="1"
@@ -543,6 +544,7 @@ export default {
     EventBus.$on("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$on("aa:Rescan", this.rescan);
   },
   beforeDestroy() {
     EventBus.$off("aa:Shuffle", this.shuffle);
@@ -553,6 +555,7 @@ export default {
     EventBus.$off("aa:favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$off("aa:Rescan", this.rescan);    
   },
   async mounted() {
     this.updateData();
@@ -561,6 +564,14 @@ export default {
     rating() {
       return this.artist.rating;
     },
+    artistThumbnailUrl() {
+      return this.artist.mediumThumbnail.url ? this.artist.mediumThumbnail.url + '?ts' + new Date().getTime() : '';
+    },
+    adminMenuItems() {
+      return !this.$store.getters.isUserAdmin ? [] : [
+        { title: "Rescan", class: "hidden-xs-only", click: "aa:Rescan" },
+      ]
+    },    
     searchQuery() {
       return this.artist.name;
     }
@@ -580,6 +591,13 @@ export default {
     addAllToQue: function() {},
     playAll: function() {},
     comment: function() {},
+    rescan: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/artist/' + this.artist.id)
+      .then(response => {
+        this.updateData();
+      })
+    },    
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({

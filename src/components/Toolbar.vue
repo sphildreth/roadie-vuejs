@@ -48,7 +48,17 @@
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
-        </v-menu>        
+        </v-menu>      
+        <v-menu v-if="adminItems.length > 0" bottom left class="warning">
+          <v-btn slot="activator" icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile @click="clicked" :data-eventmessage="item.click" v-for="(item, index) in adminItems" :key="index">
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>            
       </v-toolbar-items>      
     </v-toolbar>
     </nav>
@@ -74,7 +84,11 @@ export default {
       },
       bookmarked: Boolean,
       favorited: Boolean,
-      hated: Boolean    
+      hated: Boolean,
+      adminItems: {
+        type: Array,
+        default: () => []
+      } 
     },
     async mounted() {
       EventBus.$on('loadingStarted', () =>{ this.loading = true; }); 

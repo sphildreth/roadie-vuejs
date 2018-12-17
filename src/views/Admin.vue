@@ -68,7 +68,7 @@
       isScanning: false,
       menuItems: [
         {
-          title: "Scan",
+          title: "Scan Inbound",
           class: "hidden-xs-only",
           click: "s:Scan"
         }
