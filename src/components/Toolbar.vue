@@ -54,8 +54,8 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile @click="clicked" :data-eventmessage="item.click" v-for="(item, index) in adminItems" :key="index">
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            <v-list-tile :class="item.class" @click="clicked" :data-eventmessage="item.click" v-for="(item, index) in adminItems" :key="index">
+              <v-list-tile-title >{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>            

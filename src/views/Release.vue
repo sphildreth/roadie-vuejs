@@ -413,6 +413,7 @@
       {{ snackbarText }}
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
+    <confirm ref="confirm"></confirm>
   </div>
 </template>
 
@@ -423,11 +424,12 @@ import ArtistCard from '@/components/ArtistCard';
 import CollectionCard from '@/components/CollectionCard';
 import PlaylistCard from '@/components/PlaylistCard';
 import MediaCard from '@/components/MediaCard';
+import Confirm from '@/views/Confirm';
 
 import { EventBus } from "@/event-bus.js";
 
 export default {
-  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard },
+  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm },
   props: {
     id: String
   },
@@ -440,6 +442,7 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.bookmarkToogle);
     EventBus.$on("rr:Rescan", this.rescan);
+    EventBus.$on("rr:Delete", this.delete);    
   },
   beforeDestroy() {
     EventBus.$off("rr:Shuffle");
@@ -449,7 +452,8 @@ export default {
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("toolbarRefresh");
     EventBus.$off("bookmarkToogle", this.bookmarkToogle);
-    EventBus.$on("rr:Rescan", this.rescan);
+    EventBus.$off("rr:Rescan", this.rescan);
+    EventBus.$off("rr:Delete", this.delete);     
   },  
   async mounted() {
     this.updateData();
@@ -463,7 +467,10 @@ export default {
     },
     adminMenuItems() {
       return !this.$store.getters.isUserAdmin ? [] : [
-        { title: "Rescan", class: "hidden-xs-only", click: "rr:Rescan" },
+        { title: "Delete", class: "warning--text", click: "rr:Delete" },
+        { title: "Edit", click: "rr:Edit" },        
+        { title: "Find Cover", click: "rr:FindCover" },        
+        { title: "Rescan", click: "rr:Rescan" }     
       ]
     }
   },
@@ -486,6 +493,18 @@ export default {
       this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/release/' + this.release.id)
       .then(response => {
         this.updateData();
+      })
+    },
+    delete: async function() {
+      let releaseId = this.release.id;
+      this.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {
+        if(confirm) {
+          this.$axios.post(process.env.VUE_APP_API_URL + '/admin/delete/release/' + releaseId)
+            .then(response => {
+              EventBus.$emit("loadingComplete");
+              this.$router.go(-1)     
+            });
+        }
       })
     },
     bookmarkToogle: async function() {
