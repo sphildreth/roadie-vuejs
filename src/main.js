@@ -98,6 +98,7 @@ Vue.filter("yearsFromDate", function (fromDate, toDate) {
 
 Vue.prototype.$filters = Vue.options.filters;
 Vue.prototype.$moment = moment;
+Vue.prototype.$_ = require('lodash');
 
 new Vue({
   el: '#app',

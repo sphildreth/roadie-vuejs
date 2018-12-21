@@ -12,7 +12,7 @@
       :doShowHated="true"
       :hated="release.userRating && release.userRating.isDisliked"
     ></Toolbar>
-    <v-container fluid grid-list-md>
+    <v-container v-if="coverSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -414,6 +414,38 @@
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
     <confirm ref="confirm"></confirm>
+    <v-container v-if="coverSearchItems.length > 0" fluid grid-list-md>    
+      <v-flex xs1 offset-xs11 >
+        <v-btn color="warning" @click="coverSearchItems = []">Cancel</v-btn>
+      </v-flex>
+      <v-text-field
+        v-model="coverSearchQuery"
+        label="Search Query"
+      ></v-text-field>
+      <vue-dropzone ref="myVueDropzone" id="dropzone" v-on:vdropzone-complete="coverDragUploadComplete" :options="dropzoneOptions"></vue-dropzone>                        
+      <v-data-iterator
+        v-if="coverSearchItems"
+        :items="coverSearchItems"
+        :total-items="coverSearchItems ? coverSearchItems.length : 0"
+        content-tag="v-layout"
+        hide-actions
+        row
+        wrap
+      >
+        <v-flex slot="item" slot-scope="props" xs1>
+          <div>
+            <v-img
+              :src="props.item.mediaUrl"
+              :alt="props.item.title"
+              weight="80"
+              class="ma-1 pointer"
+              @click="selectedCoverImage(props.item.mediaUrl)"
+            ></v-img>
+          </div>
+        </v-flex>
+      </v-data-iterator>       
+    </v-container>     
+
   </div>
 </template>
 
@@ -425,11 +457,12 @@ import CollectionCard from '@/components/CollectionCard';
 import PlaylistCard from '@/components/PlaylistCard';
 import MediaCard from '@/components/MediaCard';
 import Confirm from '@/views/Confirm';
-
 import { EventBus } from "@/event-bus.js";
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 
 export default {
-  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm },
+  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm, vueDropzone: vue2Dropzone },
   props: {
     id: String
   },
@@ -443,6 +476,8 @@ export default {
     EventBus.$on("bookmarkToogle", this.bookmarkToogle);
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);    
+    EventBus.$on("rr:FindCover", this.findCover); 
+    this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
   },
   beforeDestroy() {
     EventBus.$off("rr:Shuffle");
@@ -454,6 +489,7 @@ export default {
     EventBus.$off("bookmarkToogle", this.bookmarkToogle);
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);     
+    EventBus.$off("rr:FindCover", this.findCover);    
   },  
   async mounted() {
     this.updateData();
@@ -472,9 +508,15 @@ export default {
         { title: "Find Cover", click: "rr:FindCover" },        
         { title: "Rescan", click: "rr:Rescan" }     
       ]
+    },
+    fileUploadUrl() {
+      return process.env.VUE_APP_API_URL + '/uploadImage/' + this.release.id;
     }
   },
   methods: {
+    coverDragUploadComplete: function(e) {
+      this.coverSearchItems = [];
+    },
     internetTitleSearch: function() {
       var q = this.searchQuery + ' album';
       var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
@@ -488,6 +530,32 @@ export default {
       this.modalImage = e;
       this.showModal = true;
     },    
+    selectedCoverImage: function(coverUrl) {
+      this.coverSearchItems = [];      
+      EventBus.$emit("loadingStarted");      
+      this.$axios.post(process.env.VUE_APP_API_URL + '/releases/setImageByUrl/'+ this.release.id + '/' +  encodeURIComponent(coverUrl) )
+      .then(response => {
+        if(response.data.isSuccess) {
+          this.release.mediumThumbnail.url = response.data.data.url + '?ts' + new Date().getTime()          
+          this.snackbarText = "Successfully updated Release cover.";
+          this.snackbar = true;          
+        }        
+      })      
+      .finally(() => {
+        EventBus.$emit("loadingComplete");
+      });
+    },
+    findCover: async function() {
+      EventBus.$emit("loadingStarted");
+      this.coverSearchQuery =  this.coverSearchQuery || this.release.artist.artist.text + ' ' + this.release.title;
+      this.$axios.post(process.env.VUE_APP_API_URL + '/images/search/release/' +  encodeURIComponent(this.coverSearchQuery) + '/25')
+      .then(response => {
+        this.coverSearchItems = response.data.data;
+      })      
+      .finally(() => {
+        EventBus.$emit("loadingComplete");
+      });
+    },
     rescan: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/release/' + this.release.id)
@@ -547,6 +615,10 @@ export default {
           };
         })
         .finally(() => {
+          this.dropzoneOptions.url = process.env.VUE_APP_API_URL + '/releases/uploadImage/' + this.release.id;
+          this.dropzoneOptions.headers = { 
+            "Authorization": "Bearer " + this.$store.getters.authToken 
+          };
           EventBus.$emit("loadingComplete");
         });
     },
@@ -584,6 +656,9 @@ export default {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
+    },
+    coverSearchQuery: function() {      
+      this.debouncedFindCover();
     }
   },
   data: () => ({
@@ -591,8 +666,10 @@ export default {
     releaseTab: 2,
     snackbar: false,
     snackbarText: "",
+    coverSearchQuery: "",
     showModal: false,
     modalImage: {},
+    coverSearchItems: [],
     release: {
       status: 0,
       artist: { 
@@ -643,7 +720,12 @@ export default {
         title: "Internet release and Title",
         click: "rr:searchInternetreleaseandTitle"
       }
-    ]
+    ],
+    dropzoneOptions: {
+      thumbnailWidth: 100,
+      maxFilesize: 0.5,
+      dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>Upload new Cover"
+    }    
   })
 };
 </script>
