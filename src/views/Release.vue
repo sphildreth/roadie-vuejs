@@ -477,6 +477,7 @@ export default {
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);    
     EventBus.$on("rr:FindCover", this.findCover); 
+    EventBus.$on("rr:Edit", this.edit); 
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
   },
   beforeDestroy() {
@@ -490,6 +491,7 @@ export default {
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);     
     EventBus.$off("rr:FindCover", this.findCover);    
+    EventBus.$off("rr:Edit", this.edit);     
   },  
   async mounted() {
     this.updateData();
@@ -516,6 +518,9 @@ export default {
   methods: {
     coverDragUploadComplete: function(e) {
       this.coverSearchItems = [];
+    },
+    edit: function() {
+      this.$router.push('/release/edit/' + this.release.id);
     },
     internetTitleSearch: function() {
       var q = this.searchQuery + ' album';

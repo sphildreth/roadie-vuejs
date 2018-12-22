@@ -297,8 +297,7 @@
             this.originalUsername = this.profile.username;
             this.loaded = true;
             EventBus.$emit("loadingComplete");
-          });
-      
+          });      
       },
       resetImage() {
         this.imageUrl = this.profile.avatarUrl;

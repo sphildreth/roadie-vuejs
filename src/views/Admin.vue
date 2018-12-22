@@ -25,11 +25,13 @@
   export default {
     components: { Toolbar, Confirm }, 
     created() {
+      EventBus.$on("s:ClearCache", this.clearCache);      
       EventBus.$on("s:ScanInbound", this.scanInbound);
       EventBus.$on("s:ScanLibrary", this.scanLibrary);
       EventBus.$on("toolbarRefresh", this.updateData);
     },
     beforeDestroy() {
+      EventBus.$off("s:ClearCache", this.clearCache);            
       EventBus.$off("s:ScanInbound", this.scanInbound);
       EventBus.$off("s:ScanLibrary", this.scanLibrary);      
       EventBus.$off("toolbarRefresh", this.updateData);
@@ -54,6 +56,13 @@
     methods: {          
       updateData: async function() {
         EventBus.$emit("loadingComplete");        
+      },
+      clearCache: async function () {
+        this.$axios
+          .get(process.env.VUE_APP_API_URL + `/admin/clearcache`)
+          // eslint-disable-next-line
+          .then(response => {   
+          }); 
       },
       scanInbound: async function() {
         this.$axios
@@ -82,9 +91,9 @@
       connection: null,
       isScanning: false,
       menuItems: [
+        { title: "Clear Cache", class: "hidden-xs-only", click: "s:ClearCache" },        
         { title: "Scan Inbound", class: "hidden-xs-only", click: "s:ScanInbound" },
         { title: "Scan Library", class: "hidden-xs-only", click: "s:ScanLibrary" }        
-
       ],      
     })
   }

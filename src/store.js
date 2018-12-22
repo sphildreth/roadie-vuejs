@@ -80,8 +80,9 @@ export default new Vuex.Store({
       let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
       return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
     },
-    isUserEditor() {
-      return false;
+    isUserEditor: (state, getters) => {
+      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
+      return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin" || jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Editor";
     },
     usersAvatarUrl: (state) => {
       return (state.user && state.user.avatarUrl) ? state.user.avatarUrl + '?ts=' + new Date().getTime() : '';

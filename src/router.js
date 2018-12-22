@@ -38,7 +38,8 @@ var router = new VueRouter({
       name: 'admin',
       component: () => import(/* webpackChunkName: "admin" */ './views/Admin.vue'),
       meta: {
-        guest: false
+        guest: false,
+        is_admin: true
       }      
     },        
     {
@@ -138,6 +139,16 @@ var router = new VueRouter({
       }
     },       
     {
+      path: '/release/edit/:id',
+      name: 'releaseEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "releaseEdit" */ './views/ReleaseEdit.vue'),
+      meta: {
+        guest: false,
+        is_admin: true
+      }
+    },      
+    {
       path: '/search/:q',
       name: 'search',
       props: true,
@@ -191,7 +202,7 @@ router.beforeEach((to, from, next) => {
         })
     } else {
         if(to.matched.some(record => record.meta.is_admin)) {
-            if(store.isUserAdmin()){
+            if(store.getters.isUserAdmin){
                 next()
             }
             else{
