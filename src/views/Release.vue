@@ -122,8 +122,8 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.profile">
-              <v-card  flat class="profile darken-3">
-                <v-card-text v-html="release.profile">Loading...</v-card-text>
+              <v-card flat class="profile darken-3 pa-2">
+                <vue-markdown>{{ release.profile }}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -458,11 +458,12 @@ import PlaylistCard from '@/components/PlaylistCard';
 import MediaCard from '@/components/MediaCard';
 import Confirm from '@/views/Confirm';
 import { EventBus } from "@/event-bus.js";
-import vue2Dropzone from 'vue2-dropzone'
-import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import vue2Dropzone from 'vue2-dropzone';
+import 'vue2-dropzone/dist/vue2Dropzone.min.css';
+import VueMarkdown from 'vue-markdown';
 
 export default {
-  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm, vueDropzone: vue2Dropzone },
+  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm, vueDropzone: vue2Dropzone, VueMarkdown },
   props: {
     id: String
   },
@@ -516,7 +517,7 @@ export default {
     }
   },
   methods: {
-    coverDragUploadComplete: function(e) {
+    coverDragUploadComplete: function() {
       this.coverSearchItems = [];
     },
     edit: function() {
@@ -564,7 +565,7 @@ export default {
     rescan: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/release/' + this.release.id)
-      .then(response => {
+      .then(() => {
         this.updateData();
       })
     },
@@ -573,7 +574,7 @@ export default {
       this.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {
         if(confirm) {
           this.$axios.post(process.env.VUE_APP_API_URL + '/admin/delete/release/' + releaseId)
-            .then(response => {
+            .then(() => {
               EventBus.$emit("loadingComplete");
               this.$router.go(-1)     
             });
