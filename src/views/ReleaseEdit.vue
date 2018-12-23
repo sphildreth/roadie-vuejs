@@ -14,7 +14,7 @@
         <v-flex xs11>
           <v-btn @click="changeAvatar" color="info">Upload new photo</v-btn>     
           <v-btn @click="resetImage" color="">Reset</v-btn>     
-          <div class="caption ml-2">Allowed JPG, GIF or PNG. Image will be converted to JPG and resized to 320x320 pixels.</div>
+          <div class="caption ml-2">Allowed JPG, GIF or PNG. Image will be converted to JPG and Release thumbnail will be resized to 320x320 pixels.</div>
         </v-flex>
       </v-layout>      
       <v-layout row>
@@ -54,6 +54,7 @@
           data-vv-name="release.artist.value" 
           label="Artist"
           append-icon="fas fa-database"
+          return-object
         ></v-autocomplete>  
       </v-layout>     
       <v-layout row>
@@ -139,7 +140,7 @@
         <v-combobox
           v-model="release.alternateNamesList"
           label="Alternate Names"
-          name="alternateNames"
+          name="alternateNamesList"
           multiple
           deletable-chips
           clearable
@@ -151,8 +152,10 @@
           :items="lookupData.genreItems"
           v-model="release.genres"       
           :search-input.sync="searchForGenre"
+          @change="modifiedGenres = true"
           :loading="searchGenreLoading"
           label="Genres"
+          return-object
           multiple
           deletable-chips
           clearable
@@ -182,6 +185,96 @@
           chips
         ></v-combobox>
       </v-layout>        
+      <v-layout row>
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.amgId"
+            label="All Music Id"
+            v-validate="'max:100'" 
+            :counter="100" 
+            data-vv-name="release.amgId" 
+            name="amgId"
+            :error-messages="errors.collect('release.amgId')" 
+          ></v-text-field>        
+        </v-flex>
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.discogsId"
+            label="Discogs Id"
+            v-validate="'max:50'" 
+            :counter="50" 
+            data-vv-name="release.discogsId" 
+            name="discogsId"
+            :error-messages="errors.collect('release.discogsId')" 
+          ></v-text-field>        
+        </v-flex>
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.iTunesId"
+            label="iTunes Id"
+            v-validate="'max:100'" 
+            :counter="100" 
+            data-vv-name="release.iTunesId" 
+            name="iTunesId"
+            :error-messages="errors.collect('release.iTunesId')" 
+          ></v-text-field>        
+        </v-flex>
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.lastFMId"
+            label="Last FM Id"
+            v-validate="'max:100'" 
+            :counter="100" 
+            data-vv-name="release.lastFMId" 
+            name="lastFMId"
+            :error-messages="errors.collect('release.lastFMId')" 
+          ></v-text-field>        
+        </v-flex>                        
+      </v-layout>
+      <v-layout row>
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.musicBrainzId"
+            label="Musicbrainz Id"
+            v-validate="'max:100'" 
+            :counter="100" 
+            data-vv-name="release.musicBrainzId" 
+            name="musicBrainzId"
+            :error-messages="errors.collect('release.musicBrainzId')" 
+          ></v-text-field>        
+        </v-flex>      
+        <v-flex xs3>
+          <v-text-field
+            v-model="release.spotifyId"
+            label="SpotifyId Id"
+            v-validate="'max:100'" 
+            :counter="100" 
+            data-vv-name="release.spotifyId" 
+            name="spotifyId"
+            :error-messages="errors.collect('release.spotifyId')" 
+          ></v-text-field>        
+        </v-flex>    
+        <v-flex xs6>
+          <v-text-field
+            v-model="release.lastFMSummary"
+            label="Last FM Summary"
+            :counter="1000" 
+            data-vv-name="release.lastFMSummary" 
+            name="lastFMSummary"
+            :error-messages="errors.collect('release.lastFMSummary')" 
+          ></v-text-field>        
+        </v-flex>                   
+      </v-layout>
+      <v-layout row>
+        <v-flex xs12>
+          <v-card class="mt-3 mb-3">
+            <v-card-title>Profile</v-card-title>
+            <v-card-text>
+              <markdown-editor v-model="release.profile" ref="profileEditor"></markdown-editor>        
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </v-container>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
       {{ snackbarText }}
@@ -253,11 +346,19 @@
           .then(rr => {
             this.release = rr.data.data;
             this.loaded = true;
-            // Setup values to work with the autocompletes
+            // ▜ Setup values to work with the autocompletes
             this.release.artist = {
               text: this.release.artist.artist.text,
               value: this.release.artist.artist.value
             };
+            this.release.genres = this.release.genres || [];
+            this.release.genres.forEach((g) => {
+              this.lookupData.genreItems.push({
+                text: g.text,
+                value: g.value
+              })
+            });
+            // ▟
             this.release.releaseDate = new Date(this.release.releaseDate).toISOString().substr(0, 10)
             this.imageUrl = this.release.mediumThumbnail.url + '?ts=' + new Date().getTime();
             this.release.alternateNames = this.release.alternateNames || [];
@@ -290,7 +391,6 @@
                     text: this.release.artist.text,
                     value: this.release.artist.value
                   })
-                  this.lookupData.genreItems = this.release.genres;
                   EventBus.$emit("loadingComplete");                
                 });
               });
@@ -300,46 +400,22 @@
         let that = this;
         this.$validator.validateAll().then(result => {
           if(result) {
-            // var data = {
-            //   userId: this.$store.getters.userId,
-            //   concurrencyStamp: that.profile.concurrencyStamp,              
-            //   isPrivate: that.profile.isPrivate,
-            //   doUseHtmlPlayer: that.profile.doUseHtmlPlayer,
-            //   userName: that.profile.userName,
-            //   apiToken: that.profile.apiToken,
-            //   email: that.profile.email,
-            //   timeformat: that.profile.timeformat,
-            //   playerTrackLimit: that.profile.playerTrackLimit,
-            //   randomReleaseLimit: that.profile.randomReleaseLimit,
-            //   recentlyPlayedLimit: that.profile.recentlyPlayedLimit,
-            //   ftpUrl: that.profile.ftpUrl,
-            //   ftpDirectory: that.profile.ftpDirectory,
-            //   ftpUsername: that.profile.ftpUsername,
-            //   profile: that.profile.profile,
-            //   timezone: this.profile.timezone,
-            //   password: this.password,
-            //   passwordConfirmation: this.passwordConfirmation
-            // }
-            // if(that.imageUrl != that.profile.avatarUrl) {
-            //   data.avatardata = that.imageUrl;
-            // }           
-            // this.$axios
-            //   .post('/users/profile/edit',data)
-            //   .then(response => {
-            //     if(!response.data.isSuccess) {
-            //       that.snackbarText = "An error has occured";
-            //       that.snackbar = true;   
-            //       return false;
-            //     }
-            //     if(that.originalEmail != that.profile.email || that.originalUsername != that.profile.username) {
-            //       that.alert = true;
-            //     } else {
-            //       that.snackbarText = "Successfully Edit Account settings";
-            //       that.snackbar = true;                
-            //       this.$store.commit("signinSuccess", response.data);            
-            //       this.updateData();      
-            //     }
-            // });
+            if(this.imageUrl != that.release.mediumThumbnail.url)
+            {
+              that.release.newThumbnailData = this.imageUrl;
+              that.release.mediumThumbnail = null;
+              that.release.thumbnail = null;
+            }     
+            this.$axios
+              .post('/releases/edit',that.release)
+              .then(response => {
+                if(!response.data.isSuccess) {
+                  that.snackbarText = "An error has occured";
+                  that.snackbar = true;   
+                  return false;
+                }
+                this.$router.go(-1);
+            });
           }
         });
       },
@@ -370,12 +446,14 @@
         this.searchGenreLoading = true;
         this.$axios.get(process.env.VUE_APP_API_URL + '/genres?filter=' + val + "&limit=10")
         .then(res => {
-          //this.lookupData.genreItems = this.release.genres;;
           res.data.rows.forEach((g) => {
-            this.lookupData.genreItems.push({
+            var g = {
               text: g.genre.text,
               value: g.genre.value
-            })
+            };
+            if(!this.lookupData.genreItems.includes(g)) {
+              this.lookupData.genreItems.push(g);
+            }
           })
         })
         .catch(err => {
@@ -404,6 +482,7 @@
     },
     data: () => ({
       loaded: false,
+      modifiedGenres: false,
       showReleaseDatePicker: false,
       searchArtistsLoading: false,
       searchGenreLoading: false,
