@@ -33,6 +33,8 @@
       EventBus.$on('r:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$on('r:viewAll', this.viewAll);
       EventBus.$on('toolbarRefresh', this.updateData);
+      EventBus.$on('r:favoriteToggle', (info) => this.favoriteToggle(info));    
+      EventBus.$on('r:dislikeToggle', (info) => this.dislikeToggle(info)); 
     },    
     beforeDestroy() {
       EventBus.$off('r:viewRandom', this.viewRandom);
@@ -43,15 +45,16 @@
       EventBus.$off('r:viewRecentlyPlayed', this.viewRecentlyPlayed);
       EventBus.$off('r:viewAll', this.viewAll);
       EventBus.$off('toolbarRefresh', this.updateData);
+      EventBus.$off('r:favoriteToggle');    
+      EventBus.$off('r:dislikeToggle'); 
+
     },    
     async mounted() {
-      this.viewRandom();
-      EventBus.$on('r:ratingChange', (info) => this.ratingChange(info));   
-      EventBus.$on('r:favoriteToggle', (info) => this.favoriteToggle(info));    
     },  
     methods: {
       resetView: function(){
           this.doRandomize = false;
+          this.currentView = null;
           this.filterFavoriteOnly = false;
           this.pagination.sortOrder = "DESC";
           this.pagination.page = 1;
@@ -82,8 +85,8 @@
           this.updateData();
       },
       viewStarred: function() {
-          this.currentView = "favorite";
           this.resetView();                
+          this.currentView = "favorite";          
           this.filterFavoriteOnly = true;          
           this.updateData();
       },        
@@ -97,9 +100,12 @@
         EventBus.$emit("loadingStarted"); 
           this.$axios.get(process.env.VUE_APP_API_URL + `/releases?page=${ this.pagination.page }&limit=${ this.pagination.rowsPerPage }&order=${ this.pagination.sortOrder  }&sort=${ this.pagination.sortBy }&doRandomize=${ this.doRandomize}&filterFavoriteOnly=${ this.filterFavoriteOnly}`)
           .then(response => {
-            this.items = response.data.rows;
-            this.pagination.totalItems = response.data.totalCount;    
-            EventBus.$emit("loadingComplete");    
+            this.items = [];
+            this.$nextTick(() => {
+              this.items = response.data.rows;
+              this.pagination.totalItems = response.data.totalCount;    
+              EventBus.$emit("loadingComplete");    
+            })
           });        
       },
       ratingChange: async function(changeInfo) {
@@ -121,7 +127,7 @@
         var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)
         .then(response => {
-          if(response.data.isSuccess && toggleInfo.isFavorite > 0) {
+          if(response.data.isSuccess && toggleInfo.isFavorite) {
             that.snackbarText = "Release is now a favorite";
             that.snackbar = true;
           } else if (response.data.isSuccess) {
@@ -134,7 +140,20 @@
             });
           }            
         });
-      }      
+      },
+      dislikeToggle: async function(toggleInfo) {
+        var that = this;
+        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
+        .then(response => {
+          if(response.data.isSuccess && toggleInfo.isDisliked) {
+              this.snackbarText = "You now hate this Release";
+              this.snackbar = true;
+          } else if (response.data.isSuccess) {
+              this.snackbarText = "You no longer hate this Release";
+              this.snackbar = true;
+          }          
+        });
+      }          
     },
     watch: {
       pagination: { 
@@ -145,7 +164,7 @@
     },
     data: () => ({
       rowsPerPageItems: [12, 36, 60, 120],
-      doRandomize: false,
+      doRandomize: true,
       filterFavoriteOnly: false,
       snackbar: false,
       snackbarText: "",

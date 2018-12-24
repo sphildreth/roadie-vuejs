@@ -474,7 +474,9 @@ export default {
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("toolbarRefresh", this.updateData);
-    EventBus.$on("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$on("toggleBookmark", this.toggleBookmark);
+    EventBus.$on("favoriteToogle", this.toggleFavorite);    
+    EventBus.$on("hateToogle", this.toggleHated);    
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);    
     EventBus.$on("rr:FindCover", this.findCover); 
@@ -488,7 +490,9 @@ export default {
     EventBus.$off("rr:Comment");
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("toolbarRefresh");
-    EventBus.$off("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$off("toggleBookmark", this.toggleBookmark);
+    EventBus.$off("favoriteToogle", this.toggleFavorite);    
+    EventBus.$off("hateToogle", this.toggleHated);    
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);     
     EventBus.$off("rr:FindCover", this.findCover);    
@@ -528,6 +532,36 @@ export default {
       var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
       window.open(url, "_blank");
     },    
+    toggleFavorite: async function() {
+      this.release.userRating = this.release.userRating || {};
+      this.release.userRating.isFavorite = this.release.userRating ? !this.release.userRating.isFavorite : true
+      this.$axios
+        .post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + this.release.id + '/' + this.release.userRating.isFavorite)
+        .then(response => {
+          if(response.data.isSuccess && this.release.userRating.isFavorite) {
+              this.snackbarText = "Release is now a favorite";
+              this.snackbar = true;
+          } else if (response.data.isSuccess) {
+              this.snackbarText = "Release is no longer a favorite";
+              this.snackbar = true;
+          }           
+        });
+    },     
+    toggleHated: async function() {
+      this.release.userRating = this.release.userRating || {};
+      this.release.userRating.isDisliked = this.release.userRating ? !this.release.userRating.isDisliked : true
+      this.$axios
+        .post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + this.release.id + '/' + this.release.userRating.isDisliked)
+        .then(response => {
+          if(response.data.isSuccess && this.release.userRating.isDisliked) {
+              this.snackbarText = "You now hate this Release";
+              this.snackbar = true;
+          } else if (response.data.isSuccess) {
+              this.snackbarText = "You no longer hate this Release";
+              this.snackbar = true;
+          }           
+        });
+    },       
     shuffle: function() {},
     addToQue: function() {},
     download: function() {},
@@ -581,7 +615,7 @@ export default {
         }
       })
     },
-    bookmarkToogle: async function() {
+    toggleBookmark: async function() {
       this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseBookmark/' + this.release.id + '/' + this.release.userBookmarked)
       .then(response => {
           if(!this.release.userBookmarked) {

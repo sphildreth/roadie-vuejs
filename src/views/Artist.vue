@@ -541,7 +541,7 @@ export default {
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
     EventBus.$on("aa:Comment", this.comment);
     EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$on("aa:favoriteToogle", this.toggleFavorite);
+    EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.bookmarkToogle);
     EventBus.$on("aa:Rescan", this.rescan);
@@ -552,7 +552,7 @@ export default {
     EventBus.$off("aa:AddAllToQue", this.addAllToQue);
     EventBus.$off("aa:Comment", this.comment);
     EventBus.$off("aa:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$off("aa:favoriteToogle", this.toggleFavorite);
+    EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.bookmarkToogle);
     EventBus.$off("aa:Rescan", this.rescan);    
