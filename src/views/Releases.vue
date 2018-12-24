@@ -108,21 +108,6 @@
             })
           });        
       },
-      ratingChange: async function(changeInfo) {
-        var that = this;
-        if(changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseRating/' + changeInfo.releaseId + '/' + changeInfo.newVal)
-          .then(response => {
-              if(response.data.isSuccess && changeInfo.newVal > 0) {
-                that.snackbarText = "Successfully set rating";
-                that.snackbar = true;
-              } else if (response.data.isSuccess) {
-                that.snackbarText = "Successfully removed rating";
-                that.snackbar = true;
-              }
-          });
-        }
-      },
       favoriteToggle: async function(toggleInfo) {
         var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)

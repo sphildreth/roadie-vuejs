@@ -43,6 +43,25 @@ export default {
                     });           
                 });
             });
-        }        
+        },
+        dislikeToggle(toggleInfo) {
+          return new Promise(resolve => {
+              var that = this;
+              this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistDisliked/' + toggleInfo.artistId + '/' + toggleInfo.isDisliked)
+              .then(response => {
+                if(response.data.isSuccess && toggleInfo.isDisliked) {
+                  that.snackbarText = "You now hate this Artist";
+                  that.snackbar = true;
+                } else if (response.data.isSuccess) {
+                  that.snackbarText = "You no longer hate this Artist";
+                  that.snackbar = true;
+                } 
+                resolve({ 
+                    isSuccess: response.data.isSuccess, 
+                    isFavorite: toggleInfo.isFavorite
+                });           
+              });
+          });
+      }                  
     }
 }

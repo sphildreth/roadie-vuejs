@@ -31,7 +31,6 @@
               >favorite</v-icon>
               <v-rating
                 v-model="release.rating"
-                class
                 background-color="orange lighten-3"
                 color="orange"
                 small
@@ -99,7 +98,6 @@ export default {
     listNumber: Number
   },
   data: () => ({
-    loaded: false,
     userRating: {
       isFavorite: false,
       isDisliked: false
