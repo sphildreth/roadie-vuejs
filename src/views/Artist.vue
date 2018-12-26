@@ -12,7 +12,7 @@
       :doShowHated="true"
       :hated="artist.userRating && artist.userRating.isDisliked"
     ></Toolbar>
-    <v-container fluid grid-list-md>
+    <v-container v-if="artistImageSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -32,12 +32,7 @@
             <v-flex xs12>
               <v-layout row wrap>
                 <v-flex xs3>
-                  <v-img
-                    :src="artistThumbnailUrl"
-                    :alt="artist.name"
-                    class="ma-1"
-                    aspect-ratio="1"
-                  ></v-img>
+                  <v-img :src="artistThumbnailUrl" :alt="artist.name" class="ma-1" aspect-ratio="1"></v-img>
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-text-field
@@ -89,13 +84,13 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary"  v-model="tab" slider-color="accent">
+          <v-tabs right color="primary" v-model="tab" slider-color="accent">
             <v-tab v-if="artist.images.length">Images</v-tab>
             <v-tab v-if="artist.bioContext">Biography</v-tab>
             <v-tab v-if="artist.profile">Profile</v-tab>
             <v-tab>Metadata Sources</v-tab>
             <v-tab-item v-if="artist.images.length">
-              <v-card  flat class="images darken-3">
+              <v-card flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
                   <v-layout row wrap>
                     <v-flex v-for="(image, index) in artist.images" :key="image.url" xs2>
@@ -124,18 +119,17 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
-              <v-card  max-height="290px" flat class="biography darken-3">
+              <v-card max-height="290px" flat class="biography darken-3">
                 <v-card-text v-html="'<p>' + artist.bioContext + '</p>'">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
-              <v-card  flat class="profile darken-3">
+              <v-card flat class="profile darken-3">
                 <v-card-text v-html="artist.profile">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-data-table
-                
                 :headers="metaDataHeaders"
                 :items="metaDataSources()"
                 class="elevation-1"
@@ -277,13 +271,13 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12 sm6>
-          <v-tabs class="artist-lists" color="primary"  slider-color="accent">
+          <v-tabs class="artist-lists" color="primary" slider-color="accent">
             <v-tab v-if="artist.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="artist.genres.length">Genres</v-tab>
             <v-tab v-if="artist.tagsList.length">Tags</v-tab>
             <v-tab v-if="artist.urLsList.length">Urls</v-tab>
             <v-tab-item v-if="artist.alternateNamesList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in artist.alternateNamesList">
                   <v-list-tile :key="`al-${name}-${index}`">
                     <v-list-tile-content>
@@ -298,7 +292,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.genres.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in artist.genres">
                   <v-list-tile :key="`g-${name}-${index}`">
                     <v-list-tile-content>
@@ -310,7 +304,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.tagsList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in artist.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -322,7 +316,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="artist.urLsList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in artist.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -338,11 +332,11 @@
           </v-tabs>
         </v-flex>
         <v-flex d-flex xs12 sm6>
-          <v-tabs class="artist-lists" color="primary"  slider-color="accent">
+          <v-tabs class="artist-lists" color="primary" slider-color="accent">
             <v-tab v-if="artist.associatedArtists.length">Associated Artists</v-tab>
             <v-tab>Labels</v-tab>
             <v-tab-item v-if="artist.associatedArtists.length">
-              <v-card flat  class="labels">
+              <v-card flat class="labels">
                 <v-data-iterator
                   :items="artist.associatedArtists"
                   :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0"
@@ -358,7 +352,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item>
-              <v-card flat  class="artist-labels">
+              <v-card flat class="artist-labels">
                 <v-data-iterator
                   :items="artist.artistLabels"
                   :total-items="artist.artistLabels ? artist.artistLabels.length : 0"
@@ -378,19 +372,25 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <v-tabs
-            class="artist-lists"
-            color="primary"
-            v-model="releaseTab"
-            
-            slider-color="accent"
-          >
+          <v-tabs class="artist-lists" color="primary" v-model="releaseTab" slider-color="accent">
             <v-tab v-if="artist.collectionsWithArtistReleases.length > 0">Collections</v-tab>
             <v-tab v-if="artist.artistContributionReleases.length > 0">Contributions</v-tab>
             <v-tab v-if="artist.playlistsWithArtistReleases.length > 0">Playlists</v-tab>
-            <v-tab v-if="releases.length > 0">Releases 
-              <v-btn icon><v-icon :color="showReleaseTable ? '' : 'accent'" title="Show Release List" @click="showReleaseTable=true">view_list</v-icon></v-btn>
-              <v-btn icon><v-icon :color="showReleaseTable ? 'accent' : ''" title="Show Release Cards" @click="showReleaseTable=false">view_module</v-icon></v-btn>
+            <v-tab v-if="releases.length > 0">Releases
+              <v-btn icon>
+                <v-icon
+                  :color="showReleaseTable ? '' : 'accent'"
+                  title="Show Release List"
+                  @click="showReleaseTable=true"
+                >view_list</v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon
+                  :color="showReleaseTable ? 'accent' : ''"
+                  title="Show Release Cards"
+                  @click="showReleaseTable=false"
+                >view_module</v-icon>
+              </v-btn>
             </v-tab>
             <v-tab-item v-if="artist.collectionsWithArtistReleases.length > 0">
               <v-card flat class="collections">
@@ -409,7 +409,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.artistContributionReleases.length > 0">
-              <v-card flat  class="contributions">
+              <v-card flat class="contributions">
                 <v-data-iterator
                   :items="artist.artistContributionReleases"
                   :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0"
@@ -425,7 +425,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.playlistsWithArtistReleases.length > 0">
-              <v-card flat  class="playlists">
+              <v-card flat class="playlists">
                 <v-data-iterator
                   :items="artist.playlistsWithArtistReleases"
                   :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0"
@@ -441,16 +441,16 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="releases.length > 0">
-              <v-card flat  class="releases">
-                  <v-text-field
-                    v-if="showReleaseTable"
-                    class="ml-4 mr-4"
-                    v-model="releaseTableSearch"
-                    append-icon="search"
-                    label="Filter"
-                    single-line
-                    hide-details
-                  ></v-text-field>
+              <v-card flat class="releases">
+                <v-text-field
+                  v-if="showReleaseTable"
+                  class="ml-4 mr-4"
+                  v-model="releaseTableSearch"
+                  append-icon="search"
+                  label="Filter"
+                  single-line
+                  hide-details
+                ></v-text-field>
                 <v-data-table
                   v-if="showReleaseTable"
                   :headers="releaseHeaders"
@@ -461,17 +461,18 @@
                   <template slot="items" slot-scope="props">
                     <td>
                       <router-link :to="'/release/' + props.item.id">
-                      <v-img
-                        :src="props.item.thumbnailUrl"
-                        :alt="props.item.title"
-                        width="40"
-                        height="40"
-                        class="mt-1 release-grid-image"></v-img>                      
-                      <span class="release-grid-title secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer">                      
-                      {{ props.item.title }}
-                      </span>
+                        <v-img
+                          :src="props.item.thumbnailUrl"
+                          :alt="props.item.title"
+                          width="40"
+                          height="40"
+                          class="mt-1 release-grid-image"
+                        ></v-img>
+                        <span
+                          class="release-grid-title secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
+                        >{{ props.item.title }}</span>
                       </router-link>
-                      </td>
+                    </td>
                     <td>{{ props.item.year }}</td>
                     <td>{{ props.item.trackCount }}</td>
                     <td>{{ props.item.duration }}</td>
@@ -504,6 +505,40 @@
       {{ snackbarText }}
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
+    <confirm ref="confirm"></confirm>    
+    <v-container v-if="artistImageSearchItems.length > 0" fluid grid-list-md>
+      <v-flex xs1 offset-xs11>
+        <v-btn color="warning" @click="artistImageSearchItems = []">Cancel</v-btn>
+      </v-flex>
+      <v-text-field v-model="artistImageSearchQuery" label="Search Query"></v-text-field>
+      <vue-dropzone
+        ref="myVueDropzone"
+        id="dropzone"
+        v-on:vdropzone-complete="coverDragUploadComplete"
+        :options="dropzoneOptions"
+      ></vue-dropzone>
+      <v-data-iterator
+        v-if="artistImageSearchItems"
+        :items="artistImageSearchItems"
+        :total-items="artistImageSearchItems ? artistImageSearchItems.length : 0"
+        content-tag="v-layout"
+        hide-actions
+        row
+        wrap
+      >
+        <v-flex slot="item" slot-scope="props" xs1>
+          <div>
+            <v-img
+              :src="props.item.mediaUrl"
+              :alt="props.item.title"
+              weight="80"
+              class="ma-1 pointer"
+              @click="selectedArtistImage(props.item.mediaUrl)"
+            ></v-img>
+          </div>
+        </v-flex>
+      </v-data-iterator>
+    </v-container>    
   </div>
 </template>
 
@@ -517,6 +552,10 @@ import PlaylistCard from "@/components/PlaylistCard";
 import ReleaseWithTracksCard from "@/components/ReleaseWithTracksCard";
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
+import Confirm from "@/views/Confirm";
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import VueMarkdown from "vue-markdown";
 
 import artistMixin from "@/mixins/artist.js";
 
@@ -530,7 +569,10 @@ export default {
     ReleaseCard,
     CollectionCard,
     PlaylistCard,
-    ReleaseWithTracksCard
+    ReleaseWithTracksCard,
+    Confirm,
+    vueDropzone: vue2Dropzone,
+    VueMarkdown    
   },
   props: {
     id: String
@@ -541,10 +583,17 @@ export default {
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
     EventBus.$on("aa:Comment", this.comment);
     EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
+    EventBus.$on("aa:searchArtistsWithName", this.searchArtistsWithName);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
-    EventBus.$on("bookmarkToogle", this.bookmarkToogle);
+    EventBus.$on("bookmarkToogle", this.toogleBookmark);
+    EventBus.$on("hateToogle", this.toggleHated);    
     EventBus.$on("aa:Rescan", this.rescan);
+    EventBus.$on("aa:Delete", this.delete);
+    EventBus.$on("aa:DeleteReleases", this.deleteReleases);    
+    EventBus.$on("aa:FindArtistImage", this.findArtistImage);
+    EventBus.$on("aa:Edit", this.edit);    
+    this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);    
   },
   beforeDestroy() {
     EventBus.$off("aa:Shuffle", this.shuffle);
@@ -552,10 +601,16 @@ export default {
     EventBus.$off("aa:AddAllToQue", this.addAllToQue);
     EventBus.$off("aa:Comment", this.comment);
     EventBus.$off("aa:searchInternetArtist", this.internetArtistSearch);
+    EventBus.$off("aa:searchArtistsWithName", this.searchArtistsWithName);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
-    EventBus.$off("bookmarkToogle", this.bookmarkToogle);
-    EventBus.$off("aa:Rescan", this.rescan);    
+    EventBus.$off("bookmarkToogle", this.toogleBookmark);
+    EventBus.$on("hateToogle", this.toggleHated);
+    EventBus.$off("aa:Rescan", this.rescan);
+    EventBus.$off("aa:Delete", this.delete);
+    EventBus.$off("aa:DeleteReleases", this.deleteReleases);        
+    EventBus.$off("aa:FindArtistImage", this.findArtistImage);
+    EventBus.$off("aa:Edit", this.edit);        
   },
   async mounted() {
     this.updateData();
@@ -565,18 +620,29 @@ export default {
       return this.artist.rating;
     },
     artistThumbnailUrl() {
-      return this.artist.mediumThumbnail.url ? this.artist.mediumThumbnail.url + '?ts' + new Date().getTime() : '';
+      return this.artist.mediumThumbnail.url
+        ? this.artist.mediumThumbnail.url + "?ts" + new Date().getTime()
+        : "";
     },
     adminMenuItems() {
-      return !this.$store.getters.isUserAdmin ? [] : [
-        { title: "Rescan", class: "hidden-xs-only", click: "aa:Rescan" },
-      ]
-    },    
+      return !this.$store.getters.isUserAdmin
+        ? []
+        : [
+            { title: "Delete", class: "warning--text", click: "aa:Delete" },
+            { title: "Delete Releases", class: "warning--text", click: "aa:DeleteReleases" },
+            { title: "Edit", click: "aa:Edit" },
+            { title: "Find Artist Image", click: "aa:FindArtistImage" },
+            { title: "Rescan", click: "aa:Rescan" }
+          ];
+    },
     searchQuery() {
       return this.artist.name;
     }
   },
   methods: {
+    coverDragUploadComplete: function() {
+      this.artistImageSearchItems = [];
+    },    
     internetArtistSearch: function() {
       var q = this.searchQuery;
       if (this.artist.artistType === "Person") {
@@ -587,17 +653,60 @@ export default {
       var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
       window.open(url, "_blank");
     },
+    searchArtistsWithName: function() {
+      this.$router.push({ name: 'search', params: { q: this.artist.name}});
+    },
     shuffle: function() {},
     addAllToQue: function() {},
     playAll: function() {},
     comment: function() {},
     rescan: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/artist/' + this.artist.id)
-      .then(() => {
-        this.updateData();
-      })
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL + "/admin/scan/artist/" + this.artist.id
+        )
+        .then(() => {
+          this.updateData();
+        });
+    },
+    delete: async function() {
+      let artistId = this.artist.id;
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/artist/" +
+                  artistId
+              )
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });
     },    
+    deleteReleases: async function() {
+      let artistId = this.artist.id;
+      this.$refs.confirm
+        .open("Delete", "Continue to delete all Releases for Artist?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/artist/releases/" +
+                  artistId
+              )
+              .then(() => {
+                this.updateData();
+              });
+          }
+        });
+    },        
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
@@ -621,26 +730,44 @@ export default {
         this.updateData();
       });
     },
+    toggleHated: async function() {
+      this.dislikeToggle({
+        artistId: this.artist.id,
+        isDisliked: this.artist.userRating
+          ? !this.artist.userRating.isDisliked
+          : true
+        // eslint-disable-next-line
+      }).then(r => {
+        this.updateData();
+      });
+    },    
     showImageModal: function(e) {
       this.modalImage = e;
       this.showModal = true;
     },
-    bookmarkToogle: async function() {
-      this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistBookmark/' + this.artist.id + '/' + this.artist.userBookmarked)
-      .then(response => {
-          if(!this.artist.userBookmarked) {
-              this.snackbarText = "Successfully bookmarked";
-              this.snackbar = true;
+    toogleBookmark: async function() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setArtistBookmark/" +
+            this.artist.id +
+            "/" +
+            this.artist.userBookmarked
+        )
+        .then(response => {
+          if (!this.artist.userBookmarked) {
+            this.snackbarText = "Successfully bookmarked";
+            this.snackbar = true;
           } else if (response.data.isSuccess) {
-              this.snackbarText = "Successfully removed bookmark";
-              this.snackbar = true;
-          }                   
-          this.artist.userBookmarked = !this.artist.userBookmarked;          
-      })
-      .finally(() => {
-        EventBus.$emit("loadingComplete");
-      });
-    },    
+            this.snackbarText = "Successfully removed bookmark";
+            this.snackbar = true;
+          }
+          this.artist.userBookmarked = !this.artist.userBookmarked;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -653,9 +780,12 @@ export default {
           this.artist.associatedArtists = this.artist.associatedArtists || [];
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
           this.artist.genres = this.artist.genres || [];
-          this.artist.collectionsWithArtistReleases = this.artist.collectionsWithArtistReleases || [];
-          this.artist.playlistsWithArtistReleases = this.artist.playlistsWithArtistReleases || [];
-          this.artist.artistContributionReleases = this.artist.artistContributionReleases || [];
+          this.artist.collectionsWithArtistReleases =
+            this.artist.collectionsWithArtistReleases || [];
+          this.artist.playlistsWithArtistReleases =
+            this.artist.playlistsWithArtistReleases || [];
+          this.artist.artistContributionReleases =
+            this.artist.artistContributionReleases || [];
           this.artist.artistLabels = this.artist.artistLabels || [];
           this.artist.tagsList = this.artist.tagsList || [];
           this.artist.urLsList = this.artist.urLsList || [];
@@ -673,26 +803,42 @@ export default {
             .then(rr => {
               this.releases = rr.data.rows;
               this.releaseTableData = [];
-              rr.data.rows.forEach((r) => {
-                  this.releaseTableData.push({
-                    id: r.id,
-                    thumbnailUrl: r.thumbnail.url,
-                    title: r.release.text,
-                    year: parseInt(r.releaseYear),
-                    trackCount: r.trackCount,
-                    duration: r.durationTime,
-                    rating: r.rating,
-                    lastPlayed: this.$options.filters.formatTimeStamp(r.lastPlayed, this.$store.getters.user),
-                    playedCount: r.trackPlayedCount
-                  })
+              rr.data.rows.forEach(r => {
+                this.releaseTableData.push({
+                  id: r.id,
+                  thumbnailUrl: r.thumbnail.url,
+                  title: r.release.text,
+                  year: parseInt(r.releaseYear),
+                  trackCount: r.trackCount,
+                  duration: r.durationTime,
+                  rating: r.rating,
+                  lastPlayed: this.$options.filters.formatTimeStamp(
+                    r.lastPlayed,
+                    this.$store.getters.user
+                  ),
+                  playedCount: r.trackPlayedCount
+                });
               });
               EventBus.$emit("loadingComplete");
             });
-        });
+        })
+        .finally(() => {
+          this.dropzoneOptions.url =
+            process.env.VUE_APP_API_URL +
+            "/artists/uploadImage/" +
+            this.artist.id;
+          this.dropzoneOptions.headers = {
+            Authorization: "Bearer " + this.$store.getters.authToken
+          };
+        });        
     },
     shortDateWithAge: function(date, toDate) {
       return (
-        this.$options.filters.shortDate(date) + " (" + this.$options.filters.yearsFromDate(toDate, date) + ")");
+        this.$options.filters.shortDate(date) +
+        " (" +
+        this.$options.filters.yearsFromDate(toDate, date) +
+        ")"
+      );
     },
     metaDataSources: function() {
       return [
@@ -722,35 +868,86 @@ export default {
           url: "https://open.spotify.com/artist/"
         }
       ];
-    }
+    },
+    selectedArtistImage: function(imageUrl) {
+      this.artistImageSearchItems = [];
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/artists/setImageByUrl/" +
+            this.artist.id +
+            "/" +
+            encodeURIComponent(imageUrl)
+        )
+        .then(response => {
+          if (response.data.isSuccess) {
+            this.snackbarText = "Successfully updated Artist image.";
+            this.snackbar = true;
+            this.$nextTick(()=> {
+              this.artist.mediumThumbnail.url = response.data.data.url;
+            });
+          }
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },    
+    findArtistImage: async function() {
+      EventBus.$emit("loadingStarted");
+      this.artistImageSearchQuery = this.artistImageSearchQuery || this.artist.name;
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/images/search/artist/" +
+            encodeURIComponent(this.artistImageSearchQuery) +
+            "/25"
+        )
+        .then(response => {
+          this.artistImageSearchItems = response.data.data;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },    
   },
   watch: {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
     },
-    releaseTableSearch: { 
+    artistImageSearchQuery: function() {
+      this.debouncedFindartistImage();
+    },    
+    releaseTableSearch: {
       async handler() {
         this.releaseTableData = [];
-        this.releases.forEach((r) => {
-            if(!this.releaseTableSearch || 
-                r.release.text.toLowerCase().includes(this.releaseTableSearch.toLowerCase()) ||
-                r.releaseYear.includes(this.releaseTableSearch)) {
-              this.releaseTableData.push({
-                id: r.id,
-                thumbnailUrl: r.thumbnail.url,
-                title: r.release.text,
-                year: parseInt(r.releaseYear),
-                trackCount: r.trackCount,
-                duration: r.durationTime,
-                rating: r.rating,
-                lastPlayed: this.$options.filters.formatTimeStamp(r.lastPlayed, this.$store.getters.user),
-                playedCount: r.trackPlayedCount
-              })
-            }
+        this.releases.forEach(r => {
+          if (
+            !this.releaseTableSearch ||
+            r.release.text
+              .toLowerCase()
+              .includes(this.releaseTableSearch.toLowerCase()) ||
+            r.releaseYear.includes(this.releaseTableSearch)
+          ) {
+            this.releaseTableData.push({
+              id: r.id,
+              thumbnailUrl: r.thumbnail.url,
+              title: r.release.text,
+              year: parseInt(r.releaseYear),
+              trackCount: r.trackCount,
+              duration: r.durationTime,
+              rating: r.rating,
+              lastPlayed: this.$options.filters.formatTimeStamp(
+                r.lastPlayed,
+                this.$store.getters.user
+              ),
+              playedCount: r.trackPlayedCount
+            });
+          }
         });
       }
-    }  
+    }
   },
   data: () => ({
     showReleaseTable: false,
@@ -758,6 +955,8 @@ export default {
     releaseTab: 3,
     showModal: false,
     modalImage: {},
+    artistImageSearchQuery: "",
+    artistImageSearchItems: [],
     artist: {
       mediumThumbnail: {},
       userRating: {},
@@ -811,20 +1010,25 @@ export default {
       { title: "Shuffle", class: "hidden-sm-and-down", click: "aa:Shuffle" }
     ],
     seachMenuItems: [
-      { title: "Browse Artists with Name", click: "aa:searchArtistsWithName" },
+      { title: "Search Artists with Name", click: "aa:searchArtistsWithName" },
       { title: "Internet Artist Name", click: "aa:searchInternetArtist" }
     ],
-    releaseTableSearch: '',
+    releaseTableSearch: "",
     releaseHeaders: [
-      { text: 'Title', align: 'left',  value: 'title'},
-      { text: 'Year', value: 'year' },
-      { text: 'Tracks', value: 'trackCount' },
-      { text: 'Time', value: 'duration' },
-      { text: 'Avg Rating', value: 'rating' },
-      { text: 'Last Played', value: 'lastPlayed' },
-      { text: 'Played Count', value: 'playedCount' }
+      { text: "Title", align: "left", value: "title" },
+      { text: "Year", value: "year" },
+      { text: "Tracks", value: "trackCount" },
+      { text: "Time", value: "duration" },
+      { text: "Avg Rating", value: "rating" },
+      { text: "Last Played", value: "lastPlayed" },
+      { text: "Played Count", value: "playedCount" }
     ],
-    releaseTableData: []
+    releaseTableData: [],
+    dropzoneOptions: {
+      thumbnailWidth: 100,
+      maxFilesize: 0.5,
+      dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
+    }    
   })
 };
 </script>
