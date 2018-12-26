@@ -435,6 +435,7 @@
           });
         })
         .catch(err => {
+          // eslint-disable-next-line
           console.log(err);
         })
         .finally(() => (this.searchArtistsLoading = false))    
@@ -446,10 +447,10 @@
         this.searchGenreLoading = true;
         this.$axios.get(process.env.VUE_APP_API_URL + '/genres?filter=' + val + "&limit=10")
         .then(res => {
-          res.data.rows.forEach((g) => {
+          res.data.rows.forEach((gr) => {
             var g = {
-              text: g.genre.text,
-              value: g.genre.value
+              text: gr.genre.text,
+              value: gr.genre.value
             };
             if(!this.lookupData.genreItems.includes(g)) {
               this.lookupData.genreItems.push(g);
@@ -457,6 +458,7 @@
           })
         })
         .catch(err => {
+          // eslint-disable-next-line
           console.log(err);
         })
         .finally(() => (this.searchGenreLoading = false))    

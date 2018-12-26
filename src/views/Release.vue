@@ -31,27 +31,22 @@
                     style="float: right;"
                     title="Release has issues!"
                     color="warning"
-                  >warning</v-icon>                  
+                  >warning</v-icon>
                 </v-card-text>
               </v-card>
             </v-flex>
             <v-flex xs12>
               <v-layout row wrap>
                 <v-flex xs3>
-                  <v-img
-                    :src="releaseCoverUrl"
-                    :alt="release.title"
-                    class="ma-1"
-                    aspect-ratio="1"
-                  ></v-img>
+                  <v-img :src="releaseCoverUrl" :alt="release.title" class="ma-1" aspect-ratio="1"></v-img>
                 </v-flex>
                 <v-flex xs9 class="title">
-									<v-layout row wrap>
-										<v-flex xs4 class="mt-2">
+                  <v-layout row wrap>
+                    <v-flex xs4 class="mt-2">
                       <ArtistCard :artist="release.artist"></ArtistCard>
-										</v-flex>
-									</v-layout>
-                  <v-layout row wrap>                  
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
                     <v-flex xs2>
                       <v-text-field
                         v-bind:value="release.releaseDate | shortDate"
@@ -73,14 +68,14 @@
                         label="Release Type"
                         readonly
                       ></v-text-field>
-                    </v-flex>        
+                    </v-flex>
                     <v-flex xs2>
                       <v-text-field
                         v-bind:value="release.statusVerbose"
                         label="Release Status"
                         readonly
                       ></v-text-field>
-                    </v-flex>                                 
+                    </v-flex>
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -88,12 +83,12 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary"  v-model="tab" slider-color="accent">
+          <v-tabs right color="primary" v-model="tab" slider-color="accent">
             <v-tab v-if="release.images.length">Images</v-tab>
             <v-tab v-if="release.profile">Profile</v-tab>
             <v-tab>Metadata Sources</v-tab>
             <v-tab-item v-if="release.images.length">
-              <v-card  flat class="images darken-3">
+              <v-card flat class="images darken-3">
                 <v-container class="images-container" fluid grid-list-xs>
                   <v-layout row wrap>
                     <v-flex v-for="(image, index) in release.images" :key="image.url" xs2>
@@ -128,7 +123,6 @@
             </v-tab-item>
             <v-tab-item>
               <v-data-table
-                
                 :headers="metaDataHeaders"
                 :items="metaDataSources()"
                 class="elevation-1"
@@ -212,7 +206,12 @@
               <span>Release Played Count</span>
             </v-tooltip>
             <v-tooltip bottom>
-              <v-chip v-if="release.statistics.missingTrackCount" slot="activator" color="warning" text-color="black">
+              <v-chip
+                v-if="release.statistics.missingTrackCount"
+                slot="activator"
+                color="warning"
+                text-color="black"
+              >
                 <v-avatar>
                   <v-icon>error</v-icon>
                 </v-avatar>
@@ -261,16 +260,10 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs5>
-          <v-tabs
-            class="release-lists"
-            color="primary"
-            v-model="releaseTab"
-            
-            slider-color="accent"
-          >
+          <v-tabs class="release-lists" color="primary" v-model="releaseTab" slider-color="accent">
             <v-tab>Tracks</v-tab>
             <v-tab-item>
-              <v-card flat  class="tracks">
+              <v-card flat class="tracks">
                 <v-data-iterator
                   :items="release.medias"
                   :total-items="release.medias ? release.medias.length : 0"
@@ -282,27 +275,22 @@
                   <v-flex slot="item" slot-scope="props" xs12>
                     <MediaCard :media="props.item" :mediaCount="release.mediaCount"></MediaCard>
                   </v-flex>
-                </v-data-iterator>                
+                </v-data-iterator>
               </v-card>
             </v-tab-item>
           </v-tabs>
         </v-flex>
         <v-flex d-flex xs7>
-          <v-tabs
-            class="release-lists"
-            color="primary"
-            
-            slider-color="accent"
-          >
+          <v-tabs class="release-lists" color="primary" slider-color="accent">
             <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
-            <v-tab v-if="release.tagsList.length > 0">Tags</v-tab>            
+            <v-tab v-if="release.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="release.collections.length > 0">Collections</v-tab>
             <v-tab v-if="release.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="release.genres.length">Genres</v-tab>
-            <v-tab v-if="release.labels.length > 0">Labels</v-tab>            
-            <v-tab v-if="release.urLsList.length">Urls</v-tab>            
+            <v-tab v-if="release.labels.length > 0">Labels</v-tab>
+            <v-tab v-if="release.urLsList.length">Urls</v-tab>
             <v-tab-item v-if="release.playlists.length > 0">
-              <v-card flat  class="playlists">
+              <v-card flat class="playlists">
                 <v-data-iterator
                   :items="release.playlists"
                   :total-items="release.playlists ? release.playlists.length : 0"
@@ -318,7 +306,7 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.tagsList.length > 0">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in release.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -328,9 +316,9 @@
                   <v-divider v-if="index + 1 < release.tagsList.length" :key="`tdivider-${index}`"></v-divider>
                 </template>
               </v-list>
-            </v-tab-item>            
+            </v-tab-item>
             <v-tab-item v-if="release.collections.length > 0">
-              <v-card flat  class="collections">
+              <v-card flat class="collections">
                 <v-data-iterator
                   :items="release.collections"
                   :total-items="release.collections ? release.collections.length : 0"
@@ -340,13 +328,16 @@
                   wrap
                 >
                   <v-flex slot="item" slot-scope="props" xs4>
-                    <CollectionCard :collection="props.item.collection" :listNumber="props.item.listNumber"></CollectionCard>
+                    <CollectionCard
+                      :collection="props.item.collection"
+                      :listNumber="props.item.listNumber"
+                    ></CollectionCard>
                   </v-flex>
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="release.alternateNamesList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in release.alternateNamesList">
                   <v-list-tile :key="`al-${name}-${index}`">
                     <v-list-tile-content>
@@ -361,7 +352,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="release.genres.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in release.genres">
                   <v-list-tile :key="`g-${name}-${index}`">
                     <v-list-tile-content>
@@ -373,7 +364,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="release.labels.length > 0">
-              <v-card flat  class="labels">
+              <v-card flat class="labels">
                 <v-data-iterator
                   :items="release.labels"
                   :total-items="release.labels ? release.labels.length : 0"
@@ -383,13 +374,18 @@
                   wrap
                 >
                   <v-flex slot="item" slot-scope="props" xs4>
-                    <LabelCard :label="props.item.label" :catalogNumber="props.item.catalogNumber" :beginDate="props.item.beginDate" :endDate="props.item.endDate"></LabelCard>
+                    <LabelCard
+                      :label="props.item.label"
+                      :catalogNumber="props.item.catalogNumber"
+                      :beginDate="props.item.beginDate"
+                      :endDate="props.item.endDate"
+                    ></LabelCard>
                   </v-flex>
                 </v-data-iterator>
               </v-card>
-            </v-tab-item>              
+            </v-tab-item>
             <v-tab-item v-if="release.urLsList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in release.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -404,9 +400,9 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-tab-item>                     
+            </v-tab-item>
           </v-tabs>
-        </v-flex>        
+        </v-flex>
       </v-layout>
     </v-container>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
@@ -414,15 +410,17 @@
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="coverSearchItems.length > 0" fluid grid-list-md>    
-      <v-flex xs1 offset-xs11 >
+    <v-container v-if="coverSearchItems.length > 0" fluid grid-list-md>
+      <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="coverSearchItems = []">Cancel</v-btn>
       </v-flex>
-      <v-text-field
-        v-model="coverSearchQuery"
-        label="Search Query"
-      ></v-text-field>
-      <vue-dropzone ref="myVueDropzone" id="dropzone" v-on:vdropzone-complete="coverDragUploadComplete" :options="dropzoneOptions"></vue-dropzone>                        
+      <v-text-field v-model="coverSearchQuery" label="Search Query"></v-text-field>
+      <vue-dropzone
+        ref="myVueDropzone"
+        id="dropzone"
+        v-on:vdropzone-complete="coverDragUploadComplete"
+        :options="dropzoneOptions"
+      ></vue-dropzone>
       <v-data-iterator
         v-if="coverSearchItems"
         :items="coverSearchItems"
@@ -443,27 +441,36 @@
             ></v-img>
           </div>
         </v-flex>
-      </v-data-iterator>       
-    </v-container>     
-
+      </v-data-iterator>
+    </v-container>
   </div>
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar';
-import LabelCard from '@/components/LabelCard';
-import ArtistCard from '@/components/ArtistCard';
-import CollectionCard from '@/components/CollectionCard';
-import PlaylistCard from '@/components/PlaylistCard';
-import MediaCard from '@/components/MediaCard';
-import Confirm from '@/views/Confirm';
+import Toolbar from "@/components/Toolbar";
+import LabelCard from "@/components/LabelCard";
+import ArtistCard from "@/components/ArtistCard";
+import CollectionCard from "@/components/CollectionCard";
+import PlaylistCard from "@/components/PlaylistCard";
+import MediaCard from "@/components/MediaCard";
+import Confirm from "@/views/Confirm";
 import { EventBus } from "@/event-bus.js";
-import vue2Dropzone from 'vue2-dropzone';
-import 'vue2-dropzone/dist/vue2Dropzone.min.css';
-import VueMarkdown from 'vue-markdown';
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import VueMarkdown from "vue-markdown";
 
 export default {
-  components: { Toolbar, LabelCard, ArtistCard, CollectionCard, PlaylistCard, MediaCard, Confirm, vueDropzone: vue2Dropzone, VueMarkdown },
+  components: {
+    Toolbar,
+    LabelCard,
+    ArtistCard,
+    CollectionCard,
+    PlaylistCard,
+    MediaCard,
+    Confirm,
+    vueDropzone: vue2Dropzone,
+    VueMarkdown
+  },
   props: {
     id: String
   },
@@ -473,14 +480,18 @@ export default {
     EventBus.$on("rr:Download", this.download);
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
+    EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
+    EventBus.$on("rr:searchInternetreleaseandTitle", this.searchInternetreleaseandTitle);
+    EventBus.$on("rr:searchForTitle", this.searchForTitle);
+    EventBus.$on("rr:searchForArtist", this.searchForArtist);    
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("toggleBookmark", this.toggleBookmark);
-    EventBus.$on("favoriteToogle", this.toggleFavorite);    
-    EventBus.$on("hateToogle", this.toggleHated);    
+    EventBus.$on("favoriteToogle", this.toggleFavorite);
+    EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("rr:Rescan", this.rescan);
-    EventBus.$on("rr:Delete", this.delete);    
-    EventBus.$on("rr:FindCover", this.findCover); 
-    EventBus.$on("rr:Edit", this.edit); 
+    EventBus.$on("rr:Delete", this.delete);
+    EventBus.$on("rr:FindCover", this.findCover);
+    EventBus.$on("rr:Edit", this.edit);
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
   },
   beforeDestroy() {
@@ -489,15 +500,19 @@ export default {
     EventBus.$off("rr:Download");
     EventBus.$off("rr:Comment");
     EventBus.$off("rr:searchInternetTitle");
+    EventBus.$off("rr:searchInternetArtist");    
+    EventBus.$off("rr:searchInternetreleaseandTitle");
+    EventBus.$off("rr:searchForArtist");        
+    EventBus.$off("rr:searchForTitle");
     EventBus.$off("toolbarRefresh");
     EventBus.$off("toggleBookmark", this.toggleBookmark);
-    EventBus.$off("favoriteToogle", this.toggleFavorite);    
-    EventBus.$off("hateToogle", this.toggleHated);    
+    EventBus.$off("favoriteToogle", this.toggleFavorite);
+    EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("rr:Rescan", this.rescan);
-    EventBus.$off("rr:Delete", this.delete);     
-    EventBus.$off("rr:FindCover", this.findCover);    
-    EventBus.$off("rr:Edit", this.edit);     
-  },  
+    EventBus.$off("rr:Delete", this.delete);
+    EventBus.$off("rr:FindCover", this.findCover);
+    EventBus.$off("rr:Edit", this.edit);
+  },
   async mounted() {
     this.updateData();
   },
@@ -506,18 +521,22 @@ export default {
       return this.release.title;
     },
     releaseCoverUrl() {
-      return this.release.mediumThumbnail.url ? this.release.mediumThumbnail.url + '?ts' + new Date().getTime() : '';
+      return this.release.mediumThumbnail.url
+        ? this.release.mediumThumbnail.url + "?ts" + new Date().getTime()
+        : "";
     },
     adminMenuItems() {
-      return !this.$store.getters.isUserAdmin ? [] : [
-        { title: "Delete", class: "warning--text", click: "rr:Delete" },
-        { title: "Edit", click: "rr:Edit" },        
-        { title: "Find Cover", click: "rr:FindCover" },        
-        { title: "Rescan", click: "rr:Rescan" }     
-      ]
+      return !this.$store.getters.isUserAdmin
+        ? []
+        : [
+            { title: "Delete", class: "warning--text", click: "rr:Delete" },
+            { title: "Edit", click: "rr:Edit" },
+            { title: "Find Cover", click: "rr:FindCover" },
+            { title: "Rescan", click: "rr:Rescan" }
+          ];
     },
     fileUploadUrl() {
-      return process.env.VUE_APP_API_URL + '/uploadImage/' + this.release.id;
+      return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
     }
   },
   methods: {
@@ -525,43 +544,73 @@ export default {
       this.coverSearchItems = [];
     },
     edit: function() {
-      this.$router.push('/release/edit/' + this.release.id);
+      this.$router.push("/release/edit/" + this.release.id);
     },
     internetTitleSearch: function() {
-      var q = this.searchQuery + ' album';
+      return this.internetSearch(this.searchQuery + " album");
+    },
+    internetArtistSearch: function() {
+      return this.internetSearch(this.release.artist.artist.text + ' Band');
+    },    
+    searchInternetreleaseandTitle: function() {
+      return this.internetSearch(this.searchQuery + ' ' + this.release.artist.artist.text);
+    },
+    internetSearch: function(q) {
       var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
       window.open(url, "_blank");
+    },
+    searchForTitle: function() {
+      this.$router.push({ name: 'search', params: { q: this.searchQuery}});
+    },
+    searchForArtist: function() {
+      this.$router.push({ name: 'search', params: { q: this.release.artist.artist.text}});
     },    
     toggleFavorite: async function() {
       this.release.userRating = this.release.userRating || {};
-      this.release.userRating.isFavorite = this.release.userRating ? !this.release.userRating.isFavorite : true
+      this.release.userRating.isFavorite = this.release.userRating
+        ? !this.release.userRating.isFavorite
+        : true;
       this.$axios
-        .post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + this.release.id + '/' + this.release.userRating.isFavorite)
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setReleaseFavorite/" +
+            this.release.id +
+            "/" +
+            this.release.userRating.isFavorite
+        )
         .then(response => {
-          if(response.data.isSuccess && this.release.userRating.isFavorite) {
-              this.snackbarText = "Release is now a favorite";
-              this.snackbar = true;
+          if (response.data.isSuccess && this.release.userRating.isFavorite) {
+            this.snackbarText = "Release is now a favorite";
+            this.snackbar = true;
           } else if (response.data.isSuccess) {
-              this.snackbarText = "Release is no longer a favorite";
-              this.snackbar = true;
-          }           
+            this.snackbarText = "Release is no longer a favorite";
+            this.snackbar = true;
+          }
         });
-    },     
+    },
     toggleHated: async function() {
       this.release.userRating = this.release.userRating || {};
-      this.release.userRating.isDisliked = this.release.userRating ? !this.release.userRating.isDisliked : true
+      this.release.userRating.isDisliked = this.release.userRating
+        ? !this.release.userRating.isDisliked
+        : true;
       this.$axios
-        .post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + this.release.id + '/' + this.release.userRating.isDisliked)
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setReleaseDisliked/" +
+            this.release.id +
+            "/" +
+            this.release.userRating.isDisliked
+        )
         .then(response => {
-          if(response.data.isSuccess && this.release.userRating.isDisliked) {
-              this.snackbarText = "You now hate this Release";
-              this.snackbar = true;
+          if (response.data.isSuccess && this.release.userRating.isDisliked) {
+            this.snackbarText = "You now hate this Release";
+            this.snackbar = true;
           } else if (response.data.isSuccess) {
-              this.snackbarText = "You no longer hate this Release";
-              this.snackbar = true;
-          }           
+            this.snackbarText = "You no longer hate this Release";
+            this.snackbar = true;
+          }
         });
-    },       
+    },
     shuffle: function() {},
     addToQue: function() {},
     download: function() {},
@@ -569,67 +618,100 @@ export default {
     showImageModal: function(e) {
       this.modalImage = e;
       this.showModal = true;
-    },    
+    },
     selectedCoverImage: function(coverUrl) {
-      this.coverSearchItems = [];      
-      EventBus.$emit("loadingStarted");      
-      this.$axios.post(process.env.VUE_APP_API_URL + '/releases/setImageByUrl/'+ this.release.id + '/' +  encodeURIComponent(coverUrl) )
-      .then(response => {
-        if(response.data.isSuccess) {
-          this.release.mediumThumbnail.url = response.data.data.url + '?ts' + new Date().getTime()          
-          this.snackbarText = "Successfully updated Release cover.";
-          this.snackbar = true;          
-        }        
-      })      
-      .finally(() => {
-        EventBus.$emit("loadingComplete");
-      });
+      this.coverSearchItems = [];
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/releases/setImageByUrl/" +
+            this.release.id +
+            "/" +
+            encodeURIComponent(coverUrl)
+        )
+        .then(response => {
+          if (response.data.isSuccess) {
+            this.release.mediumThumbnail.url =
+              response.data.data.url + "?ts" + new Date().getTime();
+            this.snackbarText = "Successfully updated Release cover.";
+            this.snackbar = true;
+          }
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
     },
     findCover: async function() {
       EventBus.$emit("loadingStarted");
-      this.coverSearchQuery =  this.coverSearchQuery || this.release.artist.artist.text + ' ' + this.release.title;
-      this.$axios.post(process.env.VUE_APP_API_URL + '/images/search/release/' +  encodeURIComponent(this.coverSearchQuery) + '/25')
-      .then(response => {
-        this.coverSearchItems = response.data.data;
-      })      
-      .finally(() => {
-        EventBus.$emit("loadingComplete");
-      });
+      this.coverSearchQuery =
+        this.coverSearchQuery ||
+        this.release.artist.artist.text + " " + this.release.title;
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/images/search/release/" +
+            encodeURIComponent(this.coverSearchQuery) +
+            "/25"
+        )
+        .then(response => {
+          this.coverSearchItems = response.data.data;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
     },
     rescan: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/release/' + this.release.id)
-      .then(() => {
-        this.updateData();
-      })
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL + "/admin/scan/release/" + this.release.id
+        )
+        .then(() => {
+          this.updateData();
+        });
     },
     delete: async function() {
       let releaseId = this.release.id;
-      this.$refs.confirm.open('Delete', 'Are you sure?', { color: 'red' }).then((confirm) => {
-        if(confirm) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/admin/delete/release/' + releaseId)
-            .then(() => {
-              EventBus.$emit("loadingComplete");
-              this.$router.go(-1)     
-            });
-        }
-      })
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/release/" +
+                  releaseId
+              )
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });
     },
     toggleBookmark: async function() {
-      this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseBookmark/' + this.release.id + '/' + this.release.userBookmarked)
-      .then(response => {
-          if(!this.release.userBookmarked) {
-              this.snackbarText = "Successfully bookmarked";
-              this.snackbar = true;
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setReleaseBookmark/" +
+            this.release.id +
+            "/" +
+            this.release.userBookmarked
+        )
+        .then(response => {
+          if (!this.release.userBookmarked) {
+            this.snackbarText = "Successfully bookmarked";
+            this.snackbar = true;
           } else if (response.data.isSuccess) {
-              this.snackbarText = "Successfully removed bookmark";
-              this.snackbar = true;
-          }                   
-          this.release.userBookmarked = !this.release.userBookmarked;          
-      })
-      .finally(() => {
-        EventBus.$emit("loadingComplete");
-      });
+            this.snackbarText = "Successfully removed bookmark";
+            this.snackbar = true;
+          }
+          this.release.userBookmarked = !this.release.userBookmarked;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -655,9 +737,12 @@ export default {
           };
         })
         .finally(() => {
-          this.dropzoneOptions.url = process.env.VUE_APP_API_URL + '/releases/uploadImage/' + this.release.id;
-          this.dropzoneOptions.headers = { 
-            "Authorization": "Bearer " + this.$store.getters.authToken 
+          this.dropzoneOptions.url =
+            process.env.VUE_APP_API_URL +
+            "/releases/uploadImage/" +
+            this.release.id;
+          this.dropzoneOptions.headers = {
+            Authorization: "Bearer " + this.$store.getters.authToken
           };
           EventBus.$emit("loadingComplete");
         });
@@ -697,7 +782,7 @@ export default {
       this.id = to.params.id;
       this.updateData();
     },
-    coverSearchQuery: function() {      
+    coverSearchQuery: function() {
       this.debouncedFindCover();
     }
   },
@@ -712,7 +797,7 @@ export default {
     coverSearchItems: [],
     release: {
       status: 0,
-      artist: { 
+      artist: {
         thumbnail: {},
         artist: {}
       },
@@ -750,14 +835,12 @@ export default {
       { title: "Shuffle", class: "hidden-sm-and-down", click: "rr:Shuffle" }
     ],
     seachMenuItems: [
-      {
-        title: "Browse Releases with Title",
-        click: "rr:searchReleasesWithTitle"
-      },
-      { title: "Internet release", click: "rr:searchInternetrelease" },
+      { title: "Search for Artist", click: "rr:searchForArtist" },
+      { title: "Search for Title", click: "rr:searchForTitle" },      
+      { title: "Internet Artist", click: "rr:searchInternetArtist" },
       { title: "Internet Title", click: "rr:searchInternetTitle" },
       {
-        title: "Internet release and Title",
+        title: "Internet Artist and Title",
         click: "rr:searchInternetreleaseandTitle"
       }
     ],
@@ -765,7 +848,7 @@ export default {
       thumbnailWidth: 100,
       maxFilesize: 0.5,
       dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>Upload new Cover"
-    }    
+    }
   })
 };
 </script>

@@ -31,6 +31,7 @@
       EventBus.$on('r:viewTopRated', this.viewTopRated);
       EventBus.$on('r:viewMostPlayed', this.viewMostPlayed);
       EventBus.$on('r:viewRecentlyPlayed', this.viewRecentlyPlayed);
+      EventBus.$on('r:viewRecentlyReleased', this.viewRecentlyReleased);
       EventBus.$on('r:viewAll', this.viewAll);
       EventBus.$on('toolbarRefresh', this.updateData);
       EventBus.$on('r:favoriteToggle', (info) => this.favoriteToggle(info));    
@@ -43,6 +44,7 @@
       EventBus.$off('r:viewTopRated', this.viewTopRated);
       EventBus.$off('r:viewMostPlayed', this.viewMostPlayed);
       EventBus.$off('r:viewRecentlyPlayed', this.viewRecentlyPlayed);
+      EventBus.$off('r:viewRecentlyReleased', this.viewRecentlyReleased);
       EventBus.$off('r:viewAll', this.viewAll);
       EventBus.$off('toolbarRefresh', this.updateData);
       EventBus.$off('r:favoriteToggle');    
@@ -82,6 +84,11 @@
       viewRecentlyPlayed: function() {
           this.resetView();                
           this.pagination.sortBy = "LastPlayed";
+          this.updateData();
+      },
+      viewRecentlyReleased: function() {
+          this.resetView();                
+          this.pagination.sortBy = "ReleaseDate";
           this.updateData();
       },
       viewStarred: function() {
@@ -127,7 +134,6 @@
         });
       },
       dislikeToggle: async function(toggleInfo) {
-        var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
         .then(response => {
           if(response.data.isSuccess && toggleInfo.isDisliked) {
@@ -168,6 +174,7 @@
         { title: "Random", class:"selected-toolbar-item", click: "r:viewRandom" },
         { title: "Recently Added", class: "hidden-xs-only", click:"r:viewRecentlyAdded" },
         { title: "Recently Played", class: "hidden-md-and-down", click: "r:viewRecentlyPlayed" },
+        { title: "Recently Released", class: "hidden-md-and-down", click: "r:viewRecentlyReleased" },
         { title: "Top Rated", class: "hidden-sm-and-down", click: "r:viewTopRated" },
         { title: "All", class:"", click: "r:viewAll" }
       ],

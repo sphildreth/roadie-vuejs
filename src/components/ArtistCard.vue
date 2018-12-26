@@ -7,7 +7,7 @@
         </router-link>
       </v-flex>
       <v-flex xs8>
-        <v-card-title primary-title class="pa-0 ma-0">
+        <v-card-text primary-title class="pa-0 ma-0">
           <div>
             <div class="artist-rating-container">
               <v-icon
@@ -44,7 +44,7 @@
               <span title="Played Count">{{ artist.playedCount | padNumber5 }}</span>
             </div>
           </div>
-        </v-card-title>
+        </v-card-text>
       </v-flex>
     </v-layout>
   </v-card>

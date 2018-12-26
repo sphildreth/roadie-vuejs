@@ -594,7 +594,7 @@ export default {
     rescan: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios.post(process.env.VUE_APP_API_URL + '/admin/scan/artist/' + this.artist.id)
-      .then(response => {
+      .then(() => {
         this.updateData();
       })
     },    

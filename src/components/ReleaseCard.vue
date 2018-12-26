@@ -20,13 +20,13 @@
         </router-link>
       </v-flex>
       <v-flex xs8>
-        <v-card-title primary-title class="pa-0 ma-0">
+        <v-card-text primary-title class="pa-0 ma-0">
           <div v-if="release.isValid">
             <div class="release-rating-container">
               <v-icon
                 small
                 class="favorite pointer"
-                @click="isFavorite = !isFavorite"                
+                @click="isFavorite = !isFavorite"
                 :color="isFavorite ? 'red' : 'accent'"
               >favorite</v-icon>
               <v-rating
@@ -63,7 +63,7 @@
                 class="body-2 info--text"
                 title="Collection Position"
               >{{ this.$filters.padNumber4(listNumber) + ' | ' }}</span>
-              <span title="Release Date">{{ release.releaseYear }}</span> |
+              <span class="info--text" title="Release Date">{{ release.releaseYear }}</span> |
               <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> |
               <span title="Release Play Time">{{ release.durationTime }}</span>
             </div>
@@ -82,7 +82,7 @@
               <span v-if="listNumber" title="Collection Position">{{ listNumber | padNumber4 }}</span>
             </div>
           </div>
-        </v-card-title>
+        </v-card-text>
       </v-flex>
     </v-layout>
   </v-card>
@@ -113,7 +113,7 @@ export default {
         EventBus.$emit("r:favoriteToggle", {
           releaseId: this.$el.dataset.id,
           isFavorite: val
-        });          
+        });
       }
     },
     isDisliked: {
@@ -121,16 +121,16 @@ export default {
         return this.userRating.isDisliked;
       },
       set: function(val) {
-        this.userRating.isDisliked = val;  
+        this.userRating.isDisliked = val;
         EventBus.$emit("r:dislikeToggle", {
           releaseId: this.$el.dataset.id,
           isDisliked: val
-        });              
+        });
       }
-    }    
+    }
   },
-  mounted () {    
-    if(this.release && this.release.userRating) {
+  mounted() {
+    if (this.release && this.release.userRating) {
       this.userRating.isFavorite = this.release.userRating.isFavorite;
       this.userRating.isDisliked = this.release.userRating.isDisliked;
     }

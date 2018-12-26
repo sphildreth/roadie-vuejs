@@ -1,29 +1,39 @@
 @font-face {
-    font-family: funk_font;
-    src: url('../fonts/Funk.ttf');
+  font-family: funk_font;
+  src: url('../fonts/Funk.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Digital';
+  src: url('../fonts/open_24_hour.ttf') format('truetype');
+}
+
+.digital {
+  font-family: 'Digital';
+  display: inline-block;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .funky {
-    font-family: funk_font;
+  font-family: funk_font;
 }
 
 .selected-toolbar-item .v-btn__content::after {
-    display: block;
-    content: '';
-    width: 100%;
-    height: 3px;
-    background: orangered;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-   }
+  display: block;
+  content: '';
+  width: 100%;
+  height: 3px;
+  background: orangered;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 
 /* Incomplete */
-.release-status-3 { 
+.release-status-3 {
   border: 1px solid lightcoral;
 }
 
@@ -31,4 +41,3 @@
 .release-status-4 {
   border: 1px solid red;
 }
-
