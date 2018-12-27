@@ -52,7 +52,7 @@
                       <v-text-field v-bind:value="artist.artistType" label="Artist Type" readonly></v-text-field>
                     </v-flex>
                     <v-flex xs3 v-if="artist.isniList">
-                      <v-text-field v-bind:value="artist.isniList[0]" label="ISNI" readonly></v-text-field>
+                      <v-text-field v-bind:value="artist.isniList.join(', ')" label="ISNI" readonly></v-text-field>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
@@ -620,9 +620,7 @@ export default {
       return this.artist.rating;
     },
     artistThumbnailUrl() {
-      return this.artist.mediumThumbnail.url
-        ? this.artist.mediumThumbnail.url + "?ts" + new Date().getTime()
-        : "";
+      return this.artist.mediumThumbnail.url;
     },
     adminMenuItems() {
       return !this.$store.getters.isUserAdmin

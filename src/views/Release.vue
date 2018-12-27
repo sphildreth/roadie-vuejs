@@ -521,9 +521,7 @@ export default {
       return this.release.title;
     },
     releaseCoverUrl() {
-      return this.release.mediumThumbnail.url
-        ? this.release.mediumThumbnail.url + "?ts" + new Date().getTime()
-        : "";
+      return this.release.mediumThumbnail.url;
     },
     adminMenuItems() {
       return !this.$store.getters.isUserAdmin
@@ -632,10 +630,11 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess) {
-            this.release.mediumThumbnail.url =
-              response.data.data.url + "?ts" + new Date().getTime();
             this.snackbarText = "Successfully updated Release cover.";
             this.snackbar = true;
+            this.$nextTick(()=> {
+              this.release.mediumThumbnail.url = response.data.data.url;              
+            });            
           }
         })
         .finally(() => {

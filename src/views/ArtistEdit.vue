@@ -102,7 +102,7 @@
                 v-model="artist.birthDate"
                 label="Date of Birth"
                 :error-messages="errors.collect('artist.birthDate')" 
-                v-validate="'required|date_format:YYYY-MM-DD'"             
+                v-validate="'date_format:YYYY-MM-DD'"             
                 data-vv-name="artist.birthDate"             
                 name="birthDate"            
             ></v-text-field>        
@@ -134,7 +134,7 @@
                 v-model="artist.beginDate"
                 label="Begin Date"
                 :error-messages="errors.collect('artist.beginDate')" 
-                v-validate="'required|date_format:YYYY-MM-DD'"             
+                v-validate="'date_format:YYYY-MM-DD'"             
                 data-vv-name="artist.beginDate"             
                 name="beginDate"            
             ></v-text-field>        
@@ -166,7 +166,7 @@
                 v-model="artist.endDate"
                 label="End Date"
                 :error-messages="errors.collect('artist.endDate')" 
-                v-validate="'required|date_format:YYYY-MM-DD'"             
+                v-validate="'date_format:YYYY-MM-DD'"             
                 data-vv-name="artist.endDate"             
                 name="endDate"            
             ></v-text-field>        
