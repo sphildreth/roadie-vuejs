@@ -119,13 +119,13 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
-              <v-card max-height="290px" flat class="biography darken-3">
-                <v-card-text v-html="'<p>' + artist.bioContext + '</p>'">Loading...</v-card-text>
+              <v-card max-height="290px" flat class="pa-2 biography darken-3">
+                <vue-markdown>{{ artist.bioContext }}</vue-markdown>                
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
-              <v-card flat class="profile darken-3">
-                <v-card-text v-html="artist.profile">Loading...</v-card-text>
+              <v-card flat class="profile pa-2 darken-3">
+                <vue-markdown>{{ artist.profile }}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -642,6 +642,9 @@ export default {
   methods: {
     coverDragUploadComplete: function() {
       this.artistImageSearchItems = [];
+    },    
+    edit: function() {
+      this.$router.push("/artist/edit/" + this.artist.id);
     },    
     internetArtistSearch: function() {
       var q = this.searchQuery;

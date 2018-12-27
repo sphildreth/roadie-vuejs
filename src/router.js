@@ -60,6 +60,16 @@ var router = new VueRouter({
       }
     },      
     {
+      path: '/artist/edit/:id',
+      name: 'artistEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "artistEdit" */ './views/ArtistEdit.vue'),
+      meta: {
+        guest: false,
+        is_admin: true
+      }
+    },        
+    {
       path: '/bookmarks',
       name: 'bookmarks',
       component: () => import(/* webpackChunkName: "bookmarks" */ './views/Bookmarks.vue'),
