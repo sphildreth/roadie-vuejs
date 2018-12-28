@@ -145,6 +145,7 @@ export default {
         { icon: 'fas fa-users', text: 'Artists', route: '/artists' },
         { icon: 'bookmarks', text: 'Bookmarks', route: '/bookmarks' },
         { icon: 'collections', text: 'Collections', route: '/collections' },
+        { icon: 'category', text: 'Genres', route: '/genres' },
         { icon: 'label', text: 'Labels', route: '/labels' },
         { icon: 'playlist_play', text: 'Playlists', route: '/playlists' },
         { icon: 'headset', text: 'Playing', route: '/playing' },

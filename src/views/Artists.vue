@@ -41,6 +41,7 @@ export default {
     EventBus.$on("a:viewTopRated", this.viewTopRated);
     EventBus.$on("a:viewMostPlayed", this.viewMostPlayed);
     EventBus.$on("a:viewMostReleases", this.viewMostReleases);
+    EventBus.$on("a:viewMostTracks", this.viewMostTracks);
     EventBus.$on("a:viewRecentlyPlayed", this.viewRecentlyPlayed);
     EventBus.$on("a:viewAll", this.viewAll);
     EventBus.$on("toolbarRefresh", this.updateData);
@@ -55,6 +56,7 @@ export default {
     EventBus.$off("a:viewTopRated", this.viewTopRated);
     EventBus.$off("a:viewMostPlayed", this.viewMostPlayed);
     EventBus.$off("a:viewMostReleases", this.viewMostReleases);
+    EventBus.$off("a:viewMostTracks", this.viewMostTracks);    
     EventBus.$off("a:viewRecentlyPlayed", this.viewRecentlyPlayed);
     EventBus.$off("a:viewAll", this.viewAll);
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -94,6 +96,11 @@ export default {
       this.pagination.sortBy = "ReleaseCount";
       this.updateData();
     },
+    viewMostTracks: function() {
+      this.resetView();
+      this.pagination.sortBy = "TrackCount";
+      this.updateData();
+    },    
     viewRecentlyPlayed: function() {
       this.resetView();
       this.pagination.sortBy = "LastPlayed";
@@ -180,6 +187,11 @@ export default {
         class: "hidden-sm-and-down",
         click: "a:viewMostReleases"
       },
+      {
+        title: "Most Tracks",
+        class: "hidden-sm-and-down",
+        click: "a:viewMostTracks"
+      },      
       {
         title: "Random",
         class: "selected-toolbar-item",

@@ -71,7 +71,7 @@
       },
       viewMostPlayed: function() {
           this.resetView();                
-          this.pagination.sortBy = "TrackPlayedCount";
+          this.pagination.sortBy = "PlayedCount";
           this.updateData();
       },      
       viewRecentlyPlayed: function() {
@@ -95,9 +95,12 @@
         EventBus.$emit("loadingStarted"); 
           this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?page=${ this.pagination.page }&limit=${ this.pagination.rowsPerPage }&order=${ this.pagination.sortOrder  }&sort=${ this.pagination.sortBy }&doRandomize=${ this.doRandomize}&filterFavoriteOnly=${ this.filterFavoriteOnly}`)
           .then(response => {
-            this.items = response.data.rows;
-            this.pagination.totalItems = response.data.totalCount;    
-            EventBus.$emit("loadingComplete");    
+            this.items = [];
+            this.$nextTick(() => {
+              this.items = response.data.rows;
+              this.pagination.totalItems = response.data.totalCount;    
+              EventBus.$emit("loadingComplete");
+            })    
           });        
       },
       ratingChange: async function(changeInfo) {

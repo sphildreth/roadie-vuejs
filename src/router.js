@@ -95,6 +95,15 @@ var router = new VueRouter({
       }      
     },    
     {
+      path: '/genres',
+      name: 'genres',
+      props: true,
+      component: () => import(/* webpackChunkName: "genres" */ './views/Genres.vue'),
+      meta: {
+        guest: false
+      }
+    },      
+    {
       path: '/labels',
       name: 'labels',
       props: true,
