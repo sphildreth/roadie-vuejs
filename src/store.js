@@ -174,6 +174,10 @@ export default new Vuex.Store({
     removedFromQue(state, playQue, number) {
       state.playQue = playQue;
       state.queSize = number;
+    },
+    shuffledQue(state, playQue, number) {
+      state.playQue = playQue;
+      state.queSize = number;      
     }
   },
   actions: {
@@ -187,16 +191,33 @@ export default new Vuex.Store({
       if(data) {
         pq = JSON.parse(data);
       }
-      let i = pq.length > 0 ? (_.maxBy(pq, 'index')).index : 0;
+      let i = pq.length > 0 ? (_.maxBy(pq, 'listNumber')).listNumber : 0;
       tracks.forEach(t => {
-        if(!_.find(pq, function(pt) { return pt.id === t.id;})) {
+        if(!_.find(pq, function(pt) { return pt.track.id === t.id;})) {
           i++;
-          t.index = i;
-          pq.push(t);
+          pq.push({
+            listNumber: i,
+            track:t
+          });
         }         
       });
       localStorage.setItem("playQue", JSON.stringify(pq));
       commit("addedToQue", pq, tracks.length);
+    },
+    shuffleQue({ commit }) {
+      let data = localStorage.getItem("playQue");
+      let pq = [];
+      if(data) {
+        pq = JSON.parse(data);
+      }
+      pq = _.shuffle(pq);
+      let i = 0;
+      pq.forEach(t => {
+        i++;
+        t.listNumber = i;
+      });
+      localStorage.setItem("playQue", JSON.stringify(pq));      
+      commit("shuffledQue", pq, pq.length);
     },
     removeFromQue({ commit}, track) {
       let data = localStorage.getItem("playQue");
@@ -204,11 +225,11 @@ export default new Vuex.Store({
       if(data) {
         pq = JSON.parse(data);
       }
-      _.remove(pq, function(t) { return t.id === track.id; });
+      _.remove(pq, function(t) { return t.track.id === track.track.id; });
       let i = 0;
       pq.forEach(t => {
         i++;
-        t.index = i;
+        t.listNumber = i;
       });
       localStorage.setItem("playQue", JSON.stringify(pq));      
       commit("removedFromQue", pq, pq.length);

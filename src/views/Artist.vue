@@ -661,24 +661,35 @@ export default {
     addAllToQue: function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + "/tracks?page=1&limit=200&FilterToArtistId=" + this.artist.id
+        .get(process.env.VUE_APP_API_URL + "/tracks?page=1&limit=500&FilterToArtistId=" + this.artist.id
         )
         .then((response) => {
-          let t = [];
-          response.data.rows.forEach(tr => {
-            tr.artist = tr.trackArtist || tr.artist;
-            tr.releaseImageUrl = tr.release.thumbnail.url;
-            tr.release = { 
-              text: tr.release.release.text,
-              value: tr.release.id,
-              releaseDate: tr.release.releaseDate              
-            };
-            tr.artistImageUrl = tr.artist.thumbnail.url;
-            tr.userRating = tr.userRating || { rating : 0 }
-            t.push(tr);
+          let queTracks = [];
+          response.data.rows.forEach(tr => {      
+            let artist = tr.trackArtist || tr.artist;        
+            let queTrack = {
+              id: tr.id,
+              mediaNumber: tr.mediaNumber,
+              trackNumber: tr.trackNumber,
+              title: tr.title,
+              duration: tr.duration,
+              durationTime: tr.durationTime,
+              rating: tr.rating,
+              release: { 
+                text: tr.release.release.text,
+                value: tr.release.release.value,
+                releaseDate: tr.release.releaseDate
+              },
+              artist: artist,
+              releaseImageUrl:  tr.release.thumbnail.url,
+              artistImageUrl: artist.thumbnail.url,
+              userRating: tr.userRating || { rating : 0 }
+            }; 
+            queTracks.push(queTrack);
           })
-          this.$store.dispatch('addToQue', t);
-          this.snackbarText = "Added [" + t.length + "] tracks to Que";
+
+          this.$store.dispatch('addToQue', queTracks);
+          this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
           this.snackbar = true;
 
           EventBus.$emit("loadingComplete");

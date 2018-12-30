@@ -108,7 +108,7 @@ export default {
     release: Object,
     mediaNumber: Number,
     mediaCount: Number,
-    doShowSelector: false
+    doShowSelector: Boolean
   },
   async mounted() {},
   methods: {

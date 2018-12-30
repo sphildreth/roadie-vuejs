@@ -172,17 +172,46 @@ export default {
     id: String
   },
   created() {
+    EventBus.$on("pl:AddToQue", this.addToQue);    
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
     EventBus.$off('toolbarRefresh', this.updateData);  
+    EventBus.$off("pl:AddToQue", this.addToQue);    
   },    
   async mounted() {
     this.updateData();
   },
   methods: {
     shuffle: function() {},
-    addToQue: function() {},
+    addToQue: function() {
+      let queTracks = [];
+      this.trackItems.forEach(tr => {      
+        let artist = tr.trackArtist || tr.artist;        
+        let queTrack = {
+          id: tr.id,
+          mediaNumber: tr.mediaNumber,
+          trackNumber: tr.trackNumber,
+          title: tr.title,
+          duration: tr.duration,
+          durationTime: tr.durationTime,
+          rating: tr.rating,
+          release: { 
+            text: tr.release.release.text,
+            value: tr.release.release.value,
+            releaseDate: tr.release.releaseDate
+          },
+          artist: artist,
+          releaseImageUrl:  tr.release.thumbnail.url,
+          artistImageUrl: artist.thumbnail.url,
+          userRating: tr.userRating || { rating : 0 }
+        }; 
+        queTracks.push(queTrack);
+      })
+      this.$store.dispatch('addToQue', queTracks);
+      this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
+      this.snackbar = true;
+    },
     download: function() {},
     comment: function() {},
     updateData: async function() {
@@ -235,9 +264,8 @@ export default {
         totalItems: 0
     },      
     menuItems: [
-      { title: "Add To Que", class: "hidden-xs-only", click: "rr:AddToQue" },
-      { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" },
-      { title: "Shuffle", class: "hidden-sm-and-down", click: "rr:Shuffle" }
+      { title: "Add To Que", class: "hidden-xs-only", click: "pl:AddToQue" },
+      { title: "Comment", class: "hidden-xs-only", click: "pl:Comment" }
     ],
     trackItems: []
   })

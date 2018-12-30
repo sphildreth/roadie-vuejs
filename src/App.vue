@@ -11,7 +11,7 @@
           <v-footer v-if="!hide" :dark="$vuetify.dark" height="auto" class="pa-3 app--footer">
             <v-icon color="pink" class="mr-1" small>fas fa-archive</v-icon><span class="caption mr-1"> Last System Scan: {{ this.$store.getters.lastScanDate }}</span>            
             <v-spacer></v-spacer>
-            <span class="caption mr-1"> Roadie v20181228.1 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
+            <span class="caption mr-1"> Roadie v0.2 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
         </v-content>    
       </v-app>

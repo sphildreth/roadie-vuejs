@@ -623,6 +623,7 @@ export default {
     },
     shuffle: function() {},
     addToQue: function() {
+      let queTracks = [];      
       let t = null;
       if(this.selectedTracks.length > 0) {
         t = this.selectedTracks;
@@ -632,18 +633,29 @@ export default {
         });
       }
       t.forEach(tr => {
-        tr.artist = tr.trackArtist || this.release.artist;
-        tr.release = { 
-          text: this.release.title,
-          value: this.release.id,
-          releaseDate: this.release.releaseDate
-        };
-        tr.releaseImageUrl = this.release.thumbnail.url;
-        tr.artistImageUrl = tr.artist.thumbnail.url;
-        tr.userRating = tr.userRating || { rating : 0 }
+        let artist = tr.trackArtist || this.release.artist;        
+        let queTrack = {
+          id: tr.id,
+          mediaNumber: tr.mediaNumber,
+          trackNumber: tr.trackNumber,
+          title: tr.title,
+          duration: tr.duration,
+          durationTime: tr.durationTime,
+          rating: tr.rating,
+          release: { 
+            text: this.release.title,
+            value: this.release.id,
+            releaseDate: this.release.releaseDate
+          },
+          artist: artist,
+          releaseImageUrl:  this.release.thumbnail.url,
+          artistImageUrl: artist.thumbnail.url,
+          userRating: tr.userRating || { rating : 0 }
+        }; 
+        queTracks.push(queTrack);        
       })
-      this.$store.dispatch('addToQue', t);
-      this.snackbarText = "Added [" + t.length + "] tracks to Que";
+      this.$store.dispatch('addToQue', queTracks);
+      this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
       this.snackbar = true;
     },
     download: function() {},
