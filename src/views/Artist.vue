@@ -658,7 +658,33 @@ export default {
       this.$router.push({ name: 'search', params: { q: this.artist.name}});
     },
     shuffle: function() {},
-    addAllToQue: function() {},
+    addAllToQue: function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + "/tracks?page=1&limit=200&FilterToArtistId=" + this.artist.id
+        )
+        .then((response) => {
+          let t = [];
+          response.data.rows.forEach(tr => {
+            tr.artist = tr.trackArtist || tr.artist;
+            tr.releaseImageUrl = tr.release.thumbnail.url;
+            tr.release = { 
+              text: tr.release.release.text,
+              value: tr.release.id,
+              releaseDate: tr.release.releaseDate              
+            };
+            tr.artistImageUrl = tr.artist.thumbnail.url;
+            tr.userRating = tr.userRating || { rating : 0 }
+            t.push(tr);
+          })
+          this.$store.dispatch('addToQue', t);
+          this.snackbarText = "Added [" + t.length + "] tracks to Que";
+          this.snackbar = true;
+
+          EventBus.$emit("loadingComplete");
+        });
+
+    },
     playAll: function() {},
     comment: function() {},
     rescan: async function() {

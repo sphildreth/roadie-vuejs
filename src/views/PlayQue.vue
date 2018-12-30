@@ -41,7 +41,12 @@
             {{ props.item.index | padNumber3 }}
           </td>
           <td>
-            <v-progress-circular color="orange lighten-3" :value="props.item.rating * 20"></v-progress-circular>            
+            <v-progress-linear
+              height="12"
+              background-color="secondary"
+              color="orange lighten-3"
+              :value="props.item.rating * 20"
+            ></v-progress-linear>           
           </td>          
           <td class="">{{ props.item.mediaNumber | padNumber2 }}</td>
           <td class="">{{ props.item.trackNumber | padNumber4 }}</td>
@@ -150,7 +155,7 @@ export default {
     selectedTracks: [],
     headers: [
       { text: "Index", value: "index", width: "115" },
-      { text: "Rating", value: "track.rating", width: "55" },
+      { text: "Rating", value: "rating", width: "55" },
       { text: "Media", value: "mediaNumber", width: "50" },
       { text: "Number", value: "trackNumber", width: "100" },
       { text: "Track", value: "track.text" },
