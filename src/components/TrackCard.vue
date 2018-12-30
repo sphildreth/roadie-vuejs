@@ -1,118 +1,186 @@
 <template>
-    <v-card  :class="track.cssClass" class="track-card ma-1 ml-2 pa-2 " height="105px" hover :data-playurl="track.trackPlayUrl" :data-id="track.id" >
-        <v-layout>
-            <v-flex d-flex xs12>
-                <v-layout row wrap>
-                    <v-flex xs8 >
-                        <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>                                
-                        <v-icon  small class="favorite pointer" @click.native="favoriteToggle" :color="userRating.isFavorite ? 'red' : 'accent'" @change.native="favoriteToggle">favorite</v-icon>                    
-                        <v-rating v-model="track.rating" class="track-rating" background-color="orange lighten-3" color="orange" small dense hover readonly></v-rating>
-                        <v-icon  small class="hated pointer" @click.native="dislikeToggle" :color="userRating.isDisliked ? 'green' : 'accent'" @change.native="dislikeToggle">far fa-thumbs-down</v-icon>                                        
-                        <router-link :to="'/track/' + track.id"><div class="secondary--text text--lighten-1 track-title ">{{ track.title}}</div></router-link>
-                        <div class="caption accent--text"><span title="Played Count">{{ track.playedCount | padNumber4 }}</span> | <span title="Track Play Time">{{ track.durationTime }}</span></div>
-                        <div v-if="mediaCount > 1" class="caption accent-text">{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}</div>
-                        <div v-if="track.partTitlesList && track.partTitlesList.length > 0" class="caption font-italic text-no-wrap text-truncate">
-                            <span class="pr-2" v-for="partTitle in track.partTitlesList" :key="partTitle">{{ partTitle }}</span>
-                        </div>
-                    </v-flex>
-                    <v-flex xs4 v-if="track.trackArtist">
-                        <ArtistCard v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>                
-                    </v-flex>
-                    <v-flex xs4 v-if="release && !track.trackArtist">
-                        <ReleaseCard v-if="release" :release="release"></ReleaseCard>                
-                    </v-flex>                                 
-                </v-layout>
-            </v-flex>
+  <v-card
+    :class="track.cssClass"
+    class="track-card ma-1 ml-2 pa-2"
+    height="105px"
+    hover
+    :data-playurl="track.trackPlayUrl"
+    :data-id="track.id"
+  >
+    <v-layout>
+      <v-flex d-flex xs12>
+        <v-layout row wrap>
+          <v-flex xs8>
+            <input v-if="doShowSelector" type="checkbox" name="selected" @click="selectedTrack" class="track-selector" />
+            <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>
+            <v-icon
+              small
+              class="favorite pointer"
+              @click.native="favoriteToggle"
+              :color="userRating.isFavorite ? 'red' : 'accent'"
+              @change.native="favoriteToggle"
+            >favorite</v-icon>
+            <v-rating
+              v-model="track.rating"
+              class="track-rating"
+              background-color="orange lighten-3"
+              color="orange"
+              small
+              dense
+              hover
+              readonly
+            ></v-rating>
+            <v-icon
+              small
+              class="hated pointer"
+              @click.native="dislikeToggle"
+              :color="userRating.isDisliked ? 'green' : 'accent'"
+              @change.native="dislikeToggle"
+            >far fa-thumbs-down</v-icon>
+            <v-layout>
+              <router-link v-if="track.artist" :to="'/artist/' + track.artist.id">
+                <div class="secondary--text text--lighten-1 artist-title short">{{ track.artist.artist.text}}</div>
+              </router-link>
+              <router-link v-if="track.release" :to="'/release/' + track.release.id">
+                <div class="secondary--text text--lighten-1 release-title short">{{ '&nbsp;&#127932;&nbsp;' + track.release.release.text}}</div>
+              </router-link>            
+            </v-layout>            
+            <v-layout>
+              <router-link :to="'/track/' + track.id">
+                <div class="secondary--text text--lighten-1 track-title">{{ track.title}}</div>
+              </router-link>
+            </v-layout>
+            <v-layout>
+              <div class="caption accent--text">
+                <span title="Played Count">{{ track.playedCount | padNumber4 }}</span> |
+                <span title="Track Play Time">{{ track.durationTime }}</span>
+              </div>
+              <div
+                v-if="mediaCount > 1"
+                class="caption accent-text"
+              >{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}
+              </div>
+              <div
+                v-if="track.partTitlesList && track.partTitlesList.length > 0"
+                class="caption font-italic text-no-wrap text-truncate"
+              >
+                <span
+                  class="pr-2"
+                  v-for="partTitle in track.partTitlesList"
+                  :key="partTitle"
+                >{{ partTitle }}</span>
+              </div>
+            </v-layout>
+          </v-flex>
+          <v-flex xs4 v-if="track.trackArtist">
+            <ArtistCard v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>
+          </v-flex>
+          <v-flex xs4 v-if="release && !track.trackArtist">
+            <ReleaseCard v-if="release" :release="release"></ReleaseCard>
+          </v-flex>
         </v-layout>
-    </v-card>   
+      </v-flex>
+    </v-layout>
+  </v-card>
 </template>
 
 <script>
-import ArtistCard from '@/components/ArtistCard';
-import ReleaseCard from '@/components/ReleaseCard'
-import { EventBus } from '@/event-bus.js';
+import ArtistCard from "@/components/ArtistCard";
+import ReleaseCard from "@/components/ReleaseCard";
+import { EventBus } from "@/event-bus.js";
 
 export default {
-    name: 'TrackCard',
-    components: { ArtistCard, ReleaseCard },
-    props: {
-        track: {
-            type: Object,
-            default: function() {  
-                return {             
-                    userRating: {
-                        rating: 0,
-                        isFavorite: false,
-                        isDisliked: false
-                    }
-                }
-            }
-        },
-        release: Object,
-        mediaNumber: Number,
-        mediaCount: Number
+  name: "TrackCard",
+  components: { ArtistCard, ReleaseCard },
+  props: {
+    track: {
+      type: Object,
+      default: function() {
+        return {
+          userRating: {
+            rating: 0,
+            isFavorite: false,
+            isDisliked: false
+          }
+        };
+      }
     },
-    async mounted() {
-     
+    release: Object,
+    mediaNumber: Number,
+    mediaCount: Number,
+    doShowSelector: false
+  },
+  async mounted() {},
+  methods: {
+    selectedTrack: function(e) {
+      var isTrackSelected = e.target.checked;
+      this.$nextTick(() => {
+        EventBus.$emit(isTrackSelected ? "t:selected" : "t:unselected", this.track);
+      });
     },
-    methods: {
-        favoriteToggle: function() {
-            this.$nextTick(() => {
-                EventBus.$emit("t:favoriteToggle", { 
-                    trackId: this.$el.dataset.id,
-                    isFavorite: !this.track.userRating.isFavorite
-                });            
-                this.track.userRating.isFavorite = !this.track.userRating.isFavorite;
-            })
-        },  
-        dislikeToggle: function() {
-            this.$nextTick(() => {
-                EventBus.$emit("t:dislikeToggle", { 
-                    trackId: this.$el.dataset.id,
-                    isDisliked: !this.track.userRating.isDisliked
-                });            
-                this.track.userRating.isDisliked = !this.track.userRating.isDisliked;
-            })
-        },       
-        ratingChanged: function() {
-            this.$nextTick(() => {
-                EventBus.$emit("t:ratingChange", { 
-                    trackId: this.$el.dataset.id,
-                    newVal: this.rating
-                });            
-            })
-        }
+    favoriteToggle: function() {
+      this.$nextTick(() => {
+        EventBus.$emit("t:favoriteToggle", {
+          trackId: this.$el.dataset.id,
+          isFavorite: !this.track.userRating.isFavorite
+        });
+        this.track.userRating.isFavorite = !this.track.userRating.isFavorite;
+      });
     },
-    computed: {
-        userRating: function() {        
-            return this.track && this.track.userRating ? this.track.userRating : 0;
-        }
+    dislikeToggle: function() {
+      this.$nextTick(() => {
+        EventBus.$emit("t:dislikeToggle", {
+          trackId: this.$el.dataset.id,
+          isDisliked: !this.track.userRating.isDisliked
+        });
+        this.track.userRating.isDisliked = !this.track.userRating.isDisliked;
+      });
     },
-    data: () => ({        
-    })    
-}
+    ratingChanged: function() {
+      this.$nextTick(() => {
+        EventBus.$emit("t:ratingChange", {
+          trackId: this.$el.dataset.id,
+          newVal: this.rating
+        });
+      });
+    }
+  },
+  computed: {
+    userRating: function() {
+      return this.track && this.track.userRating ? this.track.userRating : 0;
+    }
+  },
+  data: () => ({})
+};
 </script>
 
 <style>
-    .track-card .v-card--hover {
-        cursor:default !important;
-    }
-    .track-card .v-rating.track-rating {
-        width: 97px;
-        float:left;
-    }
-    .track-card i.favorite {
-        float:left;
-        margin-top:2px;        
-    }    
-    .track-card .track-number {
-        float: left;
-        margin: 0px 15px 0px 5px;
-        height: 74px;
-        padding-top: 15px;
-    }
-    .track-card.Missing {
-      border:1px solid yellow !important;
-    }
 
+.track-card .v-card--hover {
+  cursor: default !important;
+}
+.track-card .v-rating.track-rating {
+  width: 97px;
+  float: left;
+}
+.track-card i.favorite {
+  float: left;
+  margin-top: 2px;
+}
+.track-card .track-number {
+  float: left;
+  margin: 0px 15px 0px 5px;
+  height: 90px;
+  padding-top: 15px;
+}
+.track-card.Missing {
+  border: 1px solid yellow !important;
+}
+.track-card .track-selector {
+  float: left;
+  margin-top: 27px;
+}
+.track-card .artist-title.short, .track-card .release-title.short {
+  float: left;
+}
 </style>

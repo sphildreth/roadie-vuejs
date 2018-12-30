@@ -12,7 +12,7 @@
         :total-items="pagination.totalItems"
       >
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.genre.text }}</td>
+          <td><router-link :to="'/search/:genre ' + encodeURIComponent(props.item.genre.text)"><span class="secondary--text text--lighten-1 artist-name text-no-wrap text-truncate subheading font-weight-medium pointer">{{ props.item.genre.text }}</span></router-link></td>
           <td>{{ props.item.artistCount }}</td>
           <td>{{ props.item.releaseCount }}</td>
         </template>
@@ -98,12 +98,12 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [15, 50, 100],
+    rowsPerPageItems: [10, 25, 50, 100],
     loading: true,
     currentView: "",
     pagination: {
       page: 1,
-      rowsPerPage: 15,
+      rowsPerPage: 10,
       totalItems: 0,
       sortBy: "genre.Text",
       sortOrder: "ASC"

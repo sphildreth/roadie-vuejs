@@ -493,12 +493,14 @@ export default {
     EventBus.$on("rr:FindCover", this.findCover);
     EventBus.$on("rr:Edit", this.edit);
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
+    EventBus.$on("t:selected", track => this.addSelectedTrack(track));
+    EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
   },
   beforeDestroy() {
-    EventBus.$off("rr:Shuffle");
-    EventBus.$off("rr:AddToQue");
-    EventBus.$off("rr:Download");
-    EventBus.$off("rr:Comment");
+    EventBus.$off("rr:Shuffle", this.shuffle);
+    EventBus.$off("rr:AddToQue", this.addToQue);
+    EventBus.$off("rr:Download", this.download);
+    EventBus.$off("rr:Comment", this.comment);
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("rr:searchInternetArtist");    
     EventBus.$off("rr:searchInternetreleaseandTitle");
@@ -512,6 +514,8 @@ export default {
     EventBus.$off("rr:Delete", this.delete);
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
+    EventBus.$off("t:selected");
+    EventBus.$off("t:unselected");    
   },
   async mounted() {
     this.updateData();
@@ -538,6 +542,14 @@ export default {
     }
   },
   methods: {
+    addSelectedTrack: function(track) {
+      if(!this.$_.find(this.selectedTracks, function(t) { return t.id === track.id; })) {
+        this.selectedTracks.push(track);
+      }        
+    },
+    removeSelectedTrack: function(track) {
+      this.$_.remove(this.selectedTracks, function(t) { return t.id === track.id; });
+    },
     coverDragUploadComplete: function() {
       this.coverSearchItems = [];
     },
@@ -610,7 +622,30 @@ export default {
         });
     },
     shuffle: function() {},
-    addToQue: function() {},
+    addToQue: function() {
+      let t = null;
+      if(this.selectedTracks.length > 0) {
+        t = this.selectedTracks;
+      } else {
+        t = this.$_.flatMap(this.release.medias, function(media) {
+            return media.tracks;
+        });
+      }
+      t.forEach(tr => {
+        tr.artist = tr.trackArtist || this.release.artist;
+        tr.release = { 
+          text: this.release.title,
+          value: this.release.id,
+          releaseDate: this.release.releaseDate
+        };
+        tr.releaseImageUrl = this.release.thumbnail.url;
+        tr.artistImageUrl = tr.artist.thumbnail.url;
+        tr.userRating = tr.userRating || { rating : 0 }
+      })
+      this.$store.dispatch('addToQue', t);
+      this.snackbarText = "Added [" + t.length + "] tracks to Que";
+      this.snackbar = true;
+    },
     download: function() {},
     comment: function() {},
     showImageModal: function(e) {
@@ -788,6 +823,7 @@ export default {
   data: () => ({
     tab: 0,
     releaseTab: 2,
+    selectedTracks: [],
     snackbar: false,
     snackbarText: "",
     coverSearchQuery: "",
@@ -828,7 +864,7 @@ export default {
       }
     ],
     menuItems: [
-      { title: "Add To Que", class: "hidden-xs-only", click: "rr:AddToQue" },
+      { title: "Add To Que", tooltip:"Added checked tracks to Que, if none selected adds all to Que.", class: "hidden-xs-only", click: "rr:AddToQue" },
       { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" },
       { title: "Download", class: "hidden-sm-and-down", click: "rr:Download" },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "rr:Shuffle" }

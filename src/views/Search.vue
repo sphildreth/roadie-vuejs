@@ -208,7 +208,8 @@ export default {
   },
   watch: {
     $route(to) {
-      this.q = to.params.q;
+      console.log(to.params.q);
+      this.q = encodeURIComponent(to.params.q);
       this.updateData();
     },
     artistPagination: {

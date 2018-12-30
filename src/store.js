@@ -1,10 +1,20 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as _ from "lodash";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   getters: {
+    playQue: (state) => {
+      let data = localStorage.getItem("playQue");
+      state.playQue = [];
+      if(data) {
+        state.playQue = JSON.parse(data);
+      }
+      state.queSize = state.playQue.length;
+      return state.playQue;
+    },
     lastScanDate: (state) => {
       if(!state.lastScanDate) {
         state.lastScanDate = localStorage.getItem("lastScanDate");
@@ -92,6 +102,7 @@ export default new Vuex.Store({
   },  
   state: {
     isLoggedIn: !!localStorage.getItem("user"),
+    queSize: 0,
     lastScanDate: null,
     authToken: null,
     user: {
@@ -102,7 +113,8 @@ export default new Vuex.Store({
       isAdmin: false,
       timezone: null,
       timeformat: null
-    }
+    },
+    playQue: null
   },
   mutations: {
     signin (state) {
@@ -143,19 +155,67 @@ export default new Vuex.Store({
           },
           dark: true
         };      
-        theme = data;        
+        theme = data;         
       } else  {
         theme = JSON.parse(data);
       }      
       theme.dark = dark;
       localStorage.setItem("theme", JSON.stringify(theme)); 
       state.dark = dark;
+    },
+    clearQue(state) {
+      state.queSize = 0;
+      state.playQue = [];
+    },
+    addedToQue(state, playQue, number) {
+      state.playQue = playQue;
+      state.queSize = number;
+    },
+    removedFromQue(state, playQue, number) {
+      state.playQue = playQue;
+      state.queSize = number;
     }
   },
   actions: {
     signout({ commit }) {
       localStorage.removeItem("user");
       commit("signout");      
-    }    
+    },
+    addToQue({ commit }, tracks) {
+      let data = localStorage.getItem("playQue");
+      let pq = [];
+      if(data) {
+        pq = JSON.parse(data);
+      }
+      let i = pq.length > 0 ? (_.maxBy(pq, 'index')).index : 0;
+      tracks.forEach(t => {
+        if(!_.find(pq, function(pt) { return pt.id === t.id;})) {
+          i++;
+          t.index = i;
+          pq.push(t);
+        }         
+      });
+      localStorage.setItem("playQue", JSON.stringify(pq));
+      commit("addedToQue", pq, tracks.length);
+    },
+    removeFromQue({ commit}, track) {
+      let data = localStorage.getItem("playQue");
+      let pq = [];
+      if(data) {
+        pq = JSON.parse(data);
+      }
+      _.remove(pq, function(t) { return t.id === track.id; });
+      let i = 0;
+      pq.forEach(t => {
+        i++;
+        t.index = i;
+      });
+      localStorage.setItem("playQue", JSON.stringify(pq));      
+      commit("removedFromQue", pq, pq.length);
+    },
+    clearQue({ commit}) {
+      localStorage.removeItem("playQue");
+      commit("clearQue");
+    }
   }
 })

@@ -3,7 +3,7 @@
     <v-toolbar class="" dense>
       <v-icon v-html="toolbarIcon"></v-icon>
       <v-toolbar-items>
-        <v-btn flat v-for="item in menuItems" :class="item.class" :key="item.title" :data-eventmessage="item.click" @click="clicked">
+        <v-btn :title="item.tooltip || item.title" flat v-for="item in menuItems" :class="item.class" :key="item.title" :data-eventmessage="item.click" @click="clicked">
           {{ item.title }}
         </v-btn>        
       </v-toolbar-items>

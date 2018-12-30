@@ -131,6 +131,15 @@ var router = new VueRouter({
       }
     },     
     {
+      path: '/playque',
+      name: 'playque',
+      props: true,
+      component: () => import(/* webpackChunkName: "playque" */ './views/PlayQue.vue'),
+      meta: {
+        guest: false
+      }
+    },     
+    {
       path: '/playlist/:id',
       name: 'playlist',
       props: true,

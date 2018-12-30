@@ -10,7 +10,7 @@
                 wrap
             >
                 <v-flex slot="item" slot-scope="props" xs12>
-                    <TrackCard :track="props.item" :mediaNumber="media.mediaNumber" :mediaCount="mediaCount"></TrackCard>
+                    <TrackCard :track="props.item" :doShowSelector="true" :mediaNumber="media.mediaNumber" :mediaCount="mediaCount"></TrackCard>
                 </v-flex>
             </v-data-iterator>
         </v-layout>

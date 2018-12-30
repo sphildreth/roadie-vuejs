@@ -106,7 +106,7 @@ export default {
   components: { ThemeSettings }, 
   methods: {
     signout() {
-      this.$store.dispatch('signout')
+      this.$store.dispatch('signout');
       this.$router.go('/');  
     },
     search(e) {
@@ -148,7 +148,7 @@ export default {
         { icon: 'category', text: 'Genres', route: '/genres' },
         { icon: 'label', text: 'Labels', route: '/labels' },
         { icon: 'playlist_play', text: 'Playlists', route: '/playlists' },
-        { icon: 'headset', text: 'Playing', route: '/playing' },
+        { icon: 'headset', text: 'Playing/Que', route: '/playque' },
         { icon: 'assessment', text: 'Statistics', route: '/statistics' },        
         { icon: 'audiotrack', text: 'Tracks', route: '/tracks' }
       ]
