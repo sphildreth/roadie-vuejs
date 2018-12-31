@@ -13,7 +13,7 @@
     </v-container>
     <v-container class="mt-0 pt-0" fluid grid-list-md>
       <v-card v-if="artistItems.length > 0">
-        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Artists</v-card-title>
+        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text"><v-icon class="mr-2">fas fa-users</v-icon>Artists</v-card-title>
         <v-card-text>
           <v-data-iterator
             :items="artistItems"
@@ -33,7 +33,7 @@
         </v-card-text>
       </v-card>
       <v-card v-if="releaseItems.length > 0">
-        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Releases</v-card-title>
+        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text"><v-icon class="mr-2">library_music</v-icon>Releases</v-card-title>
         <v-card-text>
           <v-data-iterator
             :items="releaseItems"
@@ -53,7 +53,7 @@
         </v-card-text>
       </v-card>
       <v-card v-if="trackItems.length > 0">
-        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Tracks</v-card-title>
+        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text"><v-icon class="mr-2">audiotrack</v-icon>Tracks</v-card-title>
         <v-card-text>
           <v-data-iterator
             :items="trackItems"
@@ -73,7 +73,7 @@
         </v-card-text>
       </v-card>
       <v-card v-if="playlistItems.length > 0">
-        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text">Playlists</v-card-title>
+        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text"><v-icon class="mr-2">playlist_play</v-icon>Playlists</v-card-title>
         <v-card-text>
           <v-data-iterator
             :items="playlistItems"

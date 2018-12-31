@@ -29,6 +29,7 @@
     <v-container fluid grid-list-md>
       <v-data-table :headers="headers" :items="items" class="elevation-1" hide-actions>
         <template slot="items" slot-scope="props">
+          <td class="handle" title="Click and drag to change order" style="max-width: 10px;font-size:18px;">&#128075;</td>
           <td class="">
             <input type="checkbox" name="selected" @click="toggleSelectedTrack($event, props.item)" class="mr-2 track-selector" />
             <v-icon
@@ -130,6 +131,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import Sortable from "sortablejs";
 
 export default {
   components: { Toolbar },
@@ -148,6 +150,15 @@ export default {
     EventBus.$off("toolbarRefresh", this.updateData);
   },
   async mounted() {
+    let table = document.querySelector(".v-datatable tbody");
+    const _self = this;
+    Sortable.create(table, {
+      handle: ".handle", // Use handle so user can select text
+      onEnd({ newIndex, oldIndex }) {
+        const rowSelected = _self.items.splice(oldIndex, 1)[0]; // Get the selected row and remove it
+        _self.items.splice(newIndex, 0, rowSelected); // Move it to the new index
+      }
+    });    
     this.updateData();
   },
   computed: {    
@@ -168,6 +179,7 @@ export default {
       this.updateData();
     },
     doSaveAsPlaylist: function() {
+      let that=this;
       if (this.$refs.form.validate()) {
         this.showSaveAsPlaylist = false;      
         let playlistData = {
@@ -256,6 +268,7 @@ export default {
     newPlaylistDescription: "",
     selectedTracks: [],
     headers: [
+      { text: "", value: "", width: "15", sortable:false },      
       { text: "Index", value: "listNumber", width: "115" },
       { text: "Rating", value: "track.rating", width: "55" },
       { text: "Media", value: "track.mediaNumber", width: "50" },
@@ -299,5 +312,13 @@ export default {
   .box {
     display: flex;
     align-items:center;
+  }
+  .handle {
+    cursor: move !important;
+    cursor: -webkit-grabbing !important;
+  }  
+  .sortable-ghost {
+    opacity: .75;
+    background: #F5F500;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-detail-container">
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'playlist_play'"></Toolbar>
+    <Toolbar :menuItems="menuItems" :hasDeleteRights="hasModifyRights" :hasEditRights="hasModifyRights" :toolbarIcon="'playlist_play'"></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
@@ -157,6 +157,7 @@
       {{ snackbarText }}
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
+    <confirm ref="confirm"></confirm>    
   </div>
 </template>
 
@@ -164,26 +165,47 @@
 import Toolbar from '@/components/Toolbar';
 import UserCard from '@/components/UserCard';
 import TrackCard from '@/components/TrackCard';
+import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
 export default {
-  components: { Toolbar, UserCard, TrackCard },
+  components: { Toolbar, UserCard, TrackCard, Confirm },
   props: {
     id: String
   },
   created() {
     EventBus.$on("pl:AddToQue", this.addToQue);    
+    EventBus.$on("pl:Delete", this.delete);    
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
     EventBus.$off('toolbarRefresh', this.updateData);  
+    EventBus.$off("pl:Delete", this.delete);    
     EventBus.$off("pl:AddToQue", this.addToQue);    
   },    
   async mounted() {
     this.updateData();
   },
+  computed: {
+    hasModifyRights() {
+      return this.$store.getters.isUserAdmin || this.playlist.userCanEdit;
+    }
+  },
   methods: {
-    shuffle: function() {},
+    delete: function() {
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(process.env.VUE_APP_API_URL + "/playlists/delete/" + this.playlist.id)
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });      
+    },
     addToQue: function() {
       let queTracks = [];
       this.trackItems.forEach(tr => {      
@@ -265,7 +287,9 @@ export default {
     },      
     menuItems: [
       { title: "Add To Que", class: "hidden-xs-only", click: "pl:AddToQue" },
-      { title: "Comment", class: "hidden-xs-only", click: "pl:Comment" }
+      { title: "Comment", class: "hidden-xs-only", click: "pl:Comment" },
+      { title: "Delete", class: "hidden-xs-only", permission: "delete", click: "pl:Delete" },
+      { title: "Edit", class: "hidden-xs-only", permission: "edit", click: "pl:Edit" }
     ],
     trackItems: []
   })

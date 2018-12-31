@@ -5,8 +5,6 @@ import router from './router';
 import Axios from 'axios';
 import store from './store';
 
-// import moment from "moment";
-
 import moment from 'moment-timezone';
 
 var numeral = require("numeral");
