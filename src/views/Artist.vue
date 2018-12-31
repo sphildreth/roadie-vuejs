@@ -858,8 +858,8 @@ export default {
                 });
               });
               EventBus.$emit("loadingComplete");
-              let favicon = new Favico();
-              favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
+          //    let favicon = new Favico();
+          //    favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
             });
         })
         .finally(() => {

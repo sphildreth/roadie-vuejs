@@ -27,7 +27,6 @@
               color="orange"
               small
               dense
-              hover
               readonly
             ></v-rating>
             <v-icon

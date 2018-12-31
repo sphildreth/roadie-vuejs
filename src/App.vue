@@ -13,6 +13,9 @@
             <v-spacer></v-spacer>
             <span class="caption mr-1"> Roadie v0.2 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
+          <v-bottom-sheet persistent full-width hide-overlay v-model="showPlayer">
+            <TrackPlayingCard v-if="showPlayer" :track="currentTrack.track" :totalTime="totalQueTime" :listNumber="currentTrack.listNumber"></TrackPlayingCard>
+          </v-bottom-sheet>          
         </v-content>    
       </v-app>
     </template>    
@@ -27,12 +30,22 @@
 <script>
 import Navbar from './components/Navbar';
 import store from '@/store';
+import TrackPlayingCard from '@/components/TrackPlayingCard.vue';
 
 export default {
   store,
-  components: { Navbar },
+  components: { Navbar, TrackPlayingCard },
   name: 'App',
   computed: {
+    currentTrack() {
+      return this.$store && this.$store.getters.playQue[0];
+    },
+    totalQueTime() {
+      return "00:00:00";
+    },
+    showPlayer() {
+      return this.$store && this.$store.getters.playQue.length > 0;
+    },
     hide () {
       return this.$route.path === '/signin' || this.$route.path === '/register'; 
     }    
