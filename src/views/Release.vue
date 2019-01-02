@@ -642,6 +642,7 @@ export default {
           duration: tr.duration,
           durationTime: tr.durationTime,
           rating: tr.rating,
+          trackPlayUrl: tr.trackPlayUrl,
           release: { 
             text: this.release.title,
             value: this.release.id,

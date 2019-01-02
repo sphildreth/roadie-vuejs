@@ -55,7 +55,7 @@
           <td class="box">
             <router-link :to="'/release/' + props.item.track.release.value">
               <img class="thumbnail" :src="props.item.track.releaseImageUrl" :alt="props.item.track.release.text">                
-              <span class="thumbnail-text white--text release-title pointer">
+              <span class="thumbnail-text release-title pointer">
                 {{ props.item.track.release.text }}
               </span>
             </router-link>
@@ -68,7 +68,7 @@
                 :src="props.item.track.artistImageUrl"
                 :alt="props.item.track.artist.artist.text"
               />
-              <span class="thumbnail-text white--text artist-name pointer">
+              <span class="thumbnail-text artist-name pointer">
               {{ props.item.track.artist.artist.text }}
               </span>
             </router-link>            
