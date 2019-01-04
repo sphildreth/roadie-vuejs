@@ -29,17 +29,11 @@
     <v-container fluid grid-list-md>
       <v-data-table :headers="headers" :items="items" class="elevation-1" hide-actions>
         <template slot="items" slot-scope="props">
-          <td class="handle" title="Click and drag to change order" style="max-width: 10px;font-size:18px;">&#128075;</td>
-          <td class="">
+          <td class="handle">
             <input type="checkbox" name="selected" @click="toggleSelectedTrack($event, props.item)" class="mr-2 track-selector" />
-            <v-icon
-              color="red"
-              title="Remove from Que"
-              class="pointer"
-              @click="removeTrackFromQue(props.item)"
-              small
-            >delete</v-icon>
-            {{ props.item.listNumber | padNumber3 }}
+            {{ props.item.listNumber | padNumber3 }}            
+            <v-icon title="Click to play track" @click="playTrack(props.item.track.id)" :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'">play_circle_outline</v-icon>  
+            <span title="Click and drag to change order" style="max-width: 10px;font-size:18px;">&#128075;</span>            
           </td>
           <td>
             <v-progress-linear
@@ -73,7 +67,19 @@
               </span>
             </router-link>            
           </td>
-          <td class="">{{ props.item.track.durationTime }}</td>
+          <td class="">
+            <span class="mr-2">{{ props.item.track.durationTime }}</span>
+            <v-icon
+              color="red"
+              title="Remove from Que"
+              class="pointer"
+              @click="removeTrackFromQue(props.item)"
+              small
+            >delete</v-icon>            
+            <span v-if="nowPlaying && (playingTrackId === props.item.track.id)">
+              <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing" />
+            </span>            
+          </td>
         </template>
       </v-data-table>
     </v-container>
@@ -140,7 +146,7 @@ export default {
     EventBus.$on("pl:RemoveSelected", this.removeSelected);
     EventBus.$on("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$on("pl:Shuffle", this.shuffleQue);
-    EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("toolbarRefresh", this.updateData);    
   },
   beforeDestroy() {
     EventBus.$off("pl:ClearQue", this.clearQue);
@@ -161,7 +167,7 @@ export default {
     });    
     this.updateData();
   },
-  computed: {    
+  computed: {     
     quePlaytime() {
       let duration = 0;
       this.items.forEach(t => {
@@ -171,9 +177,18 @@ export default {
     },
     queTrackCount() {
       return this.items.length;
+    },
+    playingTrackId() {
+      return this.$store.getters.playingIndex.trackId;
+    },
+    nowPlaying() {
+      return this.$store.getters.nowPlaying;
     }
   },
   methods: {
+    playTrack: function(id) {
+      alert('play track ' + id)
+    },
     shuffleQue: function() {
       this.$store.dispatch("shuffleQue");
       this.updateData();
@@ -268,8 +283,7 @@ export default {
     newPlaylistDescription: "",
     selectedTracks: [],
     headers: [
-      { text: "", value: "", width: "15", sortable:false },      
-      { text: "Index", value: "listNumber", width: "115" },
+      { text: "Index", value: "listNumber", width: "145" },
       { text: "Rating", value: "track.rating", width: "55" },
       { text: "Media", value: "track.mediaNumber", width: "50" },
       { text: "Number", value: "track.trackNumber", width: "100" },

@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :class="track.cssClass"
+    :class="'track.cssClass' + this.$store.getters.playingIndex.trackId == track.id ? 'playing-track' : ''"
     class="track-card ma-1 ml-2 pa-2"
     height="105px"
     hover

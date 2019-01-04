@@ -6,6 +6,12 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   getters: {
+    playingIndex: (state) => {
+      return state.playingIndex;
+    },
+    nowPlaying: (state) => {
+      return state.nowPlaying;
+    },
     playQue: (state) => {
       let data = localStorage.getItem("playQue");
       state.playQue = [];
@@ -105,6 +111,8 @@ export default new Vuex.Store({
     queSize: 0,
     lastScanDate: null,
     authToken: null,
+    playingIndex: [],
+    nowPlaying: false,
     user: {
       id: null,
       username: null,
@@ -165,6 +173,8 @@ export default new Vuex.Store({
     },
     clearQue(state) {
       state.queSize = 0;
+      state.nowPlaying = false;
+      state.playingIndex = [];
       state.playQue = [];
     },
     addedToQue(state, playQue, number) {
@@ -178,12 +188,24 @@ export default new Vuex.Store({
     shuffledQue(state, playQue, number) {
       state.playQue = playQue;
       state.queSize = number;      
+    },
+    playIndexChange(state, trackInfo) {
+      state.playingIndex = trackInfo;
+    },
+    nowPlaying(state, nowPlaying) {
+      state.nowPlaying = nowPlaying;
     }
   },
   actions: {
     signout({ commit }) {
       localStorage.removeItem("user");
       commit("signout");      
+    },
+    playIndexChange({ commit }, trackInfo) {
+      commit("playIndexChange", trackInfo);
+    },
+    nowPlaying({ commit }, nowPlaying) {
+      commit("nowPlaying", nowPlaying);
     },
     addToQue({ commit }, tracks) {
       let data = localStorage.getItem("playQue");

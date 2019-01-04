@@ -682,6 +682,7 @@ export default {
                 releaseDate: tr.release.releaseDate
               },
               artist: artist,
+              releaseArtist: tr.artist,
               releaseImageUrl:  tr.release.thumbnail.url,
               artistImageUrl: artist.thumbnail.url,
               userRating: tr.userRating || { rating : 0 }

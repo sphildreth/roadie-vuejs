@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mb-3" hover :data-id="artist.id">
+  <v-card class="mb-3" :class="this.$store.getters.playingIndex.artistId == artist.id ? 'playing-artist' : ''" hover :data-id="artist.id">
     <v-layout>
       <v-flex xs4 :class="'artist-status-' + artist.status">
         <router-link :to="'/artist/' + artist.id">

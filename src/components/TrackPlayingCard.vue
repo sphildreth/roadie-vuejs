@@ -20,33 +20,45 @@
                 >
               </router-link>
               <div class="body-2" title="View Artist Details">
+                <router-link v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id" :to="'/artist/' + currentTrack.releaseArtist.artist.value">
+                  <img
+                    class="ma-1"
+                    style="float:left;height:14px;"
+                    :src="currentTrack.releaseArtist.thumbnail.url"
+                    :alt="currentTrack.releaseArtist.artist.text"
+                  >
+                  <span
+                    class="artist-name text-no-wrap text-truncate pointer"
+                  >{{ currentTrack.releaseArtist.artist.text }} </span>
+                </router-link>
+                <span v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id" class="mx-1">::</span>
                 <router-link :to="'/artist/' + currentTrack.artist.artist.value">
                   <img
                     class="ma-1"
-                    style="float:left;height:13px;"
+                    style="height:14px;"
                     :src="currentTrack.artist.thumbnail.url"
                     :alt="currentTrack.artist.artist.text"
                   >
                   <span
-                    class="black--text artist-name text-no-wrap text-truncate pointer"
+                    class="artist-name text-no-wrap text-truncate pointer"
                   >{{ currentTrack.artist.artist.text }}</span>
-                </router-link>
+                </router-link>                
               </div>
               <div title="View Release Details">
                 <router-link :to="'/release/' + currentTrack.release.value">
                   <span
-                    class="release-date black--text subheading mr-2"
+                    class="release-date bsubheading mr-2"
                   >{{ currentTrack.release.releaseDate | formattedYear }}</span>
                   <span
-                    class="black--text release-title text-no-wrap text-truncate pointer subheading"
+                    class="release-title text-no-wrap text-truncate pointer subheading"
                   >{{ track.release.text }}</span>
                 </router-link>
               </div>
               <div title="View Track Details">
                 <router-link :to="'/track/' + currentTrack.id">
-                  <span class="release-date black--text title mr-2">{{ currentTrack.trackNumber | padNumber3 }}</span>
+                  <span class="release-date title mr-2">{{ currentTrack.trackNumber | padNumber3 }}</span>
                   <span
-                    class="black--text release-title text-no-wrap text-truncate pointer title"
+                    class="release-title text-no-wrap text-truncate pointer title"
                   >{{ currentTrack.title }}</span>
                 </router-link>
               </div>
@@ -79,7 +91,7 @@
               <v-icon
                 medium
                 class="favorite pointer"
-                :color="currentTrack.userRating.isFavorite ? 'red' : 'accent'"
+                :color="currentTrack.userRating.isFavorite ? 'red' : ''"
               >favorite</v-icon>
             </v-btn>
             <v-btn icon @click="hateToogle">
@@ -112,7 +124,7 @@
           <v-layout d-flex row wrap>
             <span title="Current Playing Time of Track">
               <v-icon medium>play_arrow</v-icon>
-              <span class="headline track-current-time mr-1">00:00</span>
+              <span class="headline track-current-time mr-1">{{ seek | minutes }}</span>
             </span>
             <span title="Total Time of Track">
               <v-icon medium>audiotrack</v-icon>
@@ -207,21 +219,35 @@ export default {
     listNumber: Number,
     totalTime: String
   },
+  beforeDestroy() {
+    this.howl.unload();
+  },
   async mounted() {
     this.originalWindowTitle = document.title;
     Howler.volume(this.volume)    
     let that=this;    
     var trackInQue = this.$_.find(this.$store.getters.playQue, function(t) { return t.track.id === that.track.id;});
-    this.playingIndex = trackInQue.listNumber -1;
+    this.$nextTick(() => {
+      this.playingIndex = trackInQue.listNumber -1;
+    });    
     this.howl = new Howl({
       volume: this.volume,
       loop: this.loop,
       src: this.currentTrack.trackPlayUrl,
+      autoplay: true,
+      onplay: () => {
+        this.playing = true;
+        this.$store.dispatch("playIndexChange", {
+          index: this.playingIndex,
+          trackId: this.currentTrack.id,
+          releaseId: this.currentTrack.release.value,
+          artistId: this.currentTrack.artist.id
+        });          
+      },
       onend: () => {
-        this.playing = false;
+        this.skip('next');
       }  
     });
-    // this.play();
     this.loaded = true;    
   },
   methods: {
@@ -283,25 +309,42 @@ export default {
   watch: {
     playingIndex(newIndex) {
       this.stop();
+      this.howl.unload();
       this.howl = new Howl({
         volume: this.volume,
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
+        autoplay: true,
+        onplay: () => {
+          this.playing = true;
+          this.$store.dispatch("playIndexChange", {
+            index: this.playingIndex,
+            trackId: this.currentTrack.id,
+            releaseId: this.currentTrack.release.value,
+            artistId: this.currentTrack.artist.id
+          });           
+        },
         onend: () => {
-          this.playing = false;
+          this.skip('next');
         }        
-      });
+      });    
     },
     playing(playing) {
       this.seek = this.howl.seek();
       let updateSeek
       if (playing) {
         updateSeek = setInterval(() => {
-          this.seek = this.howl.seek()
+          try {
+            this.seek = this.howl.seek();
+          } catch(e) {
+            console.log(e);
+            clearInterval(updateSeek)
+          }
         }, 250)
       } else {
         clearInterval(updateSeek)
       }
+      this.$store.dispatch("nowPlaying", playing);
     }   
   },  
   computed: {
@@ -309,7 +352,7 @@ export default {
       return this.$store.getters.playQue[this.playingIndex].track;
     },
     progress () {
-      if (this.howl.duration() === 0) return 0
+      if (!this.howl || this.howl.duration() === 0) return 0
       return this.seek / this.howl.duration()
     },    
     trackProgress () {

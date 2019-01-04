@@ -1,6 +1,7 @@
 <template>
   <v-card
     class="mb-3"
+    :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
     height="92"
     :color="!release.isValid ? 'warning' : ''"
     hover
@@ -27,7 +28,7 @@
                 small
                 class="favorite pointer"
                 @click="isFavorite = !isFavorite"
-                :color="isFavorite ? 'red' : 'accent'"
+                :color="isFavorite ? 'red' : ''"
               >favorite</v-icon>
               <v-rating
                 v-model="release.rating"
@@ -42,7 +43,7 @@
                 small
                 class="disliked pointer"
                 @click="isDisliked = !isDisliked"
-                :color="isDisliked ? 'green' : 'accent'"
+                :color="isDisliked ? 'green' : ''"
               >fas fa-thumbs-down</v-icon>
             </div>
             <router-link :to="'/release/' + release.id">
