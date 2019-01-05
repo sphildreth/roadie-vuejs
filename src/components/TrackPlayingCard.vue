@@ -2,10 +2,12 @@
   <div v-if="loaded">
     <v-card class="track-playing-card ma-1 ml-2 pa-1" height="100px" hover>
       <v-progress-linear
-        :value="trackProgress"
-        color="info"
-        class="mb-1 ma-0 primary"
+        id="trackProgressBar"
         height="5"
+        class="ma-0 pa-0 pointer"
+        color="info"
+        :value="trackProgress"
+        @click="updateSeek($event)"
       ></v-progress-linear>
       <v-layout>
         <v-flex d-flex xs6>
@@ -160,10 +162,10 @@
               <v-icon title="Skip Previous" @click="skip('prev')">skip_previous</v-icon>
             </v-btn>
             <v-btn icon>
-              <v-icon >replay_30</v-icon>
+              <v-icon @click="seekByAmount(-30)" >replay_30</v-icon>
             </v-btn>
             <v-btn icon>
-              <v-icon>fast_rewind</v-icon>
+              <v-icon @click="seekByAmount(-1)">fast_rewind</v-icon>
             </v-btn>
             <v-btn icon>
               <v-icon large @click="play">{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
@@ -172,10 +174,10 @@
               <v-icon @click="stop">stop</v-icon>
             </v-btn>            
             <v-btn icon>
-              <v-icon>fast_forward</v-icon>
+              <v-icon @click="seekByAmount(1)">fast_forward</v-icon>
             </v-btn>
             <v-btn icon>
-              <v-icon >forward_30</v-icon>
+              <v-icon @click="seekByAmount(30)">forward_30</v-icon>
             </v-btn>
             <v-btn icon>
               <v-icon title="Skip Next" @click="skip('next')">skip_next</v-icon>
@@ -251,6 +253,19 @@ export default {
     this.loaded = true;    
   },
   methods: {
+    updateSeek (event) {
+      let el = document.getElementById("trackProgressBar"),
+          mousePos = event.offsetX,
+          elWidth = el.clientWidth,
+          percents = (mousePos / elWidth) * 100
+      let howl = this.howl;    
+      if (howl.playing()) {
+        howl.seek((howl.duration() / 100) * percents)
+      }
+    },     
+    seekByAmount(amount) {
+      this.howl.seek(this.howl.seek() + amount);
+    },
     play: function() {
       if(!this.playing) {
         this.howl.play();
@@ -296,7 +311,7 @@ export default {
     hateToogle: function() {},
     setRating: function() {},
     toggleLoop() {
-      this.$emit("toggleloop", !this.loop);
+      this.loop = !this.loop;
     },
     updateVolume: function(volume) {
       Howler.volume(volume);

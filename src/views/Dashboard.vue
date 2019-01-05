@@ -177,7 +177,9 @@ export default {
     statistics: {},
     latestReleases: [],
     latestArtists: [],
-    menuItems: []
+    menuItems: [
+      { title: "Play Random Tracks", class: "hidden-sm-and-down", click: "db:PlayRandomTracks" }
+    ]
   })
 };
 </script>
