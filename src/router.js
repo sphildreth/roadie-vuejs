@@ -109,15 +109,7 @@ var router = new VueRouter({
       meta: {
         guest: false
       }
-    },      
-    {
-      path: '/history',
-      name: 'history',
-      component: () => import(/* webpackChunkName: "history" */ './views/History.vue'),
-      meta: {
-        guest: false
-      }
-    },        
+    },             
     {
       path: '/labels',
       name: 'labels',

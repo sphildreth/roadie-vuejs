@@ -1,6 +1,6 @@
 <template>
   <div v-if="loaded">
-    <v-card class="track-playing-card ma-1 ml-2 pa-1" height="100px" hover>
+    <v-card class="track-playing-card" height="100px" hover>
       <v-progress-linear
         id="trackProgressBar"
         height="5"
@@ -22,7 +22,10 @@
                 >
               </router-link>
               <div class="body-2" title="View Artist Details">
-                <router-link v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id" :to="'/artist/' + currentTrack.releaseArtist.artist.value">
+                <router-link
+                  v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
+                  :to="'/artist/' + currentTrack.releaseArtist.artist.value"
+                >
                   <img
                     class="ma-1"
                     style="float:left;height:14px;"
@@ -31,9 +34,12 @@
                   >
                   <span
                     class="artist-name text-no-wrap text-truncate pointer"
-                  >{{ currentTrack.releaseArtist.artist.text }} </span>
+                  >{{ currentTrack.releaseArtist.artist.text }}</span>
                 </router-link>
-                <span v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id" class="mx-1">::</span>
+                <span
+                  v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
+                  class="mx-1"
+                >::</span>
                 <router-link :to="'/artist/' + currentTrack.artist.artist.value">
                   <img
                     class="ma-1"
@@ -44,12 +50,12 @@
                   <span
                     class="artist-name text-no-wrap text-truncate pointer"
                   >{{ currentTrack.artist.artist.text }}</span>
-                </router-link>                
+                </router-link>
               </div>
               <div title="View Release Details">
                 <router-link :to="'/release/' + currentTrack.release.value">
                   <span
-                    class="release-date bsubheading mr-2"
+                    class="release-date subheading mr-2"
                   >{{ currentTrack.release.releaseDate | formattedYear }}</span>
                   <span
                     class="release-title text-no-wrap text-truncate pointer subheading"
@@ -87,7 +93,11 @@
                 color="info"
                 title="Click to remove from bookmarks"
               >bookmark</v-icon>
-              <v-icon v-if="!currentTrack.userBookmarked" medium title="Add to bookmarks">bookmark_border</v-icon>
+              <v-icon
+                v-if="!currentTrack.userBookmarked"
+                medium
+                title="Add to bookmarks"
+              >bookmark_border</v-icon>
             </v-btn>
             <v-btn icon @click="toggleFavorite">
               <v-icon
@@ -134,7 +144,9 @@
             </span>
             <span title="Total Time of Que">
               <v-icon medium>headset</v-icon>
-              <span class="headline track-time">{{ totalTime }}</span>
+              <span
+                class="headline track-time"
+              >{{ this.$store.getters.quePlaytime | timeFromMilliseconds }}</span>
             </span>
           </v-layout>
         </v-flex>
@@ -147,22 +159,22 @@
                 <v-icon v-else>volume_mute</v-icon>
               </template>
               <v-icon v-show="this.muted">volume_off</v-icon>
-            </v-btn>            
+            </v-btn>
             <v-slider
               class="slider"
-              @change="updateVolume(volume)" 
-              max="1" 
+              @change="updateVolume(volume)"
+              max="1"
               step="0.1"
               v-model="volume"
             ></v-slider>
           </v-layout>
 
-          <v-layout  d-flex row-wrap>
+          <v-layout d-flex row-wrap>
             <v-btn icon>
               <v-icon title="Skip Previous" @click="skip('prev')">skip_previous</v-icon>
             </v-btn>
             <v-btn icon>
-              <v-icon @click="seekByAmount(-30)" >replay_30</v-icon>
+              <v-icon @click="seekByAmount(-30)">replay_30</v-icon>
             </v-btn>
             <v-btn icon>
               <v-icon @click="seekByAmount(-1)">fast_rewind</v-icon>
@@ -172,7 +184,7 @@
             </v-btn>
             <v-btn icon>
               <v-icon @click="stop">stop</v-icon>
-            </v-btn>            
+            </v-btn>
             <v-btn icon>
               <v-icon @click="seekByAmount(1)">fast_forward</v-icon>
             </v-btn>
@@ -192,19 +204,19 @@
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" :top="true">
       {{ snackbarText }}
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>     
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import { EventBus } from "@/event-bus.js";
-import {Howl, Howler} from 'howler';
+import { Howl, Howler } from "howler";
 
 import trackMixin from "@/mixins/track.js";
 
 export default {
   name: "TrackPlayingCard",
-  mixins: [trackMixin],  
+  mixins: [trackMixin],
   components: {},
   props: {
     track: {
@@ -221,20 +233,21 @@ export default {
         };
       }
     },
-    listNumber: Number,
-    totalTime: String
+    listNumber: Number
   },
   beforeDestroy() {
     this.howl.unload();
   },
   async mounted() {
     this.originalWindowTitle = document.title;
-    Howler.volume(this.volume)    
-    let that=this;    
-    var trackInQue = this.$_.find(this.$store.getters.playQue, function(t) { return t.track.id === that.track.id;});
+    Howler.volume(this.volume);
+    let that = this;
+    var trackInQue = this.$_.find(this.$store.getters.playQue, function(t) {
+      return t.track.id === that.track.id;
+    });
     this.$nextTick(() => {
-      this.playingIndex = trackInQue.listNumber -1;
-    });    
+      this.playingIndex = trackInQue.listNumber - 1;
+    });
     this.howl = new Howl({
       volume: this.volume,
       loop: this.loop,
@@ -247,67 +260,67 @@ export default {
           trackId: this.currentTrack.id,
           releaseId: this.currentTrack.release.value,
           artistId: this.currentTrack.artist.id
-        });          
+        });
       },
       onend: () => {
-        this.skip('next');
-      }  
+        this.skip("next");
+      }
     });
-    this.loaded = true;    
+    this.loaded = true;
   },
   methods: {
-    updateSeek (event) {
+    updateSeek(event) {
       let el = document.getElementById("trackProgressBar"),
-          mousePos = event.offsetX,
-          elWidth = el.clientWidth,
-          percents = (mousePos / elWidth) * 100
-      let howl = this.howl;    
+        mousePos = event.offsetX,
+        elWidth = el.clientWidth,
+        percents = (mousePos / elWidth) * 100;
+      let howl = this.howl;
       if (howl.playing()) {
-        howl.seek((howl.duration() / 100) * percents)
+        howl.seek((howl.duration() / 100) * percents);
       }
-    },     
+    },
     seekByAmount(amount) {
       this.howl.seek(this.howl.seek() + amount);
     },
     play: function() {
-      if(!this.playing) {
+      if (!this.playing) {
         this.howl.play();
         this.playing = true;
       } else {
         this.howl.pause();
         this.playing = false;
-      }       
+      }
     },
     stop: function() {
       this.howl.stop();
       this.playing = false;
     },
     skip: function(direction) {
-      if(direction === "next") {
-        let isPlayingLastTrack = this.playingIndex === this.$store.getters.playQue.length;
-        if(isPlayingLastTrack && this.loop) {
+      if (direction === "next") {
+        let isPlayingLastTrack =
+          this.playingIndex === this.$store.getters.playQue.length;
+        if (isPlayingLastTrack && this.loop) {
           this.playingIndex = 0;
-        } 
-        if(isPlayingLastTrack && !this.loop) {
-          this.stop();          
+        }
+        if (isPlayingLastTrack && !this.loop) {
+          this.stop();
           return;
         }
         this.playingIndex++;
       } else {
         let isPlayingFirstTrack = this.playingIndex === 0;
-        if(isPlayingFirstTrack && this.loop) {
+        if (isPlayingFirstTrack && this.loop) {
           this.playingIndex = this.$store.getters.playQue.length - 1;
         }
-        if(isPlayingFirstTrack && !this.loop) {
+        if (isPlayingFirstTrack && !this.loop) {
           this.stop();
           return;
-        }        
-         this.playingIndex--;
-      }      
+        }
+        this.playingIndex--;
+      }
       this.$nextTick(() => {
         this.play();
       });
-
     },
     toggleBookmark: function() {
       this.bookmarkToggle({
@@ -316,7 +329,7 @@ export default {
         // eslint-disable-next-line
       }).then(r => {
         this.currentTrack.userBookmarked = !this.currentTrack.userBookmarked;
-      });       
+      });
     },
     toggleFavorite: function() {
       this.favoriteToggle({
@@ -324,8 +337,9 @@ export default {
         isFavorite: !this.currentTrack.userRating.isFavorite
         // eslint-disable-next-line
       }).then(r => {
-        this.currentTrack.userRating.isFavorite = !this.currentTrack.userRating.isFavorite;
-      });        
+        this.currentTrack.userRating.isFavorite = !this.currentTrack.userRating
+          .isFavorite;
+      });
     },
     hateToogle: function() {
       this.dislikeToggle({
@@ -333,13 +347,14 @@ export default {
         isDisliked: !this.currentTrack.userRating.isDisliked
         // eslint-disable-next-line
       }).then(r => {
-        this.currentTrack.userRating.isDisliked = !this.currentTrack.userRating.isDisliked;
-      });      
+        this.currentTrack.userRating.isDisliked = !this.currentTrack.userRating
+          .isDisliked;
+      });
     },
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
-          trackId:  this.track.id,
+          trackId: this.track.id,
           newVal: this.currentTrack.userRating.rating
         })
           // eslint-disable-next-line
@@ -354,10 +369,10 @@ export default {
     updateVolume: function(volume) {
       Howler.volume(volume);
     },
-    toggleMute () {
-      Howler.mute(!this.muted)
-      this.muted = !this.muted
-    }    
+    toggleMute() {
+      Howler.mute(!this.muted);
+      this.muted = !this.muted;
+    }
   },
   watch: {
     currentTrack(newTrack) {
@@ -375,54 +390,54 @@ export default {
             trackId: this.currentTrack.id,
             releaseId: this.currentTrack.release.value,
             artistId: this.currentTrack.artist.id
-          });           
+          });
         },
         onend: () => {
-          this.skip('next');
-        }        
-      });    
+          this.skip("next");
+        }
+      });
     },
     playing(playing) {
       this.seek = this.howl.seek();
-      let updateSeek
+      let updateSeek;
       if (playing) {
         updateSeek = setInterval(() => {
           try {
             this.seek = this.howl.seek();
-          } catch(e) {
+          } catch (e) {
             console.log(e);
-            clearInterval(updateSeek)
+            clearInterval(updateSeek);
           }
-        }, 250)
+        }, 250);
       } else {
-        clearInterval(updateSeek)
+        clearInterval(updateSeek);
       }
       this.$store.dispatch("nowPlaying", playing);
-    }   
-  },  
+    }
+  },
   computed: {
     currentTrack() {
       return this.$store.getters.playQue[this.playingIndex].track;
     },
-    progress () {
-      if (!this.howl || this.howl.duration() === 0) return 0
-      return this.seek / this.howl.duration()
-    },    
-    trackProgress () {
-      return this.progress * 100
-    }    
+    progress() {
+      if (!this.howl || this.howl.duration() === 0) return 0;
+      return this.seek / this.howl.duration();
+    },
+    trackProgress() {
+      return this.progress * 100;
+    }
   },
   data: () => ({
-    howl: { 
-      playing: false 
+    howl: {
+      playing: false
     },
     playing: false,
     muted: false,
     volume: 0.5,
     snackbar: false,
-    snackbarText: "",        
+    snackbarText: "",
     snackbarColor: "success",
-    loaded: false,    
+    loaded: false,
     originalWindowTitle: "",
     playingIndex: 0,
     currentTime: 0,

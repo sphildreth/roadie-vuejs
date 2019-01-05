@@ -9,6 +9,13 @@ export default new Vuex.Store({
     playingIndex: (state) => {
       return state.playingIndex;
     },
+    quePlaytime: (state) => {
+      let duration = 0;
+      state.playQue.forEach(t => {
+        duration += t.track.duration;
+      });
+      return duration;
+    },      
     nowPlaying: (state) => {
       return state.nowPlaying;
     },

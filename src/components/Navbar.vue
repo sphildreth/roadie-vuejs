@@ -149,7 +149,6 @@ export default {
         { icon: 'bookmarks', text: 'Bookmarks', route: '/bookmarks' },
         { icon: 'collections', text: 'Collections', route: '/collections' },
         { icon: 'category', text: 'Genres', class: "hidden-lg-and-down", route: '/genres' },
-        { icon: 'history', text: 'History', class: "hidden-lg-and-down", route: '/history' },
         { icon: 'label', text: 'Labels', route: '/labels' },
         { icon: 'playlist_play', text: 'Playlists', route: '/playlists' },
         { icon: 'headset', text: 'Playing/Que', route: '/playque' },
