@@ -206,9 +206,7 @@ export default {
     this.updateData();
   },
   methods: {
-    shuffle: function() {},
     addToQue: function() {},
-    download: function() {},
     comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -273,8 +271,7 @@ export default {
         click: "c:AddAllToQue"
       },
       { title: "Play All", class: "hidden-xs-only", click: "c:PlayAll" },
-      { title: "Comment", class: "hidden-xs-only", click: "c:Comment" },
-      { title: "Shuffle", class: "hidden-sm-and-down", click: "c:Shuffle" }
+      { title: "Comment", class: "hidden-xs-only", click: "c:Comment" }
     ]
   })
 };

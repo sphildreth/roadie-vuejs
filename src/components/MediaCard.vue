@@ -1,5 +1,5 @@
 <template>
-    <v-card  color="darken-1" class="media-card mb-3" :class="this.$store.getters.playingIndex.releaseId == media.release.value ? 'playing-release' : ''" hover :data-id="media.id">
+    <v-card  color="darken-1" class="media-card mb-3" :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''" hover :data-id="media.id">
         <v-layout row wrap>
             <v-data-iterator
                 :items="media.tracks"
@@ -26,6 +26,7 @@ export default {
     components: { TrackCard },
     props: {
         media: Object,
+        release: Object,
         mediaCount: Number
     },
     methods: {

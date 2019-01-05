@@ -1,7 +1,6 @@
 <template>
   <v-card
     class="mb-3"
-    :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
     height="92"
     :color="!release.isValid ? 'warning' : ''"
     hover
@@ -50,6 +49,7 @@
               <div
                 :title="release.release.text"
                 class="secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
+                :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
               >{{ release.release.text }}</div>
             </router-link>
             <router-link :to="'/artist/' + release.artist.value">

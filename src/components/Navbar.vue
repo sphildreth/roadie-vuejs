@@ -16,6 +16,7 @@
             @keyup.native="search"
             v-model="searchQuery"
           ></v-text-field>
+      <v-icon @click="showHelp" class="ml-1 pointer" title="Frequently Asked Questions and Help">help</v-icon>
     </v-toolbar>
     <v-navigation-drawer class="app-side-drawer" app v-model="drawer"  disable-resize-watcher>
       <v-toolbar flat class="transparent">
@@ -44,7 +45,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile v-for="link in links" :key="link.text" router :to="link.route">
+        <v-list-tile v-for="link in links" :class="link.class" :key="link.text" router :to="link.route">
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-tile-action>
@@ -105,6 +106,9 @@ export default {
   router,
   components: { ThemeSettings }, 
   methods: {
+    showHelp() {
+      this.$router.push('help');
+    },
     signout() {
       this.$store.dispatch('signout');
       this.$router.go('/');  
@@ -141,15 +145,16 @@ export default {
       appName: process.env.VUE_APP_APP_NAME,
       links: [        
         { icon: 'dashboard', text: 'Dashboard', route: '/' },
-        { icon: 'library_music', text: 'Releases', route: '/releases' },
         { icon: 'fas fa-users', text: 'Artists', route: '/artists' },
         { icon: 'bookmarks', text: 'Bookmarks', route: '/bookmarks' },
         { icon: 'collections', text: 'Collections', route: '/collections' },
-        { icon: 'category', text: 'Genres', route: '/genres' },
+        { icon: 'category', text: 'Genres', class: "hidden-lg-and-down", route: '/genres' },
+        { icon: 'history', text: 'History', class: "hidden-lg-and-down", route: '/history' },
         { icon: 'label', text: 'Labels', route: '/labels' },
         { icon: 'playlist_play', text: 'Playlists', route: '/playlists' },
         { icon: 'headset', text: 'Playing/Que', route: '/playque' },
-        { icon: 'assessment', text: 'Statistics', route: '/statistics' },        
+        { icon: 'library_music', text: 'Releases', route: '/releases' },        
+        { icon: 'assessment', text: 'Statistics', class: "hidden-lg-and-down", route: '/statistics' },        
         { icon: 'audiotrack', text: 'Tracks', route: '/tracks' }
       ]
     }

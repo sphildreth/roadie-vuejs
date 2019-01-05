@@ -80,7 +80,7 @@
         </v-flex>
         <v-flex xs3>
           <v-layout d-flex row wrap>
-            <v-btn icon @click="bookmarkToogle">
+            <v-btn icon @click="toggleBookmark">
               <v-icon
                 v-if="currentTrack.userBookmarked"
                 medium
@@ -89,7 +89,7 @@
               >bookmark</v-icon>
               <v-icon v-if="!currentTrack.userBookmarked" medium title="Add to bookmarks">bookmark_border</v-icon>
             </v-btn>
-            <v-btn icon @click="favoriteToggle">
+            <v-btn icon @click="toggleFavorite">
               <v-icon
                 medium
                 class="favorite pointer"
@@ -200,8 +200,11 @@
 import { EventBus } from "@/event-bus.js";
 import {Howl, Howler} from 'howler';
 
+import trackMixin from "@/mixins/track.js";
+
 export default {
   name: "TrackPlayingCard",
+  mixins: [trackMixin],  
   components: {},
   props: {
     track: {
@@ -306,10 +309,45 @@ export default {
       });
 
     },
-    bookmarkToogle: function() {},
-    favoriteToggle: function() {},
-    hateToogle: function() {},
-    setRating: function() {},
+    toggleBookmark: function() {
+      this.bookmarkToggle({
+        trackId: this.track.id,
+        userBookmarked: !this.currentTrack.userBookmarked
+        // eslint-disable-next-line
+      }).then(r => {
+        this.currentTrack.userBookmarked = !this.currentTrack.userBookmarked;
+      });       
+    },
+    toggleFavorite: function() {
+      this.favoriteToggle({
+        trackId: this.track.id,
+        isFavorite: !this.currentTrack.userRating.isFavorite
+        // eslint-disable-next-line
+      }).then(r => {
+        this.currentTrack.userRating.isFavorite = !this.currentTrack.userRating.isFavorite;
+      });        
+    },
+    hateToogle: function() {
+      this.dislikeToggle({
+        trackId: this.track.id,
+        isDisliked: !this.currentTrack.userRating.isDisliked
+        // eslint-disable-next-line
+      }).then(r => {
+        this.currentTrack.userRating.isDisliked = !this.currentTrack.userRating.isDisliked;
+      });      
+    },
+    setRating: async function() {
+      this.$nextTick(() => {
+        this.ratingChange({
+          trackId:  this.track.id,
+          newVal: this.currentTrack.userRating.rating
+        })
+          // eslint-disable-next-line
+          .then(r => {
+            this.updateData();
+          });
+      });
+    },
     toggleLoop() {
       this.loop = !this.loop;
     },

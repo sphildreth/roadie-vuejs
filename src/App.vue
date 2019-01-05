@@ -11,7 +11,7 @@
           <v-footer v-if="!hide" :dark="$vuetify.dark" height="auto" class="pa-3 app--footer">
             <v-icon color="pink" class="mr-1" small>fas fa-archive</v-icon><span class="caption mr-1"> Last System Scan: {{ this.$store.getters.lastScanDate }}</span>            
             <v-spacer></v-spacer>
-            <span class="caption mr-1"> Roadie v0.2 alpha</span><v-icon color="pink" small>fa fa-flask</v-icon>
+            <span class="caption mr-1"> Roadie v0.1 beta</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
           <v-bottom-sheet persistent full-width hide-overlay v-model="showPlayer">
             <TrackPlayingCard v-if="showPlayer" :track="currentTrack.track" :totalTime="totalQueTime" :listNumber="currentTrack.listNumber"></TrackPlayingCard>

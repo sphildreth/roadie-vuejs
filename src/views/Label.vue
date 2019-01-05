@@ -208,9 +208,7 @@ export default {
     this.updateData();
   },
   methods: {
-    shuffle: function() {},
     addToQue: function() {},
-    download: function() {},
     comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");

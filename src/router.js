@@ -97,16 +97,30 @@ var router = new VueRouter({
     {
       path: '/genres',
       name: 'genres',
-      props: true,
       component: () => import(/* webpackChunkName: "genres" */ './views/Genres.vue'),
+      meta: {
+        guest: false
+      }
+    },    
+    {
+      path: '/help',
+      name: 'help',
+      component: () => import(/* webpackChunkName: "help" */ './views/Help.vue'),
       meta: {
         guest: false
       }
     },      
     {
+      path: '/history',
+      name: 'history',
+      component: () => import(/* webpackChunkName: "history" */ './views/History.vue'),
+      meta: {
+        guest: false
+      }
+    },        
+    {
       path: '/labels',
       name: 'labels',
-      props: true,
       component: () => import(/* webpackChunkName: "labels" */ './views/Labels.vue'),
       meta: {
         guest: false
@@ -124,7 +138,6 @@ var router = new VueRouter({
     {
       path: '/playlists',
       name: 'playlists',
-      props: true,
       component: () => import(/* webpackChunkName: "playlists" */ './views/Playlists.vue'),
       meta: {
         guest: false
@@ -133,7 +146,6 @@ var router = new VueRouter({
     {
       path: '/playque',
       name: 'playque',
-      props: true,
       component: () => import(/* webpackChunkName: "playque" */ './views/PlayQue.vue'),
       meta: {
         guest: false
@@ -151,7 +163,6 @@ var router = new VueRouter({
     {
       path: '/register',
       name: 'register',
-      props: true,
       component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
       meta: {
         guest: true

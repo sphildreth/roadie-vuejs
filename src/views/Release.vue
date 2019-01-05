@@ -273,7 +273,7 @@
                   wrap
                 >
                   <v-flex slot="item" slot-scope="props" xs12>
-                    <MediaCard :media="props.item" :mediaCount="release.mediaCount"></MediaCard>
+                    <MediaCard :media="props.item" :release="release" :mediaCount="release.mediaCount"></MediaCard>
                   </v-flex>
                 </v-data-iterator>
               </v-card>
@@ -475,10 +475,8 @@ export default {
     id: String
   },
   created() {
-    EventBus.$on("rr:Shuffle", this.shuffle);
     EventBus.$on("rr:AddToQue", this.addToQue);
     EventBus.$on("rr:PlayNow", this.playNow);
-    EventBus.$on("rr:Download", this.download);
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
@@ -486,7 +484,7 @@ export default {
     EventBus.$on("rr:searchForTitle", this.searchForTitle);
     EventBus.$on("rr:searchForArtist", this.searchForArtist);    
     EventBus.$on("toolbarRefresh", this.updateData);
-    EventBus.$on("toggleBookmark", this.toggleBookmark);
+    EventBus.$on("bookmarkToogle", this.toggleBookmark);    
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("rr:Rescan", this.rescan);
@@ -498,10 +496,8 @@ export default {
     EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
   },
   beforeDestroy() {
-    EventBus.$off("rr:Shuffle", this.shuffle);
     EventBus.$off("rr:AddToQue", this.addToQue);
     EventBus.$off("rr:PlayNow", this.playNow);
-    EventBus.$off("rr:Download", this.download);
     EventBus.$off("rr:Comment", this.comment);
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("rr:searchInternetArtist");    
@@ -509,7 +505,7 @@ export default {
     EventBus.$off("rr:searchForArtist");        
     EventBus.$off("rr:searchForTitle");
     EventBus.$off("toolbarRefresh");
-    EventBus.$off("toggleBookmark", this.toggleBookmark);
+    EventBus.$off("bookmarkToogle", this.toggleBookmark);    
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("rr:Rescan", this.rescan);
@@ -627,7 +623,6 @@ export default {
           }
         });
     },
-    shuffle: function() {},
     addToQue: function() {
       let queTracks = [];      
       let t = null;
@@ -666,7 +661,6 @@ export default {
       this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
       this.snackbar = true;
     },
-    download: function() {},
     comment: function() {},
     showImageModal: function(e) {
       this.modalImage = e;
@@ -751,7 +745,7 @@ export default {
             "/users/setReleaseBookmark/" +
             this.release.id +
             "/" +
-            this.release.userBookmarked
+            !this.release.userBookmarked
         )
         .then(response => {
           if (!this.release.userBookmarked) {
@@ -886,9 +880,7 @@ export default {
     menuItems: [
       { title: "Add To Que", tooltip:"Added checked tracks to Que, if none selected adds all to Que.", class: "hidden-xs-only", click: "rr:AddToQue" },
       { title: "Play", tooltip:"Remove anything in Que and start Playing", class: "hidden-xs-only", click: "rr:PlayNow" },      
-      { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" },
-      { title: "Download", class: "hidden-sm-and-down", click: "rr:Download" },
-      { title: "Shuffle", class: "hidden-sm-and-down", click: "rr:Shuffle" }
+      { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" }
     ],
     seachMenuItems: [
       { title: "Search for Artist", click: "rr:searchForArtist" },

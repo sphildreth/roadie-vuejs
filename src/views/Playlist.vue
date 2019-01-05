@@ -236,7 +236,6 @@ export default {
       this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
       this.snackbar = true;
     },
-    download: function() {},
     comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");

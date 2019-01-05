@@ -578,7 +578,6 @@ export default {
     id: String
   },
   created() {
-    EventBus.$on("aa:Shuffle", this.shuffle);
     EventBus.$on("aa:PlayAll", this.playAll);
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
     EventBus.$on("aa:Comment", this.comment);
@@ -596,7 +595,6 @@ export default {
     this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);    
   },
   beforeDestroy() {
-    EventBus.$off("aa:Shuffle", this.shuffle);
     EventBus.$off("aa:PlayAll", this.playAll);
     EventBus.$off("aa:AddAllToQue", this.addAllToQue);
     EventBus.$off("aa:Comment", this.comment);
@@ -605,7 +603,7 @@ export default {
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.toogleBookmark);
-    EventBus.$on("hateToogle", this.toggleHated);
+    EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("aa:Rescan", this.rescan);
     EventBus.$off("aa:Delete", this.delete);
     EventBus.$off("aa:DeleteReleases", this.deleteReleases);        
@@ -657,7 +655,6 @@ export default {
     searchArtistsWithName: function() {
       this.$router.push({ name: 'search', params: { q: this.artist.name}});
     },
-    shuffle: function() {},
     addAllToQue: function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -698,7 +695,10 @@ export default {
         });
 
     },
-    playAll: function() {},
+    playAll: function() {
+      this.$store.dispatch("clearQue");
+      this.addAllToQue();      
+    },
     comment: function() {},
     rescan: async function() {
       EventBus.$emit("loadingStarted");
@@ -792,7 +792,7 @@ export default {
             "/users/setArtistBookmark/" +
             this.artist.id +
             "/" +
-            this.artist.userBookmarked
+            !this.artist.userBookmarked
         )
         .then(response => {
           if (!this.artist.userBookmarked) {
@@ -1048,8 +1048,7 @@ export default {
         class: "hidden-xs-only",
         click: "aa:PlayMostPopular"
       },
-      { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" },
-      { title: "Shuffle", class: "hidden-sm-and-down", click: "aa:Shuffle" }
+      { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" }
     ],
     seachMenuItems: [
       { title: "Search Artists with Name", click: "aa:searchArtistsWithName" },
