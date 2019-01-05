@@ -76,7 +76,7 @@
               @click="removeTrackFromQue(props.item)"
               small
             >delete</v-icon>            
-            <span v-if="nowPlaying && (playingTrackId === props.item.track.id)">
+            <span v-if="nowPlaying && (playingTrackId === props.item.track.id)" title="Track is Playing">
               <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing" />
             </span>            
           </td>

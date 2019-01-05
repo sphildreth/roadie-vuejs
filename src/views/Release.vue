@@ -477,6 +477,7 @@ export default {
   created() {
     EventBus.$on("rr:Shuffle", this.shuffle);
     EventBus.$on("rr:AddToQue", this.addToQue);
+    EventBus.$on("rr:PlayNow", this.playNow);
     EventBus.$on("rr:Download", this.download);
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
@@ -499,6 +500,7 @@ export default {
   beforeDestroy() {
     EventBus.$off("rr:Shuffle", this.shuffle);
     EventBus.$off("rr:AddToQue", this.addToQue);
+    EventBus.$off("rr:PlayNow", this.playNow);
     EventBus.$off("rr:Download", this.download);
     EventBus.$off("rr:Comment", this.comment);
     EventBus.$off("rr:searchInternetTitle");
@@ -542,6 +544,10 @@ export default {
     }
   },
   methods: {
+    playNow: function() {
+      this.$store.dispatch("clearQue");
+      this.addToQue();
+    },
     addSelectedTrack: function(track) {
       if(!this.$_.find(this.selectedTracks, function(t) { return t.id === track.id; })) {
         this.selectedTracks.push(track);
@@ -879,6 +885,7 @@ export default {
     ],
     menuItems: [
       { title: "Add To Que", tooltip:"Added checked tracks to Que, if none selected adds all to Que.", class: "hidden-xs-only", click: "rr:AddToQue" },
+      { title: "Play", tooltip:"Remove anything in Que and start Playing", class: "hidden-xs-only", click: "rr:PlayNow" },      
       { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" },
       { title: "Download", class: "hidden-sm-and-down", click: "rr:Download" },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "rr:Shuffle" }

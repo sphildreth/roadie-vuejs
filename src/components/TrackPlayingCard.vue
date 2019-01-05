@@ -307,7 +307,7 @@ export default {
     }    
   },
   watch: {
-    playingIndex(newIndex) {
+    currentTrack(newTrack) {
       this.stop();
       this.howl.unload();
       this.howl = new Howl({
