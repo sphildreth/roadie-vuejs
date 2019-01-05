@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :class="'track.cssClass' + this.$store.getters.playingIndex.trackId == track.id ? 'playing-track' : ''"
+    :class="track.cssClass"
     class="track-card ma-1 ml-2 pa-2"
     height="105px"
     hover
@@ -12,7 +12,7 @@
         <v-layout row wrap>
           <v-flex xs8>
             <input v-if="doShowSelector" type="checkbox" name="selected" @click="selectedTrack" class="track-selector" />
-            <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>
+            <div class="track-number accent--text display-1" :class="this.$store.getters.playingIndex.trackId == track.id ? ' playing-track' : ''">{{ track.trackNumber | padNumber3 }}</div>
             <v-icon
               small
               class="favorite pointer"
