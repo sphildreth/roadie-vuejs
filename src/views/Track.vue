@@ -277,8 +277,7 @@ export default {
       this.bookmarkToggle({
         trackId: this.track.id,
         userBookmarked: !this.track.userBookmarked
-        // eslint-disable-next-line
-      }).then(r => {
+      }).then(() => {
         this.track.userBookmarked = !this.track.userBookmarked;
       });
     },
@@ -286,30 +285,20 @@ export default {
       this.favoriteToggle({
         trackId: this.track.id,
         isFavorite: !this.track.userRating.isFavorite
-        // eslint-disable-next-line
-      }).then(r => {
-        this.updateData();
-      });
+      }).then(this.updateData);  
     },
     hateToogle: function() {
       this.dislikeToggle({
         trackId: this.track.id,
         isDisliked: !this.track.userRating.isDisliked
-        // eslint-disable-next-line
-      }).then(r => {
-        this.updateData();
-      });
+      }).then(this.updateData);  
     },
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
           trackId: this.track.id,
           newVal: this.track.userRating.rating
-        })
-          // eslint-disable-next-line
-          .then(r => {
-            this.updateData();
-          });
+        }).then(this.updateData);
       });
     },
     updateData: async function() {
@@ -362,7 +351,7 @@ export default {
       this.loaded = false;
       this.updateData();
     },
-    currentPlayingTrack(newValue) {
+    currentPlayingTrack() {
       this.updateData();
     }
   },

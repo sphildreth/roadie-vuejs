@@ -150,7 +150,7 @@
                 <v-rating
                   @click.native="setRating"
                   @change.native="setRating"
-                  v-model="release.userRating.rating"
+                  v-model="userRating.rating"
                   class="pointer release-rating"
                   background-color="orange lighten-3"
                   color="orange"
@@ -273,7 +273,11 @@
                   wrap
                 >
                   <v-flex slot="item" slot-scope="props" xs12>
-                    <MediaCard :media="props.item" :release="release" :mediaCount="release.mediaCount"></MediaCard>
+                    <MediaCard
+                      :media="props.item"
+                      :release="release"
+                      :mediaCount="release.mediaCount"
+                    ></MediaCard>
                   </v-flex>
                 </v-data-iterator>
               </v-card>
@@ -454,8 +458,11 @@ import { EventBus } from "@/event-bus.js";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import VueMarkdown from "vue-markdown";
+import releaseMixin from "@/mixins/release.js";
+import trackMixin from "@/mixins/track.js";
 
 export default {
+  mixins: [releaseMixin,trackMixin],  
   components: {
     Toolbar,
     LabelCard,
@@ -476,11 +483,14 @@ export default {
     EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$on("rr:searchInternetreleaseandTitle", this.searchInternetreleaseandTitle);
+    EventBus.$on(
+      "rr:searchInternetreleaseandTitle",
+      this.searchInternetreleaseandTitle
+    );
     EventBus.$on("rr:searchForTitle", this.searchForTitle);
-    EventBus.$on("rr:searchForArtist", this.searchForArtist);    
+    EventBus.$on("rr:searchForArtist", this.searchForArtist);
     EventBus.$on("toolbarRefresh", this.updateData);
-    EventBus.$on("bookmarkToogle", this.toggleBookmark);    
+    EventBus.$on("bookmarkToogle", this.toggleBookmark);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("rr:Rescan", this.rescan);
@@ -496,12 +506,12 @@ export default {
     EventBus.$off("rr:PlayNow", this.playNow);
     EventBus.$off("rr:Comment", this.comment);
     EventBus.$off("rr:searchInternetTitle");
-    EventBus.$off("rr:searchInternetArtist");    
+    EventBus.$off("rr:searchInternetArtist");
     EventBus.$off("rr:searchInternetreleaseandTitle");
-    EventBus.$off("rr:searchForArtist");        
+    EventBus.$off("rr:searchForArtist");
     EventBus.$off("rr:searchForTitle");
     EventBus.$off("toolbarRefresh");
-    EventBus.$off("bookmarkToogle", this.toggleBookmark);    
+    EventBus.$off("bookmarkToogle", this.toggleBookmark);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("rr:Rescan", this.rescan);
@@ -509,7 +519,7 @@ export default {
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
     EventBus.$off("t:selected");
-    EventBus.$off("t:unselected");    
+    EventBus.$off("t:unselected");
   },
   async mounted() {
     this.updateData();
@@ -533,6 +543,13 @@ export default {
     },
     fileUploadUrl() {
       return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
+    },
+    userRating() {
+      return this.release.userRating || {
+        isFavorite: false,
+        isDisliked: false,
+        rating: 0
+      };
     }
   },
   methods: {
@@ -541,12 +558,18 @@ export default {
       this.addToQue();
     },
     addSelectedTrack: function(track) {
-      if(!this.$_.find(this.selectedTracks, function(t) { return t.id === track.id; })) {
+      if (
+        !this.$_.find(this.selectedTracks, function(t) {
+          return t.id === track.id;
+        })
+      ) {
         this.selectedTracks.push(track);
-      }        
+      }
     },
     removeSelectedTrack: function(track) {
-      this.$_.remove(this.selectedTracks, function(t) { return t.id === track.id; });
+      this.$_.remove(this.selectedTracks, function(t) {
+        return t.id === track.id;
+      });
     },
     coverDragUploadComplete: function() {
       this.coverSearchItems = [];
@@ -558,75 +581,50 @@ export default {
       return this.internetSearch(this.searchQuery + " album");
     },
     internetArtistSearch: function() {
-      return this.internetSearch(this.release.artist.artist.text + ' Band');
-    },    
+      return this.internetSearch(this.release.artist.artist.text + " Band");
+    },
     searchInternetreleaseandTitle: function() {
-      return this.internetSearch(this.searchQuery + ' ' + this.release.artist.artist.text);
+      return this.internetSearch(
+        this.searchQuery + " " + this.release.artist.artist.text
+      );
     },
     internetSearch: function(q) {
       var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
       window.open(url, "_blank");
     },
     searchForTitle: function() {
-      this.$router.push({ name: 'search', params: { q: this.searchQuery}});
+      this.$router.push({ name: "search", params: { q: this.searchQuery } });
     },
     searchForArtist: function() {
-      this.$router.push({ name: 'search', params: { q: this.release.artist.artist.text}});
-    },    
+      this.$router.push({
+        name: "search",
+        params: { q: this.release.artist.artist.text }
+      });
+    },
     toggleFavorite: async function() {
-      this.release.userRating = this.release.userRating || {};
-      this.release.userRating.isFavorite = this.release.userRating
-        ? !this.release.userRating.isFavorite
-        : true;
-      this.$axios
-        .post(
-          process.env.VUE_APP_API_URL +
-            "/users/setReleaseFavorite/" +
-            this.release.id +
-            "/" +
-            this.release.userRating.isFavorite
-        )
-        .then(response => {
-          if (response.data.isSuccess && this.release.userRating.isFavorite) {
-            EventBus.$emit("showSnackbar", { text: "Release is now a favorite" });            
-          } else if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Release is no longer a favorite" });                        
-          }
-        });
+      this.favoriteToggle({
+        releaseId: this.release.id,
+        isFavorite: !this.userRating.isFavorite
+      }).then(this.updateData);     
     },
     toggleHated: async function() {
-      this.release.userRating = this.release.userRating || {};
-      this.release.userRating.isDisliked = this.release.userRating
-        ? !this.release.userRating.isDisliked
-        : true;
-      this.$axios
-        .post(
-          process.env.VUE_APP_API_URL +
-            "/users/setReleaseDisliked/" +
-            this.release.id +
-            "/" +
-            this.release.userRating.isDisliked
-        )
-        .then(response => {
-          if (response.data.isSuccess && this.release.userRating.isDisliked) {
-            EventBus.$emit("showSnackbar", { text: "You now hate this Release"});            
-          } else if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "You no longer hate this Release"});
-          }
-        });
+      this.dislikeToggle({
+        releaseId: this.release.id,
+        isDisliked: !this.userRating.isDisliked   
+      }).then(this.updateData);
     },
     addToQue: function() {
-      let queTracks = [];      
+      let queTracks = [];
       let t = null;
-      if(this.selectedTracks.length > 0) {
+      if (this.selectedTracks.length > 0) {
         t = this.selectedTracks;
       } else {
         t = this.$_.flatMap(this.release.medias, function(media) {
-            return media.tracks;
+          return media.tracks;
         });
       }
       t.forEach(tr => {
-        let artist = tr.trackArtist || this.release.artist;        
+        let artist = tr.trackArtist || this.release.artist;
         let queTrack = {
           id: tr.id,
           mediaNumber: tr.mediaNumber,
@@ -636,20 +634,23 @@ export default {
           durationTime: tr.durationTime,
           rating: tr.rating,
           trackPlayUrl: tr.trackPlayUrl,
-          release: { 
+          release: {
             text: this.release.title,
             value: this.release.id,
             releaseDate: this.release.releaseDate
           },
           artist: artist,
-          releaseArtist: this.release.artist,          
-          releaseImageUrl:  this.release.thumbnail.url,
+          releaseArtist: this.release.artist,
+          releaseImageUrl: this.release.thumbnail.url,
           artistImageUrl: artist.thumbnail.url,
-          userRating: tr.userRating || { rating : 0 }
-        }; 
-        queTracks.push(queTrack);        
-      })
-      EventBus.$emit("showSnackbar", { text: "Added [" + queTracks.length + "] tracks to Que" });
+          userRating: tr.userRating || { rating: 0 }
+        };
+        queTracks.push(queTrack);
+      });
+      this.$store.dispatch("addToQue", queTracks);
+      EventBus.$emit("showSnackbar", {
+        text: "Added [" + queTracks.length + "] tracks to Que"
+      });
     },
     comment: function() {},
     showImageModal: function(e) {
@@ -669,10 +670,12 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Successfully updated Release cover." });            
-            this.$nextTick(()=> {
-              this.release.mediumThumbnail.url = response.data.data.url;              
-            });            
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully updated Release cover."
+            });
+            this.$nextTick(() => {
+              this.release.mediumThumbnail.url = response.data.data.url;
+            });
           }
         })
         .finally(() => {
@@ -738,9 +741,11 @@ export default {
         )
         .then(response => {
           if (!this.release.userBookmarked) {
-            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });            
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
           } else if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Successfully removed bookmark" });            
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully removed bookmark"
+            });
           }
           this.release.userBookmarked = !this.release.userBookmarked;
         })
@@ -765,11 +770,6 @@ export default {
             (this.release.labels = this.release.labels || []);
           this.release.tagsList = this.release.tagsList || [];
           this.release.urLsList = this.release.urLsList || [];
-          this.release.userRating = this.release.userRating || {
-            rating: 0,
-            isFavorite: false,
-            isDisliked: false
-          };
         })
         .finally(() => {
           this.dropzoneOptions.url =
@@ -863,13 +863,24 @@ export default {
       }
     ],
     menuItems: [
-      { title: "Add To Que", tooltip:"Added checked tracks to Que, if none selected adds all to Que.", class: "hidden-xs-only", click: "rr:AddToQue" },
-      { title: "Play", tooltip:"Remove anything in Que and start Playing", class: "hidden-xs-only", click: "rr:PlayNow" },      
+      {
+        title: "Add To Que",
+        tooltip:
+          "Added checked tracks to Que, if none selected adds all to Que.",
+        class: "hidden-xs-only",
+        click: "rr:AddToQue"
+      },
+      {
+        title: "Play",
+        tooltip: "Remove anything in Que and start Playing",
+        class: "hidden-xs-only",
+        click: "rr:PlayNow"
+      },
       { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" }
     ],
     seachMenuItems: [
       { title: "Search for Artist", click: "rr:searchForArtist" },
-      { title: "Search for Title", click: "rr:searchForTitle" },      
+      { title: "Search for Title", click: "rr:searchForTitle" },
       { title: "Internet Artist", click: "rr:searchInternetArtist" },
       { title: "Internet Title", click: "rr:searchInternetTitle" },
       {

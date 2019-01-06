@@ -27,13 +27,13 @@
                   :to="'/artist/' + currentTrack.releaseArtist.artist.value"
                 >
                   <img
-                    class="ma-1"
-                    style="float:left;height:14px;"
+                    class="ma-1 artist-image"
                     :src="currentTrack.releaseArtist.thumbnail.url"
                     :alt="currentTrack.releaseArtist.artist.text"
                   >
                   <span
-                    class="artist-name text-no-wrap text-truncate pointer"
+                    class="artist-name badge text-no-wrap text-truncate pointer"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
                   >{{ currentTrack.releaseArtist.artist.text }}</span>
                 </router-link>
                 <span
@@ -42,31 +42,37 @@
                 >::</span>
                 <router-link :to="'/artist/' + currentTrack.artist.artist.value">
                   <img
-                    class="ma-1"
-                    style="height:14px;"
+                    class="ma-1 artist-image"
                     :src="currentTrack.artist.thumbnail.url"
                     :alt="currentTrack.artist.artist.text"
                   >
                   <span
-                    class="artist-name text-no-wrap text-truncate pointer"
+                    class="artist-name badge text-no-wrap text-truncate pointer"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
                   >{{ currentTrack.artist.artist.text }}</span>
                 </router-link>
               </div>
               <div title="View Release Details">
                 <router-link :to="'/release/' + currentTrack.release.value">
                   <span
-                    class="release-date subheading mr-2"
+                    class="release-date badge subheading mr-2"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
                   >{{ currentTrack.release.releaseDate | formattedYear }}</span>
                   <span
-                    class="release-title text-no-wrap text-truncate pointer subheading"
+                    class="release-title badge text-no-wrap text-truncate pointer subheading"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
                   >{{ track.release.text }}</span>
                 </router-link>
               </div>
               <div title="View Track Details">
                 <router-link :to="'/track/' + currentTrack.id">
-                  <span class="release-date title mr-2">{{ currentTrack.trackNumber | padNumber3 }}</span>
                   <span
-                    class="release-title text-no-wrap text-truncate pointer title"
+                    class="release-date badge title mr-2"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                  >{{ currentTrack.trackNumber | padNumber3 }}</span>
+                  <span
+                    class="release-title badge text-no-wrap text-truncate pointer title"
+                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
                   >{{ currentTrack.title }}</span>
                 </router-link>
               </div>
@@ -171,28 +177,28 @@
 
           <v-layout d-flex row-wrap>
             <v-btn icon @click="skip('prev')">
-              <v-icon title="Skip Previous" >skip_previous</v-icon>
+              <v-icon title="Skip Previous">skip_previous</v-icon>
             </v-btn>
             <v-btn icon @click="seekByAmount(-30)">
               <v-icon>replay_30</v-icon>
             </v-btn>
             <v-btn icon @click="seekByAmount(-1)">
-              <v-icon >fast_rewind</v-icon>
+              <v-icon>fast_rewind</v-icon>
             </v-btn>
             <v-btn icon @click="play">
               <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
             </v-btn>
             <v-btn icon @click="stop">
-              <v-icon >stop</v-icon>
+              <v-icon>stop</v-icon>
             </v-btn>
             <v-btn icon @click="seekByAmount(1)">
-              <v-icon >fast_forward</v-icon>
+              <v-icon>fast_forward</v-icon>
             </v-btn>
             <v-btn icon @click="seekByAmount(30)">
-              <v-icon >forward_30</v-icon>
+              <v-icon>forward_30</v-icon>
             </v-btn>
             <v-btn icon @click="skip('next')">
-              <v-icon title="Skip Next" >skip_next</v-icon>
+              <v-icon title="Skip Next">skip_next</v-icon>
             </v-btn>
             <v-btn flat icon @click="toggleLoop">
               <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
@@ -205,9 +211,7 @@
 </template>
 
 <script>
-import { EventBus } from "@/event-bus.js";
 import { Howl, Howler } from "howler";
-
 import trackMixin from "@/mixins/track.js";
 
 export default {
@@ -322,8 +326,7 @@ export default {
       this.bookmarkToggle({
         trackId: this.track.id,
         userBookmarked: !this.currentTrack.userBookmarked
-        // eslint-disable-next-line
-      }).then(r => {
+      }).then(() => {
         this.currentTrack.userBookmarked = !this.currentTrack.userBookmarked;
       });
     },
@@ -331,8 +334,7 @@ export default {
       this.favoriteToggle({
         trackId: this.track.id,
         isFavorite: !this.currentTrack.userRating.isFavorite
-        // eslint-disable-next-line
-      }).then(r => {
+      }).then(() => {
         this.currentTrack.userRating.isFavorite = !this.currentTrack.userRating
           .isFavorite;
       });
@@ -341,8 +343,7 @@ export default {
       this.dislikeToggle({
         trackId: this.track.id,
         isDisliked: !this.currentTrack.userRating.isDisliked
-        // eslint-disable-next-line
-      }).then(r => {
+      }).then(() => {
         this.currentTrack.userRating.isDisliked = !this.currentTrack.userRating
           .isDisliked;
       });
@@ -352,11 +353,7 @@ export default {
         this.ratingChange({
           trackId: this.track.id,
           newVal: this.currentTrack.userRating.rating
-        })
-          // eslint-disable-next-line
-          .then(r => {
-            this.updateData();
-          });
+        }).then(this.updateData);
       });
     },
     toggleLoop() {
@@ -371,7 +368,7 @@ export default {
     }
   },
   watch: {
-    currentTrack(newTrack) {
+    currentTrack() {
       this.stop();
       this.howl.unload();
       this.howl = new Howl({
@@ -401,7 +398,6 @@ export default {
           try {
             this.seek = this.howl.seek();
           } catch (e) {
-            console.log(e);
             clearInterval(updateSeek);
           }
         }, 250);
@@ -446,5 +442,14 @@ export default {
   margin: 0;
   padding: 0;
   height: 35px;
+}
+.badge {
+  padding: 1px 4px;
+  border-radius: 5px;
+  color:white !important;
+}
+img.artist-image {
+  height:20px;
+  vertical-align:middle;
 }
 </style>

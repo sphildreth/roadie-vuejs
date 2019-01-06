@@ -170,16 +170,11 @@ export default {
   async mounted() {
     this.updateData();
   },
-  computed: {
-    randomizeLimit: function() {
-      return 25;
-    }
-  },
   methods: {
     playRandomTracks: function() {
       this.$store.dispatch("clearQue");
       EventBus.$emit("loadingStarted"); 
-        this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?limit=${ this.randomizeLimit }&doRandomize=true`)
+        this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`)
         .then(response => {
           this.addTracksToQue(response.data.rows);
           EventBus.$emit("loadingComplete");

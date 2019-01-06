@@ -137,8 +137,7 @@ export default {
         });
     },
     toggleFavorite: async function(toggleInfo) {
-      // eslint-disable-next-line
-      this.favoriteToggle(toggleInfo).then(r => {
+      this.favoriteToggle(toggleInfo).then(() => {
         if (this.currentView == "favorite") {
           this.$nextTick(() => {
             this.updateData();
@@ -147,7 +146,6 @@ export default {
       });
     },
     toggleDislike: async function(toggleInfo) {
-      // eslint-disable-next-line
       this.dislikeToggle(toggleInfo);
     }
   },

@@ -208,7 +208,6 @@ export default {
   },
   watch: {
     $route(to) {
-      console.log(to.params.q);
       this.q = encodeURIComponent(to.params.q);
       this.updateData();
     },

@@ -3,8 +3,26 @@
     <Toolbar :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
     <v-layout row wrap>
       <v-spacer></v-spacer>
-      <v-flex d-flex xs2 class="ma-2">
+      <v-flex d-flex xs3 class="ma-2">
         <div class="stats-container">
+          <v-tooltip bottom>
+            <v-chip slot="activator" color="secondary" text-color="white">
+              <v-avatar>
+                <v-icon>fas fa-users</v-icon>
+              </v-avatar>
+              {{ queArtistCount | padNumber3 }}
+            </v-chip>
+            <span>Que Artist Count</span>
+          </v-tooltip>           
+          <v-tooltip bottom>
+            <v-chip slot="activator" color="secondary" text-color="white">
+              <v-avatar>
+                <v-icon>library_music</v-icon>
+              </v-avatar>
+              {{ queReleaseCount | padNumber3 }}
+            </v-chip>
+            <span>Que Release Count</span>
+          </v-tooltip>          
           <v-tooltip bottom>
             <v-chip slot="activator" color="secondary" text-color="white">
               <v-avatar>
@@ -191,6 +209,22 @@ export default {
     queTrackCount() {
       return this.items.length;
     },
+    queReleaseCount() {
+      let releaseIds = this.$_.flatMap(this.items, function(e) {
+          return e.track.release.value;
+      });
+      return this.$_.uniqBy(releaseIds).length;
+    },
+    queArtistCount() {
+      let artistIds = [];
+      this.items.forEach(t => {
+        artistIds.push(t.track.artist.id);
+        if(t.track.releaseArtist) {
+          artistIds.push(t.track.releaseArtist.id);
+        }
+      });
+      return this.$_.uniqBy(artistIds).length;
+    },
     playingTrackId() {
       return this.$store.getters.playingIndex.trackId;
     },
@@ -207,7 +241,6 @@ export default {
       this.updateData();
     },
     doSaveAsPlaylist: function() {
-      let that = this;
       if (this.$refs.form.validate()) {
         this.showSaveAsPlaylist = false;
         let playlistData = {
@@ -326,6 +359,9 @@ export default {
 </script>
 
 <style>
+.playque-container .container {
+  padding: 0px 20px;
+}
 .playque-edit-container .error--text {
   color: yellow !important;
 }

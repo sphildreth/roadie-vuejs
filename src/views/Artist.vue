@@ -120,7 +120,7 @@
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
               <v-card max-height="290px" flat class="pa-2 biography darken-3">
-                <vue-markdown>{{ artist.bioContext }}</vue-markdown>                
+                <vue-markdown>{{ artist.bioContext }}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
@@ -501,7 +501,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <confirm ref="confirm"></confirm>    
+    <confirm ref="confirm"></confirm>
     <v-container v-if="artistImageSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="artistImageSearchItems = []">Cancel</v-btn>
@@ -534,7 +534,7 @@
           </div>
         </v-flex>
       </v-data-iterator>
-    </v-container>    
+    </v-container>
   </div>
 </template>
 
@@ -568,7 +568,7 @@ export default {
     ReleaseWithTracksCard,
     Confirm,
     vueDropzone: vue2Dropzone,
-    VueMarkdown    
+    VueMarkdown
   },
   props: {
     id: String
@@ -582,13 +582,13 @@ export default {
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.toogleBookmark);
-    EventBus.$on("hateToogle", this.toggleHated);    
+    EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("aa:Rescan", this.rescan);
     EventBus.$on("aa:Delete", this.delete);
-    EventBus.$on("aa:DeleteReleases", this.deleteReleases);    
+    EventBus.$on("aa:DeleteReleases", this.deleteReleases);
     EventBus.$on("aa:FindArtistImage", this.findArtistImage);
-    EventBus.$on("aa:Edit", this.edit);    
-    this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);    
+    EventBus.$on("aa:Edit", this.edit);
+    this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);
   },
   beforeDestroy() {
     EventBus.$off("aa:PlayAll", this.playAll);
@@ -602,9 +602,9 @@ export default {
     EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("aa:Rescan", this.rescan);
     EventBus.$off("aa:Delete", this.delete);
-    EventBus.$off("aa:DeleteReleases", this.deleteReleases);        
+    EventBus.$off("aa:DeleteReleases", this.deleteReleases);
     EventBus.$off("aa:FindArtistImage", this.findArtistImage);
-    EventBus.$off("aa:Edit", this.edit);        
+    EventBus.$off("aa:Edit", this.edit);
   },
   async mounted() {
     this.updateData();
@@ -621,7 +621,11 @@ export default {
         ? []
         : [
             { title: "Delete", class: "warning--text", click: "aa:Delete" },
-            { title: "Delete Releases", class: "warning--text", click: "aa:DeleteReleases" },
+            {
+              title: "Delete Releases",
+              class: "warning--text",
+              click: "aa:DeleteReleases"
+            },
             { title: "Edit", click: "aa:Edit" },
             { title: "Find Artist Image", click: "aa:FindArtistImage" },
             { title: "Rescan", click: "aa:Rescan" }
@@ -634,10 +638,10 @@ export default {
   methods: {
     coverDragUploadComplete: function() {
       this.artistImageSearchItems = [];
-    },    
+    },
     edit: function() {
       this.$router.push("/artist/edit/" + this.artist.id);
-    },    
+    },
     internetArtistSearch: function() {
       var q = this.searchQuery;
       if (this.artist.artistType === "Person") {
@@ -649,17 +653,20 @@ export default {
       window.open(url, "_blank");
     },
     searchArtistsWithName: function() {
-      this.$router.push({ name: 'search', params: { q: this.artist.name}});
+      this.$router.push({ name: "search", params: { q: this.artist.name } });
     },
     addAllToQue: function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + "/tracks?page=1&limit=500&FilterToArtistId=" + this.artist.id
+        .get(
+          process.env.VUE_APP_API_URL +
+            "/tracks?page=1&limit=500&FilterToArtistId=" +
+            this.artist.id
         )
-        .then((response) => {
+        .then(response => {
           let queTracks = [];
-          response.data.rows.forEach(tr => {      
-            let artist = tr.trackArtist || tr.artist;        
+          response.data.rows.forEach(tr => {
+            let artist = tr.trackArtist || tr.artist;
             let queTrack = {
               id: tr.id,
               mediaNumber: tr.mediaNumber,
@@ -669,29 +676,30 @@ export default {
               durationTime: tr.durationTime,
               rating: tr.rating,
               trackPlayUrl: tr.trackPlayUrl,
-              release: { 
+              release: {
                 text: tr.release.release.text,
                 value: tr.release.release.value,
                 releaseDate: tr.release.releaseDate
               },
               artist: artist,
               releaseArtist: tr.artist,
-              releaseImageUrl:  tr.release.thumbnail.url,
+              releaseImageUrl: tr.release.thumbnail.url,
               artistImageUrl: artist.thumbnail.url,
-              userRating: tr.userRating || { rating : 0 }
-            }; 
+              userRating: tr.userRating || { rating: 0 }
+            };
             queTracks.push(queTrack);
-          })
+          });
 
-          this.$store.dispatch('addToQue', queTracks);
-          EventBus.$emit("showSnackbar", { text: "Added [" + queTracks.length + "] tracks to Que" });
+          this.$store.dispatch("addToQue", queTracks);
+          EventBus.$emit("showSnackbar", {
+            text: "Added [" + queTracks.length + "] tracks to Que"
+          });
           EventBus.$emit("loadingComplete");
         });
-
     },
     playAll: function() {
       this.$store.dispatch("clearQue");
-      this.addAllToQue();      
+      this.addAllToQue();
     },
     comment: function() {},
     rescan: async function() {
@@ -712,9 +720,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
-                  "/admin/delete/artist/" +
-                  artistId
+                process.env.VUE_APP_API_URL + "/admin/delete/artist/" + artistId
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -722,11 +728,13 @@ export default {
               });
           }
         });
-    },    
+    },
     deleteReleases: async function() {
       let artistId = this.artist.id;
       this.$refs.confirm
-        .open("Delete", "Continue to delete all Releases for Artist?", { color: "red" })
+        .open("Delete", "Continue to delete all Releases for Artist?", {
+          color: "red"
+        })
         .then(confirm => {
           if (confirm) {
             this.$axios
@@ -735,22 +743,17 @@ export default {
                   "/admin/delete/artist/releases/" +
                   artistId
               )
-              .then(() => {
-                this.updateData();
-              });
+              .then(this.updateData);
           }
         });
-    },        
+    },
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
           artistId: this.artist.id,
           newVal: this.artist.userRating.rating
         })
-          // eslint-disable-next-line
-          .then(r => {
-            this.updateData();
-          });
+        .then(this.updateData);
       });
     },
     toggleFavorite: async function() {
@@ -759,10 +762,7 @@ export default {
         isFavorite: this.artist.userRating
           ? !this.artist.userRating.isFavorite
           : true
-        // eslint-disable-next-line
-      }).then(r => {
-        this.updateData();
-      });
+      }).then(this.updateData);
     },
     toggleHated: async function() {
       this.dislikeToggle({
@@ -770,11 +770,8 @@ export default {
         isDisliked: this.artist.userRating
           ? !this.artist.userRating.isDisliked
           : true
-        // eslint-disable-next-line
-      }).then(r => {
-        this.updateData();
-      });
-    },    
+      }).then(this.updateData);
+    },
     showImageModal: function(e) {
       this.modalImage = e;
       this.showModal = true;
@@ -790,9 +787,11 @@ export default {
         )
         .then(response => {
           if (!this.artist.userBookmarked) {
-            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });                                      
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
           } else if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Successfully removed bookmark" }); 
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully removed bookmark"
+            });
           }
           this.artist.userBookmarked = !this.artist.userBookmarked;
         })
@@ -852,8 +851,8 @@ export default {
                 });
               });
               EventBus.$emit("loadingComplete");
-          //    let favicon = new Favico();
-          //    favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
+              //    let favicon = new Favico();
+              //    favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
             });
         })
         .finally(() => {
@@ -864,7 +863,7 @@ export default {
           this.dropzoneOptions.headers = {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
-        });        
+        });
     },
     shortDateWithAge: function(date, toDate) {
       return (
@@ -916,8 +915,10 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Successfully updated Artist image." });
-            this.$nextTick(()=> {
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully updated Artist image."
+            });
+            this.$nextTick(() => {
               this.artist.mediumThumbnail.url = response.data.data.url;
             });
           }
@@ -925,10 +926,11 @@ export default {
         .finally(() => {
           EventBus.$emit("loadingComplete");
         });
-    },    
+    },
     findArtistImage: async function() {
       EventBus.$emit("loadingStarted");
-      this.artistImageSearchQuery = this.artistImageSearchQuery || this.artist.name;
+      this.artistImageSearchQuery =
+        this.artistImageSearchQuery || this.artist.name;
       this.$axios
         .post(
           process.env.VUE_APP_API_URL +
@@ -942,7 +944,7 @@ export default {
         .finally(() => {
           EventBus.$emit("loadingComplete");
         });
-    },    
+    }
   },
   watch: {
     $route(to) {
@@ -951,7 +953,7 @@ export default {
     },
     artistImageSearchQuery: function() {
       this.debouncedFindartistImage();
-    },    
+    },
     releaseTableSearch: {
       async handler() {
         this.releaseTableData = [];
@@ -1059,8 +1061,9 @@ export default {
     dropzoneOptions: {
       thumbnailWidth: 100,
       maxFilesize: 0.5,
-      dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
-    }    
+      dictDefaultMessage:
+        "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
+    }
   })
 };
 </script>

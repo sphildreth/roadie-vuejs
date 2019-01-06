@@ -60,15 +60,14 @@
       clearCache: async function () {
         this.$axios
           .get(process.env.VUE_APP_API_URL + `/admin/clearcache`)
-          // eslint-disable-next-line
-          .then(response => {   
+          .then(() => {   
+            EventBus.$emit("showSnackbar", { text: "Cleared Cache" });
           }); 
       },
       scanInbound: async function() {
         this.$axios
           .get(process.env.VUE_APP_API_URL + `/admin/scan/inbound`)
-          // eslint-disable-next-line
-          .then(response => {   
+          .then(() => {   
             this.isScanning = true;            
           });       
       },
@@ -77,8 +76,7 @@
           if(confirm) {
             this.$axios
               .get(process.env.VUE_APP_API_URL + `/admin/scan/library`)
-              // eslint-disable-next-line
-              .then(response => {   
+              .then(() => {   
                 this.isScanning = true;            
               });  
           }

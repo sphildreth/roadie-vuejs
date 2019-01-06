@@ -128,7 +128,6 @@ export default {
         });
     },
     ratingChange: async function(changeInfo) {
-      var that = this;
       if (changeInfo.newVal !== changeInfo.oldVal) {
         this.$axios
           .post(

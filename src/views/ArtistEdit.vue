@@ -499,8 +499,7 @@ export default {
           });
         })
         .catch(err => {
-          // eslint-disable-next-line
-          console.log(err);
+          EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red", error: err });
         })
         .finally(() => (this.searchArtistsLoading = false));
     },
@@ -525,8 +524,7 @@ export default {
           });
         })
         .catch(err => {
-          // eslint-disable-next-line
-          console.log(err);
+          EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red", error: err });
         })
         .finally(() => (this.searchGenreLoading = false));
     }
