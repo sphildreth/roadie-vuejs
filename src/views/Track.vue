@@ -12,14 +12,17 @@
       :favorited="track.userRating && track.userRating.isFavorite"
       :doShowHated="true"
       :hated="track.userRating && track.userRating.isDisliked"
-    ></Toolbar>    
+    ></Toolbar>
     <v-container v-if="loaded" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="primary" class="profile darken-1">
-                <v-card-text :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }" class="title">
+                <v-card-text
+                  :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }"
+                  class="title"
+                >
                   {{ track.title }}
                   <v-icon
                     v-if="track.isLocked"
@@ -41,13 +44,20 @@
                 <v-flex xs3>
                   <v-img :src="trackImageUrl" :alt="track.title" class="ma-1" aspect-ratio="1"></v-img>
                 </v-flex>
-                <v-flex xs9 class="title">
+                <v-flex xs9>
+                  <v-layout row wrap>
                     <v-flex xs4 class="mt-2">
                       <ArtistCard :artist="track.artist"></ArtistCard>
                     </v-flex>
-                    <v-flex xs4 class="mt-2">
+                    <v-flex v-if="track.trackArtist" xs4 class="mt-2">
+                      <ArtistCard :artist="track.trackArtist"></ArtistCard>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row wrap>
+                    <v-flex xs8 class="mt-2">
                       <ReleaseCard :release="track.release"></ReleaseCard>
-                    </v-flex> 
+                    </v-flex>
+                  </v-layout>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -65,9 +75,12 @@
                       <v-list-tile-title>{{ parTitle }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < track.partTitlesList.length" :key="`tdivider-${index}`"></v-divider>
+                  <v-divider
+                    v-if="index + 1 < track.partTitlesList.length"
+                    :key="`tdivider-${index}`"
+                  ></v-divider>
                 </template>
-              </v-list>              
+              </v-list>
             </v-tab-item>
             <v-tab-item>
               <v-data-table
@@ -129,7 +142,7 @@
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
-                  <v-icon color='red'>favorite</v-icon>
+                  <v-icon color="red">favorite</v-icon>
                 </v-avatar>
                 {{ track.statistics.favoriteCount | padNumber3 }}
               </v-chip>
@@ -143,7 +156,7 @@
                 {{ track.statistics.dislikedCount | padNumber3 }}
               </v-chip>
               <span>Track Disliked Count</span>
-            </v-tooltip>                        
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -192,11 +205,11 @@
           </div>
         </v-flex>
       </v-layout>
-    </v-container>   
+    </v-container>
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" :top="true">
       {{ snackbarText }}
       <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>       
+    </v-snackbar>
   </div>
 </template>
 
@@ -207,7 +220,7 @@ import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import trackMixin from "@/mixins/track.js";
 export default {
-  mixins: [trackMixin],    
+  mixins: [trackMixin],
   components: { Toolbar, ArtistCard, ReleaseCard },
   props: {
     id: String
@@ -215,20 +228,20 @@ export default {
   created() {
     EventBus.$on("tt:AddToQue", this.addToQue);
     EventBus.$on("tt:Play", this.playNow);
-    EventBus.$on("tt:Comment", this.comment);    
+    EventBus.$on("tt:Comment", this.comment);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.toggleBookmark);
-    EventBus.$on("hateToogle", this.hateToogle);  
+    EventBus.$on("hateToogle", this.hateToogle);
   },
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addToQue);
     EventBus.$off("tt:Play", this.playNow);
-    EventBus.$off("tt:Comment", this.comment);        
+    EventBus.$off("tt:Comment", this.comment);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.toggleBookmark);
-    EventBus.$off("hateToogle", this.hateToogle);      
+    EventBus.$off("hateToogle", this.hateToogle);
   },
   async mounted() {
     this.updateData();
@@ -253,15 +266,15 @@ export default {
     },
     currentPlayingTrack() {
       return this.$store.getters.playingIndex;
-    },    
-  },  
+    }
+  },
   methods: {
     playNow: function() {
       this.$store.dispatch("clearQue");
       this.addToQue();
-    },    
+    },
     addToQue: function() {
-      let artist = this.track.trackArtist || this.track.artist;        
+      let artist = this.track.trackArtist || this.track.artist;
       let queTrack = {
         id: this.track.id,
         mediaNumber: this.track.mediaNumber,
@@ -271,20 +284,20 @@ export default {
         durationTime: this.track.durationTime,
         rating: this.track.rating,
         trackPlayUrl: this.track.trackPlayUrl,
-        release: { 
+        release: {
           text: this.track.release.release.text,
           value: this.track.release.id,
           releaseDate: this.track.release.releaseDate
         },
         artist: artist,
-        releaseArtist: this.track.artist,          
-        releaseImageUrl:  this.track.thumbnail.url,
+        releaseArtist: this.track.artist,
+        releaseImageUrl: this.track.thumbnail.url,
         artistImageUrl: artist.thumbnail.url,
-        userRating: this.track.userRating || { rating : 0 }
-      }; 
-      this.$store.dispatch('addToQue', [ queTrack ]);
+        userRating: this.track.userRating || { rating: 0 }
+      };
+      this.$store.dispatch("addToQue", [queTrack]);
       this.snackbarText = "Added to Que";
-      this.snackbar = true;      
+      this.snackbar = true;
     },
     comment: function() {},
     toggleBookmark: function() {
@@ -294,7 +307,7 @@ export default {
         // eslint-disable-next-line
       }).then(r => {
         this.track.userBookmarked = !this.track.userBookmarked;
-      });       
+      });
     },
     toggleFavorite: function() {
       this.favoriteToggle({
@@ -303,7 +316,7 @@ export default {
         // eslint-disable-next-line
       }).then(r => {
         this.updateData();
-      });        
+      });
     },
     hateToogle: function() {
       this.dislikeToggle({
@@ -312,12 +325,12 @@ export default {
         // eslint-disable-next-line
       }).then(r => {
         this.updateData();
-      });      
+      });
     },
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
-          trackId:  this.track.id,
+          trackId: this.track.id,
           newVal: this.track.userRating.rating
         })
           // eslint-disable-next-line
@@ -325,7 +338,7 @@ export default {
             this.updateData();
           });
       });
-    },    
+    },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -339,7 +352,7 @@ export default {
           };
         })
         .finally(() => {
-          this.loaded = true;          
+          this.loaded = true;
           this.$nextTick(() => {
             EventBus.$emit("loadingComplete");
           });
@@ -368,7 +381,7 @@ export default {
           url: "https://open.spotify.com/track/"
         }
       ];
-    },    
+    }
   },
   watch: {
     $route(to) {
@@ -385,8 +398,8 @@ export default {
     tab: 0,
     loaded: false,
     snackbar: false,
-    snackbarText: "",        
-    snackbarColor: "success",    
+    snackbarText: "",
+    snackbarColor: "success",
     menuItems: [
       {
         title: "Add To Que",
@@ -394,10 +407,10 @@ export default {
         click: "tt:AddToQue"
       },
       { title: "Play", class: "hidden-xs-only", click: "tt:Play" },
-      { title: "Comment", class: "hidden-xs-only", click: "tt:Comment" }     
+      { title: "Comment", class: "hidden-xs-only", click: "tt:Comment" }
     ],
     seachMenuItems: [
-      { title: "Search for Title", click: "tt:searchForTitle" },      
+      { title: "Search for Title", click: "tt:searchForTitle" },
       { title: "Internet Artist", click: "tt:searchInternetArtist" },
       { title: "Internet Release", click: "tt:searchInternetRelease" },
       { title: "Internet Title", click: "tt:searchInternetTitle" },
@@ -405,7 +418,7 @@ export default {
         title: "Internet Artist, Release and Title",
         click: "tt:searchInternetArtistReleaseAndTitle"
       }
-    ],    
+    ],
     metaDataHeaders: [
       {
         text: "Source",
@@ -419,7 +432,7 @@ export default {
         sortable: false,
         value: "sourceId"
       }
-    ],    
+    ]
   })
 };
 </script>

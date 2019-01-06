@@ -97,6 +97,10 @@ Vue.filter('minutes', (value) => {
 });
 
 Vue.filter("formatTimeStamp", function (timestamp, user) {
+  if(!user || !user.timeformat) {
+    return moment
+    .utc(timestamp);
+  }
   return moment
     .utc(timestamp)
     .tz(user.timezone)

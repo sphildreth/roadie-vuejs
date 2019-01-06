@@ -107,11 +107,11 @@ export default {
   components: { ThemeSettings }, 
   methods: {
     showHelp() {
-      this.$router.push('help');
+      this.$router.push('/help');
     },
     signout() {
       this.$store.dispatch('signout');
-      this.$router.go('/');  
+      this.$router.go('/signin');  
     },
     search(e) {
       if(e.key === "Enter") {

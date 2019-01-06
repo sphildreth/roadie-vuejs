@@ -6,25 +6,24 @@
           <h5 class="headline mb-0">How is music organized?</h5>
         </v-card-title>
         <v-card-text>
-          <p>Music is organized into several key elements
-            <dl>
-              <dt>Artist</dt>
-              <dd>Someone who either creates a Release or creates/contributes to Tracks on a Release.</dd>
-              <dd><a href="https://en.wikipedia.org/wiki/Billy_Joel" target="_blank"><i>Billy Joel</i></a> is an example of an Artist who creates Releases.</dd>
-              <dd>'Various Artist' is an example of a meta-Artist who has other Artists on their Releases (think compilations).</dd>
-              <dd>An Artist can be a person or a group.</dd>
-              <dd>Other terms for Artist: Band, Choir, Duet, Group, Person, Quartet, Solo, Trio.</dd>
-              <dt>Release</dt>
-              <dd>A collection of Tracks put out by an Artist on various mediums.</dd>
-              <dd>These can be physical Releases (vinyl albums, Compact Discs, etc.) or digital Releases.</dd>
-              <dd><a href="https://en.wikipedia.org/wiki/52nd_Street_(album)" target="_blank"><i>52nd Street</i></a> is an example of a Release.</dd>
-              <dd>Releases can have a single Track or hundreds. Some Releases have multiple Medias (think double album), most Releases have a single Media.</dd>
-              <dt>Track</dt>
-              <dd>A recording on a Release. Can include: A song, skits, spoken word, sounds, silence, etc.</dd>
-              <dd>A Track can have an Artist who is not the Release Artist (think compilations and sound-tracks).</dd>
-              <dd>A Track can have multiple Artists who are contributing to the Release Artist (popular amoung Rap/Hip-Hop Releases).</dd>
-            </dl>
-          </p>
+          <p>Music is organized into several key elements: Artists, Releases and Tracks.</p>
+          <dl>
+            <dt>Artist</dt>
+            <dd>Someone who either creates a Release or creates/contributes to Tracks on a Release.</dd>
+            <dd><a href="https://en.wikipedia.org/wiki/Billy_Joel" target="_blank"><i>Billy Joel</i></a> is an example of an Artist who creates Releases.</dd>
+            <dd>'Various Artist' is an example of a meta-Artist who has other Artists on their Releases (think compilations).</dd>
+            <dd>An Artist can be a person or a group.</dd>
+            <dd>Other terms for Artist: Band, Choir, Duet, Group, Person, Quartet, Solo, Trio.</dd>
+            <dt>Release</dt>
+            <dd>A collection of Tracks put out by an Artist on various mediums.</dd>
+            <dd>These can be physical Releases (vinyl albums, Compact Discs, etc.) or digital Releases.</dd>
+            <dd><a href="https://en.wikipedia.org/wiki/52nd_Street_(album)" target="_blank"><i>52nd Street</i></a> is an example of a Release.</dd>
+            <dd>Releases can have a single Track or hundreds. Some Releases have multiple Medias (think double album), most Releases have a single Media.</dd>
+            <dt>Track</dt>
+            <dd>A recording on a Release. Can include: A song, skits, spoken word, sounds, silence, etc.</dd>
+            <dd>A Track can have an Artist who is not the Release Artist (think compilations and sound-tracks).</dd>
+            <dd>A Track can have multiple Artists who are contributing to the Release Artist (popular amoung Rap/Hip-Hop Releases).</dd>
+          </dl>
         </v-card-text>
       </v-card>       
       <v-card>

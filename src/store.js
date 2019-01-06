@@ -7,6 +7,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   getters: {
     playingIndex: (state) => {
+      if(!state.isLoggedIn) {
+        return [];
+      }
       return state.playingIndex;
     },
     quePlaytime: (state) => {
@@ -80,32 +83,56 @@ export default new Vuex.Store({
     },
     authToken:(state) => {
       if(!state.isLoggedIn) {
-        return {};
+        return null;
       }
-      if(!state.authToken)
-      {
-        if(!state.user || !state.user.username) {
-          var data = localStorage.getItem("user");
-          if(!data) {
-            return {};
+      try {
+        if(!state.authToken)
+        {
+          if(!state.user || !state.user.username) {
+            var data = localStorage.getItem("user");
+            if(!data) {
+              return null;
+            }
+            state.user = JSON.parse(data);
           }
-          state.user = JSON.parse(data);
-        }
-        state.authToken = state.user.token;
-      }      
-      return state.authToken;
+          state.authToken = state.user.token;
+        }      
+        return state.authToken;          
+      } catch (error) {
+        return null;
+      }
     },
     userId: (state, getters) => {
-      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
-      return jwt["roadie_id"];
+      let at = getters.authToken;
+      if(!at) {
+        return 0;
+      }
+      let jwt = JSON.parse(atob(at.split('.')[1]));
+     return jwt.roadie_id;
     },
     isUserAdmin: (state, getters) => {
-      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
-      return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
+      let at = getters.authToken;
+      if(!at) {
+        return false;
+      }  
+      try {
+        let jwt = JSON.parse(atob(at.split('.')[1]));
+        return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
+      } catch(e) {
+        return false;
+      }
     },
     isUserEditor: (state, getters) => {
-      let jwt = JSON.parse(atob(getters.authToken.split('.')[1]));
-      return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin" || jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Editor";
+      let at = getters.authToken;
+      if(!at) {
+        return false;
+      }      
+      try {
+        let jwt = JSON.parse(atob(at.split('.')[1]));
+        return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin" || jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Editor";
+      } catch(e) {
+        return false;        
+      }
     },
     usersAvatarUrl: (state) => {
       return (state.user && state.user.avatarUrl) ? state.user.avatarUrl + '?ts=' + new Date().getTime() : '';

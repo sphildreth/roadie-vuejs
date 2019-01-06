@@ -14,7 +14,7 @@
             <span class="caption mr-1"> Roadie v0.1 beta</span><v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
           <v-bottom-sheet persistent full-width hide-overlay v-model="showPlayer">
-            <TrackPlayingCard v-if="showPlayer" :track="currentTrack.track" :totalTime="totalQueTime" :listNumber="currentTrack.listNumber"></TrackPlayingCard>
+            <TrackPlayingCard v-if="!hide && showPlayer" :track="currentTrack.track" :totalTime="totalQueTime" :listNumber="currentTrack.listNumber"></TrackPlayingCard>
           </v-bottom-sheet>          
         </v-content>    
       </v-app>
