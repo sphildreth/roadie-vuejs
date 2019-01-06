@@ -203,7 +203,6 @@ export default {
   },
   methods: {
     addToQue: function() {},
-    comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -264,8 +263,7 @@ export default {
         class: "hidden-xs-only",
         click: "c:AddAllToQue"
       },
-      { title: "Play All", class: "hidden-xs-only", click: "c:PlayAll" },
-      { title: "Comment", class: "hidden-xs-only", click: "c:Comment" }
+      { title: "Play All", class: "hidden-xs-only", click: "c:PlayAll" }
     ]
   })
 };

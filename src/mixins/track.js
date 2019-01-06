@@ -112,6 +112,7 @@ export default {
         duration: track.duration,
         durationTime: track.durationTime,
         rating: track.rating,
+        playedCount: track.playedCount, 
         trackPlayUrl: track.trackPlayUrl,
         release: {
           text: track.release.release.text,

@@ -205,7 +205,6 @@ export default {
   },
   methods: {
     addToQue: function() {},
-    comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -293,7 +292,6 @@ export default {
       }
     ],
     menuItems: [
-      { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" }
     ],
     artistItems: []
   })

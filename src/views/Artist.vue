@@ -576,7 +576,8 @@ export default {
   created() {
     EventBus.$on("aa:PlayAll", this.playAll);
     EventBus.$on("aa:AddAllToQue", this.addAllToQue);
-    EventBus.$on("aa:Comment", this.comment);
+    EventBus.$on("aa:PlayTopRated", this.playTopRated);
+    EventBus.$on("aa:PlayMostPopular", this.playMostPopular);
     EventBus.$on("aa:searchInternetArtist", this.internetArtistSearch);
     EventBus.$on("aa:searchArtistsWithName", this.searchArtistsWithName);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
@@ -593,7 +594,8 @@ export default {
   beforeDestroy() {
     EventBus.$off("aa:PlayAll", this.playAll);
     EventBus.$off("aa:AddAllToQue", this.addAllToQue);
-    EventBus.$off("aa:Comment", this.comment);
+    EventBus.$off("aa:PlayTopRated", this.playTopRated);
+    EventBus.$off("aa:PlayMostPopular", this.playMostPopular);
     EventBus.$off("aa:searchInternetArtist", this.internetArtistSearch);
     EventBus.$off("aa:searchArtistsWithName", this.searchArtistsWithName);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
@@ -633,9 +635,42 @@ export default {
     },
     searchQuery() {
       return this.artist.name;
+    },
+    playTrackLimit() {
+      return 25;
     }
   },
   methods: {
+    playTopRated: function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + `/tracks?page=1&limit=${ this.playTrackLimit }&sort=Rating&order=DESC&FilterToArtistId=${ this.artist.id}`
+        )
+        .then(response => {
+          let queTracks = this.queTracksForTrackRows(response.data.rows);
+          this.$store.dispatch("addToQue", queTracks);
+          EventBus.$emit("showSnackbar", {
+            text: "Added [" + queTracks.length + "] tracks to Que"
+          });
+          EventBus.$emit("loadingComplete");
+        });
+    },
+    playMostPopular: function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + `/tracks?page=1&limit=${ this.playTrackLimit }&sort=PlayedCount&order=DESC&FilterToArtistId=${ this.artist.id}`
+        )
+        .then(response => {
+          let queTracks = this.queTracksForTrackRows(response.data.rows);
+          this.$store.dispatch("addToQue", queTracks);
+          EventBus.$emit("showSnackbar", {
+            text: "Added [" + queTracks.length + "] tracks to Que"
+          });
+          EventBus.$emit("loadingComplete");
+        });
+    },
     coverDragUploadComplete: function() {
       this.artistImageSearchItems = [];
     },
@@ -655,6 +690,35 @@ export default {
     searchArtistsWithName: function() {
       this.$router.push({ name: "search", params: { q: this.artist.name } });
     },
+    queTracksForTrackRows(trackRows) {
+      let queTracks = [];
+      trackRows.forEach(tr => {
+        let artist = tr.trackArtist || tr.artist;
+        let queTrack = {
+          id: tr.id,
+          mediaNumber: tr.mediaNumber,
+          trackNumber: tr.trackNumber,
+          title: tr.title,
+          duration: tr.duration,
+          durationTime: tr.durationTime,
+          rating: tr.rating,
+          playedCount: tr.playedCount,
+          trackPlayUrl: tr.trackPlayUrl,
+          release: {
+            text: tr.release.release.text,
+            value: tr.release.release.value,
+            releaseDate: tr.release.releaseDate
+          },
+          artist: artist,
+          releaseArtist: tr.artist,
+          releaseImageUrl: tr.release.thumbnail.url,
+          artistImageUrl: artist.thumbnail.url,
+          userRating: tr.userRating || { rating: 0 }
+        };  
+        queTracks.push(queTrack);
+      });
+      return queTracks;
+    },
     addAllToQue: function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -664,32 +728,7 @@ export default {
             this.artist.id
         )
         .then(response => {
-          let queTracks = [];
-          response.data.rows.forEach(tr => {
-            let artist = tr.trackArtist || tr.artist;
-            let queTrack = {
-              id: tr.id,
-              mediaNumber: tr.mediaNumber,
-              trackNumber: tr.trackNumber,
-              title: tr.title,
-              duration: tr.duration,
-              durationTime: tr.durationTime,
-              rating: tr.rating,
-              trackPlayUrl: tr.trackPlayUrl,
-              release: {
-                text: tr.release.release.text,
-                value: tr.release.release.value,
-                releaseDate: tr.release.releaseDate
-              },
-              artist: artist,
-              releaseArtist: tr.artist,
-              releaseImageUrl: tr.release.thumbnail.url,
-              artistImageUrl: artist.thumbnail.url,
-              userRating: tr.userRating || { rating: 0 }
-            };
-            queTracks.push(queTrack);
-          });
-
+          let queTracks = this.queTracksForTrackRows(response.data.rows);
           this.$store.dispatch("addToQue", queTracks);
           EventBus.$emit("showSnackbar", {
             text: "Added [" + queTracks.length + "] tracks to Que"
@@ -701,7 +740,6 @@ export default {
       this.$store.dispatch("clearQue");
       this.addAllToQue();
     },
-    comment: function() {},
     rescan: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -1040,8 +1078,7 @@ export default {
         title: "Play Most Popular",
         class: "hidden-xs-only",
         click: "aa:PlayMostPopular"
-      },
-      { title: "Comment", class: "hidden-xs-only", click: "aa:Comment" }
+      }
     ],
     seachMenuItems: [
       { title: "Search Artists with Name", click: "aa:searchArtistsWithName" },

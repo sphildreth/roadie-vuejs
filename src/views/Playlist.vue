@@ -239,6 +239,7 @@ export default {
           duration: tr.duration,
           durationTime: tr.durationTime,
           rating: tr.rating,
+          playedCount: tr.playedCount,
           trackPlayUrl: tr.trackPlayUrl,
           release: {
             text: tr.release.release.text,
@@ -258,7 +259,6 @@ export default {
         text: "Added [" + queTracks.length + "] tracks to Que"
       });
     },
-    comment: function() {},
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -320,7 +320,6 @@ export default {
         class: "hidden-xs-only",
         click: "pl:PlayNow"
       },
-      { title: "Comment", class: "hidden-xs-only", click: "pl:Comment" },
       {
         title: "Delete",
         class: "hidden-xs-only",

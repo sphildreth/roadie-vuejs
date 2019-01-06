@@ -224,7 +224,6 @@ export default {
   created() {
     EventBus.$on("tt:AddToQue", this.addTrackToQue);
     EventBus.$on("tt:Play", this.playNow);
-    EventBus.$on("tt:Comment", this.comment);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.toggleBookmark);
@@ -233,7 +232,6 @@ export default {
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addTrackToQue);
     EventBus.$off("tt:Play", this.playNow);
-    EventBus.$off("tt:Comment", this.comment);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.toggleBookmark);
@@ -272,7 +270,6 @@ export default {
     addTrackToQue: function() {
       this.addToQue(this.track);
     },
-    comment: function() {},
     toggleBookmark: function() {
       this.bookmarkToggle({
         trackId: this.track.id,
@@ -365,8 +362,7 @@ export default {
         class: "hidden-xs-only",
         click: "tt:AddToQue"
       },
-      { title: "Play", class: "hidden-xs-only", click: "tt:Play" },
-      { title: "Comment", class: "hidden-xs-only", click: "tt:Comment" }
+      { title: "Play", class: "hidden-xs-only", click: "tt:Play" }
     ],
     seachMenuItems: [
       { title: "Search for Title", click: "tt:searchForTitle" },

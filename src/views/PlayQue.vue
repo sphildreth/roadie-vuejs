@@ -3,7 +3,7 @@
     <Toolbar :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
     <v-layout row wrap>
       <v-spacer></v-spacer>
-      <v-flex d-flex xs3 class="ma-2">
+      <v-flex d-flex xs4 class="ma-2">
         <div class="stats-container">
           <v-tooltip bottom>
             <v-chip slot="activator" color="secondary" text-color="white">
@@ -26,12 +26,21 @@
           <v-tooltip bottom>
             <v-chip slot="activator" color="secondary" text-color="white">
               <v-avatar>
-                <v-icon>play_circle_outline</v-icon>
+                <v-icon>audiotrack</v-icon>
               </v-avatar>
               {{ queTrackCount | padNumber3 }}
             </v-chip>
             <span>Que Track Count</span>
           </v-tooltip>
+          <v-tooltip bottom>
+            <v-chip slot="activator" color="secondary" text-color="white">
+              <v-avatar>
+                <v-icon>play_circle_outline</v-icon>
+              </v-avatar>
+              {{ quePlayedCount | padNumber5 }}
+            </v-chip>
+            <span>Que Track Played Count</span>
+          </v-tooltip>          
           <v-tooltip bottom>
             <v-chip slot="activator" color="secondary" text-color="white">
               <v-avatar>
@@ -74,6 +83,7 @@
             ></v-progress-linear>
           </td>
           <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
+          <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
           <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
           <td class>{{ props.item.track.title }}</td>
           <td class="box">
@@ -206,6 +216,13 @@ export default {
       });
       return duration;
     },
+    quePlayedCount() {
+      let playedCount = 0;
+      this.items.forEach(t => {
+        playedCount += t.track.playedCount || 0;
+      });
+      return playedCount;
+    },
     queTrackCount() {
       return this.items.length;
     },
@@ -322,10 +339,11 @@ export default {
     newPlaylistDescription: "",
     selectedTracks: [],
     headers: [
-      { text: "Index", value: "listNumber", width: "145" },
+      { text: "Index", value: "listNumber", width: "120" },
       { text: "Rating", value: "track.rating", width: "55" },
       { text: "Media", value: "track.mediaNumber", width: "50" },
-      { text: "Number", value: "track.trackNumber", width: "100" },
+      { text: "Played", value: "track.playedCount", width: "50" },
+      { text: "Number", value: "track.trackNumber", width: "50" },
       { text: "Track", value: "track.track.text" },
       { text: "Release", value: "track.release.text" },
       { text: "Year", value: "track.release.releaseDate", width: "50" },
@@ -368,6 +386,16 @@ export default {
 .playque-container img.thumbnail {
   width: 50px;
   padding-right: 6px;
+}
+.playque-container table.v-table thead td:not(:nth-child(1)),
+.playque-container table.v-table tbody td:not(:nth-child(1)),
+.playque-container table.v-table thead th:not(:nth-child(1)),
+.playque-container table.v-table tbody th:not(:nth-child(1)),
+.playque-container table.v-table thead td:first-child,
+.playque-container table.v-table tbody td:first-child,
+.playque-container table.v-table thead th:first-child,
+.playque-container table.v-table tbody th:first-child {
+  padding: 0 8px;
 }
 .box {
   display: flex;

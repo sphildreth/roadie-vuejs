@@ -480,7 +480,6 @@ export default {
   created() {
     EventBus.$on("rr:AddToQue", this.addToQue);
     EventBus.$on("rr:PlayNow", this.playNow);
-    EventBus.$on("rr:Comment", this.comment);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
     EventBus.$on(
@@ -504,7 +503,6 @@ export default {
   beforeDestroy() {
     EventBus.$off("rr:AddToQue", this.addToQue);
     EventBus.$off("rr:PlayNow", this.playNow);
-    EventBus.$off("rr:Comment", this.comment);
     EventBus.$off("rr:searchInternetTitle");
     EventBus.$off("rr:searchInternetArtist");
     EventBus.$off("rr:searchInternetreleaseandTitle");
@@ -633,6 +631,7 @@ export default {
           duration: tr.duration,
           durationTime: tr.durationTime,
           rating: tr.rating,
+          playedCount: tr.playedCount,          
           trackPlayUrl: tr.trackPlayUrl,
           release: {
             text: this.release.title,
@@ -652,7 +651,6 @@ export default {
         text: "Added [" + queTracks.length + "] tracks to Que"
       });
     },
-    comment: function() {},
     showImageModal: function(e) {
       this.modalImage = e;
       this.showModal = true;
@@ -875,8 +873,7 @@ export default {
         tooltip: "Remove anything in Que and start Playing",
         class: "hidden-xs-only",
         click: "rr:PlayNow"
-      },
-      { title: "Comment", class: "hidden-xs-only", click: "rr:Comment" }
+      }
     ],
     seachMenuItems: [
       { title: "Search for Artist", click: "rr:searchForArtist" },
