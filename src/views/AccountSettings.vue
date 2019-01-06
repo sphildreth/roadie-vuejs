@@ -228,10 +228,6 @@
         <v-btn @click="save" color="info">Save</v-btn>
         </v-layout>
     </v-container> 
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar> 
     <v-alert
         v-model="alert"
         dismissible
@@ -355,15 +351,13 @@
               .post('/users/profile/edit',data)
               .then(response => {
                 if(!response.data.isSuccess) {
-                  that.snackbarText = "An error has occured";
-                  that.snackbar = true;   
+                  EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" }); 
                   return false;
                 }
                 if(that.originalEmail != that.profile.email || that.originalUsername != that.profile.username) {
                   that.alert = true;
                 } else {
-                  that.snackbarText = "Successfully Edit Account settings";
-                  that.snackbar = true;                
+                  EventBus.$emit("showSnackbar", { text: "Successfully Edit Account settings"});
                   this.$store.commit("signinSuccess", response.data);            
                   this.updateData();      
                 }
@@ -389,9 +383,7 @@
       imageFile: '',      
       password: '',
       passwordConfirmation: '',
-      selectedListItem: 0,
-      snackbar: false,
-      snackbarText: "",        
+      selectedListItem: 0,   
       dictionary: {
         custom: {
           passwordConfirmation: {

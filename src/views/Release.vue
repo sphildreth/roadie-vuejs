@@ -405,10 +405,6 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
     <confirm ref="confirm"></confirm>
     <v-container v-if="coverSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
@@ -592,11 +588,9 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess && this.release.userRating.isFavorite) {
-            this.snackbarText = "Release is now a favorite";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Release is now a favorite" });            
           } else if (response.data.isSuccess) {
-            this.snackbarText = "Release is no longer a favorite";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Release is no longer a favorite" });                        
           }
         });
     },
@@ -615,11 +609,9 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess && this.release.userRating.isDisliked) {
-            this.snackbarText = "You now hate this Release";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "You now hate this Release"});            
           } else if (response.data.isSuccess) {
-            this.snackbarText = "You no longer hate this Release";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "You no longer hate this Release"});
           }
         });
     },
@@ -657,9 +649,7 @@ export default {
         }; 
         queTracks.push(queTrack);        
       })
-      this.$store.dispatch('addToQue', queTracks);
-      this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
-      this.snackbar = true;
+      EventBus.$emit("showSnackbar", { text: "Added [" + queTracks.length + "] tracks to Que" });
     },
     comment: function() {},
     showImageModal: function(e) {
@@ -679,8 +669,7 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess) {
-            this.snackbarText = "Successfully updated Release cover.";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully updated Release cover." });            
             this.$nextTick(()=> {
               this.release.mediumThumbnail.url = response.data.data.url;              
             });            
@@ -749,11 +738,9 @@ export default {
         )
         .then(response => {
           if (!this.release.userBookmarked) {
-            this.snackbarText = "Successfully bookmarked";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });            
           } else if (response.data.isSuccess) {
-            this.snackbarText = "Successfully removed bookmark";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully removed bookmark" });            
           }
           this.release.userBookmarked = !this.release.userBookmarked;
         })
@@ -838,8 +825,6 @@ export default {
     tab: 0,
     releaseTab: 2,
     selectedTracks: [],
-    snackbar: false,
-    snackbarText: "",
     coverSearchQuery: "",
     showModal: false,
     modalImage: {},

@@ -30,10 +30,22 @@
       <v-data-table :headers="headers" :items="items" class="elevation-1" hide-actions>
         <template slot="items" slot-scope="props">
           <td class="handle">
-            <input type="checkbox" name="selected" @click="toggleSelectedTrack($event, props.item)" class="mr-2 track-selector" />
-            {{ props.item.listNumber | padNumber3 }}            
-            <v-icon title="Click to play track" @click="playTrack(props.item.track.id)" :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'">play_circle_outline</v-icon>  
-            <span title="Click and drag to change order" style="max-width: 10px;font-size:18px;">&#128075;</span>            
+            <input
+              type="checkbox"
+              name="selected"
+              @click="toggleSelectedTrack($event, props.item)"
+              class="mr-2 track-selector"
+            >
+            {{ props.item.listNumber | padNumber3 }}
+            <v-icon
+              title="Click to play track"
+              @click="playTrack(props.item.track.id)"
+              :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
+            >play_circle_outline</v-icon>
+            <span
+              title="Click and drag to change order"
+              style="max-width: 10px;font-size:18px;"
+            >&#128075;</span>
           </td>
           <td>
             <v-progress-linear
@@ -41,33 +53,35 @@
               background-color="secondary"
               color="orange lighten-3"
               :value="props.item.track.rating * 20"
-            ></v-progress-linear>           
-          </td>          
-          <td class="">{{ props.item.track.mediaNumber | padNumber2 }}</td>
-          <td class="">{{ props.item.track.trackNumber | padNumber4 }}</td>
-          <td class="">{{ props.item.track.title }}</td>
+            ></v-progress-linear>
+          </td>
+          <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
+          <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
+          <td class>{{ props.item.track.title }}</td>
           <td class="box">
             <router-link :to="'/release/' + props.item.track.release.value">
-              <img class="thumbnail" :src="props.item.track.releaseImageUrl" :alt="props.item.track.release.text">                
-              <span class="thumbnail-text release-title pointer">
-                {{ props.item.track.release.text }}
-              </span>
+              <img
+                class="thumbnail"
+                :src="props.item.track.releaseImageUrl"
+                :alt="props.item.track.release.text"
+              >
+              <span class="thumbnail-text release-title pointer">{{ props.item.track.release.text }}</span>
             </router-link>
           </td>
-          <td class="">{{ props.item.track.release.releaseDate | formattedYear }}</td>
+          <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
           <td class="box">
-            <router-link :to="'/artist/' + props.item.track.artist.artist.value">            
+            <router-link :to="'/artist/' + props.item.track.artist.artist.value">
               <img
                 class="thumbnail"
                 :src="props.item.track.artistImageUrl"
                 :alt="props.item.track.artist.artist.text"
-              />
-              <span class="thumbnail-text artist-name pointer">
-              {{ props.item.track.artist.artist.text }}
-              </span>
-            </router-link>            
+              >
+              <span
+                class="thumbnail-text artist-name pointer"
+              >{{ props.item.track.artist.artist.text }}</span>
+            </router-link>
           </td>
-          <td class="">
+          <td class>
             <span class="mr-2">{{ props.item.track.durationTime }}</span>
             <v-icon
               color="red"
@@ -75,62 +89,61 @@
               class="pointer"
               @click="removeTrackFromQue(props.item)"
               small
-            >delete</v-icon>            
-            <span v-if="nowPlaying && (playingTrackId === props.item.track.id)" title="Track is Playing">
-              <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing" />
-            </span>            
+            >delete</v-icon>
+            <span
+              v-if="nowPlaying && (playingTrackId === props.item.track.id)"
+              title="Track is Playing"
+            >
+              <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing">
+            </span>
           </td>
         </template>
       </v-data-table>
     </v-container>
     <v-dialog v-model="showSaveAsPlaylist" persistent max-width="400px">
-      <v-card class="playque-edit-container" >
+      <v-card class="playque-edit-container">
         <v-card-title>
           <span class="headline">Creating a new Playlist</span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
-             <v-form ref="form" v-model="valid" lazy-validation>
-                <v-layout wrap>
-                  <v-switch
-                    color="success"
-                    label="Visible to others?"
-                    v-model="newPlaylistnameIsPublic"
-                  ></v-switch>              
-                </v-layout>            
-                <v-layout wrap>
-                  <v-text-field
-                    v-model="newPlaylistname"
-                    label="Name"
-                    counter
-                    maxlength="100"
-                    name="newPlaylistname"
-                    required                 
-                    :rules="[v => !!v || 'Item is required']"  
-                  ></v-text-field>  
-                </v-layout>
-                <v-layout wrap>
-                  <v-textarea
-                    v-model="newPlaylistDescription"
-                    label="Description"
-                    maxlength="1000"
-                    name="newPlaylistDescription"
-                  ></v-textarea>  
-                </v-layout>                
-              </v-form>                        
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-layout wrap>
+                <v-switch
+                  color="success"
+                  label="Visible to others?"
+                  v-model="newPlaylistnameIsPublic"
+                ></v-switch>
+              </v-layout>
+              <v-layout wrap>
+                <v-text-field
+                  v-model="newPlaylistname"
+                  label="Name"
+                  counter
+                  maxlength="100"
+                  name="newPlaylistname"
+                  required
+                  :rules="[v => !!v || 'Item is required']"
+                ></v-text-field>
+              </v-layout>
+              <v-layout wrap>
+                <v-textarea
+                  v-model="newPlaylistDescription"
+                  label="Description"
+                  maxlength="1000"
+                  name="newPlaylistDescription"
+                ></v-textarea>
+              </v-layout>
+            </v-form>
           </v-container>
         </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="showSaveAsPlaylist = false">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click="doSaveAsPlaylist">Save</v-btn>
-          </v-card-actions>        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="showSaveAsPlaylist = false">Cancel</v-btn>
+          <v-btn color="blue darken-1" flat @click="doSaveAsPlaylist">Save</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>    
   </div>
 </template>
 
@@ -146,13 +159,13 @@ export default {
     EventBus.$on("pl:RemoveSelected", this.removeSelected);
     EventBus.$on("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$on("pl:Shuffle", this.shuffleQue);
-    EventBus.$on("toolbarRefresh", this.updateData);    
+    EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
     EventBus.$off("pl:ClearQue", this.clearQue);
     EventBus.$off("pl:RemoveSelected", this.removeSelected);
-    EventBus.$off("pl:SaveAsPlaylist", this.saveAsPlaylist);   
-    EventBus.$off("pl:Shuffle", this.shuffleQue); 
+    EventBus.$off("pl:SaveAsPlaylist", this.saveAsPlaylist);
+    EventBus.$off("pl:Shuffle", this.shuffleQue);
     EventBus.$off("toolbarRefresh", this.updateData);
   },
   async mounted() {
@@ -164,10 +177,10 @@ export default {
         const rowSelected = _self.items.splice(oldIndex, 1)[0]; // Get the selected row and remove it
         _self.items.splice(newIndex, 0, rowSelected); // Move it to the new index
       }
-    });    
+    });
     this.updateData();
   },
-  computed: {     
+  computed: {
     quePlaytime() {
       let duration = 0;
       this.items.forEach(t => {
@@ -187,42 +200,36 @@ export default {
   },
   methods: {
     playTrack: function(id) {
-      alert('play track ' + id)
+      alert("play track " + id);
     },
     shuffleQue: function() {
       this.$store.dispatch("shuffleQue");
       this.updateData();
     },
     doSaveAsPlaylist: function() {
-      let that=this;
+      let that = this;
       if (this.$refs.form.validate()) {
-        this.showSaveAsPlaylist = false;      
+        this.showSaveAsPlaylist = false;
         let playlistData = {
           isPublic: this.newPlaylistnameIsPublic,
           description: this.newPlaylistDescription,
           name: this.newPlaylistname,
           tracks: this.items
         };
-        this.$axios
-          .post('/playlists/add',playlistData)
-          .then(response => {
-            if(!response.data.isSuccess) {
-              that.snackbarText = "An error has occured";
-              that.snackbar = true;   
-              that.snackbarColor = "error";   
-              return false;
-            }
-            this.$router.push("/playlist/" + response.data.data.id);
-        });        
+        this.$axios.post("/playlists/add", playlistData).then(response => {
+          if (!response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });            
+            return false;
+          }
+          this.$router.push("/playlist/" + response.data.data.id);
+        });
       }
     },
     saveAsPlaylist: function() {
       if (this.items.length === 0) {
-        this.snackbarText = "Add some Tracks to save to a Playlist";
-        this.snackbar = true; 
-        this.snackbarColor = "error";         
+        EventBus.$emit("showSnackbar", { text: "Add some Tracks to save to a Playlist", color: "red" });        
         return false;
-      }      
+      }
       this.newPlaylistname = "";
       this.showSaveAsPlaylist = true;
     },
@@ -230,9 +237,7 @@ export default {
       this.selectedTracks.forEach(track => {
         this.removeTrackFromQue(track);
       });
-      this.snackbarText = "Removed [" + this.selectedTracks.length + "] from Que";
-      this.snackbar = true; 
-      this.snackbarColor = "success";       
+      EventBus.$emit("showSnackbar", { text: "Removed [" + this.selectedTracks.length + "] from Que" });
     },
     removeTrackFromQue: function(track) {
       this.$store.dispatch("removeFromQue", track);
@@ -240,20 +245,24 @@ export default {
     },
     toggleSelectedTrack: function(e, track) {
       var isTrackSelected = e.target.checked;
-      if(isTrackSelected) {
-        if(!this.$_.find(this.selectedTracks, function(t) { return t.track.id === track.track.id; })) {
+      if (isTrackSelected) {
+        if (
+          !this.$_.find(this.selectedTracks, function(t) {
+            return t.track.id === track.track.id;
+          })
+        ) {
           this.selectedTracks.push(track);
-        }        
-      } else { 
-        this.$_.remove(this.selectedTracks, function(t) { return t.track.id === track.track.id; });        
+        }
+      } else {
+        this.$_.remove(this.selectedTracks, function(t) {
+          return t.track.id === track.track.id;
+        });
       }
     },
     clearQue: function() {
       this.$store.dispatch("clearQue");
       this.updateData();
-      this.snackbarText = "Cleared Que";
-      this.snackbar = true; 
-      this.snackbarColor = "success";         
+      EventBus.$emit("showSnackbar", { text: "Cleared Que" });
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -272,9 +281,6 @@ export default {
     }
   },
   data: () => ({
-    snackbar: false,
-    snackbarText: "",        
-    snackbarColor: "success",
     loading: true,
     valid: true,
     showSaveAsPlaylist: false,
@@ -295,7 +301,11 @@ export default {
     ],
     menuItems: [
       { title: "Clear Que", class: "hidden-sm-and-down", click: "pl:ClearQue" },
-      { title: "Remove Selected", class: "hidden-sm-and-down", click: "pl:RemoveSelected" },
+      {
+        title: "Remove Selected",
+        class: "hidden-sm-and-down",
+        click: "pl:RemoveSelected"
+      },
       {
         title: "Save As Playlist",
         tooltip: "Save as a new Playlist",
@@ -316,23 +326,23 @@ export default {
 </script>
 
 <style>
-  .playque-edit-container .error--text {
-    color: yellow !important;
-  }
-  .playque-container img.thumbnail {
-    width: 50px;
-    padding-right: 6px;
-  }
-  .box {
-    display: flex;
-    align-items:center;
-  }
-  .handle {
-    cursor: move !important;
-    cursor: -webkit-grabbing !important;
-  }  
-  .sortable-ghost {
-    opacity: .75;
-    background: #F5F500;
-  }
+.playque-edit-container .error--text {
+  color: yellow !important;
+}
+.playque-container img.thumbnail {
+  width: 50px;
+  padding-right: 6px;
+}
+.box {
+  display: flex;
+  align-items: center;
+}
+.handle {
+  cursor: move !important;
+  cursor: -webkit-grabbing !important;
+}
+.sortable-ghost {
+  opacity: 0.75;
+  background: #f5f500;
+}
 </style>

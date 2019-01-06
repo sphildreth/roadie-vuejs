@@ -170,29 +170,29 @@
           </v-layout>
 
           <v-layout d-flex row-wrap>
-            <v-btn icon>
-              <v-icon title="Skip Previous" @click="skip('prev')">skip_previous</v-icon>
+            <v-btn icon @click="skip('prev')">
+              <v-icon title="Skip Previous" >skip_previous</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon @click="seekByAmount(-30)">replay_30</v-icon>
+            <v-btn icon @click="seekByAmount(-30)">
+              <v-icon>replay_30</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon @click="seekByAmount(-1)">fast_rewind</v-icon>
+            <v-btn icon @click="seekByAmount(-1)">
+              <v-icon >fast_rewind</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon large @click="play">{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
+            <v-btn icon @click="play">
+              <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon @click="stop">stop</v-icon>
+            <v-btn icon @click="stop">
+              <v-icon >stop</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon @click="seekByAmount(1)">fast_forward</v-icon>
+            <v-btn icon @click="seekByAmount(1)">
+              <v-icon >fast_forward</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon @click="seekByAmount(30)">forward_30</v-icon>
+            <v-btn icon @click="seekByAmount(30)">
+              <v-icon >forward_30</v-icon>
             </v-btn>
-            <v-btn icon>
-              <v-icon title="Skip Next" @click="skip('next')">skip_next</v-icon>
+            <v-btn icon @click="skip('next')">
+              <v-icon title="Skip Next" >skip_next</v-icon>
             </v-btn>
             <v-btn flat icon @click="toggleLoop">
               <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
@@ -201,10 +201,6 @@
         </v-flex>
       </v-layout>
     </v-card>
-    <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </div>
 </template>
 
@@ -434,9 +430,6 @@ export default {
     playing: false,
     muted: false,
     volume: 0.5,
-    snackbar: false,
-    snackbarText: "",
-    snackbarColor: "success",
     loaded: false,
     originalWindowTitle: "",
     playingIndex: 0,

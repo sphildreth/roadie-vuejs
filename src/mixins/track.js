@@ -1,20 +1,16 @@
+import { EventBus } from "@/event-bus.js";
 export default {
   data: () => ({
-    snackbar: false,
-    snackbarText: "",
   }),
   methods: {
     bookmarkToggle(bookmarkInfo) {
       return new Promise(resolve => {
-        var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackBookmark/' + bookmarkInfo.trackId + '/' + bookmarkInfo.userBookmarked)
           .then(response => {
             if (response.data.isSuccess && bookmarkInfo.userBookmarked) {
-              that.snackbarText = "Successfully bookmarked";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
             } else if (response.data.isSuccess) {
-              that.snackbarText = "Successfully removed bookmark";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "Successfully removed bookmark" });
             }
             resolve({
               isSuccess: response.data.isSuccess,
@@ -25,16 +21,13 @@ export default {
     },
     ratingChange(changeInfo) {
       return new Promise(resolve => {
-        var that = this;
         if (changeInfo.newVal !== changeInfo.oldVal) {
           this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackRating/' + changeInfo.trackId + '/' + changeInfo.newVal)
             .then(response => {
               if (response.data.isSuccess && changeInfo.newVal > 0) {
-                that.snackbarText = "Successfully set rating";
-                that.snackbar = true;
+                EventBus.$emit("showSnackbar", { text: "Successfully set rating" });
               } else if (response.data.isSuccess) {
-                that.snackbarText = "Successfully removed rating";
-                that.snackbar = true;
+                EventBus.$emit("showSnackbar", { text: "Successfully removed rating" });
               }
               resolve({
                 isSuccess: response.data.isSuccess,
@@ -46,15 +39,12 @@ export default {
     },
     favoriteToggle(toggleInfo) {
       return new Promise(resolve => {
-        var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackFavorite/' + toggleInfo.trackId + '/' + toggleInfo.isFavorite)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isFavorite > 0) {
-              that.snackbarText = "Track is now a favorite";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "Track is now a favorite" });
             } else if (response.data.isSuccess) {
-              that.snackbarText = "Track is no longer a favorite";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "Track is no longer a favorite" });              
             }
             resolve({
               isSuccess: response.data.isSuccess,
@@ -65,15 +55,12 @@ export default {
     },
     dislikeToggle(toggleInfo) {
       return new Promise(resolve => {
-        var that = this;
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackDisliked/' + toggleInfo.trackId + '/' + toggleInfo.isDisliked)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isDisliked) {
-              that.snackbarText = "You now hate this Track";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "You now hate this Track" });              
             } else if (response.data.isSuccess) {
-              that.snackbarText = "You no longer hate this Track";
-              that.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "You no longer hate this Track" });              
             }
             resolve({
               isSuccess: response.data.isSuccess,
@@ -81,6 +68,40 @@ export default {
             });
           });
       });
-    }
+    },
+    addTracksToQue(tracks) {
+      tracks.forEach((track) => {
+        this.addToQueAction(track);
+      });
+      EventBus.$emit("showSnackbar", { text: "Added [" + tracks.length + "] to Que" });      
+    },
+    addToQue(track) {
+      this.addToQueAction(track);
+      EventBus.$emit("showSnackbar", { text: "Added to Que" }); 
+    },
+    addToQueAction(track) {
+      let artist = track.trackArtist || track.artist;
+      let queTrack = {
+        id: track.id,
+        mediaNumber: track.mediaNumber,
+        trackNumber: track.trackNumber,
+        title: track.title,
+        duration: track.duration,
+        durationTime: track.durationTime,
+        rating: track.rating,
+        trackPlayUrl: track.trackPlayUrl,
+        release: {
+          text: track.release.release.text,
+          value: track.release.id,
+          releaseDate: track.release.releaseDate
+        },
+        artist: artist,
+        releaseArtist: track.artist,
+        releaseImageUrl: track.thumbnail.url,
+        artistImageUrl: artist.thumbnail.url,
+        userRating: track.userRating || { rating: 0 }
+      };
+      this.$store.dispatch("addToQue", [queTrack]);
+    }         
   }
 }

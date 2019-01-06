@@ -275,11 +275,7 @@
           </v-card>
         </v-flex>
       </v-layout>
-    </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>     
+    </v-container>  
   </div>  
 </template>
 
@@ -410,8 +406,7 @@
               .post('/releases/edit',that.release)
               .then(response => {
                 if(!response.data.isSuccess) {
-                  that.snackbarText = "An error has occured";
-                  that.snackbar = true;   
+                  EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });   
                   return false;
                 }
                 this.$router.go(-1);
@@ -493,8 +488,6 @@
       imageName: '',
       imageUrl: '',
       imageFile: '',       
-      snackbar: false,
-      snackbarText: "",      
       release: {},
       lookupData: {
         libraryStatusItems: [],

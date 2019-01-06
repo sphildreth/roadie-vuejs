@@ -1,6 +1,11 @@
 <template>
   <div class="playlist-detail-container">
-    <Toolbar :menuItems="menuItems" :hasDeleteRights="hasModifyRights" :hasEditRights="hasModifyRights" :toolbarIcon="'playlist_play'"></Toolbar>
+    <Toolbar
+      :menuItems="menuItems"
+      :hasDeleteRights="hasModifyRights"
+      :hasEditRights="hasModifyRights"
+      :toolbarIcon="'playlist_play'"
+    ></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
@@ -40,17 +45,17 @@
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary"  slider-color="accent">
+          <v-tabs right color="primary" slider-color="accent">
             <v-tab>Description</v-tab>
             <v-tab v-if="playlist.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="playlist.urLsList.length">Urls</v-tab>
             <v-tab-item>
-              <v-card  flat class="description darken-3">
+              <v-card flat class="description darken-3">
                 <v-card-text v-html="playlist.description">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="playlist.tagsList.length > 0">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in playlist.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
@@ -62,7 +67,7 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="playlist.urLsList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in playlist.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -92,7 +97,7 @@
                 {{ playlist.statistics.releaseCount | padNumber4 }}
               </v-chip>
               <span>Playlist Release Count</span>
-            </v-tooltip>            
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -142,29 +147,35 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-card  v-if="trackItems.length > 0">
-            <v-card-text>
-                <v-data-iterator :items="trackItems" :rows-per-page-items="rowsPerPageItems" :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"  :total-items="trackPagination.totalItems"  :pagination.sync="trackPagination" content-tag="v-layout" :loading="true" row wrap>
-                    <v-flex slot="item" slot-scope="props" xs12 sm6>
-                        <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
-                    </v-flex>
-                </v-data-iterator>        
-            </v-card-text>
-        </v-card>  
+        <v-card v-if="trackItems.length > 0">
+          <v-card-text>
+            <v-data-iterator
+              :items="trackItems"
+              :rows-per-page-items="rowsPerPageItems"
+              :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"
+              :total-items="trackPagination.totalItems"
+              :pagination.sync="trackPagination"
+              content-tag="v-layout"
+              :loading="true"
+              row
+              wrap
+            >
+              <v-flex slot="item" slot-scope="props" xs12 sm6>
+                <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
+              </v-flex>
+            </v-data-iterator>
+          </v-card-text>
+        </v-card>
       </v-layout>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
-    <confirm ref="confirm"></confirm>    
+    <confirm ref="confirm"></confirm>
   </div>
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar';
-import UserCard from '@/components/UserCard';
-import TrackCard from '@/components/TrackCard';
+import Toolbar from "@/components/Toolbar";
+import UserCard from "@/components/UserCard";
+import TrackCard from "@/components/TrackCard";
 import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
@@ -174,15 +185,17 @@ export default {
     id: String
   },
   created() {
-    EventBus.$on("pl:AddToQue", this.addToQue);    
-    EventBus.$on("pl:Delete", this.delete);    
+    EventBus.$on("pl:AddToQue", this.addToQue);
+    EventBus.$on("pl:PlayNow", this.playNow);
+    EventBus.$on("pl:Delete", this.delete);
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
-    EventBus.$off('toolbarRefresh', this.updateData);  
-    EventBus.$off("pl:Delete", this.delete);    
-    EventBus.$off("pl:AddToQue", this.addToQue);    
-  },    
+    EventBus.$off("toolbarRefresh", this.updateData);
+    EventBus.$off("pl:Delete", this.delete);
+    EventBus.$off("pl:AddToQue", this.addToQue);
+    EventBus.$off("pl:PlayNow", this.playNow);
+  },
   async mounted() {
     this.updateData();
   },
@@ -192,24 +205,32 @@ export default {
     }
   },
   methods: {
+    playNow: function() {
+      this.$store.dispatch("clearQue");
+      this.addToQue();
+    },
     delete: function() {
       this.$refs.confirm
         .open("Delete", "Are you sure?", { color: "red" })
         .then(confirm => {
           if (confirm) {
             this.$axios
-              .post(process.env.VUE_APP_API_URL + "/playlists/delete/" + this.playlist.id)
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/playlists/delete/" +
+                  this.playlist.id
+              )
               .then(() => {
                 EventBus.$emit("loadingComplete");
                 this.$router.go(-1);
               });
           }
-        });      
+        });
     },
     addToQue: function() {
       let queTracks = [];
-      this.trackItems.forEach(tr => {      
-        let artist = tr.trackArtist || tr.artist;        
+      this.trackItems.forEach(tr => {
+        let artist = tr.trackArtist || tr.artist;
         let queTrack = {
           id: tr.id,
           mediaNumber: tr.mediaNumber,
@@ -219,22 +240,23 @@ export default {
           durationTime: tr.durationTime,
           rating: tr.rating,
           trackPlayUrl: tr.trackPlayUrl,
-          release: { 
+          release: {
             text: tr.release.release.text,
             value: tr.release.release.value,
             releaseDate: tr.release.releaseDate
           },
           artist: artist,
-          releaseArtist: tr.artist,                                  
-          releaseImageUrl:  tr.release.thumbnail.url,
+          releaseArtist: tr.artist,
+          releaseImageUrl: tr.release.thumbnail.url,
           artistImageUrl: artist.thumbnail.url,
-          userRating: tr.userRating || { rating : 0 }
-        }; 
+          userRating: tr.userRating || { rating: 0 }
+        };
         queTracks.push(queTrack);
-      })
-      this.$store.dispatch('addToQue', queTracks);
-      this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
-      this.snackbar = true;
+      });
+      this.$store.dispatch("addToQue", queTracks);
+      EventBus.$emit("showSnackbar", {
+        text: "Added [" + queTracks.length + "] tracks to Que"
+      });
     },
     comment: function() {},
     updateData: async function() {
@@ -244,12 +266,18 @@ export default {
         .then(response => {
           this.playlist = response.data.data;
           this.playlist.tagsList = this.playlist.tagsList || [];
-          this.playlist.urLsList = this.playlist.urLsList || [];      
-          this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?page=${ this.trackPagination.page }&limit=${ this.trackPagination.rowsPerPage }&filterToPlaylistId=${ this.playlist.id }`)
-          .then(response => {
+          this.playlist.urLsList = this.playlist.urLsList || [];
+          this.$axios
+            .get(
+              process.env.VUE_APP_API_URL +
+                `/tracks?page=${this.trackPagination.page}&limit=${
+                  this.trackPagination.rowsPerPage
+                }&filterToPlaylistId=${this.playlist.id}`
+            )
+            .then(response => {
               this.trackItems = response.data.rows;
-              this.trackPagination.totalItems = response.data.totalCount;    
-          });                  
+              this.trackPagination.totalItems = response.data.totalCount;
+            });
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -261,36 +289,50 @@ export default {
       this.id = to.params.id;
       this.updateData();
     },
-    trackPagination: { 
-        async handler() {
-            this.updateData();
-        }
-    }   
+    trackPagination: {
+      async handler() {
+        this.updateData();
+      }
+    }
   },
   data: () => ({
     rowsPerPageItems: [6, 12, 24, 36, 60, 120],
-    snackbar: false,
-    snackbarText: "",    
     playlist: {
       maintainer: {
         thumbnail: {},
-        user: {}        
+        user: {}
       },
       mediumThumbnail: {},
       statistics: {},
       tagsList: [],
       urLsList: []
     },
-      trackPagination: {
-        page: 1,
-        rowsPerPage: 36,
-        totalItems: 0
-    },      
+    trackPagination: {
+      page: 1,
+      rowsPerPage: 36,
+      totalItems: 0
+    },
     menuItems: [
       { title: "Add To Que", class: "hidden-xs-only", click: "pl:AddToQue" },
+      {
+        title: "Play",
+        tooltip: "Remove anything in Que and start Playing",
+        class: "hidden-xs-only",
+        click: "pl:PlayNow"
+      },
       { title: "Comment", class: "hidden-xs-only", click: "pl:Comment" },
-      { title: "Delete", class: "hidden-xs-only", permission: "delete", click: "pl:Delete" },
-      { title: "Edit", class: "hidden-xs-only", permission: "edit", click: "pl:Edit" }
+      {
+        title: "Delete",
+        class: "hidden-xs-only",
+        permission: "delete",
+        click: "pl:Delete"
+      },
+      {
+        title: "Edit",
+        class: "hidden-xs-only",
+        permission: "edit",
+        click: "pl:Edit"
+      }
     ],
     trackItems: []
   })

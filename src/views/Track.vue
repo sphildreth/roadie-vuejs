@@ -206,10 +206,6 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </div>
 </template>
 
@@ -226,7 +222,7 @@ export default {
     id: String
   },
   created() {
-    EventBus.$on("tt:AddToQue", this.addToQue);
+    EventBus.$on("tt:AddToQue", this.addTrackToQue);
     EventBus.$on("tt:Play", this.playNow);
     EventBus.$on("tt:Comment", this.comment);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
@@ -235,7 +231,7 @@ export default {
     EventBus.$on("hateToogle", this.hateToogle);
   },
   beforeDestroy() {
-    EventBus.$off("tt:AddToQue", this.addToQue);
+    EventBus.$off("tt:AddToQue", this.addTrackToQue);
     EventBus.$off("tt:Play", this.playNow);
     EventBus.$off("tt:Comment", this.comment);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
@@ -271,33 +267,10 @@ export default {
   methods: {
     playNow: function() {
       this.$store.dispatch("clearQue");
-      this.addToQue();
+      this.addToQue(this.track);
     },
-    addToQue: function() {
-      let artist = this.track.trackArtist || this.track.artist;
-      let queTrack = {
-        id: this.track.id,
-        mediaNumber: this.track.mediaNumber,
-        trackNumber: this.track.trackNumber,
-        title: this.track.title,
-        duration: this.track.duration,
-        durationTime: this.track.durationTime,
-        rating: this.track.rating,
-        trackPlayUrl: this.track.trackPlayUrl,
-        release: {
-          text: this.track.release.release.text,
-          value: this.track.release.id,
-          releaseDate: this.track.release.releaseDate
-        },
-        artist: artist,
-        releaseArtist: this.track.artist,
-        releaseImageUrl: this.track.thumbnail.url,
-        artistImageUrl: artist.thumbnail.url,
-        userRating: this.track.userRating || { rating: 0 }
-      };
-      this.$store.dispatch("addToQue", [queTrack]);
-      this.snackbarText = "Added to Que";
-      this.snackbar = true;
+    addTrackToQue: function() {
+      this.addToQue(this.track);
     },
     comment: function() {},
     toggleBookmark: function() {
@@ -397,9 +370,6 @@ export default {
     track: [],
     tab: 0,
     loaded: false,
-    snackbar: false,
-    snackbarText: "",
-    snackbarColor: "success",
     menuItems: [
       {
         title: "Add To Que",

@@ -105,70 +105,112 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-card  xs12 class="ma-3">
+      <v-card xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Releases</v-card-title>
         <v-container fluid grid-list-md>
-          <v-data-iterator :items="latestReleases" :total-items="latestReleases.length"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
-              <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
-                <ReleaseCard :release="props.item"></ReleaseCard>
-              </v-flex>
-          </v-data-iterator>      
-        </v-container> 
+          <v-data-iterator
+            :items="latestReleases"
+            :total-items="latestReleases.length"
+            :hide-actions="true"
+            content-tag="v-layout"
+            :loading="true"
+            row
+            wrap
+          >
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
+              <ReleaseCard :release="props.item"></ReleaseCard>
+            </v-flex>
+          </v-data-iterator>
+        </v-container>
       </v-card>
     </v-layout>
     <v-layout row wrap>
-      <v-card  xs12 class="ma-3">
+      <v-card xs12 class="ma-3">
         <v-card-title class="primary--text">Recently Added Artists</v-card-title>
         <v-container fluid grid-list-md>
-          <v-data-iterator :items="latestArtists" :total-items="latestArtists.length"  :hide-actions="true" content-tag="v-layout" :loading="true" row wrap>
-              <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
-                <ArtistCard :artist="props.item"></ArtistCard>
-              </v-flex>
-          </v-data-iterator>      
-        </v-container> 
+          <v-data-iterator
+            :items="latestArtists"
+            :total-items="latestArtists.length"
+            :hide-actions="true"
+            content-tag="v-layout"
+            :loading="true"
+            row
+            wrap
+          >
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
+              <ArtistCard :artist="props.item"></ArtistCard>
+            </v-flex>
+          </v-data-iterator>
+        </v-container>
       </v-card>
-    </v-layout>    
+    </v-layout>
   </div>
 </template>
 
 <script>
-import Toolbar from '@/components/Toolbar';
-import ReleaseCard from '@/components/ReleaseCard';
-import ArtistCard from '@/components/ArtistCard';
+import Toolbar from "@/components/Toolbar";
+import ReleaseCard from "@/components/ReleaseCard";
+import ArtistCard from "@/components/ArtistCard";
 import { EventBus } from "@/event-bus.js";
-import store from '@/store';
+import store from "@/store";
+import trackMixin from "@/mixins/track.js";
 
 export default {
   store,
+  mixins: [trackMixin],  
   components: { Toolbar, ReleaseCard, ArtistCard },
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("db:PlayRandomTracks", this.playRandomTracks);
   },
   beforeDestroy() {
-    EventBus.$off('toolbarRefresh', this.updateData);  
-  },    
+    EventBus.$off("toolbarRefresh", this.updateData);
+    EventBus.$off("db:PlayRandomTracks", this.playRandomTracks);
+  },
   async mounted() {
     this.updateData();
   },
+  computed: {
+    randomizeLimit: function() {
+      return 25;
+    }
+  },
   methods: {
+    playRandomTracks: function() {
+      this.$store.dispatch("clearQue");
+      EventBus.$emit("loadingStarted"); 
+        this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?limit=${ this.randomizeLimit }&doRandomize=true`)
+        .then(response => {
+          this.addTracksToQue(response.data.rows);
+          EventBus.$emit("loadingComplete");
+        }); 
+    },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(process.env.VUE_APP_API_URL + `/stats/library`)
         .then(rr => {
           this.statistics = rr.data.data;
-          this.$store.commit("updateLastScan",rr.data.data.lastScan);
-            this.$axios
-              this.$axios.get(process.env.VUE_APP_API_URL + `/releases?page=1&limit=8&sort=CreatedDate&order=DESC`)
-              .then(rr => {
-                this.latestReleases = rr.data.rows;
-                this.$axios
-                  this.$axios.get(process.env.VUE_APP_API_URL + `/artists?page=1&limit=8&sort=CreatedDate&order=DESC`)
-                  .then(rr => {
-                    this.latestArtists = rr.data.rows;
-                    EventBus.$emit("loadingComplete");
-                  });    
-              });          
+          this.$store.commit("updateLastScan", rr.data.data.lastScan);
+          this.$axios;
+          this.$axios
+            .get(
+              process.env.VUE_APP_API_URL +
+                `/releases?page=1&limit=8&sort=CreatedDate&order=DESC`
+            )
+            .then(rr => {
+              this.latestReleases = rr.data.rows;
+              this.$axios;
+              this.$axios
+                .get(
+                  process.env.VUE_APP_API_URL +
+                    `/artists?page=1&limit=8&sort=CreatedDate&order=DESC`
+                )
+                .then(rr => {
+                  this.latestArtists = rr.data.rows;
+                  EventBus.$emit("loadingComplete");
+                });
+            });
         });
     }
   },
@@ -178,7 +220,11 @@ export default {
     latestReleases: [],
     latestArtists: [],
     menuItems: [
-      { title: "Play Random Tracks", class: "hidden-sm-and-down", click: "db:PlayRandomTracks" }
+      {
+        title: "Play Random Tracks",
+        class: "hidden-sm-and-down",
+        click: "db:PlayRandomTracks"
+      }
     ]
   })
 };

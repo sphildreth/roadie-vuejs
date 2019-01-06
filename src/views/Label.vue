@@ -181,10 +181,6 @@
         </v-card>
       </v-container>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </div>
 </template>
 
@@ -265,8 +261,6 @@ export default {
   },
   data: () => ({
     rowsPerPageItems: [6, 12, 24, 36, 60, 120],
-    snackbar: false,
-    snackbarText: "",
     label: {
       maintainer: {
         thumbnail: {},

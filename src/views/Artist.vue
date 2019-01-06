@@ -501,10 +501,6 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
     <confirm ref="confirm"></confirm>    
     <v-container v-if="artistImageSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
@@ -688,9 +684,7 @@ export default {
           })
 
           this.$store.dispatch('addToQue', queTracks);
-          this.snackbarText = "Added [" + queTracks.length + "] tracks to Que";
-          this.snackbar = true;
-
+          EventBus.$emit("showSnackbar", { text: "Added [" + queTracks.length + "] tracks to Que" });
           EventBus.$emit("loadingComplete");
         });
 
@@ -796,11 +790,9 @@ export default {
         )
         .then(response => {
           if (!this.artist.userBookmarked) {
-            this.snackbarText = "Successfully bookmarked";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });                                      
           } else if (response.data.isSuccess) {
-            this.snackbarText = "Successfully removed bookmark";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully removed bookmark" }); 
           }
           this.artist.userBookmarked = !this.artist.userBookmarked;
         })
@@ -924,8 +916,7 @@ export default {
         )
         .then(response => {
           if (response.data.isSuccess) {
-            this.snackbarText = "Successfully updated Artist image.";
-            this.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Successfully updated Artist image." });
             this.$nextTick(()=> {
               this.artist.mediumThumbnail.url = response.data.data.url;
             });

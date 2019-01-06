@@ -8,12 +8,6 @@
           </v-flex>
       </v-data-iterator>      
     </v-container> 
-    <v-snackbar v-model="snackbar" color="success" :right=true :timeout=3000 :top=true>
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>
   </div>  
 </template>
 
@@ -120,11 +114,9 @@
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)
         .then(response => {
           if(response.data.isSuccess && toggleInfo.isFavorite) {
-            that.snackbarText = "Release is now a favorite";
-            that.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Release is now a favorite" });            
           } else if (response.data.isSuccess) {
-            that.snackbarText = "Release is no longer a favorite";
-            that.snackbar = true;
+            EventBus.$emit("showSnackbar", { text: "Release is no longer a favorite" }); 
           }
           if(that.currentView == "favorite") {
             this.$nextTick(() => {
@@ -137,11 +129,9 @@
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
         .then(response => {
           if(response.data.isSuccess && toggleInfo.isDisliked) {
-              this.snackbarText = "You now hate this Release";
-              this.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "You now hate this Release" });              
           } else if (response.data.isSuccess) {
-              this.snackbarText = "You no longer hate this Release";
-              this.snackbar = true;
+              EventBus.$emit("showSnackbar", { text: "You no longer hate this Release" });                            
           }          
         });
       }          
@@ -157,8 +147,6 @@
       rowsPerPageItems: [12, 36, 60, 120],
       doRandomize: true,
       filterFavoriteOnly: false,
-      snackbar: false,
-      snackbarText: "",
       currentView: "",
       pagination: {
         page: 1,

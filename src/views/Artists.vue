@@ -17,10 +17,6 @@
         </v-flex>
       </v-data-iterator>
     </v-container>
-    <v-snackbar v-model="snackbar" color="success" :right="true" :timeout="3000" :top="true">
-      {{ snackbarText }}
-      <v-btn color="black" flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </div>
 </template>
 
