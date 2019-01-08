@@ -645,7 +645,10 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + `/tracks?page=1&limit=${ this.playTrackLimit }&sort=Rating&order=DESC&FilterToArtistId=${ this.artist.id}`
+          process.env.VUE_APP_API_URL +
+            `/tracks?page=1&limit=${
+              this.playTrackLimit
+            }&sort=Rating&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
           let queTracks = this.queTracksForTrackRows(response.data.rows);
@@ -660,7 +663,10 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + `/tracks?page=1&limit=${ this.playTrackLimit }&sort=PlayedCount&order=DESC&FilterToArtistId=${ this.artist.id}`
+          process.env.VUE_APP_API_URL +
+            `/tracks?page=1&limit=${
+              this.playTrackLimit
+            }&sort=PlayedCount&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
           let queTracks = this.queTracksForTrackRows(response.data.rows);
@@ -714,7 +720,7 @@ export default {
           releaseImageUrl: tr.release.thumbnail.url,
           artistImageUrl: artist.thumbnail.url,
           userRating: tr.userRating || { rating: 0 }
-        };  
+        };
         queTracks.push(queTrack);
       });
       return queTracks;
@@ -790,8 +796,7 @@ export default {
         this.ratingChange({
           artistId: this.artist.id,
           newVal: this.artist.userRating.rating
-        })
-        .then(this.updateData);
+        }).then(this.updateData);
       });
     },
     toggleFavorite: async function() {
@@ -888,9 +893,22 @@ export default {
                   playedCount: r.trackPlayedCount
                 });
               });
-              EventBus.$emit("loadingComplete");
+              this.loaded = true;
+              let tabIndex = 0;
+              if(this.artist.collectionsWithArtistReleases.length > 0) { 
+                tabIndex++;
+              }
+              if(this.artist.artistContributionReleases.length > 0) {
+                tabIndex++;
+              }
+              if(this.artist.playlistsWithArtistReleases.length > 0) {
+                tabIndex++;
+              }          
+              this.releaseTab = tabIndex;              
               //    let favicon = new Favico();
               //    favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
+
+              EventBus.$emit("loadingComplete");              
             });
         })
         .finally(() => {
@@ -1023,9 +1041,10 @@ export default {
     }
   },
   data: () => ({
+    loaded: false,
     showReleaseTable: false,
     tab: 0,
-    releaseTab: 3,
+    releaseTab: 0,
     showModal: false,
     modalImage: {},
     artistImageSearchQuery: "",

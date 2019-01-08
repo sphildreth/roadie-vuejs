@@ -106,7 +106,7 @@
 
 
 <style>
-  .register-container .error--text {
+  .reset-password-container .error--text {
     color: yellow !important;
   }
 </style>

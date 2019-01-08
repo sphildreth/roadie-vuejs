@@ -222,6 +222,7 @@ export default new Vuex.Store({
     shuffledQue(state, playQue, number) {
       state.playQue = playQue;
       state.queSize = number;      
+      state.playingIndex = [];
     },
     playIndexChange(state, trackInfo) {
       state.playingIndex = trackInfo;

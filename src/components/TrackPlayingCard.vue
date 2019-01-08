@@ -286,9 +286,27 @@ export default {
       if (!this.playing) {
         this.howl.play();
         this.playing = true;
+        this.showPlayingNotification();
       } else {
         this.howl.pause();
         this.playing = false;
+      }
+    },
+    showPlayingNotification() {
+      let title = this.currentTrack.title;
+      let options = {
+            icon: this.currentTrack.releaseImageUrl,
+            body: this.currentTrack.releaseArtist.artist.text + "\r\n" + this.$filters.formattedYear(this.currentTrack.release.releaseDate) + " " + this.currentTrack.title,
+            requireInteraction: false,
+            tag: 'roadie-playing-track-no-require-interaction'
+      };
+      if (Notification.permission !== 'denied') {
+          if (Notification.permission !== "granted") {
+              Notification.requestPermission();
+          }
+          if (Notification.permission === "granted") {
+              var notify = new Notification(title, options);
+          }
       }
     },
     stop: function() {
@@ -405,9 +423,17 @@ export default {
         clearInterval(updateSeek);
       }
       this.$store.dispatch("nowPlaying", playing);
+    },
+    storePlayingIndex(newIndex) {
+      if(!newIndex || newIndex.length === 0) {
+        this.playingIndex = 0;
+      }
     }
   },
   computed: {
+    storePlayingIndex() {
+      return this.$store.getters.playingIndex;
+    },
     currentTrack() {
       return this.$store.getters.playQue[this.playingIndex].track;
     },

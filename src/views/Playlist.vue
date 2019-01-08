@@ -228,36 +228,47 @@ export default {
         });
     },
     addToQue: function() {
-      let queTracks = [];
-      this.trackItems.forEach(tr => {
-        let artist = tr.trackArtist || tr.artist;
-        let queTrack = {
-          id: tr.id,
-          mediaNumber: tr.mediaNumber,
-          trackNumber: tr.trackNumber,
-          title: tr.title,
-          duration: tr.duration,
-          durationTime: tr.durationTime,
-          rating: tr.rating,
-          playedCount: tr.playedCount,
-          trackPlayUrl: tr.trackPlayUrl,
-          release: {
-            text: tr.release.release.text,
-            value: tr.release.release.value,
-            releaseDate: tr.release.releaseDate
-          },
-          artist: artist,
-          releaseArtist: tr.artist,
-          releaseImageUrl: tr.release.thumbnail.url,
-          artistImageUrl: artist.thumbnail.url,
-          userRating: tr.userRating || { rating: 0 }
-        };
-        queTracks.push(queTrack);
-      });
-      this.$store.dispatch("addToQue", queTracks);
-      EventBus.$emit("showSnackbar", {
-        text: "Added [" + queTracks.length + "] tracks to Que"
-      });
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL +
+            `/tracks?page=1&limit=${this.playlist.statistics.trackCount}&filterToPlaylistId=${this.playlist.id}`
+        )
+        .then(response => {
+          let queTracks = [];
+          response.data.rows.forEach(tr => {
+            let artist = tr.trackArtist || tr.artist;
+            let queTrack = {
+              id: tr.id,
+              mediaNumber: tr.mediaNumber,
+              trackNumber: tr.trackNumber,
+              title: tr.title,
+              duration: tr.duration,
+              durationTime: tr.durationTime,
+              rating: tr.rating,
+              playedCount: tr.playedCount,
+              trackPlayUrl: tr.trackPlayUrl,
+              release: {
+                text: tr.release.release.text,
+                value: tr.release.release.value,
+                releaseDate: tr.release.releaseDate
+              },
+              artist: artist,
+              releaseArtist: tr.artist,
+              releaseImageUrl: tr.release.thumbnail.url,
+              artistImageUrl: artist.thumbnail.url,
+              userRating: tr.userRating || { rating: 0 }
+            };
+            queTracks.push(queTrack);
+          });
+          this.$store.dispatch("addToQue", queTracks);
+          EventBus.$emit("showSnackbar", {
+            text: "Added [" + queTracks.length + "] tracks to Que"
+          });
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });        
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -277,10 +288,10 @@ export default {
             .then(response => {
               this.trackItems = response.data.rows;
               this.trackPagination.totalItems = response.data.totalCount;
+            })
+            .finally(() => {
+              EventBus.$emit("loadingComplete");
             });
-        })
-        .finally(() => {
-          EventBus.$emit("loadingComplete");
         });
     }
   },
