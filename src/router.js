@@ -170,6 +170,14 @@ var router = new VueRouter({
       }
     },       
     {
+      path: '/resetpassword',
+      name: 'resetpassword',
+      component: () => import(/* webpackChunkName: "resetpassword" */ './views/ResetPassword.vue'),
+      meta: { 
+          guest: true
+      }
+    },      
+    {
       path: '/release/edit/:id',
       name: 'releaseEdit',
       props: true,

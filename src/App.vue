@@ -74,7 +74,7 @@ export default {
       return this.$store && this.$store.getters.playQue.length > 0;
     },
     hide() {
-      return this.$route.path === "/signin" || this.$route.path === "/register";
+      return this.$route.path === "/signin" || this.$route.path === "/register"  || this.$route.path === '/resetpassword';
     }
   },
   data: () => ({
