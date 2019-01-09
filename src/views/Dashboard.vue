@@ -157,15 +157,19 @@ import trackMixin from "@/mixins/track.js";
 
 export default {
   store,
-  mixins: [trackMixin],  
+  mixins: [trackMixin],
   components: { Toolbar, ReleaseCard, ArtistCard },
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("db:PlayRandomTracks", this.playRandomTracks);
+    EventBus.$on("db:PlayRandomRatedTracks", this.playRandomRatedTracks);
+    EventBus.$on("db:PlayRandomFavoriteTracks", this.playRandomFavoriteTracks);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("db:PlayRandomTracks", this.playRandomTracks);
+    EventBus.$off("db:PlayRandomRatedTracks", this.playRandomRatedTracks);
+    EventBus.$off("db:PlayRandomFavoriteTracks", this.playRandomFavoriteTracks);
   },
   async mounted() {
     this.updateData();
@@ -173,12 +177,33 @@ export default {
   methods: {
     playRandomTracks: function() {
       this.$store.dispatch("clearQue");
-      EventBus.$emit("loadingStarted"); 
-        this.$axios.get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`)
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`)
         .then(response => {
           this.addTracksToQue(response.data.rows);
           EventBus.$emit("loadingComplete");
-        }); 
+        });
+    },
+    playRandomRatedTracks: function() {
+      this.$store.dispatch("clearQue");
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true&FilterRatedOnly=true`)
+        .then(response => {
+          this.addTracksToQue(response.data.rows);
+          EventBus.$emit("loadingComplete");
+        });
+    },    
+    playRandomFavoriteTracks:function() {
+      this.$store.dispatch("clearQue");
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true&FilterFavoriteOnly=true`)
+        .then(response => {
+          this.addTracksToQue(response.data.rows);
+          EventBus.$emit("loadingComplete");
+        });
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -216,9 +241,19 @@ export default {
     latestArtists: [],
     menuItems: [
       {
+        title: "Play Random Favorite Tracks",
+        class: "hidden-sm-and-down",
+        click: "db:PlayRandomFavoriteTracks"
+      },
+      {
         title: "Play Random Tracks",
         class: "hidden-sm-and-down",
         click: "db:PlayRandomTracks"
+      },
+      {
+        title: "Play Random Rated Tracks",
+        class: "hidden-sm-and-down",
+        click: "db:PlayRandomRatedTracks"
       }
     ]
   })

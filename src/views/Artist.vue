@@ -18,7 +18,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="primary" class="profile darken-1">
-                <v-card-text class="title">
+                <v-card-text class="title" :class="{ 'playing-artist': this.$store.getters.playingIndex.artistId == artist.id }">
                   {{ artist.name }}
                   <v-icon
                     v-if="artist.isLocked"
@@ -119,13 +119,13 @@
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
-              <v-card max-height="290px" flat class="pa-2 biography darken-3">
-                <vue-markdown>{{ artist.bioContext }}</vue-markdown>
+              <v-card flat class="pa-2 biography darken-3">
+                <vue-markdown v-html="artist.bioContext"></vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
               <v-card flat class="profile pa-2 darken-3">
-                <vue-markdown>{{ artist.profile }}</vue-markdown>
+                <vue-markdown v-html="artist.profile"></vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -1157,6 +1157,10 @@ export default {
 .artist-detail-container .release-grid-title {
   padding-top: 11px;
   display: inline-block;
+}
+.artist-detail-container .biography, .artist-detail-container .profile {
+  max-height: 290px;
+  overflow: auto;
 }
 ul.metadataSources {
   list-style: none;

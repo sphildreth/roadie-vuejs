@@ -18,7 +18,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="primary" class="profile darken-1">
-                <v-card-text class="title">
+                <v-card-text class="title" :class="{ 'playing-release': this.$store.getters.playingIndex.releaseId == release.id }">
                   {{ release.title }}
                   <v-icon
                     v-if="release.isLocked"
@@ -118,7 +118,7 @@
             </v-tab-item>
             <v-tab-item v-if="release.profile">
               <v-card flat class="profile darken-3 pa-2">
-                <vue-markdown>{{ release.profile }}</vue-markdown>
+                <vue-markdown v-html="release.profile"></vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -899,7 +899,6 @@ export default {
 .release-detail-container .v-rating.release-rating {
   width: 100%;
 }
-.release-detail-container .bio,
 .release-detail-container .profile {
   max-height: 350px;
   overflow: auto;

@@ -238,6 +238,15 @@ export default {
     },
     listNumber: Number
   },
+  beforeCreate() {
+    let that = this;
+    this.$store.subscribe((storeAction, state) => {
+      if(storeAction.type === 'clearQue' || storeAction.type === 'shuffleQue') {
+        that.playingIndex = 0;
+        that.stop();
+      }
+    })
+  },
   beforeDestroy() {
     this.howl.unload();
   },
@@ -311,6 +320,7 @@ export default {
               Notification.requestPermission();
           }
           if (Notification.permission === "granted") {
+            // eslint-disable-next-line
               var notify = new Notification(title, options);
           }
       }
@@ -435,17 +445,10 @@ export default {
         clearInterval(updateSeek);
       }
       this.$store.dispatch("nowPlaying", playing);
-    },
-    storePlayingIndex(newIndex) {
-      // if(!newIndex || newIndex.length === 0 || newIndex.index != this.playingIndex) {
-      //   this.playingIndex = newIndex.index || 0;
-      // }
-    }
+    }    
   },
   computed: {
-    storePlayingIndex() {
-      return this.$store.getters.playingIndex;
-    },
+
     currentTrack() {
       return this.$store.getters.playQue[this.playingIndex].track;
     },
