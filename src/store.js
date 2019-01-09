@@ -210,6 +210,7 @@ export default new Vuex.Store({
       state.nowPlaying = false;
       state.playingIndex = [];
       state.playQue = [];
+      window.favIcon.reset();
     },
     addedToQue(state, playQue, number) {
       state.playQue = playQue;

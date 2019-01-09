@@ -17,6 +17,7 @@
               <v-flex xs12>
                 <router-link :to="'/release/' + currentTrack.release.value">
                   <img
+                    id="trackCover"
                     class="ma-1"
                     style="float:left;max-width:80px;"
                     :src="currentTrack.releaseImageUrl"
@@ -213,6 +214,7 @@
   </div>
 </template>
 
+
 <script>
 import { Howl, Howler } from "howler";
 import trackMixin from "@/mixins/track.js";
@@ -266,17 +268,7 @@ export default {
       loop: this.loop,
       src: this.currentTrack.trackPlayUrl,
       autoplay: true,
-      onplay: () => {
-        this.trackDownloading = false;
-        this.playing = true;
-        this.playingTrackId = this.currentTrack.id,         
-        this.$store.dispatch("playIndexChange", {
-          index: this.playingIndex,
-          trackId: this.currentTrack.id,
-          releaseId: this.currentTrack.release.value,
-          artistId: this.currentTrack.artist.id
-        });
-      },
+      onplay: () => { this.updatePlaying() },
       onend: () => {
         this.skip("next");
       }
@@ -399,6 +391,22 @@ export default {
     toggleMute() {
       Howler.mute(!this.muted);
       this.muted = !this.muted;
+    },
+    updatePlaying() {
+      document.title = this.currentTrack.title;                
+      this.trackDownloading = false;    
+      this.playingTrackId = this.currentTrack.id,   
+      this.playing = true;
+
+      var image=document.getElementById('trackCover')
+      window.favIcon.image(image);
+
+      this.$store.dispatch("playIndexChange", {
+        index: this.playingIndex,
+        trackId: this.currentTrack.id,
+        releaseId: this.currentTrack.release.value,
+        artistId: this.currentTrack.artist.id
+      });      
     }
   },
   watch: {
@@ -414,17 +422,7 @@ export default {
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
         autoplay: true,
-        onplay: () => {
-          this.trackDownloading = false;    
-          this.playingTrackId = this.currentTrack.id,   
-          this.playing = true;
-          this.$store.dispatch("playIndexChange", {
-            index: this.playingIndex,
-            trackId: this.currentTrack.id,
-            releaseId: this.currentTrack.release.value,
-            artistId: this.currentTrack.artist.id
-          });
-        },
+        onplay: () => { this.updatePlaying() },
         onend: () => {
           this.skip("next");
         }

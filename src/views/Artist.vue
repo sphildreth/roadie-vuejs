@@ -20,7 +20,7 @@
               <v-card color="primary" class="profile darken-1">
                 <v-card-text class="title" :class="{ 'playing-artist': this.$store.getters.playingIndex.artistId == artist.id }">
                   {{ artist.name }}
-                  <v-icon
+                  <v-icon                    
                     v-if="artist.isLocked"
                     style="float: right;"
                     title="Arist is locked!"
@@ -33,6 +33,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img :src="artistThumbnailUrl" :alt="artist.name" class="ma-1" aspect-ratio="1"></v-img>
+                  <img id="artistImage" :src="artistThumbnailUrl" style="display:none;" />
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-text-field
@@ -905,9 +906,6 @@ export default {
                 tabIndex++;
               }          
               this.releaseTab = tabIndex;              
-              //    let favicon = new Favico();
-              //    favicon.image($("<img />").prop("src", this.artistThumbnailUrl)[0]);
-
               EventBus.$emit("loadingComplete");              
             });
         })
@@ -919,6 +917,11 @@ export default {
           this.dropzoneOptions.headers = {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
+          this.$nextTick(() => {
+            var image=document.getElementById('artistImage')
+            window.favIcon.image(image);             
+            document.title = this.artist.name;
+          });
         });
     },
     shortDateWithAge: function(date, toDate) {

@@ -39,6 +39,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img :src="releaseCoverUrl" :alt="release.title" class="ma-1" aspect-ratio="1"></v-img>
+                  <img id="releaseImage" :src="releaseCoverUrl" style="display:none;" />
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
@@ -777,6 +778,11 @@ export default {
           this.dropzoneOptions.headers = {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
+          this.$nextTick(() => {
+            var image=document.getElementById('releaseImage')
+            window.favIcon.image(image);             
+            document.title = this.release.title;
+          });          
           EventBus.$emit("loadingComplete");
         });
     },

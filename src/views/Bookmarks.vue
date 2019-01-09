@@ -45,7 +45,8 @@
           .then(response => {
             this.items = response.data.rows;
             this.pagination.totalItems = response.data.totalCount;    
-            EventBus.$emit("loadingComplete");    
+            EventBus.$emit("loadingComplete");   
+            document.title = "Bookmarks";
           });        
       }
     },

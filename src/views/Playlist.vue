@@ -32,6 +32,7 @@
                     class="ma-1"
                     aspect-ratio="1"
                   ></v-img>
+                  <img id="playlistImage" :src="playlist.mediumThumbnail.url" style="display:none;" />
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
@@ -291,6 +292,11 @@ export default {
             })
             .finally(() => {
               EventBus.$emit("loadingComplete");
+              this.$nextTick(() => {
+                var image=document.getElementById('playlistImage')
+                window.favIcon.image(image);             
+                document.title = this.playlist.name;
+              });              
             });
         });
     }

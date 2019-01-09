@@ -233,6 +233,8 @@ var router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  window.favIcon.reset();
+  document.title = process.env.VUE_APP_APP_NAME;
   if(to.matched.some(record => !record.meta.guest)) {
     if (!store.state.isLoggedIn) {
         next({
