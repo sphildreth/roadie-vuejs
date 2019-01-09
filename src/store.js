@@ -35,7 +35,7 @@ export default new Vuex.Store({
       if(!state.lastScanDate) {
         state.lastScanDate = localStorage.getItem("lastScanDate");
       }
-      if(!state.lastScanDate) {
+      if(!state.lastScanDate || state.lastScanDate === "undefined") {
         return "Never";        
       }
       if(state.user && state.user.timezone && state.user.timeformat) {        

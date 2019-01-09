@@ -1,211 +1,214 @@
 <template>
-  <div v-if="loaded">
+  <div >    
     <v-card class="track-playing-card" height="100px" hover>
-      <v-progress-linear
-        id="trackProgressBar"
-        height="5"
-        class="ma-0 pa-0 pointer"
-        color="info"
-        :value="trackProgress"
-        @click="updateSeek($event)"
-      ></v-progress-linear>
-      <v-layout>
-        <v-flex d-flex xs6>
-          <v-layout row wrap>
-            <v-flex xs12>
-              <router-link :to="'/release/' + currentTrack.release.value">
-                <img
-                  class="ma-1"
-                  style="float:left;max-width:80px;"
-                  :src="currentTrack.releaseImageUrl"
-                  :alt="currentTrack.release.text"
-                >
-              </router-link>
-              <div class="body-2" title="View Artist Details">
-                <router-link
-                  v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
-                  :to="'/artist/' + currentTrack.releaseArtist.artist.value"
-                >
-                  <img
-                    class="ma-1 artist-image"
-                    :src="currentTrack.releaseArtist.thumbnail.url"
-                    :alt="currentTrack.releaseArtist.artist.text"
-                  >
-                  <span
-                    class="artist-name badge text-no-wrap text-truncate pointer"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ currentTrack.releaseArtist.artist.text }}</span>
-                </router-link>
-                <span
-                  v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
-                  class="mx-1"
-                >::</span>
-                <router-link :to="'/artist/' + currentTrack.artist.artist.value">
-                  <img
-                    class="ma-1 artist-image"
-                    :src="currentTrack.artist.thumbnail.url"
-                    :alt="currentTrack.artist.artist.text"
-                  >
-                  <span
-                    class="artist-name badge text-no-wrap text-truncate pointer"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ currentTrack.artist.artist.text }}</span>
-                </router-link>
-              </div>
-              <div title="View Release Details">
+      <v-progress-linear v-if="trackDownloading" height="2" color="accent" class="ma-0 pa-0" indeterminate></v-progress-linear>
+      <div v-if="loaded">
+        <v-progress-linear
+          id="trackProgressBar"
+          height="5"
+          class="ma-0 pa-0 pointer"
+          color="info"
+          :value="trackProgress"
+          @click="updateSeek($event)"
+        ></v-progress-linear>
+        <v-layout>
+          <v-flex d-flex xs6>
+            <v-layout row wrap>
+              <v-flex xs12>
                 <router-link :to="'/release/' + currentTrack.release.value">
-                  <span
-                    class="release-date badge subheading mr-2"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ currentTrack.release.releaseDate | formattedYear }}</span>
-                  <span
-                    class="release-title badge text-no-wrap text-truncate pointer subheading"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ track.release.text }}</span>
+                  <img
+                    class="ma-1"
+                    style="float:left;max-width:80px;"
+                    :src="currentTrack.releaseImageUrl"
+                    :alt="currentTrack.release.text"
+                  >
                 </router-link>
-              </div>
-              <div title="View Track Details">
-                <router-link :to="'/track/' + currentTrack.id">
+                <div class="body-2" title="View Artist Details">
+                  <router-link
+                    v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
+                    :to="'/artist/' + currentTrack.releaseArtist.artist.value"
+                  >
+                    <img
+                      class="ma-1 artist-image"
+                      :src="currentTrack.releaseArtist.thumbnail.url"
+                      :alt="currentTrack.releaseArtist.artist.text"
+                    >
+                    <span
+                      class="artist-name badge text-no-wrap text-truncate pointer"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.releaseArtist.artist.text }}</span>
+                  </router-link>
                   <span
-                    class="release-date badge title mr-2"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ currentTrack.trackNumber | padNumber3 }}</span>
-                  <span
-                    class="release-title badge text-no-wrap text-truncate pointer title"
-                    :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                  >{{ currentTrack.title }}</span>
-                </router-link>
-              </div>
-              <div>
-                <v-rating
-                  v-model="currentTrack.rating"
-                  class="track-rating"
-                  background-color="orange lighten-3"
-                  color="orange"
-                  small
-                  dense
-                  readonly
-                ></v-rating>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs3>
-          <v-layout d-flex row wrap>
-            <v-btn icon @click="toggleBookmark">
-              <v-icon
-                v-if="currentTrack.userBookmarked"
-                medium
-                color="info"
-                title="Click to remove from bookmarks"
-              >bookmark</v-icon>
-              <v-icon
-                v-if="!currentTrack.userBookmarked"
-                medium
-                title="Add to bookmarks"
-              >bookmark_border</v-icon>
-            </v-btn>
-            <v-btn icon @click="toggleFavorite">
-              <v-icon
-                medium
-                class="favorite pointer"
-                :color="currentTrack.userRating.isFavorite ? 'red' : ''"
-              >favorite</v-icon>
-            </v-btn>
-            <v-btn icon @click="hateToogle">
-              <v-icon
-                v-if="currentTrack.userRating.isDisliked"
-                medium
-                color="lime"
-                title="Click to remove hate"
-              >fas fa-thumbs-down</v-icon>
-              <v-icon
-                v-if="!currentTrack.userRating.isDisliked"
-                medium
-                title="Click to hate"
-              >far fa-thumbs-down</v-icon>
-            </v-btn>
+                    v-if="currentTrack.artist.artist.value != currentTrack.releaseArtist.id"
+                    class="mx-1"
+                  >::</span>
+                  <router-link :to="'/artist/' + currentTrack.artist.artist.value">
+                    <img
+                      class="ma-1 artist-image"
+                      :src="currentTrack.artist.thumbnail.url"
+                      :alt="currentTrack.artist.artist.text"
+                    >
+                    <span
+                      class="artist-name badge text-no-wrap text-truncate pointer"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.artist.artist.text }}</span>
+                  </router-link>
+                </div>
+                <div title="View Release Details">
+                  <router-link :to="'/release/' + currentTrack.release.value">
+                    <span
+                      class="release-date badge subheading mr-2"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.release.releaseDate | formattedYear }}</span>
+                    <span
+                      class="release-title badge text-no-wrap text-truncate pointer subheading"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ track.release.text }}</span>
+                  </router-link>
+                </div>
+                <div title="View Track Details">
+                  <router-link :to="'/track/' + currentTrack.id">
+                    <span
+                      class="release-date badge title mr-2"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.trackNumber | padNumber3 }}</span>
+                    <span
+                      class="release-title badge text-no-wrap text-truncate pointer title"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.title }}</span>
+                  </router-link>
+                </div>
+                <div>
+                  <v-rating
+                    v-model="currentTrack.rating"
+                    class="track-rating"
+                    background-color="orange lighten-3"
+                    color="orange"
+                    small
+                    dense
+                    readonly
+                  ></v-rating>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex xs3>
+            <v-layout d-flex row wrap>
+              <v-btn icon @click="toggleBookmark">
+                <v-icon
+                  v-if="currentTrack.userBookmarked"
+                  medium
+                  color="info"
+                  title="Click to remove from bookmarks"
+                >bookmark</v-icon>
+                <v-icon
+                  v-if="!currentTrack.userBookmarked"
+                  medium
+                  title="Add to bookmarks"
+                >bookmark_border</v-icon>
+              </v-btn>
+              <v-btn icon @click="toggleFavorite">
+                <v-icon
+                  medium
+                  class="favorite pointer"
+                  :color="currentTrack.userRating.isFavorite ? 'red' : ''"
+                >favorite</v-icon>
+              </v-btn>
+              <v-btn icon @click="hateToogle">
+                <v-icon
+                  v-if="currentTrack.userRating.isDisliked"
+                  medium
+                  color="lime"
+                  title="Click to remove hate"
+                >fas fa-thumbs-down</v-icon>
+                <v-icon
+                  v-if="!currentTrack.userRating.isDisliked"
+                  medium
+                  title="Click to hate"
+                >far fa-thumbs-down</v-icon>
+              </v-btn>
 
-            <v-rating
-              @click.native="setRating"
-              @change.native="setRating"
-              v-model="currentTrack.userRating.rating"
-              class="pointer release-rating mt-2"
-              background-color="orange lighten-3"
-              color="orange"
-              medium
-              dense
-              hover
-              clearable
-            ></v-rating>
-          </v-layout>
-          <v-layout d-flex row wrap>
-            <span title="Current Playing Time of Track">
-              <v-icon medium>play_arrow</v-icon>
-              <span class="headline track-current-time mr-1">{{ seek | minutes }}</span>
-            </span>
-            <span title="Total Time of Track">
-              <v-icon medium>audiotrack</v-icon>
-              <span class="headline track-time mr-1">{{ currentTrack.durationTime }}</span>
-            </span>
-            <span title="Total Time of Que">
-              <v-icon medium>headset</v-icon>
-              <span
-                class="headline track-time"
-              >{{ this.$store.getters.quePlaytime | timeFromMilliseconds }}</span>
-            </span>
-          </v-layout>
-        </v-flex>
-        <v-flex xs3>
-          <v-layout row-wrap>
-            <v-btn flat icon @click="toggleMute">
-              <template v-if="!this.muted">
-                <v-icon v-if="this.volume >= 0.5">volume_up</v-icon>
-                <v-icon v-else-if="this.volume > 0">volume_down</v-icon>
-                <v-icon v-else>volume_mute</v-icon>
-              </template>
-              <v-icon v-show="this.muted">volume_off</v-icon>
-            </v-btn>
-            <v-slider
-              class="slider"
-              @change="updateVolume(volume)"
-              max="1"
-              step="0.1"
-              v-model="volume"
-            ></v-slider>
-          </v-layout>
+              <v-rating
+                @click.native="setRating"
+                @change.native="setRating"
+                v-model="currentTrack.userRating.rating"
+                class="pointer release-rating mt-2"
+                background-color="orange lighten-3"
+                color="orange"
+                medium
+                dense
+                hover
+                clearable
+              ></v-rating>
+            </v-layout>
+            <v-layout d-flex row wrap>
+              <span title="Current Playing Time of Track">
+                <v-icon medium>play_arrow</v-icon>
+                <span class="headline track-current-time mr-1">{{ seek | minutes }}</span>
+              </span>
+              <span title="Total Time of Track">
+                <v-icon medium>audiotrack</v-icon>
+                <span class="headline track-time mr-1">{{ currentTrack.durationTime }}</span>
+              </span>
+              <span title="Total Time of Que">
+                <v-icon medium>headset</v-icon>
+                <span
+                  class="headline track-time"
+                >{{ this.$store.getters.quePlaytime | timeFromMilliseconds }}</span>
+              </span>
+            </v-layout>
+          </v-flex>
+          <v-flex xs3>
+            <v-layout row-wrap>
+              <v-btn flat icon @click="toggleMute">
+                <template v-if="!this.muted">
+                  <v-icon v-if="this.volume >= 0.5">volume_up</v-icon>
+                  <v-icon v-else-if="this.volume > 0">volume_down</v-icon>
+                  <v-icon v-else>volume_mute</v-icon>
+                </template>
+                <v-icon v-show="this.muted">volume_off</v-icon>
+              </v-btn>
+              <v-slider
+                class="slider"
+                @change="updateVolume(volume)"
+                max="1"
+                step="0.1"
+                v-model="volume"
+              ></v-slider>
+            </v-layout>
 
-          <v-layout d-flex row-wrap>
-            <v-btn icon @click="skip('prev')">
-              <v-icon title="Skip Previous">skip_previous</v-icon>
-            </v-btn>
-            <v-btn icon @click="seekByAmount(-30)">
-              <v-icon>replay_30</v-icon>
-            </v-btn>
-            <v-btn icon @click="seekByAmount(-1)">
-              <v-icon>fast_rewind</v-icon>
-            </v-btn>
-            <v-btn icon @click="play">
-              <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
-            </v-btn>
-            <v-btn icon @click="stop">
-              <v-icon>stop</v-icon>
-            </v-btn>
-            <v-btn icon @click="seekByAmount(1)">
-              <v-icon>fast_forward</v-icon>
-            </v-btn>
-            <v-btn icon @click="seekByAmount(30)">
-              <v-icon>forward_30</v-icon>
-            </v-btn>
-            <v-btn icon @click="skip('next')">
-              <v-icon title="Skip Next">skip_next</v-icon>
-            </v-btn>
-            <v-btn flat icon @click="toggleLoop">
-              <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
-            </v-btn>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            <v-layout d-flex row-wrap>
+              <v-btn icon @click="skip('prev')">
+                <v-icon title="Skip Previous">skip_previous</v-icon>
+              </v-btn>
+              <v-btn icon @click="seekByAmount(-30)">
+                <v-icon>replay_30</v-icon>
+              </v-btn>
+              <v-btn icon @click="seekByAmount(-1)">
+                <v-icon>fast_rewind</v-icon>
+              </v-btn>
+              <v-btn icon @click="play">
+                <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
+              </v-btn>
+              <v-btn icon @click="stop">
+                <v-icon>stop</v-icon>
+              </v-btn>
+              <v-btn icon @click="seekByAmount(1)">
+                <v-icon>fast_forward</v-icon>
+              </v-btn>
+              <v-btn icon @click="seekByAmount(30)">
+                <v-icon>forward_30</v-icon>
+              </v-btn>
+              <v-btn icon @click="skip('next')">
+                <v-icon title="Skip Next">skip_next</v-icon>
+              </v-btn>
+              <v-btn flat icon @click="toggleLoop">
+                <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
+              </v-btn>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </div>
     </v-card>
   </div>
 </template>
@@ -248,13 +251,16 @@ export default {
     this.$nextTick(() => {
       this.playingIndex = trackInQue.listNumber - 1;
     });
+    this.trackDownloading = true;
     this.howl = new Howl({
       volume: this.volume,
       loop: this.loop,
       src: this.currentTrack.trackPlayUrl,
       autoplay: true,
       onplay: () => {
+        this.trackDownloading = false;
         this.playing = true;
+        this.playingTrackId = this.currentTrack.id,         
         this.$store.dispatch("playIndexChange", {
           index: this.playingIndex,
           trackId: this.currentTrack.id,
@@ -386,15 +392,21 @@ export default {
     }
   },
   watch: {
-    currentTrack() {
+    currentTrack(trackInfo) {
+      if(trackInfo.id === this.playingTrackId && this.playing) {
+        return;
+      }
       this.stop();
       this.howl.unload();
+      this.trackDownloading = true;
       this.howl = new Howl({
         volume: this.volume,
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
         autoplay: true,
         onplay: () => {
+          this.trackDownloading = false;    
+          this.playingTrackId = this.currentTrack.id,   
           this.playing = true;
           this.$store.dispatch("playIndexChange", {
             index: this.playingIndex,
@@ -425,9 +437,9 @@ export default {
       this.$store.dispatch("nowPlaying", playing);
     },
     storePlayingIndex(newIndex) {
-      if(!newIndex || newIndex.length === 0) {
-        this.playingIndex = 0;
-      }
+      // if(!newIndex || newIndex.length === 0 || newIndex.index != this.playingIndex) {
+      //   this.playingIndex = newIndex.index || 0;
+      // }
     }
   },
   computed: {
@@ -449,6 +461,8 @@ export default {
     howl: {
       playing: false
     },
+    playingTrackId: null,
+    trackDownloading: false,
     playing: false,
     muted: false,
     volume: 0.5,

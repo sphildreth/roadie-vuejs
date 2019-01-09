@@ -85,9 +85,13 @@
           <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
           <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
           <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
-          <td class>{{ props.item.track.title }}</td>
+          <td class>
+            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/track/' + props.item.track.id">            
+              {{ props.item.track.title }}
+            </router-link>
+          </td>
           <td class="box">
-            <router-link :to="'/release/' + props.item.track.release.value">
+            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/release/' + props.item.track.release.value">
               <img
                 class="thumbnail"
                 :src="props.item.track.releaseImageUrl"
@@ -98,7 +102,7 @@
           </td>
           <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
           <td class="box">
-            <router-link :to="'/artist/' + props.item.track.artist.artist.value">
+            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/artist/' + props.item.track.artist.artist.value">
               <img
                 class="thumbnail"
                 :src="props.item.track.artistImageUrl"
@@ -251,7 +255,17 @@ export default {
   },
   methods: {
     playTrack: function(id) {
-      alert("play track " + id);
+      for (const [i, t] of  this.items.entries()) {
+        let tr = t.track;
+        if(tr.id === id) {
+          this.$store.dispatch("playIndexChange", {
+            index: i,
+            trackId: tr.id,
+            releaseId: tr.release.value,
+            artistId: tr.artist.id
+          });          
+        }
+      }      
     },
     shuffleQue: function() {
       this.$store.dispatch("shuffleQue");
@@ -386,6 +400,7 @@ export default {
 .playque-container img.thumbnail {
   width: 50px;
   padding-right: 6px;
+  vertical-align: middle;
 }
 .playque-container table.v-table thead td:not(:nth-child(1)),
 .playque-container table.v-table tbody td:not(:nth-child(1)),
