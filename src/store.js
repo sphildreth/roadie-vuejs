@@ -12,6 +12,9 @@ export default new Vuex.Store({
       }
       return state.playingIndex;
     },
+    playRequestTrackInfo: (state) => {
+      return state.playRequestTrackInfo;
+    },
     quePlaytime: (state) => {
       let duration = 0;
       state.playQue.forEach(t => {
@@ -146,6 +149,7 @@ export default new Vuex.Store({
     lastScanDate: null,
     authToken: null,
     playingIndex: [],
+    playRequestTrackInfo: [],
     nowPlaying: false,
     user: {
       id: null,
@@ -228,6 +232,9 @@ export default new Vuex.Store({
     playIndexChange(state, trackInfo) {
       state.playingIndex = trackInfo;
     },
+    playRequest(state, trackInfo) {
+      state.playRequestTrackInfo = trackInfo;
+    },
     nowPlaying(state, nowPlaying) {
       state.nowPlaying = nowPlaying;
     }
@@ -239,6 +246,9 @@ export default new Vuex.Store({
     },
     playIndexChange({ commit }, trackInfo) {
       commit("playIndexChange", trackInfo);
+    },
+    playRequest({ commit }, trackInfo) {
+      commit("playRequest", trackInfo);
     },
     nowPlaying({ commit }, nowPlaying) {
       commit("nowPlaying", nowPlaying);

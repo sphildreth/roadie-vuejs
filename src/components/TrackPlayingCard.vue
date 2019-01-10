@@ -244,7 +244,7 @@ export default {
     let that = this;
     this.$store.subscribe((storeAction, state) => {
       if(storeAction.type === 'clearQue' || storeAction.type === 'shuffleQue') {
-        that.playingIndex = 0;
+        that.queIndex = 0;
         that.stop();
       }
     })
@@ -260,7 +260,7 @@ export default {
       return t.track.id === that.track.id;
     });
     this.$nextTick(() => {
-      this.playingIndex = trackInQue.listNumber - 1;
+      this.queIndex = trackInQue.listNumber - 1;
     });
     this.trackDownloading = true;
     this.howl = new Howl({
@@ -324,25 +324,25 @@ export default {
     skip: function(direction) {
       if (direction === "next") {
         let isPlayingLastTrack =
-          this.playingIndex === this.$store.getters.playQue.length;
+          this.queIndex === this.$store.getters.playQue.length;
         if (isPlayingLastTrack && this.loop) {
-          this.playingIndex = 0;
+          this.queIndex = 0;
         }
         if (isPlayingLastTrack && !this.loop) {
           this.stop();
           return;
         }
-        this.playingIndex++;
+        this.queIndex++;
       } else {
-        let isPlayingFirstTrack = this.playingIndex === 0;
+        let isPlayingFirstTrack = this.queIndex === 0;
         if (isPlayingFirstTrack && this.loop) {
-          this.playingIndex = this.$store.getters.playQue.length - 1;
+          this.queIndex = this.$store.getters.playQue.length - 1;
         }
         if (isPlayingFirstTrack && !this.loop) {
           this.stop();
           return;
         }
-        this.playingIndex--;
+        this.queIndex--;
       }
       this.$nextTick(() => {
         this.play();
@@ -402,7 +402,7 @@ export default {
       window.favIcon.image(image);
 
       this.$store.dispatch("playIndexChange", {
-        index: this.playingIndex,
+        index: this.queIndex,
         trackId: this.currentTrack.id,
         releaseId: this.currentTrack.release.value,
         artistId: this.currentTrack.artist.id
@@ -443,12 +443,15 @@ export default {
         clearInterval(updateSeek);
       }
       this.$store.dispatch("nowPlaying", playing);
-    }    
+    },
+    playRequestTrackInfo(trackInfo) {
+      this.queIndex = trackInfo.index;
+    }
+    
   },
   computed: {
-
     currentTrack() {
-      return this.$store.getters.playQue[this.playingIndex].track;
+      return this.$store.getters.playQue[this.queIndex].track;
     },
     progress() {
       if (!this.howl || this.howl.duration() === 0) return 0;
@@ -456,6 +459,9 @@ export default {
     },
     trackProgress() {
       return this.progress * 100;
+    },
+    playRequestTrackInfo() {
+      return this.$store.getters.playRequestTrackInfo;
     }
   },
   data: () => ({
@@ -469,7 +475,7 @@ export default {
     volume: 0.5,
     loaded: false,
     originalWindowTitle: "",
-    playingIndex: 0,
+    queIndex: 0,
     currentTime: 0,
     seek: 0,
     loop: false,

@@ -228,7 +228,16 @@ var router = new VueRouter({
       meta: {
         guest: false
       }      
-    }    
+    },
+    {
+      path: '/user/:id',
+      name: 'user',
+      props: true,
+      component: () => import(/* webpackChunkName: "user" */ './views/User.vue'),
+      meta: {
+        guest: false
+      }      
+    }       
   ]
 });
 

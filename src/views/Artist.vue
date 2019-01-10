@@ -121,12 +121,12 @@
             </v-tab-item>
             <v-tab-item v-if="artist.bioContext">
               <v-card flat class="pa-2 biography darken-3">
-                <vue-markdown v-html="artist.bioContext"></vue-markdown>
+                <vue-markdown>{{artist.bioContext}}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="artist.profile">
               <v-card flat class="profile pa-2 darken-3">
-                <vue-markdown v-html="artist.profile"></vue-markdown>
+                <vue-markdown>{{artist.profile}}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>

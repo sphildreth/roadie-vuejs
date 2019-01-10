@@ -258,12 +258,13 @@ export default {
       for (const [i, t] of  this.items.entries()) {
         let tr = t.track;
         if(tr.id === id) {
-          this.$store.dispatch("playIndexChange", {
+          this.$store.dispatch("playRequest", {
             index: i,
             trackId: tr.id,
             releaseId: tr.release.value,
             artistId: tr.artist.id
-          });          
+          });        
+          return;  
         }
       }      
     },

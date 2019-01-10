@@ -119,7 +119,7 @@
             </v-tab-item>
             <v-tab-item v-if="release.profile">
               <v-card flat class="profile darken-3 pa-2">
-                <vue-markdown v-html="release.profile"></vue-markdown>
+                <vue-markdown>{{release.profile}}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item>

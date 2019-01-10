@@ -13,7 +13,7 @@
       :doShowHated="true"
       :hated="track.userRating && track.userRating.isDisliked"
     ></Toolbar>
-    <v-container v-if="loaded" fluid grid-list-md>
+    <v-container class="mt-0 pt-2" v-if="loaded" fluid grid-list-md>   
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -43,6 +43,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img :src="trackImageUrl" :alt="track.title" class="ma-1" aspect-ratio="1"></v-img>
+                  <img id="trackImage" :src="trackImageUrl" style="display:none;" />
                 </v-flex>
                 <v-flex xs9>
                   <v-layout row wrap>
@@ -228,6 +229,11 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.toggleBookmark);
     EventBus.$on("hateToogle", this.hateToogle);
+    EventBus.$on("tt:searchForTitle", this.searchForTitle);
+    EventBus.$on("tt:searchInternetArtist", this.searchInternetArtist);
+    EventBus.$on("tt:searchInternetRelease", this.searchInternetRelease);
+    EventBus.$on("tt:searchInternetTitle", this.searchInternetTitle);
+    EventBus.$on("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
   },
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addTrackToQue);
@@ -236,6 +242,11 @@ export default {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.toggleBookmark);
     EventBus.$off("hateToogle", this.hateToogle);
+    EventBus.$off("tt:searchForTitle", this.searchForTitle);
+    EventBus.$off("tt:searchInternetArtist", this.searchInternetArtist);
+    EventBus.$off("tt:searchInternetRelease", this.searchInternetRelease);
+    EventBus.$off("tt:searchInternetTitle", this.searchInternetTitle);    
+    EventBus.$off("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
   },
   async mounted() {
     this.updateData();
@@ -260,9 +271,46 @@ export default {
     },
     currentPlayingTrack() {
       return this.$store.getters.playingIndex;
+    },
+    crumbs() {
+      return [
+        {
+          text: 'Label',
+          to: 'breadcrumbs_link_2'
+        },
+        {
+          text: 'Artist',
+          to: '/artist/' + this.track.artist.id
+        },
+        {
+          text: 'Release',
+          to: '/release/' + this.track.release.id
+        }
+      ]
     }
   },
   methods: {
+    searchForTitle: function() {
+      this.$router.push({ name: "search", params: { q: this.track.title } });
+    },
+    searchInternetArtist: function() {
+      var artist = this.track.trackArtist || this.track.artist;
+      this.internetSearch(artist.artist.text + ' Band');
+    },
+    searchInternetRelease: function() {
+      this.internetSearch(this.track.release.release.text + ' Release');
+    },
+    searchInternetTitle: function() {
+      this.internetSearch(this.track.title + ' Song');
+    },
+    searchInternetArtistReleaseAndTitle: function() {
+      var artist = this.track.trackArtist || this.track.artist;
+      this.internetSearch(artist.artist.text + ' ' + this.track.release.release.text + ' ' + this.track.title);
+    },
+    internetSearch: function(q) {
+      var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
+    },        
     playNow: function() {
       this.$store.dispatch("clearQue");
       this.addToQue(this.track);
@@ -314,6 +362,9 @@ export default {
           this.loaded = true;
           this.$nextTick(() => {
             EventBus.$emit("loadingComplete");
+            var image=document.getElementById('trackImage')
+            window.favIcon.image(image);             
+            document.title = this.track.title;
           });
         });
     },
