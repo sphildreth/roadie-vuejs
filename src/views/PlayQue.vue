@@ -1,7 +1,7 @@
 <template>
   <div class="playque-container">
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
-    <v-layout row wrap>
+    <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
+    <v-layout v-if="!isFullScreen" row wrap>
       <v-spacer></v-spacer>
       <v-flex d-flex xs4 class="ma-2">
         <div class="stats-container">
@@ -56,79 +56,81 @@
     <v-container fluid grid-list-md>
       <v-data-table :headers="headers" :items="items" class="elevation-1" hide-actions>
         <template slot="items" slot-scope="props">
-          <td class="handle">
-            <input
-              type="checkbox"
-              name="selected"
-              @click="toggleSelectedTrack($event, props.item)"
-              class="mr-2 track-selector"
-            >
-            {{ props.item.listNumber | padNumber3 }}
-            <v-icon
-              title="Click to play track"
-              @click="playTrack(props.item.track.id)"
-              :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
-            >play_circle_outline</v-icon>
-            <span
-              title="Click and drag to change order"
-              style="max-width: 10px;font-size:18px;"
-            >&#128075;</span>
-          </td>
-          <td>
-            <v-progress-linear
-              height="12"
-              background-color="secondary"
-              color="orange lighten-3"
-              :value="props.item.track.rating * 20"
-            ></v-progress-linear>
-          </td>
-          <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
-          <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
-          <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
-          <td class>
-            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/track/' + props.item.track.id">            
-              {{ props.item.track.title }}
-            </router-link>
-          </td>
-          <td class="box">
-            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/release/' + props.item.track.release.value">
-              <img
-                class="thumbnail"
-                :src="props.item.track.releaseImageUrl"
-                :alt="props.item.track.release.text"
+          <tr :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : ''">
+            <td class="handle">
+              <input
+                type="checkbox"
+                name="selected"
+                @click="toggleSelectedTrack($event, props.item)"
+                class="mr-2 track-selector"
               >
-              <span class="thumbnail-text release-title pointer">{{ props.item.track.release.text }}</span>
-            </router-link>
-          </td>
-          <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
-          <td class="box">
-            <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/artist/' + props.item.track.artist.artist.value">
-              <img
-                class="thumbnail"
-                :src="props.item.track.artistImageUrl"
-                :alt="props.item.track.artist.artist.text"
-              >
+              {{ props.item.listNumber | padNumber3 }}
+              <v-icon
+                title="Click to play track"
+                @click="playTrack(props.item.track.id)"
+                :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
+              >play_circle_outline</v-icon>
               <span
-                class="thumbnail-text artist-name pointer"
-              >{{ props.item.track.artist.artist.text }}</span>
-            </router-link>
-          </td>
-          <td class>
-            <span class="mr-2">{{ props.item.track.durationTime }}</span>
-            <v-icon
-              color="red"
-              title="Remove from Que"
-              class="pointer"
-              @click="removeTrackFromQue(props.item)"
-              small
-            >delete</v-icon>
-            <span
-              v-if="nowPlaying && (playingTrackId === props.item.track.id)"
-              title="Track is Playing"
-            >
-              <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing">
-            </span>
-          </td>
+                title="Click and drag to change order"
+                style="max-width: 10px;font-size:18px;"
+              >&#128075;</span>
+            </td>
+            <td>
+              <v-progress-linear
+                height="12"
+                background-color="secondary"
+                color="orange lighten-3"
+                :value="props.item.track.rating * 20"
+              ></v-progress-linear>
+            </td>
+            <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
+            <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
+            <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
+            <td class>
+              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/track/' + props.item.track.id">            
+                {{ props.item.track.title }}
+              </router-link>
+            </td>
+            <td class="box">
+              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/release/' + props.item.track.release.value">
+                <img
+                  class="thumbnail"
+                  :src="props.item.track.releaseImageUrl"
+                  :alt="props.item.track.release.text"
+                >
+                <span class="thumbnail-text release-title pointer">{{ props.item.track.release.text }}</span>
+              </router-link>
+            </td>
+            <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
+            <td class="box">
+              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/artist/' + props.item.track.artist.artist.value">
+                <img
+                  class="thumbnail"
+                  :src="props.item.track.artistImageUrl"
+                  :alt="props.item.track.artist.artist.text"
+                >
+                <span
+                  class="thumbnail-text artist-name pointer"
+                >{{ props.item.track.artist.artist.text }}</span>
+              </router-link>
+            </td>
+            <td class>
+              <span class="mr-2">{{ props.item.track.durationTime }}</span>
+              <v-icon
+                color="red"
+                title="Remove from Que"
+                class="pointer"
+                @click="removeTrackFromQue(props.item)"
+                small
+              >delete</v-icon>
+              <span
+                v-if="nowPlaying && (playingTrackId === props.item.track.id)"
+                title="Track is Playing"
+              >
+                <img style="height:15px;" src="@/assets/img/bars.gif" alt="Playing">
+              </span>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     </v-container>
@@ -251,6 +253,9 @@ export default {
     },
     nowPlaying() {
       return this.$store.getters.nowPlaying;
+    },
+    isFullScreen() {
+      return this.$store.getters.isFullscreen;
     }
   },
   methods: {

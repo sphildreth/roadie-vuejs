@@ -125,7 +125,7 @@ export default {
   },
   computed: {
     hide () {
-      return this.$route.path === '/signin' || this.$route.path === '/register' || this.$route.path === '/resetpassword'; 
+      return this.$store.getters.isFullscreen ||  this.$route.path === '/signin' || this.$route.path === '/register' || this.$route.path === '/resetpassword'; 
     },
     currentUserUsername () {
       return this.$store.state.isLoggedIn ? this.$store.getters.user.username : "";

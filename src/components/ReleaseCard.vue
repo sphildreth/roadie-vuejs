@@ -48,14 +48,14 @@
             <router-link :to="'/release/' + release.id">
               <div
                 :title="release.release.text"
-                class="secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
+                class="secondary--text release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
                 :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
               >{{ release.release.text }}</div>
             </router-link>
             <router-link :to="'/artist/' + release.artist.value">
               <div
                 :title="release.artist.text"
-                class="secondary--text text--lighten-2 release-artist text-no-wrap text-truncate body-1 pointer"
+                class="secondary--text text--lighten-1 release-artist text-no-wrap text-truncate body-1 pointer"
               >{{ release.artist.text }}</div>
             </router-link>
             <div class="caption accent--text">

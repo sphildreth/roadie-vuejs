@@ -139,6 +139,9 @@ export default new Vuex.Store({
     },
     usersAvatarUrl: (state) => {
       return (state.user && state.user.avatarUrl) ? state.user.avatarUrl + '?ts=' + new Date().getTime() : '';
+    },
+    isFullscreen: (state) => {
+      return state.isFullscreen;
     }
   },
   computed: {  
@@ -146,6 +149,7 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: !!localStorage.getItem("user"),
     queSize: 0,
+    isFullscreen: false,
     lastScanDate: null,
     authToken: null,
     playingIndex: [],
@@ -237,9 +241,15 @@ export default new Vuex.Store({
     },
     nowPlaying(state, nowPlaying) {
       state.nowPlaying = nowPlaying;
+    },
+    isFullscreen(state, isFullscreen) {
+      state.isFullscreen = isFullscreen;
     }
   },
   actions: {
+    toggleFullscreen({ commit }, isFullscreen) {
+      commit("isFullscreen", isFullscreen);
+    },
     signout({ commit }) {
       localStorage.removeItem("user");
       commit("signout");      

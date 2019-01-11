@@ -1,7 +1,13 @@
 <template>
-  <div >    
+  <div>
     <v-card class="track-playing-card" height="100px" hover>
-      <v-progress-linear v-if="trackDownloading" height="2" color="accent" class="ma-0 pa-0" indeterminate></v-progress-linear>
+      <v-progress-linear
+        v-if="trackDownloading"
+        height="2"
+        color="accent"
+        class="ma-0 pa-0"
+        indeterminate
+      ></v-progress-linear>
       <div v-if="loaded">
         <v-progress-linear
           id="trackProgressBar"
@@ -206,6 +212,10 @@
               <v-btn flat icon @click="toggleLoop">
                 <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
               </v-btn>
+              <v-btn flat icon @click="toggleFullScreen">
+                <v-icon
+                  title="Toggle Fullscreen Mode"
+                >fullscreen</v-icon></v-btn>              
             </v-layout>
           </v-flex>
         </v-layout>
@@ -218,6 +228,7 @@
 <script>
 import { Howl, Howler } from "howler";
 import trackMixin from "@/mixins/track.js";
+import { EventBus } from "@/event-bus.js";
 
 export default {
   name: "TrackPlayingCard",
@@ -242,12 +253,15 @@ export default {
   },
   beforeCreate() {
     let that = this;
-    this.$store.subscribe((storeAction, state) => {
-      if(storeAction.type === 'clearQue' || storeAction.type === 'shuffleQue') {
+    this.$store.subscribe(storeAction => {
+      if (
+        storeAction.type === "clearQue" ||
+        storeAction.type === "shuffleQue"
+      ) {
         that.queIndex = 0;
         that.stop();
       }
-    })
+    });
   },
   beforeDestroy() {
     this.howl.unload();
@@ -263,12 +277,15 @@ export default {
       this.queIndex = trackInQue.listNumber - 1;
     });
     this.trackDownloading = true;
+    EventBus.$emit("loadingStarted");
     this.howl = new Howl({
       volume: this.volume,
       loop: this.loop,
       src: this.currentTrack.trackPlayUrl,
       autoplay: true,
-      onplay: () => { this.updatePlaying() },
+      onplay: () => {
+        this.updatePlaying();
+      },
       onend: () => {
         this.skip("next");
       }
@@ -276,6 +293,36 @@ export default {
     this.loaded = true;
   },
   methods: {
+    toggleFullScreen() {
+      let docElm = document.documentElement;      
+      if(this.isFullScreen) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }        
+        this.isFullScreen = false;
+        this.$nextTick(() => {
+          EventBus.$emit("loadingComplete");
+        })
+      } else {
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        } else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        } else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        } else if (docElm.msRequestFullscreen) {
+            docElm.msRequestFullscreen();
+        }
+        this.isFullScreen = true;
+      }
+      this.$store.dispatch("toggleFullscreen", this.isFullScreen);
+    },    
     updateSeek(event) {
       let el = document.getElementById("trackProgressBar"),
         mousePos = event.offsetX,
@@ -302,19 +349,24 @@ export default {
     showPlayingNotification() {
       let title = this.currentTrack.title;
       let options = {
-            icon: this.currentTrack.releaseImageUrl,
-            body: this.currentTrack.releaseArtist.artist.text + "\r\n" + this.$filters.formattedYear(this.currentTrack.release.releaseDate) + " " + this.currentTrack.title,
-            requireInteraction: false,
-            tag: 'roadie-playing-track-no-require-interaction'
+        icon: this.currentTrack.releaseImageUrl,
+        body:
+          this.currentTrack.releaseArtist.artist.text +
+          "\r\n" +
+          this.$filters.formattedYear(this.currentTrack.release.releaseDate) +
+          " " +
+          this.currentTrack.title,
+        requireInteraction: false,
+        tag: "roadie-playing-track-no-require-interaction"
       };
-      if (Notification.permission !== 'denied') {
-          if (Notification.permission !== "granted") {
-              Notification.requestPermission();
-          }
-          if (Notification.permission === "granted") {
-            // eslint-disable-next-line
-              var notify = new Notification(title, options);
-          }
+      if (Notification.permission !== "denied") {
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        }
+        if (Notification.permission === "granted") {
+          // eslint-disable-next-line
+          var notify = new Notification(title, options);
+        }
       }
     },
     stop: function() {
@@ -393,36 +445,40 @@ export default {
       this.muted = !this.muted;
     },
     updatePlaying() {
-      document.title = this.currentTrack.title;                
-      this.trackDownloading = false;    
-      this.playingTrackId = this.currentTrack.id,   
-      this.playing = true;
-
-      var image=document.getElementById('trackCover')
+      document.title = this.currentTrack.title;
+      this.trackDownloading = false;
+      (this.playingTrackId = this.currentTrack.id), (this.playing = true);
+      var image = document.getElementById("trackCover");
       window.favIcon.image(image);
-
       this.$store.dispatch("playIndexChange", {
         index: this.queIndex,
         trackId: this.currentTrack.id,
         releaseId: this.currentTrack.release.value,
         artistId: this.currentTrack.artist.id
-      });      
+      });
+      EventBus.$emit("loadingComplete");
     }
   },
   watch: {
     currentTrack(trackInfo) {
-      if(trackInfo.id === this.playingTrackId && this.playing) {
+      if (trackInfo.id === this.playingTrackId && this.playing) {
         return;
       }
       this.stop();
       this.howl.unload();
+      if(!trackInfo) {
+        return;
+      }
       this.trackDownloading = true;
+      EventBus.$emit("loadingStarted");
       this.howl = new Howl({
         volume: this.volume,
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
         autoplay: true,
-        onplay: () => { this.updatePlaying() },
+        onplay: () => {
+          this.updatePlaying();
+        },
         onend: () => {
           this.skip("next");
         }
@@ -447,7 +503,6 @@ export default {
     playRequestTrackInfo(trackInfo) {
       this.queIndex = trackInfo.index;
     }
-    
   },
   computed: {
     currentTrack() {
@@ -465,6 +520,7 @@ export default {
     }
   },
   data: () => ({
+    isFullScreen: false,
     howl: {
       playing: false
     },
@@ -493,10 +549,10 @@ export default {
 .badge {
   padding: 1px 4px;
   border-radius: 5px;
-  color:white !important;
+  color: white !important;
 }
 img.artist-image {
-  height:20px;
-  vertical-align:middle;
+  height: 20px;
+  vertical-align: middle;
 }
 </style>
