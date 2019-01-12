@@ -216,7 +216,7 @@ export default {
           this.$axios
             .get(
               process.env.VUE_APP_API_URL +
-                `/releases?page=1&limit=8&sort=CreatedDate&order=DESC`
+                `/releases?page=1&limit=16&sort=CreatedDate&order=DESC`
             )
             .then(rr => {
               this.latestReleases = rr.data.rows;
@@ -224,7 +224,7 @@ export default {
               this.$axios
                 .get(
                   process.env.VUE_APP_API_URL +
-                    `/artists?page=1&limit=8&sort=CreatedDate&order=DESC`
+                    `/artists?page=1&limit=16&sort=CreatedDate&order=DESC`
                 )
                 .then(rr => {
                   this.latestArtists = rr.data.rows;

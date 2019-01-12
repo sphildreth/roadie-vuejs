@@ -1,6 +1,7 @@
 <template>
   <div>
     <Toolbar :menuItems="menuItems" :toolbarIcon="'fas fa-edit'"></Toolbar>
+  
     <v-container v-if="loaded" fluid grid-list-md class="artist-edit-container">
       <v-layout row class="ma-1 mb-3">
         <v-flex xs3>
@@ -40,6 +41,9 @@
           label="Artist Type"
           v-validate="'required'"
           data-vv-name="artist.artistType"
+          name="artistType"
+          :error-messages="errors.collect('artist.artistType')"     
+          required     
         ></v-select>
       </v-layout>
 
@@ -50,6 +54,9 @@
           label="Band Status"
           v-validate="'required'"
           data-vv-name="artist.bandStatus"
+          name="bandStatus"
+          :error-messages="errors.collect('artist.bandStatus')"
+          required          
         ></v-select>
       </v-layout>
 
@@ -351,13 +358,13 @@ export default {
   },
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
-    EventBus.$on("rr:Save", this.save);
+    EventBus.$on("aa:Save", this.save);
     this.debouncedArtistSearch = this.$_.debounce(this.doArtistSearch, 500);
     this.debouncedGenreSearch = this.$_.debounce(this.doGenreSearch, 500);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
-    EventBus.$off("rr:Save", this.save);
+    EventBus.$off("aa:Save", this.save);
   },
   async mounted() {
     this.$validator.localize("en", this.dictionary);
@@ -458,18 +465,20 @@ export default {
     save() {
       let that = this;
       this.$validator.validateAll().then(result => {
-        if (result) {
-          if (this.imageUrl != that.artist.mediumThumbnail.url) {
+        if(!result) {
+          console.log("form invalid");
+        } else  {
+          if (that.imageUrl != that.artist.mediumThumbnail.url) {
             that.artist.newThumbnailData = this.imageUrl;
             that.artist.mediumThumbnail = null;
             that.artist.thumbnail = null;
           }
-          this.$axios.post("/artists/edit", that.artist).then(response => {
+          that.$axios.post("/artists/edit", that.artist).then(response => {
             if (!response.data.isSuccess) {
               EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });
               return false;
             }
-            this.$router.go(-1);
+            that.$router.go(-1);
           });
         }
       });
@@ -567,7 +576,7 @@ export default {
       bandStatus: [],
       genreItems: []
     },
-    menuItems: [{ title: "Save", class: "hidden-xs-only", click: "rr:Save" }]
+    menuItems: [{ title: "Save", class: "hidden-xs-only", click: "aa:Save" }]
   })
 };
 </script>

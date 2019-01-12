@@ -57,10 +57,55 @@
           <h5 class="headline mb-0">What is the difference between average rating and my rating?</h5>
         </v-card-title>
         <v-card-text>
-          <p>When you provide a rating for something (say for example an Artist). That rating is your rating applied to that Artist. Your rating is then averaged with all the other supplied ratings and the average becomes the Artist rating.</p>
-          <p>It is not unusual for you to provide a rating of 5 but the average rating is less than 5 because others don't think so highly of the same thing.</p>
+          <p>When you provide a rating for something (say for example an Artist). That rating is your rating applied to that Artist. Your rating is then averaged with all the other user given ratings and the average becomes the Artist rating.</p>
+          <p>It is not unusual for you to provide a rating but the average rating is less because others don't think so highly of the same thing or conversly others think better of the same thing and the average is higher than your provided rating.</p>
+          <p>The average rating is calculated for all <i>user given ratings</i>. Three users played a Track; one rated it 4, one rated it 2, and the other didn't give/indicate a rating - the calculated average of that track is 3 (4+2/2) <b>not</b> 2 (4+2+0/3) as "0" is not a user given rating. The lowest user rating is 1 not 0 (0 is the value recorded for a user when the user plays the track and hasn't indicated a rating.)</p>
+          Here are the rating values (given as an example for a Track):
+          <ul>
+            <li>0
+              <ul>
+                <li>No rating was recorded for the user.</li>
+              </ul>
+            </li>
+            <li>1
+              <ul>
+                <li>The first rank of rating.</li>
+                <li>The user wouldn't mind hearing the Track again.</li>
+                <li>Better than most.</li>
+                <li>An energetic "MEH".</li>
+              </ul>              
+            </li>
+            <li>2
+              <ul>
+                <li>The second rank of rating.</li>
+                <li>Liked the Track.</li>
+                <li>Definately wants to hear it again.</li>
+              </ul>              
+            </li>
+            <li>3
+              <ul>
+                <li>The third rank of rating.</li>
+                <li>Loved the Track.</li>
+              </ul>              
+            </li>
+            <li>4
+              <ul>
+                <li>The fourth rank of rating.</li>
+                <li>The Track is spectacular.</li>
+              </ul>              
+            </li>
+            <li>5
+              <ul>
+                <li>The highest rank of rating.</li>
+                <li>The Track is one of the best ever made.</li>
+                <li>A MUST listen.</li>
+              </ul>              
+            </li>
+          </ul>
+          <p>If you rate everything either by giving no rating (0) or highest (5) you're doing it wrong and your statistics will be worthless. Please don't be worthless.</p>
         </v-card-text>
       </v-card>
+  
       <v-card>
         <v-card-title primary-title>
           <h5 class="headline mb-0">How do I use Subsonic Applications?</h5>

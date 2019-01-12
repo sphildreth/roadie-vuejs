@@ -185,37 +185,36 @@
             </v-layout>
 
             <v-layout d-flex row-wrap>
-              <v-btn icon @click="skip('prev')">
-                <v-icon title="Skip Previous">skip_previous</v-icon>
+              <v-btn title="Play Previous Track" icon @click="skip('prev')">
+                <v-icon>skip_previous</v-icon>
               </v-btn>
-              <v-btn icon @click="seekByAmount(-30)">
+              <v-btn title="Replay last 30 seconds" icon @click="seekByAmount(-30)">
                 <v-icon>replay_30</v-icon>
               </v-btn>
-              <v-btn icon @click="seekByAmount(-1)">
+              <v-btn title="Rewind 1 second" icon @click="seekByAmount(-1)">
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
-              <v-btn icon @click="play">
+              <v-btn :title="playing ? 'Pause Playing' : 'Start Playing'" icon @click="play">
                 <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
               </v-btn>
-              <v-btn icon @click="stop">
+              <v-btn title="Stop Playing" icon @click="stop">
                 <v-icon>stop</v-icon>
               </v-btn>
-              <v-btn icon @click="seekByAmount(1)">
+              <v-btn title="Forward 1 second" icon @click="seekByAmount(1)">
                 <v-icon>fast_forward</v-icon>
               </v-btn>
-              <v-btn icon @click="seekByAmount(30)">
+              <v-btn title="Forward 30 seconds" icon @click="seekByAmount(30)">
                 <v-icon>forward_30</v-icon>
               </v-btn>
-              <v-btn icon @click="skip('next')">
-                <v-icon title="Skip Next">skip_next</v-icon>
+              <v-btn title="Play Next Track" icon @click="skip('next')">
+                <v-icon>skip_next</v-icon>
               </v-btn>
-              <v-btn flat icon @click="toggleLoop">
+              <v-btn title="Enable Que Repeat" flat icon @click="toggleLoop">
                 <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
               </v-btn>
-              <v-btn flat icon @click="toggleFullScreen">
-                <v-icon
-                  title="Toggle Fullscreen Mode"
-                >fullscreen</v-icon></v-btn>              
+              <v-btn title="Toggle Fullscreen Mode" flat icon @click="toggleFullScreen">
+                <v-icon>fullscreen</v-icon>
+              </v-btn>
             </v-layout>
           </v-flex>
         </v-layout>
@@ -294,35 +293,35 @@ export default {
   },
   methods: {
     toggleFullScreen() {
-      let docElm = document.documentElement;      
-      if(this.isFullScreen) {
+      let docElm = document.documentElement;
+      if (this.isFullScreen) {
         if (document.exitFullscreen) {
-            document.exitFullscreen();
+          document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
+          document.webkitExitFullscreen();
         } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
+          document.mozCancelFullScreen();
         } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }        
+          document.msExitFullscreen();
+        }
         this.isFullScreen = false;
         this.$nextTick(() => {
           EventBus.$emit("loadingComplete");
-        })
+        });
       } else {
         if (docElm.requestFullscreen) {
-            docElm.requestFullscreen();
+          docElm.requestFullscreen();
         } else if (docElm.mozRequestFullScreen) {
-            docElm.mozRequestFullScreen();
+          docElm.mozRequestFullScreen();
         } else if (docElm.webkitRequestFullScreen) {
-            docElm.webkitRequestFullScreen();
+          docElm.webkitRequestFullScreen();
         } else if (docElm.msRequestFullscreen) {
-            docElm.msRequestFullscreen();
+          docElm.msRequestFullscreen();
         }
         this.isFullScreen = true;
       }
       this.$store.dispatch("toggleFullscreen", this.isFullScreen);
-    },    
+    },
     updateSeek(event) {
       let el = document.getElementById("trackProgressBar"),
         mousePos = event.offsetX,
@@ -376,24 +375,24 @@ export default {
     skip: function(direction) {
       if (direction === "next") {
         let isPlayingLastTrack =
-          this.queIndex === this.$store.getters.playQue.length;
-        if (isPlayingLastTrack && this.loop) {
-          this.queIndex = 0;
-        }
+          this.queIndex === this.$store.getters.playQue.length - 1;
         if (isPlayingLastTrack && !this.loop) {
           this.stop();
           return;
         }
+        if (isPlayingLastTrack && this.loop) {
+          this.queIndex = -1;
+        }
         this.queIndex++;
       } else {
         let isPlayingFirstTrack = this.queIndex === 0;
-        if (isPlayingFirstTrack && this.loop) {
-          this.queIndex = this.$store.getters.playQue.length - 1;
-        }
         if (isPlayingFirstTrack && !this.loop) {
           this.stop();
           return;
         }
+        if (isPlayingFirstTrack && this.loop) {
+          this.queIndex = this.$store.getters.playQue.length;
+        }        
         this.queIndex--;
       }
       this.$nextTick(() => {
@@ -461,12 +460,12 @@ export default {
   },
   watch: {
     currentTrack(trackInfo) {
-      if (trackInfo.id === this.playingTrackId && this.playing) {
-        return;
-      }
       this.stop();
       this.howl.unload();
-      if(!trackInfo) {
+      if (!trackInfo) {
+        return;
+      }
+      if (trackInfo.id === this.playingTrackId && this.playing) {
         return;
       }
       this.trackDownloading = true;

@@ -12,13 +12,16 @@
       :doShowHated="true"
       :hated="release.userRating && release.userRating.isDisliked"
     ></Toolbar>
-    <v-container v-if="coverSearchItems.length === 0" fluid grid-list-md>
+    <v-container v-if="!showMergingRelease && coverSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="primary" class="profile darken-1">
-                <v-card-text class="title" :class="{ 'playing-release': this.$store.getters.playingIndex.releaseId == release.id }">
+                <v-card-text
+                  class="title"
+                  :class="{ 'playing-release': this.$store.getters.playingIndex.releaseId == release.id }"
+                >
                   {{ release.title }}
                   <v-icon
                     v-if="release.isLocked"
@@ -39,7 +42,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img :src="releaseCoverUrl" :alt="release.title" class="ma-1" aspect-ratio="1"></v-img>
-                  <img id="releaseImage" :src="releaseCoverUrl" style="display:none;" />
+                  <img id="releaseImage" :src="releaseCoverUrl" style="display:none;">
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
@@ -411,7 +414,7 @@
       </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="coverSearchItems.length > 0" fluid grid-list-md>
+    <v-container v-if="!showMergingRelease && coverSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="coverSearchItems = []">Cancel</v-btn>
       </v-flex>
@@ -444,6 +447,24 @@
         </v-flex>
       </v-data-iterator>
     </v-container>
+    <v-container v-if="showMergingRelease">
+      <div>Select Release To Merge "{{ this.release.title }}" Release into</div>
+      <v-layout row>
+        <v-autocomplete
+          :items="lookupData.releaseItems"
+          v-model="selectedMergeRelease"
+          :search-input.sync="searchForMergeRelease"
+          :loading="searchReleasesLoading"
+          label="Release"
+          append-icon="fas fa-database"
+          return-object
+        ></v-autocomplete>
+      </v-layout>
+      <v-flex xs3>
+        <v-btn color="warning" @click="showMergingRelease=false">Cancel</v-btn>
+        <v-btn color="success" @click="doMerge()">Merge</v-btn>
+      </v-flex>
+    </v-container>
   </div>
 </template>
 
@@ -463,7 +484,7 @@ import releaseMixin from "@/mixins/release.js";
 import trackMixin from "@/mixins/track.js";
 
 export default {
-  mixins: [releaseMixin,trackMixin],  
+  mixins: [releaseMixin, trackMixin],
   components: {
     Toolbar,
     LabelCard,
@@ -495,11 +516,16 @@ export default {
     EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);
+    EventBus.$on("rr:MergeReleases", this.mergeReleases);
     EventBus.$on("rr:FindCover", this.findCover);
     EventBus.$on("rr:Edit", this.edit);
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
     EventBus.$on("t:selected", track => this.addSelectedTrack(track));
     EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
+    this.debouncedMergeReleaseSearch = this.$_.debounce(
+      this.doMergeReleaseSearch,
+      500
+    );
   },
   beforeDestroy() {
     EventBus.$off("rr:AddToQue", this.addToQue);
@@ -515,6 +541,7 @@ export default {
     EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);
+    EventBus.$off("rr:MergeReleases", this.mergeReleases);
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
     EventBus.$off("t:selected");
@@ -537,6 +564,7 @@ export default {
             { title: "Delete", class: "warning--text", click: "rr:Delete" },
             { title: "Edit", click: "rr:Edit" },
             { title: "Find Cover", click: "rr:FindCover" },
+            { title: "Merge Release", click: "rr:MergeReleases" },
             { title: "Rescan", click: "rr:Rescan" }
           ];
     },
@@ -544,14 +572,68 @@ export default {
       return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
     },
     userRating() {
-      return this.release.userRating || {
-        isFavorite: false,
-        isDisliked: false,
-        rating: 0
-      };
+      return (
+        this.release.userRating || {
+          isFavorite: false,
+          isDisliked: false,
+          rating: 0
+        }
+      );
     }
   },
   methods: {
+    doMerge() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/releases/mergeReleases/" +
+            this.release.id +
+            "/" +
+            this.selectedMergeRelease.value
+        )
+        .then(response => {
+          if (!response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "An error has occured",
+              color: "red"
+            });
+            return false;
+          }
+          this.$router.push("/release/" + this.selectedMergeRelease.value);
+        });
+    },
+    doMergeReleaseSearch: function(val) {
+      if (this.searchReleasesLoading) {
+        return;
+      }
+      this.searchReleasesLoading = true;
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + "/releases?filter=" + val + "&limit=10"
+        )
+        .then(res => {
+          this.lookupData.releaseItems = [];
+          res.data.rows.forEach(a => {
+            if (a.release.value != this.id) {
+              this.lookupData.releaseItems.push({
+                text: a.artist.text + ' - ' + a.release.text,
+                value: a.release.value
+              });
+            }
+          });
+        })
+        .catch(err => {
+          EventBus.$emit("showSnackbar", {
+            text: "An error has occured",
+            color: "red",
+            error: err
+          });
+        })
+        .finally(() => (this.searchArtistsLoading = false));
+    },
+    mergeReleases: function() {
+      this.showMergingRelease = true;
+    },
     playNow: function() {
       this.$store.dispatch("clearQue");
       this.addToQue();
@@ -604,12 +686,12 @@ export default {
       this.favoriteToggle({
         releaseId: this.release.id,
         isFavorite: !this.userRating.isFavorite
-      }).then(this.updateData);     
+      }).then(this.updateData);
     },
     toggleHated: async function() {
       this.dislikeToggle({
         releaseId: this.release.id,
-        isDisliked: !this.userRating.isDisliked   
+        isDisliked: !this.userRating.isDisliked
       }).then(this.updateData);
     },
     addToQue: function() {
@@ -632,7 +714,7 @@ export default {
           duration: tr.duration,
           durationTime: tr.durationTime,
           rating: tr.rating,
-          playedCount: tr.playedCount,          
+          playedCount: tr.playedCount,
           trackPlayUrl: tr.trackPlayUrl,
           release: {
             text: this.release.title,
@@ -779,10 +861,10 @@ export default {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
           this.$nextTick(() => {
-            var image=document.getElementById('releaseImage')
-            window.favIcon.image(image);             
+            var image = document.getElementById("releaseImage");
+            window.favIcon.image(image);
             document.title = this.release.title;
-          });          
+          });
           EventBus.$emit("loadingComplete");
         });
     },
@@ -823,6 +905,12 @@ export default {
     },
     coverSearchQuery: function() {
       this.debouncedFindCover();
+    },
+    searchForMergeRelease(val) {
+      if (!val) {
+        return;
+      }
+      this.debouncedMergeReleaseSearch(val);
     }
   },
   data: () => ({
@@ -830,9 +918,16 @@ export default {
     releaseTab: 2,
     selectedTracks: [],
     coverSearchQuery: "",
+    showMergingRelease: false,
+    searchReleasesLoading: false,
+    selectedMergeRelease: null,
+    searchForMergeRelease: null,
     showModal: false,
     modalImage: {},
     coverSearchItems: [],
+    lookupData: {
+      releaseItems: []
+    },
     release: {
       status: 0,
       artist: {

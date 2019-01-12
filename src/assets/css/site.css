@@ -60,3 +60,10 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.no-rainbow { 
+  background: initial !important;
+  background-clip: initial  !important;  
+  -webkit-background-clip: initial  !important;
+  -webkit-text-fill-color: initial !important;
+}

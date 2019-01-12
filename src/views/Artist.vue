@@ -12,15 +12,22 @@
       :doShowHated="true"
       :hated="artist.userRating && artist.userRating.isDisliked"
     ></Toolbar>
-    <v-container v-if="artistImageSearchItems.length === 0" fluid grid-list-md>
+    <v-container
+      v-if="!showMergingArtist && artistImageSearchItems.length === 0"
+      fluid
+      grid-list-md
+    >
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
               <v-card color="primary" class="profile darken-1">
-                <v-card-text class="title" :class="{ 'playing-artist': this.$store.getters.playingIndex.artistId == artist.id }">
+                <v-card-text
+                  class="title"
+                  :class="{ 'playing-artist': this.$store.getters.playingIndex.artistId == artist.id }"
+                >
                   {{ artist.name }}
-                  <v-icon                    
+                  <v-icon
                     v-if="artist.isLocked"
                     style="float: right;"
                     title="Arist is locked!"
@@ -33,7 +40,7 @@
               <v-layout row wrap>
                 <v-flex xs3>
                   <v-img :src="artistThumbnailUrl" :alt="artist.name" class="ma-1" aspect-ratio="1"></v-img>
-                  <img id="artistImage" :src="artistThumbnailUrl" style="display:none;" />
+                  <img id="artistImage" :src="artistThumbnailUrl" style="display:none;">
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-text-field
@@ -503,7 +510,7 @@
       </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="artistImageSearchItems.length > 0" fluid grid-list-md>
+    <v-container v-if="!showMergingArtist && artistImageSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="artistImageSearchItems = []">Cancel</v-btn>
       </v-flex>
@@ -535,6 +542,24 @@
           </div>
         </v-flex>
       </v-data-iterator>
+    </v-container>
+    <v-container v-if="showMergingArtist">
+      <div>Select Artist To Merge "{{ this.artist.name }}" Artist into</div>
+      <v-layout row>
+        <v-autocomplete
+          :items="lookupData.artistItems"
+          v-model="selectedMergeArtist"
+          :search-input.sync="searchForMergeArtist"
+          :loading="searchArtistsLoading"
+          label="Artist"
+          append-icon="fas fa-database"
+          return-object
+        ></v-autocomplete>
+      </v-layout>
+      <v-flex xs3>
+        <v-btn color="warning" @click="showMergingArtist=false">Cancel</v-btn>
+        <v-btn color="success" @click="doMerge()">Merge</v-btn>
+      </v-flex>
     </v-container>
   </div>
 </template>
@@ -585,12 +610,17 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("bookmarkToogle", this.toogleBookmark);
     EventBus.$on("hateToogle", this.toggleHated);
+    EventBus.$on("aa:MergeArtist", this.mergeArtist);
     EventBus.$on("aa:Rescan", this.rescan);
     EventBus.$on("aa:Delete", this.delete);
     EventBus.$on("aa:DeleteReleases", this.deleteReleases);
     EventBus.$on("aa:FindArtistImage", this.findArtistImage);
     EventBus.$on("aa:Edit", this.edit);
     this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);
+    this.debouncedMergeArtistSearch = this.$_.debounce(
+      this.doMergeArtistSearch,
+      500
+    );
   },
   beforeDestroy() {
     EventBus.$off("aa:PlayAll", this.playAll);
@@ -603,6 +633,7 @@ export default {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("bookmarkToogle", this.toogleBookmark);
     EventBus.$off("hateToogle", this.toggleHated);
+    EventBus.$off("aa:MergeArtist", this.mergeArtist);
     EventBus.$off("aa:Rescan", this.rescan);
     EventBus.$off("aa:Delete", this.delete);
     EventBus.$off("aa:DeleteReleases", this.deleteReleases);
@@ -631,6 +662,7 @@ export default {
             },
             { title: "Edit", click: "aa:Edit" },
             { title: "Find Artist Image", click: "aa:FindArtistImage" },
+            { title: "Merge Artist", click: "aa:MergeArtist" },
             { title: "Rescan", click: "aa:Rescan" }
           ];
     },
@@ -642,6 +674,55 @@ export default {
     }
   },
   methods: {
+    doMerge() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/artists/mergeArtists/" +
+            this.artist.id +
+            "/" +
+            this.selectedMergeArtist.value
+        )
+        .then(response => {
+          if (!response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "An error has occured",
+              color: "red"
+            });
+            return false;
+          }
+          this.$router.push("/artist/" + this.selectedMergeArtist.value);
+        });
+    },
+    doMergeArtistSearch: function(val) {
+      if (this.searchArtistsLoading) {
+        return;
+      }
+      this.searchArtistsLoading = true;
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + "/artists?filter=" + val + "&limit=10"
+        )
+        .then(res => {
+          this.lookupData.artistItems = [];
+          res.data.rows.forEach(a => {
+            if (a.artist.value != this.id) {
+              this.lookupData.artistItems.push({
+                text: a.artist.text,
+                value: a.artist.value
+              });
+            }
+          });
+        })
+        .catch(err => {
+          EventBus.$emit("showSnackbar", {
+            text: "An error has occured",
+            color: "red",
+            error: err
+          });
+        })
+        .finally(() => (this.searchArtistsLoading = false));
+    },
     playTopRated: function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -683,6 +764,9 @@ export default {
     },
     edit: function() {
       this.$router.push("/artist/edit/" + this.artist.id);
+    },
+    mergeArtist: function() {
+      this.showMergingArtist = true;
     },
     internetArtistSearch: function() {
       var q = this.searchQuery;
@@ -896,17 +980,18 @@ export default {
               });
               this.loaded = true;
               let tabIndex = 0;
-              if(this.artist.collectionsWithArtistReleases.length > 0) { 
+              if (this.artist.collectionsWithArtistReleases.length > 0) {
                 tabIndex++;
               }
-              if(this.artist.artistContributionReleases.length > 0) {
+              if (this.artist.artistContributionReleases.length > 0) {
                 tabIndex++;
               }
-              if(this.artist.playlistsWithArtistReleases.length > 0) {
+              if (this.artist.playlistsWithArtistReleases.length > 0) {
                 tabIndex++;
-              }          
-              this.releaseTab = tabIndex;              
-              EventBus.$emit("loadingComplete");              
+              }
+              this.releaseTab = tabIndex;
+              this.selectedMergeArtist = this.artist.name;
+              EventBus.$emit("loadingComplete");
             });
         })
         .finally(() => {
@@ -918,8 +1003,8 @@ export default {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
           this.$nextTick(() => {
-            var image=document.getElementById('artistImage')
-            window.favIcon.image(image);             
+            var image = document.getElementById("artistImage");
+            window.favIcon.image(image);
             document.title = this.artist.name;
           });
         });
@@ -1013,6 +1098,12 @@ export default {
     artistImageSearchQuery: function() {
       this.debouncedFindartistImage();
     },
+    searchForMergeArtist(val) {
+      if (!val) {
+        return;
+      }
+      this.debouncedMergeArtistSearch(val);
+    },
     releaseTableSearch: {
       async handler() {
         this.releaseTableData = [];
@@ -1046,8 +1137,12 @@ export default {
   data: () => ({
     loaded: false,
     showReleaseTable: false,
+    searchArtistsLoading: false,
+    selectedMergeArtist: null,
+    searchForMergeArtist: null,
     tab: 0,
     releaseTab: 0,
+    showMergingArtist: false,
     showModal: false,
     modalImage: {},
     artistImageSearchQuery: "",
@@ -1068,6 +1163,9 @@ export default {
       urLsList: [],
       profile: null,
       bioContext: null
+    },
+    lookupData: {
+      artistItems: []
     },
     releases: [],
     metaDataHeaders: [
@@ -1161,7 +1259,8 @@ export default {
   padding-top: 11px;
   display: inline-block;
 }
-.artist-detail-container .biography, .artist-detail-container .profile {
+.artist-detail-container .biography,
+.artist-detail-container .profile {
   max-height: 290px;
   overflow: auto;
 }

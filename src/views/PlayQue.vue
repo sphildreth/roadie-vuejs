@@ -66,11 +66,13 @@
               >
               {{ props.item.listNumber | padNumber3 }}
               <v-icon
+                class="no-rainbow"
                 title="Click to play track"
                 @click="playTrack(props.item.track.id)"
                 :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
               >play_circle_outline</v-icon>
               <span
+                class="no-rainbow"
                 title="Click and drag to change order"
                 style="max-width: 10px;font-size:18px;"
               >&#128075;</span>
@@ -79,7 +81,7 @@
               <v-progress-linear
                 height="12"
                 background-color="secondary"
-                color="orange lighten-3"
+                color="orange lighten-3 no-rainbow"
                 :value="props.item.track.rating * 20"
               ></v-progress-linear>
             </td>
@@ -119,7 +121,7 @@
               <v-icon
                 color="red"
                 title="Remove from Que"
-                class="pointer"
+                class="pointer no-rainbow"
                 @click="removeTrackFromQue(props.item)"
                 small
               >delete</v-icon>
