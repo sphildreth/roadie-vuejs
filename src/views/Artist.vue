@@ -937,7 +937,7 @@ export default {
         {
           source: "All Music",
           sourceId: this.artist.amgId,
-          url: "http://www.allmusic.com/artist/"
+          url: "https://www.allmusic.com/artist/"
         },
         {
           source: "Discogs",
