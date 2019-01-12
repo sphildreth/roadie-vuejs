@@ -691,6 +691,7 @@ export default {
             });
             return false;
           }
+          this.showMergingArtist = false;          
           this.$router.push("/artist/" + this.selectedMergeArtist.value);
         });
     },

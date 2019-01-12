@@ -599,6 +599,7 @@ export default {
             });
             return false;
           }
+          this.showMergingRelease = false; 
           this.$router.push("/release/" + this.selectedMergeRelease.value);
         });
     },
