@@ -2,10 +2,10 @@
     <v-container>
         <v-layout row class="text-xs-center">
             <v-flex xs3>
-                <v-card height="500px">
+                <v-card height="450px">
                 <v-img
                     :src='logoUrl'
-                    class="ma-1"
+                    class="pt-2"
                 ></v-img>                  
                 </v-card>
             </v-flex>
