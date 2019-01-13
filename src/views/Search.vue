@@ -2,7 +2,7 @@
   <div class="search-results-container">
     <v-container fluid>
       <div class="heading mb-2">Search Results for:
-        <span class="accent--text title ml-2">{{ q }}</span>
+        <span class="accent--text title ml-2">{{ decodeURIComponent(q) }}</span>
       </div>
       <v-divider></v-divider>
     </v-container>

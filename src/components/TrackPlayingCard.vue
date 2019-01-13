@@ -185,7 +185,7 @@
             </v-layout>
 
             <v-layout d-flex row-wrap>
-              <v-btn title="Play Previous Track" icon @click="skip('prev')">
+              <v-btn color="primary lighten-1" title="Play Previous Track" icon @click="skip('prev')">
                 <v-icon>skip_previous</v-icon>
               </v-btn>
               <v-btn title="Replay last 30 seconds" icon @click="seekByAmount(-30)">
@@ -194,10 +194,10 @@
               <v-btn title="Rewind 1 second" icon @click="seekByAmount(-1)">
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
-              <v-btn :title="playing ? 'Pause Playing' : 'Start Playing'" icon @click="play">
+              <v-btn color="green darken-2" :title="playing ? 'Pause Playing' : 'Start Playing'" icon @click="play">
                 <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
               </v-btn>
-              <v-btn title="Stop Playing" icon @click="stop">
+              <v-btn color="red darken-2" title="Stop Playing" icon @click="stop">
                 <v-icon>stop</v-icon>
               </v-btn>
               <v-btn title="Forward 1 second" icon @click="seekByAmount(1)">
@@ -206,14 +206,17 @@
               <v-btn title="Forward 30 seconds" icon @click="seekByAmount(30)">
                 <v-icon>forward_30</v-icon>
               </v-btn>
-              <v-btn title="Play Next Track" icon @click="skip('next')">
-                <v-icon>skip_next</v-icon>
+              <v-btn color="primary lighten-1" title="Play Next Track" icon @click="skip('next')">
+                <v-icon >skip_next</v-icon>
               </v-btn>
               <v-btn title="Enable Que Repeat" flat icon @click="toggleLoop">
                 <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
               </v-btn>
               <v-btn title="Toggle Fullscreen Mode" flat icon @click="toggleFullScreen">
                 <v-icon>fullscreen</v-icon>
+              </v-btn>
+              <v-btn title="Display Playing/Que" flat icon to="/playque">
+                <v-icon>headset</v-icon>
               </v-btn>
             </v-layout>
           </v-flex>
