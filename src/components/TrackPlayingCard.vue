@@ -401,7 +401,7 @@ export default {
     },
     toggleBookmark: function() {
       this.bookmarkToggle({
-        trackId: this.track.id,
+        trackId: this.currentTrack.id,
         userBookmarked: !this.currentTrack.userBookmarked
       }).then(() => {
         this.currentTrack.userBookmarked = !this.currentTrack.userBookmarked;
@@ -409,7 +409,7 @@ export default {
     },
     toggleFavorite: function() {
       this.favoriteToggle({
-        trackId: this.track.id,
+        trackId: this.currentTrack.id,
         isFavorite: !this.currentTrack.userRating.isFavorite
       }).then(() => {
         this.currentTrack.userRating.isFavorite = !this.currentTrack.userRating
@@ -418,7 +418,7 @@ export default {
     },
     hateToogle: function() {
       this.dislikeToggle({
-        trackId: this.track.id,
+        trackId: this.currentTrack.id,
         isDisliked: !this.currentTrack.userRating.isDisliked
       }).then(() => {
         this.currentTrack.userRating.isDisliked = !this.currentTrack.userRating
@@ -428,7 +428,7 @@ export default {
     setRating: async function() {
       this.$nextTick(() => {
         this.ratingChange({
-          trackId: this.track.id,
+          trackId: this.currentTrack.id,
           newVal: this.currentTrack.userRating.rating
         }).then(this.updateData);
       });
