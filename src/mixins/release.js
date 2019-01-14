@@ -4,10 +4,10 @@ import {
 export default {
   data: () => ({}),
   methods: {
-    ratingChange(changeInfo) {
+    releaseRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistRating/' + changeInfo.artistId + '/' + changeInfo.newVal)
+          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseRating/' + changeInfo.releaseId + '/' + changeInfo.newVal)
             .then(response => {
               if (response.data.isSuccess && changeInfo.newVal > 0) {
                 EventBus.$emit("showSnackbar", {
@@ -20,13 +20,13 @@ export default {
               }
               resolve({
                 isSuccess: response.data.isSuccess,
-                rating: changeInfo.newVal
+                rating: response.data
               });
             });
         }
       });
     },
-    favoriteToggle(toggleInfo) {
+    releaseFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)
         .then(response => {
@@ -42,7 +42,7 @@ export default {
         });
       });
     },
-    dislikeToggle(toggleInfo) {
+    releaseDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
         .then(response => {

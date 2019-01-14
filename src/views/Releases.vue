@@ -128,10 +128,10 @@ export default {
         });
     },
     toggleFavorite: async function(toggleInfo) {
-      this.favoriteToggle(toggleInfo).then(this.updateData);
+      this.releaseFavoriteToggle(toggleInfo).then(this.updateData);
     },
     hateToggle: async function(toggleInfo) {
-      this.dislikeToggle(toggleInfo).then(this.updateData);
+      this.releaseDislikeToggle(toggleInfo).then(this.updateData);
     }
   },
   watch: {

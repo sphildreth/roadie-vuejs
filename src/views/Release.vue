@@ -683,14 +683,24 @@ export default {
         params: { q: this.release.artist.artist.text }
       });
     },
+    setRating: async function() {
+      this.$nextTick(() => {
+        this.releaseRatingChange({
+          releaseId: this.release.id,
+          newVal: this.userRating.rating
+        }).then(this.updateData);
+      });
+    },    
     toggleFavorite: async function() {
-      this.favoriteToggle({
-        releaseId: this.release.id,
-        isFavorite: !this.userRating.isFavorite
-      }).then(this.updateData);
+      this.$nextTick(() => {
+        this.releaseFavoriteToggle({
+          releaseId: this.release.id,
+          isFavorite: !this.userRating.isFavorite
+        }).then(this.updateData);
+      })
     },
     toggleHated: async function() {
-      this.dislikeToggle({
+      this.releaseDislikeToggle({
         releaseId: this.release.id,
         isDisliked: !this.userRating.isDisliked
       }).then(this.updateData);
