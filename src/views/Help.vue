@@ -108,6 +108,16 @@
   
       <v-card>
         <v-card-title primary-title>
+          <h5 class="headline mb-0">This web application sucks on my mobile device!?</h5>
+        </v-card-title>
+        <v-card-text>
+          <p>This web application is intended to primarily be used on a desktop, with a resolution > 1280.</p>
+          <p>For mobile applications any of the Subsonic Mobile Applications will work against the Subsonic API. See "How do I use Subsonic Applications?" below for more information.</p>
+        </v-card-text>
+      </v-card>  
+
+      <v-card>
+        <v-card-title primary-title>
           <h5 class="headline mb-0">How do I use Subsonic Applications?</h5>
         </v-card-title>
         <v-card-text>
@@ -119,7 +129,7 @@
           <p>You would use your username you use to log into this site for the
             <b>'Username'</b> and the value you put in 'Third Party API Token' for the
             <b>'Password'</b> in the applications configuration. The
-            <b>'Server address'</b> (sometimes called 'Address') setting is "server-name/subsonic" as an example "https://roadiemusic.org/subsonic"
+            <b>'Server address'</b> (sometimes called 'Address') setting for "{{ appName }}" is "{{ apiUrl }}/subsonic"
           </p>
           <p>Here is a screenshot of the free
             <a
@@ -140,7 +150,10 @@
 
 <script>
 export default {
-  data: () => ({})
+  data: () => ({
+    appName: process.env.VUE_APP_APP_NAME,
+    apiUrl: process.env.VUE_APP_API_URL
+  })
 };
 </script>
 
