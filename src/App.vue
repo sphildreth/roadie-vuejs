@@ -13,21 +13,15 @@
             :dark="$vuetify.dark"
             height="auto"
             class="pa-3 app--footer"
-            :style="{ marginBottom: (showPlayer ? 105 : 0) + 'px'  }"
           >
             <v-icon color="pink" class="mr-1" small>fas fa-archive</v-icon>
             <span class="caption mr-1">Last System Scan: {{ this.$store.getters.lastScanDate }}</span>
             <v-spacer></v-spacer>
-            <span class="caption mr-1">Roadie v20180114.1 beta</span>
+            <span class="caption mr-1">Roadie v20180116.1 beta</span>
             <v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
-          <v-bottom-sheet persistent full-width hide-overlay v-model="showPlayer">
-            <TrackPlayingCard
-              v-if="!hide && showPlayer"
-              :track="currentTrack.track"
-              :totalTime="totalQueTime"
-              :listNumber="currentTrack.listNumber"
-            ></TrackPlayingCard>
+          <v-bottom-sheet v-model="showPlayer" persistent full-width hide-overlay>
+            <TrackPlayingCard></TrackPlayingCard>
           </v-bottom-sheet>
           <v-snackbar v-model="snackbarVisible" :color="snackbarColor" :timeout="3000" :top="true">
             {{ snackbarText }}
@@ -53,6 +47,9 @@ export default {
   store,
   components: { Navbar, TrackPlayingCard },
   name: "App",
+  beforeDestroy() {
+    EventBus.$off("showSnackbar", info => this.showSnackbar(info));
+  },  
   created() {
     EventBus.$on("showSnackbar", info => this.showSnackbar(info));
   },
@@ -64,20 +61,12 @@ export default {
     }
   },
   computed: {
-    currentTrack() {
-      return this.$store && this.$store.getters.playQue[0];
-    },
-    totalQueTime() {
-      return "00:00:00";
-    },
-    showPlayer() {
-      return this.$store && this.$store.getters.playQue.length > 0;
-    },
     hide() {
       return this.$route.path === "/signin" || this.$route.path === "/register"  || this.$route.path === '/resetpassword';
     }
   },
   data: () => ({
+    showPlayer: true,
     snackbarVisible: false,
     snackbarText: "",
     snackbarColor: "success"
@@ -94,5 +83,8 @@ export default {
 
 .page-wrapper {
   min-height: calc(100vh - 64px - 50px - 81px);
+}
+footer { 
+  margin-bottom: 105px;
 }
 </style>

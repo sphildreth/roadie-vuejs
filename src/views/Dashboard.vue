@@ -1,8 +1,8 @@
 <template>
   <div class="playlist-detail-container">
     <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>
-    <v-layout row wrap>
-      <v-flex d-flex xs12 class="ma-3">
+    <v-layout hidden-xs-only row wrap>
+      <v-flex d-flex md12 class="ma-3">
         <v-tooltip bottom>
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
@@ -106,7 +106,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="primary--text">Recently Added Releases</v-card-title>
+        <v-card-title class="accent--text">Recently Added Releases</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator
             :items="latestReleases"
@@ -126,7 +126,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="primary--text">Recently Added Artists</v-card-title>
+        <v-card-title class="accent--text">Recently Added Artists</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator
             :items="latestArtists"
@@ -176,61 +176,80 @@ export default {
   },
   methods: {
     playRandomTracks: function() {
-      this.$store.dispatch("clearQue");
-      EventBus.$emit("loadingStarted");
-      this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`)
+      EventBus.$emit("loadingStarted");      
+      this.$playQue
+        .deleteAll()
+        .then(() => {
+          return this.$axios.get(
+            process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`
+          );
+        })
         .then(response => {
           this.addTracksToQue(response.data.rows);
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
         });
     },
     playRandomRatedTracks: function() {
-      this.$store.dispatch("clearQue");
       EventBus.$emit("loadingStarted");
-      this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true&FilterRatedOnly=true`)
+      this.$playQue
+        .deleteAll()
+        .then(() => {
+          return this.$axios.get(
+            process.env.VUE_APP_API_URL +
+              `/tracks?doRandomize=true&FilterRatedOnly=true`
+          );
+        })
         .then(response => {
           this.addTracksToQue(response.data.rows);
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
         });
-    },    
-    playRandomFavoriteTracks:function() {
-      this.$store.dispatch("clearQue");
+    },
+    playRandomFavoriteTracks: function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks?doRandomize=true&FilterFavoriteOnly=true`)
+      this.$playQue
+        .deleteAll()
+        .then(() => {
+          return this.$axios.get(
+            process.env.VUE_APP_API_URL +
+              `/tracks?doRandomize=true&FilterFavoriteOnly=true`
+          );
+        })
         .then(response => {
           this.addTracksToQue(response.data.rows);
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
         });
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
+      const that = this;
       this.$axios
         .get(process.env.VUE_APP_API_URL + `/stats/library`)
         .then(rr => {
-          this.statistics = rr.data.data;
-          this.$store.commit("updateLastScan", rr.data.data.lastScan);
-          this.$axios;
-          this.$axios
-            .get(
-              process.env.VUE_APP_API_URL +
-                `/releases?page=1&limit=16&sort=CreatedDate&order=DESC`
-            )
-            .then(rr => {
-              this.latestReleases = rr.data.rows;
-              this.$axios;
-              this.$axios
-                .get(
-                  process.env.VUE_APP_API_URL +
-                    `/artists?page=1&limit=16&sort=CreatedDate&order=DESC`
-                )
-                .then(rr => {
-                  this.latestArtists = rr.data.rows;
-                  EventBus.$emit("loadingComplete");
-                });
-            });
+          that.statistics = rr.data.data;
+          that.$store.commit("updateLastScan", rr.data.data.lastScan);
+          return that.$axios.get(
+            process.env.VUE_APP_API_URL +
+              `/releases?page=1&limit=16&sort=CreatedDate&order=DESC`
+          );
+        })
+        .then(rr => {
+          that.latestReleases = rr.data.rows;
+          return that.$axios.get(
+            process.env.VUE_APP_API_URL +
+              `/artists?page=1&limit=16&sort=CreatedDate&order=DESC`
+          );
+        })
+        .then(rr => {
+          that.latestArtists = rr.data.rows;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
         });
     }
   },

@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout row class="reset-password-container text-xs-center">
-            <v-flex xs3>
+            <v-flex xs3 sm5 md4 lg3>
                 <v-card height="500px">
                 <v-img
                     :src='logoUrl'
@@ -9,7 +9,7 @@
                 ></v-img>                     
                 </v-card>
             </v-flex>
-            <v-flex xs4 class="grey darken-2">
+            <v-flex xs9 sm7 md8 lg9 class="grey darken-2">
                 <v-container  class="text-xs-center">
                 <v-card flat>
                     <v-card-title primary-title>
@@ -20,8 +20,9 @@
                         <v-text-field prepend-icon="lock" v-model="password" v-validate="'required|min:6|verify_password'" label="Password" ref="password" data-vv-name="password" type="password" :error-messages="errors.collect('password')" required></v-text-field>
                         <v-text-field prepend-icon="lock" v-model="passwordConfirmation" v-validate="'required|confirmed:password'" data-vv-as="password" data-vv-name="passwordConfirmation" label="Confirm Password" type="password" :error-messages="errors.collect('passwordConfirmation')" required></v-text-field>
                         <v-card-actions>
-                            <v-btn to="/signin"  block>Sign In</v-btn>
-                            <v-btn @click="submit" primary large block>Reset</v-btn>
+                            <v-btn to="/signin" block>Sign In</v-btn>
+                            <v-spacer></v-spacer>                              
+                            <v-btn @click="submit" primary large color="success" round>Reset</v-btn>
                         </v-card-actions>                
                     </form>            
                 </v-card>

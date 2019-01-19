@@ -91,16 +91,18 @@ export default {
       tracks.forEach((track) => {
         queTracks.push(this.createQueTrack(track));
       });
-      this.$store.dispatch("addToQue", queTracks);
-      EventBus.$emit("showSnackbar", {
-        text: "Added [" + tracks.length + "] to Que"
-      });
+      this.$playQue.add(queTracks)
+      .then(function(result) {
+        const message = result.message || "Added [" + queTracks.length + "] to Que";
+        EventBus.$emit("showSnackbar", { text: message });
+      });      
     },
     addToQue(track) {
-      this.$store.dispatch("addToQue", [ this.createQueTrack(track) ]);
-      EventBus.$emit("showSnackbar", {
-        text: "Added to Que"
-      });
+      this.$playQue.add([ this.createQueTrack(track) ])
+      .then(function(result) {
+        const message = result.message || "Added to Que";
+        EventBus.$emit("showSnackbar", { text: message });
+      });         
     },
     createQueTrack(track) {
       let artist = track.trackArtist || track.artist;

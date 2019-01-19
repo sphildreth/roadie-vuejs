@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="loaded">
     <v-card class="track-playing-card" height="100px" hover>
       <v-progress-linear
         v-if="trackDownloading"
@@ -8,7 +8,7 @@
         class="ma-0 pa-0"
         indeterminate
       ></v-progress-linear>
-      <div v-if="loaded">
+      <div>
         <v-progress-linear
           id="trackProgressBar"
           height="5"
@@ -70,7 +70,7 @@
                     <span
                       class="release-title badge text-no-wrap text-truncate pointer subheading"
                       :style="{ backgroundColor: this.$vuetify.theme.primary }"
-                    >{{ track.release.text }}</span>
+                    >{{ currentTrack.release.text }}</span>
                   </router-link>
                 </div>
                 <div title="View Track Details">
@@ -159,9 +159,7 @@
               </span>
               <span title="Total Time of Que">
                 <v-icon medium>headset</v-icon>
-                <span
-                  class="headline track-time"
-                >{{ this.$store.getters.quePlaytime | timeFromMilliseconds }}</span>
+                <span class="headline track-time">{{ quePlayTime | timeFromMilliseconds }}</span>
               </span>
             </v-layout>
           </v-flex>
@@ -185,7 +183,12 @@
             </v-layout>
 
             <v-layout d-flex row-wrap>
-              <v-btn color="primary lighten-1" title="Play Previous Track" icon @click="skip('prev')">
+              <v-btn
+                color="primary lighten-1"
+                title="Play Previous Track"
+                icon
+                @click="skip('prev')"
+              >
                 <v-icon>skip_previous</v-icon>
               </v-btn>
               <v-btn title="Replay last 30 seconds" icon @click="seekByAmount(-30)">
@@ -194,7 +197,12 @@
               <v-btn title="Rewind 1 second" icon @click="seekByAmount(-1)">
                 <v-icon>fast_rewind</v-icon>
               </v-btn>
-              <v-btn color="green darken-2" :title="playing ? 'Pause Playing' : 'Start Playing'" icon @click="play">
+              <v-btn
+                color="green darken-2"
+                :title="playing ? 'Pause Playing' : 'Start Playing'"
+                icon
+                @click="play"
+              >
                 <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
               </v-btn>
               <v-btn color="red darken-2" title="Stop Playing" icon @click="stop">
@@ -207,7 +215,7 @@
                 <v-icon>forward_30</v-icon>
               </v-btn>
               <v-btn color="primary lighten-1" title="Play Next Track" icon @click="skip('next')">
-                <v-icon >skip_next</v-icon>
+                <v-icon>skip_next</v-icon>
               </v-btn>
               <v-btn title="Enable Que Repeat" flat icon @click="toggleLoop">
                 <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
@@ -226,7 +234,6 @@
   </div>
 </template>
 
-
 <script>
 import { Howl, Howler } from "howler";
 import trackMixin from "@/mixins/track.js";
@@ -236,65 +243,78 @@ export default {
   name: "TrackPlayingCard",
   mixins: [trackMixin],
   components: {},
-  props: {
-    track: {
-      type: Object,
-      default: function() {
-        return {
-          mediaNumber: 0,
-          userBookmarked: false,
-          userRating: {
-            rating: 0,
-            isFavorite: false,
-            isDisliked: false
-          }
-        };
-      }
-    },
-    listNumber: Number
-  },
-  beforeCreate() {
-    let that = this;
-    this.$store.subscribe(storeAction => {
-      if (
-        storeAction.type === "clearQue" ||
-        storeAction.type === "shuffleQue"
-      ) {
-        that.queIndex = 0;
-        that.stop();
-      }
-    });
+  created() {
+    EventBus.$on("q:addedTracksToQue", this.queModified);
+    EventBus.$on("q:deletedTrackFromQue", info => this.queModified(info));
+    EventBus.$on("q:deletedAllTrackFromQue", info => this.queModified(info));
   },
   beforeDestroy() {
-    this.howl.unload();
-  },
+    EventBus.$off("q:addedTracksToQue", this.queModified);
+    EventBus.$off("q:deletedTrackFromQue", info => this.queModified(info));
+    EventBus.$off("q:deletedAllTrackFromQue", info => this.queModified(info));
+    if(this.howl) {
+      this.howl.unload();
+    }
+  },  
   async mounted() {
     this.originalWindowTitle = document.title;
-    Howler.volume(this.volume);
-    let that = this;
-    var trackInQue = this.$_.find(this.$store.getters.playQue, function(t) {
-      return t.track.id === that.track.id;
-    });
-    this.$nextTick(() => {
-      this.queIndex = trackInQue.listNumber - 1;
-    });
-    this.trackDownloading = true;
-    EventBus.$emit("loadingStarted");
-    this.howl = new Howl({
-      volume: this.volume,
-      loop: this.loop,
-      src: this.currentTrack.trackPlayUrl,
-      autoplay: true,
-      onplay: () => {
-        this.updatePlaying();
-      },
-      onend: () => {
-        this.skip("next");
-      }
-    });
-    this.loaded = true;
+    this.loadFirstTrackInQue();
   },
   methods: {
+    loadFirstTrackInQue() {
+      const that = this;
+      this.$playQue.firstTrack()
+      .then(response => {
+        if (response.isSuccess) {
+          that.queIndex = response.track.index;
+          that.firstTrackIndex = response.firstTrackIndex;
+          that.lastTrackIndex = response.lastTrackIndex;
+          that.trackDownloading = true;
+          Howler.volume(that.volume);
+          that.currentTrack = response.track;
+          that.loaded = true;
+          return this.$playQue.totalTime()
+        } else {
+          // No tracks in Que
+          that.loaded = false;
+          return false;
+        }
+      })
+      .then(function(ttResponse) {
+        if(ttResponse) {
+          that.quePlayTime = ttResponse.totalTime;
+        }
+      });
+    },
+    queModified: function(info) {
+      if(info && info.totalCount === 0) {
+        this.stop();
+        this.loaded = false;
+        return;
+      }
+      this.$nextTick(() => {
+        this.$playQue.totalTime()
+        .then(response => {
+          // removed all tracks from que stop playing hide player
+          if (!response.isSuccess || response.totalTime === 0) {
+            this.stop();
+            this.loaded = false;
+            return;
+          }
+          // modified que, que has tracks, not playing, start playing first track
+          if (response.isSuccess && response.totalTime > 0 && !this.playing) {
+            this.loadFirstTrackInQue();
+            return;
+          }
+          // modified que, playing, just update first and last index
+          if (response.isSuccess && this.playing) {
+            this.firstTrackIndex = response.firstTrackIndex;
+            this.lastTrackIndex = response.lastTrackIndex;
+          }
+          this.quePlayTime = response.totalTime;
+        });
+      })
+    },
     toggleFullScreen() {
       let docElm = document.documentElement;
       if (this.isFullScreen) {
@@ -339,13 +359,26 @@ export default {
       this.howl.seek(this.howl.seek() + amount);
     },
     play: function() {
-      if (!this.playing) {
-        this.howl.play();
-        this.playing = true;
-        this.showPlayingNotification();
+      if (this.queIndex != this.currentTrack.index) {
+        let that = this;
+        this.$playQue.trackByIndex(this.queIndex)
+        .then(response => {
+          if (response.isSuccess) {
+            that.queIndex = response.track.index;
+            that.trackDownloading = true;
+            that.currentTrack = response.track;
+            that.loaded = true;
+          }
+        });
       } else {
-        this.howl.pause();
-        this.playing = false;
+        if (!this.playing) {
+          this.howl.play();
+          this.playing = true;
+          this.showPlayingNotification();
+        } else {
+          this.howl.pause();
+          this.playing = false;
+        }
       }
     },
     showPlayingNotification() {
@@ -372,31 +405,35 @@ export default {
       }
     },
     stop: function() {
-      this.howl.stop();
+      if (this.howl) {
+        this.howl.stop();
+      }
+      document.title = this.originalWindowTitle;
       this.playing = false;
     },
     skip: function(direction) {
       if (direction === "next") {
-        let isPlayingLastTrack =
-          this.queIndex === this.$store.getters.playQue.length - 1;
+        let isPlayingLastTrack = this.queIndex === this.lastTrackIndex;
         if (isPlayingLastTrack && !this.loop) {
           this.stop();
           return;
         }
         if (isPlayingLastTrack && this.loop) {
-          this.queIndex = -1;
+          this.queIndex = this.firstTrackIndex;
+        } else {
+          this.queIndex++;
         }
-        this.queIndex++;
       } else {
-        let isPlayingFirstTrack = this.queIndex === 0;
+        let isPlayingFirstTrack = this.queIndex === this.firstTrackIndex;
         if (isPlayingFirstTrack && !this.loop) {
           this.stop();
           return;
         }
         if (isPlayingFirstTrack && this.loop) {
-          this.queIndex = this.$store.getters.playQue.length;
-        }        
-        this.queIndex--;
+          this.queIndex = this.lastTrackIndex;
+        } else {
+          this.queIndex--;
+        }
       }
       this.$nextTick(() => {
         this.play();
@@ -449,7 +486,8 @@ export default {
     updatePlaying() {
       document.title = this.currentTrack.title;
       this.trackDownloading = false;
-      (this.playingTrackId = this.currentTrack.id), (this.playing = true);
+      this.playingTrackId = this.currentTrack.id;
+      this.playing = true;
       var image = document.getElementById("trackCover");
       window.favIcon.image(image);
       this.$store.dispatch("playIndexChange", {
@@ -464,7 +502,9 @@ export default {
   watch: {
     currentTrack(trackInfo) {
       this.stop();
-      this.howl.unload();
+      if (this.howl) {
+        this.howl.unload();
+      }
       if (!trackInfo) {
         return;
       }
@@ -487,12 +527,12 @@ export default {
       });
     },
     playing(playing) {
-      this.seek = this.howl.seek();
+      this.seek = this.howl ? this.howl.seek() : 0;
       let updateSeek;
       if (playing) {
         updateSeek = setInterval(() => {
           try {
-            this.seek = this.howl.seek();
+            this.seek = this.howl ? this.howl.seek() : 0;
           } catch (e) {
             clearInterval(updateSeek);
           }
@@ -503,13 +543,20 @@ export default {
       this.$store.dispatch("nowPlaying", playing);
     },
     playRequestTrackInfo(trackInfo) {
-      this.queIndex = trackInfo.index;
+      if(this.queIndex != trackInfo.index) {
+        this.queIndex = trackInfo.index;
+        this.$nextTick(() => {
+          this.stop();
+          this.play();
+          return;
+        });
+      }
+      if(!this.playing) {
+        this.play();
+      }
     }
   },
   computed: {
-    currentTrack() {
-      return this.$store.getters.playQue[this.queIndex].track;
-    },
     progress() {
       if (!this.howl || this.howl.duration() === 0) return 0;
       return this.seek / this.howl.duration();
@@ -522,9 +569,16 @@ export default {
     }
   },
   data: () => ({
+    quePlayTime: 0,
     isFullScreen: false,
+    currentTrack: {},
     howl: {
-      playing: false
+      playing: false,
+      duration: function() {
+        return 0;
+      },
+      unload: function() {},
+      stop: function() {}
     },
     playingTrackId: null,
     trackDownloading: false,
@@ -534,6 +588,8 @@ export default {
     loaded: false,
     originalWindowTitle: "",
     queIndex: 0,
+    firstTrackIndex: 0,
+    lastTrackIndex: 0,
     currentTime: 0,
     seek: 0,
     loop: false,

@@ -312,8 +312,10 @@ export default {
       window.open(url, "_blank");
     },        
     playNow: function() {
-      this.$store.dispatch("clearQue");
-      this.addToQue(this.track);
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addToQue(this.track);
+      });      
     },
     addTrackToQue: function() {
       this.addToQue(this.track);

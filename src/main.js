@@ -1,15 +1,19 @@
 import Vue from 'vue';
 import './plugins/vuetify.js';
+import playQue from './plugins/playQue.js';
 import App from './App.vue';
 import router from './router';
 import Axios from 'axios';
 import store from './store';
+import AsyncComputed from 'vue-async-computed';
 
 import moment from 'moment-timezone';
 
 var numeral = require("numeral");
 
 Vue.config.productionTip = false;
+
+Vue.use(playQue);
 
 var myApi = Axios.create({
   baseURL: process.env.VUE_APP_API_URL,
@@ -123,6 +127,9 @@ Vue.filter("yearsFromDate", function (fromDate, toDate) {
 Vue.prototype.$filters = Vue.options.filters;
 Vue.prototype.$moment = moment;
 Vue.prototype.$_ = require('lodash');
+
+
+Vue.use(AsyncComputed)
 
 new Vue({
   el: '#app',

@@ -1,6 +1,10 @@
 <template>
   <div class="collection-detail-container">
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'collections'"></Toolbar>
+    <Toolbar
+      :menuItems="menuItems" 
+      :adminItems="adminMenuItems" 
+      :toolbarIcon="'collections'"
+    ></Toolbar>
     <v-container fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
@@ -37,36 +41,37 @@
                     readonly
                   ></v-text-field>
                 </v-flex>
-
-
               </v-layout>
             </v-flex>
           </v-layout>
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
-          <v-tabs right color="primary"  slider-color="accent">
+          <v-tabs right color="primary" slider-color="accent">
             <v-tab>Description</v-tab>
             <v-tab v-if="collection.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="collection.urLsList.length">Urls</v-tab>
             <v-tab-item>
-              <v-card  flat class="description darken-3">
+              <v-card flat class="description darken-3">
                 <v-card-text v-html="collection.description">Loading...</v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="collection.tagsList.length > 0">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in collection.tagsList">
                   <v-list-tile :key="`t-${name}-${index}`">
                     <v-list-tile-content>
                       <v-list-tile-title>{{ name }}</v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < collection.tagsList.length" :key="`tdivider-${index}`"></v-divider>
+                  <v-divider
+                    v-if="index + 1 < collection.tagsList.length"
+                    :key="`tdivider-${index}`"
+                  ></v-divider>
                 </template>
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="collection.urLsList.length">
-              <v-list >
+              <v-list>
                 <template v-for="(name, index) in collection.urLsList">
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
@@ -75,7 +80,10 @@
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
-                  <v-divider v-if="index + 1 < collection.urLsList.length" :key="`uaadivider-${index}`"></v-divider>
+                  <v-divider
+                    v-if="index + 1 < collection.urLsList.length"
+                    :key="`uaadivider-${index}`"
+                  ></v-divider>
                 </template>
               </v-list>
             </v-tab-item>
@@ -111,7 +119,7 @@
                 {{ collection.missingReleaseCount | padNumber3 }}
               </v-chip>
               <span>Collection Missing Release Count</span>
-            </v-tooltip>            
+            </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -185,7 +193,7 @@
 
 <script>
 import Toolbar from "@/components/Toolbar";
-import ReleaseCard from '@/components/ReleaseCard';
+import ReleaseCard from "@/components/ReleaseCard";
 import { EventBus } from "@/event-bus.js";
 export default {
   components: { Toolbar, ReleaseCard },
@@ -196,28 +204,75 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("c:AddAllToQue", this.addToQue);
     EventBus.$on("c:PlayAll", this.playAll);
+    EventBus.$on("c:Rescan", this.rescan);  
+    EventBus.$on("c:Delete", this.delete);    
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("c:PlayAll", this.playAll);
+    EventBus.$off("c:Rescan", this.rescan);   
+    EventBus.$off("c:Delete", this.delete);     
   },
   async mounted() {
     this.updateData();
   },
+  computed: {
+    adminMenuItems() {
+      return !this.$store.getters.isUserAdmin
+        ? []
+        : [
+            { title: "Delete", class: "warning--text", click: "c:Delete" },
+            { title: "Edit", click: "c:Edit" },
+            { title: "Find Cover", click: "c:FindCover" },
+            { title: "Rescan", click: "c:Rescan" }
+          ];
+    }
+  },
   methods: {
+    rescan: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL + "/admin/scan/collection/" + this.collection.id
+        )
+        .then(() => {
+          this.updateData();
+        });
+    },
+    delete: async function() {
+      let collectionId = this.collection.id;
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/collection/" +
+                  collectionId
+              )
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });
+    },    
     playAll: function() {
-      this.$store.dispatch("clearQue");
-      this.addToQue();
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addToQue();
+      });
     },
     addToQue: function() {
       EventBus.$emit("loadingStarted");
+      let queTracks = [];
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/tracks?filterToCollectionId=${this.id}`
         )
         .then(response => {
-          let queTracks = [];
           response.data.rows.forEach(tr => {
             let artist = tr.trackArtist || tr.artist;
             let queTrack = {
@@ -243,14 +298,15 @@ export default {
             };
             queTracks.push(queTrack);
           });
-          this.$store.dispatch("addToQue", queTracks);
-          EventBus.$emit("showSnackbar", {
-            text: "Added [" + queTracks.length + "] tracks to Que"
-          });
+          return this.$playQue.add(queTracks);
         })
+        .then(function(result) {
+          const message = result.message ||  "Added [" + queTracks.length + "] tracks to Que";
+          EventBus.$emit("showSnackbar", { text: message });
+        })         
         .finally(() => {
           EventBus.$emit("loadingComplete");
-        });              
+        });
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
@@ -270,7 +326,9 @@ export default {
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
-            `/releases?page=${this.pagination.page}&limit=${ this.pagination.rowsPerPage}&filterToCollectionId=${this.id}`
+            `/releases?page=${this.pagination.page}&limit=${
+              this.pagination.rowsPerPage
+            }&filterToCollectionId=${this.id}`
         )
         .then(response => {
           this.releaseItems = response.data.rows;

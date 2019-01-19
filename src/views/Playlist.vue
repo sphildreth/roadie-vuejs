@@ -207,8 +207,10 @@ export default {
   },
   methods: {
     playNow: function() {
-      this.$store.dispatch("clearQue");
-      this.addToQue();
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addToQue();
+      });
     },
     delete: function() {
       this.$refs.confirm
@@ -230,13 +232,13 @@ export default {
     },
     addToQue: function() {
       EventBus.$emit("loadingStarted");
+      let queTracks = [];      
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/tracks?page=1&limit=${this.playlist.statistics.trackCount}&filterToPlaylistId=${this.playlist.id}`
         )
         .then(response => {
-          let queTracks = [];
           response.data.rows.forEach(tr => {
             let artist = tr.trackArtist || tr.artist;
             let queTrack = {
@@ -262,14 +264,15 @@ export default {
             };
             queTracks.push(queTrack);
           });
-          this.$store.dispatch("addToQue", queTracks);
-          EventBus.$emit("showSnackbar", {
-            text: "Added [" + queTracks.length + "] tracks to Que"
-          });
+          return this.$playQue.add(queTracks);
+        })
+        .then(function(result) {
+          const message = result.message || "Added [" + queTracks.length + "] to Que";
+          EventBus.$emit("showSnackbar", { text: message });
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
-        });        
+        }); 
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");

@@ -726,6 +726,7 @@ export default {
     },
     playTopRated: function() {
       EventBus.$emit("loadingStarted");
+      let queTracks = [];
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -734,16 +735,20 @@ export default {
             }&sort=Rating&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
-          let queTracks = this.queTracksForTrackRows(response.data.rows);
-          this.$store.dispatch("addToQue", queTracks);
-          EventBus.$emit("showSnackbar", {
-            text: "Added [" + queTracks.length + "] tracks to Que"
-          });
+          queTracks = this.queTracksForTrackRows(response.data.rows);
+          return this.$playQue.add(queTracks);
+        })
+        .then(function(result) {
+          const message = result.message || "Added [" + queTracks.length + "] tracks to Que";
+          EventBus.$emit("showSnackbar", { text: message });
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
-        });
+        });                
     },
     playMostPopular: function() {
       EventBus.$emit("loadingStarted");
+      let queTracks = [];
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -752,13 +757,16 @@ export default {
             }&sort=PlayedCount&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
-          let queTracks = this.queTracksForTrackRows(response.data.rows);
-          this.$store.dispatch("addToQue", queTracks);
-          EventBus.$emit("showSnackbar", {
-            text: "Added [" + queTracks.length + "] tracks to Que"
-          });
+          queTracks = this.queTracksForTrackRows(response.data.rows);
+          return this.$playQue.add(queTracks);
+        })
+        .then(function(result) {
+          const message = result.message || "Added [" + queTracks.length + "] tracks to Que";
+          EventBus.$emit("showSnackbar", { text: message });
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
-        });
+        });             
     },
     coverDragUploadComplete: function() {
       this.artistImageSearchItems = [];
@@ -813,6 +821,7 @@ export default {
     },
     addAllToQue: function() {
       EventBus.$emit("loadingStarted");
+      let queTracks = [];
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -820,17 +829,22 @@ export default {
             this.artist.id
         )
         .then(response => {
-          let queTracks = this.queTracksForTrackRows(response.data.rows);
-          this.$store.dispatch("addToQue", queTracks);
-          EventBus.$emit("showSnackbar", {
-            text: "Added [" + queTracks.length + "] tracks to Que"
-          });
+          queTracks = this.queTracksForTrackRows(response.data.rows);
+          return this.$playQue.add(queTracks);
+        })
+        .then(function(result) {
+          const message = result.message || "Added [" + queTracks.length + "] to Que";
+          EventBus.$emit("showSnackbar", { text: message });
+        })
+        .finally(() => {
           EventBus.$emit("loadingComplete");
-        });
+        });                   
     },
     playAll: function() {
-      this.$store.dispatch("clearQue");
-      this.addAllToQue();
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addAllToQue();
+      });
     },
     rescan: async function() {
       EventBus.$emit("loadingStarted");

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as _ from "lodash";
 
 Vue.use(Vuex);
 
@@ -15,24 +14,8 @@ export default new Vuex.Store({
     playRequestTrackInfo: (state) => {
       return state.playRequestTrackInfo;
     },
-    quePlaytime: (state) => {
-      let duration = 0;
-      state.playQue.forEach(t => {
-        duration += t.track.duration;
-      });
-      return duration;
-    },      
     nowPlaying: (state) => {
       return state.nowPlaying;
-    },
-    playQue: (state) => {
-      let data = localStorage.getItem("playQue");
-      state.playQue = [];
-      if(data) {
-        state.playQue = JSON.parse(data);
-      }
-      state.queSize = state.playQue.length;
-      return state.playQue;
     },
     lastScanDate: (state) => {
       if(!state.lastScanDate) {
@@ -163,8 +146,7 @@ export default new Vuex.Store({
       isAdmin: false,
       timezone: null,
       timeformat: null
-    },
-    playQue: null
+    }
   },
   mutations: {
     signin (state) {
@@ -212,27 +194,7 @@ export default new Vuex.Store({
       theme.dark = dark;
       localStorage.setItem("theme", JSON.stringify(theme)); 
       state.dark = dark;
-    },
-    clearQue(state) {
-      state.queSize = 0;
-      state.nowPlaying = false;
-      state.playingIndex = [];
-      state.playQue = [];
-      window.favIcon.reset();
-    },
-    addedToQue(state, playQue, number) {
-      state.playQue = playQue;
-      state.queSize = number;
-    },
-    removedFromQue(state, playQue, number) {
-      state.playQue = playQue;
-      state.queSize = number;
-    },
-    shuffledQue(state, playQue, number) {
-      state.playQue = playQue;
-      state.queSize = number;      
-      state.playingIndex = [];
-    },
+    },    
     playIndexChange(state, trackInfo) {
       state.playingIndex = trackInfo;
     },
@@ -262,59 +224,6 @@ export default new Vuex.Store({
     },
     nowPlaying({ commit }, nowPlaying) {
       commit("nowPlaying", nowPlaying);
-    },
-    addToQue({ commit }, tracks) {
-      let data = localStorage.getItem("playQue");
-      let pq = [];
-      if(data) {
-        pq = JSON.parse(data);
-      }
-      let i = pq.length > 0 ? (_.maxBy(pq, 'listNumber')).listNumber : 0;
-      tracks.forEach(t => {
-        if(!_.find(pq, function(pt) { return pt.track.id === t.id;})) {
-          i++;
-          pq.push({
-            listNumber: i,
-            track:t
-          });
-        }         
-      });
-      localStorage.setItem("playQue", JSON.stringify(pq));
-      commit("addedToQue", pq, tracks.length);
-    },
-    shuffleQue({ commit }) {
-      let data = localStorage.getItem("playQue");
-      let pq = [];
-      if(data) {
-        pq = JSON.parse(data);
-      }
-      pq = _.shuffle(pq);
-      let i = 0;
-      pq.forEach(t => {
-        i++;
-        t.listNumber = i;
-      });
-      localStorage.setItem("playQue", JSON.stringify(pq));      
-      commit("shuffledQue", pq, pq.length);
-    },
-    removeFromQue({ commit}, track) {
-      let data = localStorage.getItem("playQue");
-      let pq = [];
-      if(data) {
-        pq = JSON.parse(data);
-      }
-      _.remove(pq, function(t) { return t.track.id === track.track.id; });
-      let i = 0;
-      pq.forEach(t => {
-        i++;
-        t.listNumber = i;
-      });
-      localStorage.setItem("playQue", JSON.stringify(pq));      
-      commit("removedFromQue", pq, pq.length);
-    },
-    clearQue({ commit}) {
-      localStorage.removeItem("playQue");
-      commit("clearQue");
     }
   }
 })

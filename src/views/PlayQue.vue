@@ -54,9 +54,9 @@
       </v-flex>
     </v-layout>
     <v-container fluid grid-list-md>
-      <v-data-table :headers="headers" :items="items" class="elevation-1" hide-actions>
+      <v-data-table no-data-text="No Tracks In Que" :headers="headers" :items="items" class="elevation-1" hide-actions>
         <template slot="items" slot-scope="props">
-          <tr :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : ''">
+          <tr :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : ''">
             <td class="handle">
               <input
                 type="checkbox"
@@ -66,7 +66,7 @@
               >
               {{ props.item.listNumber | padNumber3 }}
               <v-icon
-                class="no-rainbow"
+                class="no-rainbow playing-icon"
                 title="Click to play track"
                 @click="playTrack(props.item.track.id)"
                 :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
@@ -196,6 +196,7 @@ export default {
     EventBus.$on("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$on("pl:Shuffle", this.shuffleQue);
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("q:addedTracksToQue", this.updateData);
   },
   beforeDestroy() {
     EventBus.$off("pl:ClearQue", this.clearQue);
@@ -203,6 +204,7 @@ export default {
     EventBus.$off("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$off("pl:Shuffle", this.shuffleQue);
     EventBus.$off("toolbarRefresh", this.updateData);
+    EventBus.$off("q:addedTracksToQue", this.updateData);
   },
   async mounted() {
     let table = document.querySelector(".v-datatable tbody");
@@ -241,7 +243,7 @@ export default {
       return this.$_.uniqBy(releaseIds).length;
     },
     queArtistCount() {
-      let artistIds = [];
+      let artistIds = [];      
       this.items.forEach(t => {
         artistIds.push(t.track.artist.id);
         if(t.track.releaseArtist) {
@@ -262,22 +264,21 @@ export default {
   },
   methods: {
     playTrack: function(id) {
-      for (const [i, t] of  this.items.entries()) {
+      this.items.forEach(t => {
         let tr = t.track;
         if(tr.id === id) {
           this.$store.dispatch("playRequest", {
-            index: i,
+            index: tr.index,
             trackId: tr.id,
             releaseId: tr.release.value,
             artistId: tr.artist.id
           });        
           return;  
         }
-      }      
+      })      
     },
     shuffleQue: function() {
-      this.$store.dispatch("shuffleQue");
-      this.updateData();
+      this.updateData(true);
     },
     doSaveAsPlaylist: function() {
       if (this.$refs.form.validate()) {
@@ -306,14 +307,18 @@ export default {
       this.showSaveAsPlaylist = true;
     },
     removeSelected: function() {
-      this.selectedTracks.forEach(track => {
-        this.removeTrackFromQue(track);
-      });
+      this.removeTracksFromQue(this.selectedTracks);
       EventBus.$emit("showSnackbar", { text: "Removed [" + this.selectedTracks.length + "] from Que" });
+      this.selectedTracks = [];
     },
-    removeTrackFromQue: function(track) {
-      this.$store.dispatch("removeFromQue", track);
-      this.updateData();
+    removeTrackFromQue: function(track) {   
+      this.removeTracksFromQue([ track ]);
+    },
+    removeTracksFromQue: function(tracks) {   
+      this.$playQue.delete(this.$_.map(tracks, function(track){ return track.track.id; }))
+      .then(() => {
+        this.updateData();
+      })
     },
     toggleSelectedTrack: function(e, track) {
       var isTrackSelected = e.target.checked;
@@ -332,18 +337,24 @@ export default {
       }
     },
     clearQue: function() {
-      this.$store.dispatch("clearQue");
-      this.updateData();
-      EventBus.$emit("showSnackbar", { text: "Cleared Que" });
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.updateData();
+        EventBus.$emit("showSnackbar", { text: "Cleared Que" });        
+      });
     },
-    updateData: async function() {
+    updateData: async function(doShuffle) {
       EventBus.$emit("loadingStarted");
       this.loading = true;
       this.items = [];
       this.$nextTick(() => {
-        this.items = this.$store.getters.playQue;
-        EventBus.$emit("loadingComplete");
-        this.loading = false;
+        // TODO pagination; For now load first 1000 items
+        this.$playQue.list(0,1000,doShuffle)
+        .then(resolve => {
+          this.items = resolve.tracks;
+          EventBus.$emit("loadingComplete");
+          this.loading = false;
+        })
       });
     }
   },
@@ -409,6 +420,9 @@ export default {
   width: 50px;
   padding-right: 6px;
   vertical-align: middle;
+}
+.playque-container tr.playing-paused-track .playing-icon { 
+  color: green !important;
 }
 .playque-container table.v-table thead td:not(:nth-child(1)),
 .playque-container table.v-table tbody td:not(:nth-child(1)),

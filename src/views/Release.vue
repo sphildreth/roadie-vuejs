@@ -636,8 +636,10 @@ export default {
       this.showMergingRelease = true;
     },
     playNow: function() {
-      this.$store.dispatch("clearQue");
-      this.addToQue();
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addToQue();
+      });
     },
     addSelectedTrack: function(track) {
       if (
@@ -738,11 +740,12 @@ export default {
           artistImageUrl: artist.thumbnail.url,
           userRating: tr.userRating || { rating: 0 }
         };
-        queTracks.push(queTrack);
+        queTracks.push(queTrack); 
       });
-      this.$store.dispatch("addToQue", queTracks);
-      EventBus.$emit("showSnackbar", {
-        text: "Added [" + queTracks.length + "] tracks to Que"
+      this.$playQue.add(queTracks)
+      .then(function(result) {
+        const message = result.message ||  "Added [" + result.addedCount + "] tracks to Que";
+        EventBus.$emit("showSnackbar", { text: message });
       });
     },
     showImageModal: function(e) {

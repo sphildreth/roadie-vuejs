@@ -112,7 +112,7 @@
         </v-card-title>
         <v-card-text>
           <p>This web application is intended to primarily be used on a desktop, with a resolution > 1280.</p>
-          <p>For mobile applications any of the Subsonic Mobile Applications will work against the Subsonic API. See "How do I use Subsonic Applications?" below for more information.</p>
+          <p>For mobile usage any of the Subsonic Mobile Applications are suggested. See "How do I use Subsonic Applications?" below for more information.</p>
         </v-card-text>
       </v-card>  
 
