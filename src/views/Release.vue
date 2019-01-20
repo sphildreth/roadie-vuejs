@@ -677,12 +677,12 @@ export default {
       window.open(url, "_blank");
     },
     searchForTitle: function() {
-      this.$router.push({ name: "search", params: { q: this.searchQuery } });
+      this.$router.push({ name: "search", params: { q: 'r: ' + this.searchQuery } });
     },
     searchForArtist: function() {
       this.$router.push({
         name: "search",
-        params: { q: this.release.artist.artist.text }
+        params: { q: 'a: ' + this.release.artist.artist.text }
       });
     },
     setRating: async function() {

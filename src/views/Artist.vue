@@ -788,7 +788,7 @@ export default {
       window.open(url, "_blank");
     },
     searchArtistsWithName: function() {
-      this.$router.push({ name: "search", params: { q: this.artist.name } });
+      this.$router.push({ name: "search", params: { q: 'a: ' + this.artist.name } });
     },
     queTracksForTrackRows(trackRows) {
       let queTracks = [];

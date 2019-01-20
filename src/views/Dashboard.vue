@@ -174,6 +174,11 @@ export default {
   async mounted() {
     this.updateData();
   },
+  computed: {
+    recentLimit() {
+      return this.$store.getters.user.recentLimit || 24;
+    }
+  },
   methods: {
     playRandomTracks: function() {
       EventBus.$emit("loadingStarted");      
@@ -235,14 +240,14 @@ export default {
           that.$store.commit("updateLastScan", rr.data.data.lastScan);
           return that.$axios.get(
             process.env.VUE_APP_API_URL +
-              `/releases?page=1&limit=16&sort=CreatedDate&order=DESC`
+              `/releases?page=1&limit=${this.recentLimit}&sort=CreatedDate&order=DESC`
           );
         })
         .then(rr => {
           that.latestReleases = rr.data.rows;
           return that.$axios.get(
             process.env.VUE_APP_API_URL +
-              `/artists?page=1&limit=16&sort=CreatedDate&order=DESC`
+              `/artists?page=1&limit=${this.recentLimit}&sort=CreatedDate&order=DESC`
           );
         })
         .then(rr => {

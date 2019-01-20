@@ -2,8 +2,17 @@
   <div class="search-results-container">
     <v-container fluid>
       <div class="heading mb-2">Search Results for:
-        <span class="accent--text title ml-2">{{ decodeURIComponent(q) }}</span>
+        <span class="accent--text title ml-2">{{ decodeURIComponent(query) }}</span>
       </div>
+      <div v-if="loading">
+        <v-progress-linear
+          v-if="loading"
+          height="2"
+          color="accent"
+          class="ma-0 pa-0"
+          indeterminate
+        ></v-progress-linear>
+      </div>      
       <v-divider></v-divider>
     </v-container>
     <v-container fluid class="pa-0 pr-3 pl-3 ma-0" >
@@ -108,26 +117,67 @@ export default {
   props: {
     q: String
   },
-  created() {},
+  created() {
+    this.searchQuery = this.q;    
+  },
   computed: {
     noResults() {
       return (
+        !this.loading &&
         this.artistItems.length == 0 &&
         this.releaseItems.length == 0 &&
         this.trackItems.length == 0 &&
         this.playlistItems.length == 0
       );
+    },
+    query() {
+      return this.searchQuery.replace('a: ', '').replace('r: ', '').replace('t: ', '').replace('p: ', '');
+    },
+    doArtistSearch() {
+      return !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("t:") && !this.searchQuery.startsWith("p:");
+    },
+    doReleaseSearch() {
+      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("t:") && !this.searchQuery.startsWith("p:");
+    },
+    doTrackSearch() {
+      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("p:");
+    },
+    doPlaylistSearch() {
+      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("t:");
     }
+
   },
   async mounted() {
     this.updateData();
   },
   methods: {
     updateData: async function() {
-      this.updateArtistData();
-      this.updateReleaseData();
-      this.updateTracksData();
-      this.updatePlaylistData();
+      this.loading = true;
+      if(!this.query) {
+        this.loading = false;
+        EventBus.$emit("showSnackbar", {
+          text: "You won't find anything if you don't search for something.",
+          color: "red"
+        });        
+        return;
+      }
+      this.artistItems = [];
+      this.releaseItems = [];
+      this.trackItems = [];
+      this.playlistItems= [];
+      if(this.doArtistSearch) {
+        this.updateArtistData();
+      }
+      if(this.doReleaseSearch) {
+        this.updateReleaseData();
+      }
+      if(this.doTrackSearch) {
+        this.updateTracksData();
+      }
+      if(this.doPlaylistSearch) {
+        this.updatePlaylistData();
+      }
+      this.loading = false;
     },
     updateArtistData: async function() {
       EventBus.$emit("loadingStarted");
@@ -138,7 +188,7 @@ export default {
               this.artistPagination.rowsPerPage
             }&order=${this.artistPagination.sortOrder}&sort=${
               this.artistPagination.sortBy
-            }&filter=${this.q}`
+            }&filter=${this.query}`
         )
         .then(response => {
           this.artistItems = response.data.rows;
@@ -157,7 +207,7 @@ export default {
               this.releasePagination.rowsPerPage
             }&order=${this.releasePagination.sortOrder}&sort=${
               this.releasePagination.sortBy
-            }&filter=${this.q}`
+            }&filter=${this.query}`
         )
         .then(response => {
           this.releaseItems = response.data.rows;
@@ -176,7 +226,7 @@ export default {
               this.trackPagination.rowsPerPage
             }&order=${this.trackPagination.sortOrder}&sort=${
               this.trackPagination.sortBy
-            }&filter=${this.q}`
+            }&filter=${this.query}`
         )
         .then(response => {
           this.trackItems = response.data.rows;
@@ -195,7 +245,7 @@ export default {
               this.playlistPagination.rowsPerPage
             }&order=${this.playlistPagination.sortOrder}&sort=${
               this.playlistPagination.sortBy
-            }&filter=${this.q}`
+            }&filter=${this.query}`
         )
         .then(response => {
           this.playlistItems = response.data.rows;
@@ -208,7 +258,7 @@ export default {
   },
   watch: {
     $route(to) {
-      this.q = encodeURIComponent(to.params.q);
+      this.searchQuery = encodeURIComponent(to.params.q);
       this.updateData();
     },
     artistPagination: {
@@ -233,6 +283,8 @@ export default {
     }
   },
   data: () => ({
+    searchQuery: null,
+    loading: true,
     rowsPerPageItems: [12, 36, 60, 120],
     currentView: "",
     artistPagination: {

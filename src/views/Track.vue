@@ -291,7 +291,7 @@ export default {
   },
   methods: {
     searchForTitle: function() {
-      this.$router.push({ name: "search", params: { q: this.track.title } });
+      this.$router.push({ name: "search", params: { q: 't: ' + this.track.title } });
     },
     searchInternetArtist: function() {
       var artist = this.track.trackArtist || this.track.artist;

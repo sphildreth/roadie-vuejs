@@ -317,6 +317,9 @@ export default {
           this.collection.tagsList = this.collection.tagsList || [];
           this.collection.urLsList = this.collection.urLsList || [];
         })
+        .then(() => {
+          this.updateReleaseData();
+        })
         .finally(() => {
           EventBus.$emit("loadingComplete");
         });
