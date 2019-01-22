@@ -63,7 +63,7 @@
                     </v-flex>
                     <v-flex xs2>
                       <v-text-field v-bind:value="release.trackCount" label="Track Count" readonly></v-text-field>
-                    </v-flex>
+                    </v-flex>                 
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs2>
@@ -80,6 +80,9 @@
                         readonly
                       ></v-text-field>
                     </v-flex>
+                    <v-flex xs1 v-if="release.rank">
+                      <v-text-field v-bind:value="release.rank" title="Calculated Rank" label="Rank" readonly></v-text-field>
+                    </v-flex>                      
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -887,7 +890,7 @@ export default {
         {
           source: "All Music",
           sourceId: this.release.amgId,
-          url: `'https://www.allmusic.com/artist/-'`
+          url: "https://www.allmusic.com/artist/-"
         },
         {
           source: "Discogs",

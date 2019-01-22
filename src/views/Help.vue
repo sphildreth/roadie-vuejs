@@ -52,6 +52,18 @@
           <p>'Best Workout Dance Tunes' is an example of a Playlist.</p>
         </v-card-text>
       </v-card>
+
+      <v-card>
+        <v-card-title primary-title>
+          <h5 class="headline mb-0">What is the difference between Rating and Rank?</h5>
+        </v-card-title>
+        <v-card-text>
+          <p>Rating is provided by users. Rank is calculated by the system.</p>
+          <p>Release Collection Rank Value = (Releases In Collection * .01) - ((Release Collection Number - 1) * .01)</p>
+          <p>Release Rank Calculation = Average of Track User Ratings + (User Rating of Release / Release Track Count) + Release Collection Rank Value</p>
+        </v-card-text>
+      </v-card>  
+
       <v-card>
         <v-card-title primary-title>
           <h5 class="headline mb-0">What is the difference between average rating and my rating?</h5>

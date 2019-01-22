@@ -44,6 +44,7 @@
                 @click="isDisliked = !isDisliked"
                 :color="isDisliked ? 'green' : ''"
               >fas fa-thumbs-down</v-icon>
+              <span v-if="release.rank" class="ml-1 rank accent--text" title="Rank">{{ release.rank }}</span>
             </div>
             <router-link :to="'/release/' + release.id">
               <div
@@ -146,6 +147,10 @@ export default {
 .release-rating-container .v-rating {
   width: 96px;
   float: left;
+}
+.release-rating-container .rank { 
+  font-size: 8px;
+  vertical-align: middle;
 }
 i.favorite {
   float: left;
