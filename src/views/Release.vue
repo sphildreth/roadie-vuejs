@@ -101,7 +101,6 @@
                     <v-flex v-for="(image, index) in release.images" :key="image.url" xs2>
                       <v-img
                         :src="image.thumbnailUrl"
-                        :lazy-src="`@/assets/img/loading.gif`"
                         class="grey lighten-2"
                         @click="showImageModal(release.images[index])"
                       ></v-img>

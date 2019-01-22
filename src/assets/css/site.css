@@ -50,6 +50,15 @@
   border: 1px solid red;
 }
 
+.release-rank { 
+  font-size: 8px;
+  vertical-align: middle;
+}
+
+.pull-left {
+  float: left !important;
+}
+
 .rainbow, .playing-artist, .playing-release, .playing-track {
   background: red;
   background: -webkit-linear-gradient(left, orange , yellow, green, cyan, blue, violet);

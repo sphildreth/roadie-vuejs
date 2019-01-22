@@ -104,7 +104,6 @@
                     <v-flex v-for="(image, index) in artist.images" :key="image.url" xs2>
                       <v-img
                         :src="image.thumbnailUrl"
-                        :lazy-src="`@/assets/img/loading.gif`"
                         class="grey lighten-2"
                         @click="showImageModal(artist.images[index])"
                       ></v-img>
@@ -485,6 +484,7 @@
                     <td>{{ props.item.trackCount }}</td>
                     <td>{{ props.item.duration }}</td>
                     <td>{{ props.item.rating }}</td>
+                    <td>{{ props.item.rank }}</td>
                     <td>{{ props.item.lastPlayed }}</td>
                     <td>{{ props.item.playedCount }}</td>
                   </template>
@@ -986,6 +986,7 @@ export default {
                   trackCount: r.trackCount,
                   duration: r.durationTime,
                   rating: r.rating,
+                  rank: r.rank,
                   lastPlayed: this.$options.filters.formatTimeStamp(
                     r.lastPlayed,
                     this.$store.getters.user
@@ -1226,6 +1227,7 @@ export default {
       { text: "Tracks", value: "trackCount" },
       { text: "Time", value: "duration" },
       { text: "Avg Rating", value: "rating" },
+      { text: "Rank", value: "rank" },
       { text: "Last Played", value: "lastPlayed" },
       { text: "Played Count", value: "playedCount" }
     ],

@@ -12,7 +12,9 @@
             <v-flex xs9 >
                 <v-card-title primary-title class="pa-0 ma-0">
                     <div :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''">
-                        <v-rating v-model="release.rating" background-color="orange lighten-3" color="orange" readonly small dense></v-rating>                    
+                        <v-rating v-model="release.rating" class="pull-left" background-color="orange lighten-3" color="orange" readonly small dense></v-rating> 
+                        <span v-if="release.rank" class="ml-1 release-rank accent--text" title="Rank">{{ release.rank }}</span>                                         
+                        <span v-if="!release.rank" >&nbsp;</span>                                                                 
                         <router-link :to="'/release/' + release.id">
                           <div :title="release.release.text" class="release-title subheading font-weight-medium pointer">{{ release.release.text }}</div>
                           </router-link>
