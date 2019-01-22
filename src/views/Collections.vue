@@ -58,9 +58,10 @@ export default {
         .open("Rescan All", "Are you sure?", { color: "orange" })
         .then(confirm => {
           if (confirm) {
+            EventBus.$emit("loadingStarted");
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL + "/admin/collection/rescanall"
+                process.env.VUE_APP_API_URL + "/admin/scan/collection/rescanall"
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
