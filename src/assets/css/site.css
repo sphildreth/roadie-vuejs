@@ -50,7 +50,7 @@
   border: 1px solid red;
 }
 
-.release-rank { 
+.release-rank, .artist-rank { 
   font-size: 8px;
   vertical-align: middle;
 }

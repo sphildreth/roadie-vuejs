@@ -31,6 +31,7 @@
                 @click="isDisliked = !isDisliked"
                 :color="isDisliked ? 'green' : 'accent'"
               >fas fa-thumbs-down</v-icon>
+              <span v-if="artist.rank" class="ml-1 artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
             </div>
             <router-link :to="'/artist/' + artist.id">
               <div

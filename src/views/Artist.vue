@@ -62,6 +62,9 @@
                     <v-flex xs3 v-if="artist.isniList">
                       <v-text-field v-bind:value="artist.isniList.join(', ')" label="ISNI" readonly></v-text-field>
                     </v-flex>
+                    <v-flex xs1 v-if="artist.rank">
+                      <v-text-field v-bind:value="artist.rank" title="Calculated Rank" label="Rank" readonly></v-text-field>
+                    </v-flex>                      
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs4 v-if="artist.birthDate">

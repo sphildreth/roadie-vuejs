@@ -340,7 +340,12 @@ export default {
       this.$playQue.deleteAll()
       .then(() => {
         this.updateData();
-        EventBus.$emit("showSnackbar", { text: "Cleared Que" });        
+      })
+      .then(() => {
+        this.$store.dispatch("playIndexChange", {});
+      })
+      .then(() => {
+        EventBus.$emit("showSnackbar", { text: "Cleared Que" });                
       });
     },
     updateData: async function(doShuffle) {

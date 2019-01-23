@@ -35,6 +35,7 @@ export default {
     EventBus.$on("a:viewRecentlyAdded", this.viewRecentlyAdded);
     EventBus.$on("a:viewStarred", this.viewStarred);
     EventBus.$on("a:viewTopRated", this.viewTopRated);
+    EventBus.$on("a:viewTopRanked", this.viewTopRanked);
     EventBus.$on("a:viewMostPlayed", this.viewMostPlayed);
     EventBus.$on("a:viewMostReleases", this.viewMostReleases);
     EventBus.$on("a:viewMostTracks", this.viewMostTracks);
@@ -50,6 +51,7 @@ export default {
     EventBus.$off("a:viewRecentlyAdded", this.viewRecentlyAdded);
     EventBus.$off("a:viewStarred", this.viewStarred);
     EventBus.$off("a:viewTopRated", this.viewTopRated);
+    EventBus.$off("a:viewTopRanked", this.viewTopRanked);
     EventBus.$off("a:viewMostPlayed", this.viewMostPlayed);
     EventBus.$off("a:viewMostReleases", this.viewMostReleases);
     EventBus.$off("a:viewMostTracks", this.viewMostTracks);    
@@ -72,6 +74,11 @@ export default {
       this.pagination.sortBy = "Rating";
       this.updateData();
     },
+    viewTopRanked: function() {
+      this.resetView();
+      this.pagination.sortBy = "Rank";
+      this.updateData();
+    },        
     viewRandom: function() {
       this.resetView();
       this.doRandomize = true;
@@ -206,6 +213,11 @@ export default {
         class: "hidden-sm-and-down",
         click: "a:viewTopRated"
       },
+      {
+        title: "Top Ranked",
+        class: "hidden-sm-and-down",
+        click: "a:viewTopRanked"
+      },        
       { title: "All", class: "", click: "a:viewAll" }
     ],
     items: []
