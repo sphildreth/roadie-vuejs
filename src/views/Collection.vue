@@ -32,7 +32,6 @@
                     aspect-ratio="1"
                   ></v-img>
                 </v-flex>
-
                 <v-flex xs9 class="title">
                   <v-text-field
                     v-if="collection.edition"
@@ -40,7 +39,14 @@
                     label="Edition"
                     readonly
                   ></v-text-field>
-                </v-flex>
+                  <v-text-field
+                    v-if="collection.statusVerbose"
+                    v-bind:value="collection.statusVerbose"
+                    label="Status"
+                    readonly
+                  ></v-text-field>      
+
+                </v-flex>       
               </v-layout>
             </v-flex>
           </v-layout>
@@ -188,6 +194,7 @@
         </v-card>
       </v-container>
     </v-container>
+    <confirm ref="confirm"></confirm>    
   </div>
 </template>
 
@@ -195,8 +202,9 @@
 import Toolbar from "@/components/Toolbar";
 import ReleaseCard from "@/components/ReleaseCard";
 import { EventBus } from "@/event-bus.js";
+import Confirm from "@/views/Confirm";
 export default {
-  components: { Toolbar, ReleaseCard },
+  components: { Toolbar, ReleaseCard, Confirm },
   props: {
     id: String
   },
@@ -205,13 +213,15 @@ export default {
     EventBus.$on("c:AddAllToQue", this.addToQue);
     EventBus.$on("c:PlayAll", this.playAll);
     EventBus.$on("c:Rescan", this.rescan);  
-    EventBus.$on("c:Delete", this.delete);    
+    EventBus.$on("c:Delete", this.delete);   
+    EventBus.$on("c:Edit", this.edit);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("c:PlayAll", this.playAll);
     EventBus.$off("c:Rescan", this.rescan);   
     EventBus.$off("c:Delete", this.delete);     
+    EventBus.$off("c:Edit", this.edit);
   },
   async mounted() {
     this.updateData();
@@ -229,6 +239,9 @@ export default {
     }
   },
   methods: {
+    edit: function() {
+      this.$router.push("/collection/edit/" + this.collection.id);
+    },
     rescan: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -248,7 +261,7 @@ export default {
             this.$axios
               .post(
                 process.env.VUE_APP_API_URL +
-                  "/admin/delete/collection/" +
+                  "/collections/delete/" +
                   collectionId
               )
               .then(() => {

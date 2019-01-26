@@ -37,10 +37,12 @@ export default {
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("c:RescanAll", this.rescanAll);
+    EventBus.$on("c:AddNew", this.addNew);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("c:RescanAll", this.rescanAll);
+    EventBus.$off("c:AddNew", this.addNew);
   },
   async mounted() {
     this.updateData();
@@ -49,10 +51,16 @@ export default {
     adminMenuItems() {
       return !this.$store.getters.isUserAdmin
         ? []
-        : [{ title: "Rescan All", click: "c:RescanAll" }];
+        : [
+          { title: "Add", click: "c:AddNew" },
+          { title: "Rescan All", click: "c:RescanAll" }
+        ];
     }
   },
   methods: {
+    addNew() {
+      this.$router.push("/collection/edit/__new__");
+    },
     rescanAll: async function() {
       this.$refs.confirm
         .open("Rescan All", "Are you sure?", { color: "orange" })

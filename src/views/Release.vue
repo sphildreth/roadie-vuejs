@@ -46,7 +46,7 @@
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
-                    <v-flex xs4 class="mt-2">
+                    <v-flex xs4 class="mt-3">
                       <ArtistCard :artist="release.artist"></ArtistCard>
                     </v-flex>
                   </v-layout>

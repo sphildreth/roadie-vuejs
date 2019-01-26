@@ -95,6 +95,16 @@ var router = new VueRouter({
       }      
     },    
     {
+      path: '/collection/edit/:id',
+      name: 'collectionEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "collectionEdit" */ './views/CollectionEdit.vue'),
+      meta: {
+        guest: false,
+        is_admin: true
+      }
+    },      
+    {
       path: '/genres',
       name: 'genres',
       component: () => import(/* webpackChunkName: "genres" */ './views/Genres.vue'),

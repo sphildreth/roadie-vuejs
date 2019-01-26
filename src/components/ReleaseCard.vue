@@ -44,7 +44,7 @@
                 @click="isDisliked = !isDisliked"
                 :color="isDisliked ? 'green' : ''"
               >fas fa-thumbs-down</v-icon>
-              <span v-if="release.rank" class="ml-1 release-rank accent--text" title="Rank">{{ release.rank }}</span>
+              <span v-if="release.rank" class="hidden-md-and-down ml-1 release-rank accent--text" title="Rank">{{ release.rank }}</span>
             </div>
             <router-link :to="'/release/' + release.id">
               <div

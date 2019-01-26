@@ -12,7 +12,7 @@
             <div class="artist-rating-container">
               <v-icon
                 small
-                class="favorite pointer"
+                class="favorite pointer hidden-lg-and-down"
                 @click="isFavorite = !isFavorite"
                 :color="isFavorite ? 'red' : 'accent'"
               >favorite</v-icon>
@@ -27,11 +27,11 @@
               ></v-rating>
               <v-icon
                 small
-                class="disliked pointer"
+                class="disliked pointer hidden-lg-and-down"
                 @click="isDisliked = !isDisliked"
                 :color="isDisliked ? 'green' : 'accent'"
               >fas fa-thumbs-down</v-icon>
-              <span v-if="artist.rank" class="ml-1 artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
+              <span v-if="artist.rank" class="ml-1 hidden-lg-and-down artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
             </div>
             <router-link :to="'/artist/' + artist.id">
               <div
