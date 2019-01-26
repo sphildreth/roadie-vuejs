@@ -64,7 +64,7 @@
                       :class="'trackRating' + track.rating"
                       class="track-number"
                     >{{ track.trackNumber | padNumber3 }}</td>
-                    <td class="track-title secondary--text body-1 pointer on-show-hover">
+                    <td :class="isPlayingTrack(track.id)" class="track-title secondary--text body-1 pointer on-show-hover">
                       <router-link :to="'/track/' + track.id">{{ track.title}}</router-link>
                       <span class="on-hover">
                         <span @click="playTrack(track)"><i class="fas fa-play mx-2" title="Play"></i></span>
@@ -93,6 +93,9 @@ export default {
     release: Object
   },
   methods: {
+    isPlayingTrack: function(trackId) {
+      return this.$store.getters.playingIndex.trackId == trackId ? 'playing-track' : ''
+    },
     playTrack: async function(track) {
       this.$playQue.deleteAll()
       .then(() => {
@@ -189,14 +192,7 @@ tr.Missing td {
 }
 
 .release-with-tracks .trackRating1 {
-  background-image: linear-gradient(
-    to right,
-    mediumseagreen,
-    mediumseagreen 20%,
-    transparent 20%,
-    transparent 100%
-  );
-  background-image: -webkit-linear-gradient(
+  background: linear-gradient(
     to right,
     mediumseagreen,
     mediumseagreen 20%,
@@ -206,14 +202,7 @@ tr.Missing td {
 }
 
 .release-with-tracks .trackRating2 {
-  background-image: linear-gradient(
-    to right,
-    mediumseagreen,
-    mediumseagreen 40%,
-    transparent 40%,
-    transparent 100%
-  );
-  background-image: -webkit-linear-gradient(
+  background: linear-gradient(
     to right,
     mediumseagreen,
     mediumseagreen 40%,
@@ -223,14 +212,7 @@ tr.Missing td {
 }
 
 .release-with-tracks .trackRating3 {
-  background-image: linear-gradient(
-    to right,
-    mediumseagreen,
-    mediumseagreen 60%,
-    transparent 60%,
-    transparent 100%
-  );
-  background-image: -webkit-linear-gradient(
+  background: linear-gradient(
     to right,
     mediumseagreen,
     mediumseagreen 60%,
@@ -240,14 +222,7 @@ tr.Missing td {
 }
 
 .release-with-tracks .trackRating4 {
-  background-image: linear-gradient(
-    to right,
-    mediumseagreen,
-    mediumseagreen 80%,
-    transparent 80%,
-    transparent 100%
-  );
-  background-image: -webkit-linear-gradient(
+  background: linear-gradient(
     to right,
     mediumseagreen,
     mediumseagreen 80%,
@@ -257,14 +232,7 @@ tr.Missing td {
 }
 
 .release-with-tracks .trackRating5 {
-  background-image: linear-gradient(
-    to right,
-    mediumseagreen,
-    mediumseagreen 100%,
-    transparent 100%,
-    transparent 100%
-  );
-  background-image: -webkit-linear-gradient(
+  background: linear-gradient(
     to right,
     mediumseagreen,
     mediumseagreen 100%,

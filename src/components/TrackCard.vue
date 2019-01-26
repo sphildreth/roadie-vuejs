@@ -62,7 +62,7 @@
               </div>
               <div
                 v-if="mediaCount > 1"
-                class="caption accent-text"
+                class="caption accent-text ml-1"
               >{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}
               </div>
               <div

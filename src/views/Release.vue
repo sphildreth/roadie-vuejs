@@ -337,7 +337,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs4>
+                  <v-flex slot="item" slot-scope="props" xs6>
                     <CollectionCard
                       :collection="props.item.collection"
                       :listNumber="props.item.listNumber"
