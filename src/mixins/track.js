@@ -4,7 +4,7 @@ import {
 export default {
   data: () => ({}),
   methods: {
-    bookmarkToggle(bookmarkInfo) {
+    trackBookmarkToggle(bookmarkInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackBookmark/' + bookmarkInfo.trackId + '/' + bookmarkInfo.userBookmarked)
           .then(response => {
@@ -17,6 +17,10 @@ export default {
                 text: "Successfully removed bookmark"
               });
             }
+            EventBus.$emit("userTrackBookmarkChange", {
+              trackId: bookmarkInfo.trackId,
+              isBookmarked: bookmarkInfo.userBookmarked
+            });               
             resolve({
               isSuccess: response.data.isSuccess,
               userBookmarked: bookmarkInfo.userBookmarked
@@ -24,7 +28,7 @@ export default {
           });
       });
     },
-    ratingChange(changeInfo) {
+    trackRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
           this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackRating/' + changeInfo.trackId + '/' + changeInfo.newVal)
@@ -38,6 +42,10 @@ export default {
                   text: "Successfully removed rating"
                 });
               }
+              EventBus.$emit("userTrackRatingChange", {
+                trackId: changeInfo.trackId,
+                isFavorite: changeInfo.newVal
+              });               
               resolve({
                 isSuccess: response.data.isSuccess,
                 rating: changeInfo.newVal
@@ -46,7 +54,7 @@ export default {
         }
       });
     },
-    favoriteToggle(toggleInfo) {
+    trackFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackFavorite/' + toggleInfo.trackId + '/' + toggleInfo.isFavorite)
           .then(response => {
@@ -59,6 +67,10 @@ export default {
                 text: "Track is no longer a favorite"
               });
             }
+            EventBus.$emit("userTrackFavoriteChange", {
+              trackId: toggleInfo.trackId,
+              isFavorite:toggleInfo.isFavorite
+            });            
             resolve({
               isSuccess: response.data.isSuccess,
               isFavorite: toggleInfo.isFavorite
@@ -66,7 +78,7 @@ export default {
           });
       });
     },
-    dislikeToggle(toggleInfo) {
+    trackDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackDisliked/' + toggleInfo.trackId + '/' + toggleInfo.isDisliked)
           .then(response => {
@@ -77,8 +89,12 @@ export default {
             } else if (response.data.isSuccess) {
               EventBus.$emit("showSnackbar", {
                 text: "You no longer hate this Track"
-              });
+              });              
             }
+            EventBus.$emit("userTrackLikeChange", {
+              trackId: toggleInfo.trackId,
+              liked:toggleInfo.isDisliked
+            });
             resolve({
               isSuccess: response.data.isSuccess,
               isFavorite: toggleInfo.isFavorite
@@ -97,7 +113,16 @@ export default {
         EventBus.$emit("showSnackbar", { text: message });
       });      
     },
-    addToQue(track) {
+    getTrackDetail(trackId) {
+      return new Promise(resolve => {
+        this.$axios
+        .get(process.env.VUE_APP_API_URL + `/tracks/${trackId}`)
+        .then(response => {
+          resolve(response);
+        })
+      })
+    },
+    addTrackToQue(track) {
       this.$playQue.add([ this.createQueTrack(track) ])
       .then(function(result) {
         const message = result.message || "Added to Que";

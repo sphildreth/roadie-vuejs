@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded">
+  <div v-if="!hide && loaded">
     <v-card class="track-playing-card" height="100px" hover>
       <v-progress-linear
         v-if="trackDownloading"
@@ -157,9 +157,9 @@
                 <v-icon medium>audiotrack</v-icon>
                 <span class="headline track-time mr-1">{{ currentTrack.durationTime }}</span>
               </span>
-              <span title="Total Time of Que">
+              <span class="pointer" :title="queDisplayTimeTooltip" @click="toggleQuePlayTime">
                 <v-icon medium>headset</v-icon>
-                <span class="headline track-time">{{ quePlayTime | timeFromMilliseconds }}</span>
+                <span class="headline track-time">{{ queDisplayTime | timeFromMilliseconds }}</span>
               </span>
             </v-layout>
           </v-flex>
@@ -252,10 +252,10 @@ export default {
     EventBus.$off("q:addedTracksToQue", this.queModified);
     EventBus.$off("q:deletedTrackFromQue", info => this.queModified(info));
     EventBus.$off("q:deletedAllTrackFromQue", info => this.queModified(info));
-    if(this.howl) {
+    if (this.howl) {
       this.howl.unload();
     }
-  },  
+  },
   async mounted() {
     this.originalWindowTitle = document.title;
     this.loadFirstTrackInQue();
@@ -263,38 +263,42 @@ export default {
   methods: {
     loadFirstTrackInQue() {
       const that = this;
-      this.$playQue.firstTrack()
-      .then(response => {
-        if (response.isSuccess) {
-          that.queIndex = response.track.index;
-          that.firstTrackIndex = response.firstTrackIndex;
-          that.lastTrackIndex = response.lastTrackIndex;
-          that.trackDownloading = true;
-          Howler.volume(that.volume);
-          that.currentTrack = response.track;
-          that.loaded = true;
-          return this.$playQue.totalTime()
-        } else {
-          // No tracks in Que
-          that.loaded = false;
-          return false;
-        }
-      })
-      .then(function(ttResponse) {
-        if(ttResponse) {
-          that.quePlayTime = ttResponse.totalTime;
-        }
-      });
+      if(that.hide) {
+        return false;
+      }
+      this.$playQue
+        .firstTrack()
+        .then(response => {
+          if (response.isSuccess) {
+            that.queIndex = response.track.index;
+            that.firstTrackIndex = response.firstTrackIndex;
+            that.lastTrackIndex = response.lastTrackIndex;
+            that.trackDownloading = true;
+            Howler.volume(that.volume);
+            that.currentTrack = response.track;
+            that.loaded = true;
+            return this.$playQue.totalTime();
+          } else {
+            // No tracks in Que
+            that.loaded = false;
+            return false;
+          }
+        })
+        .then(function(ttResponse) {
+          if (ttResponse) {
+            that.quePlayTotalTime = ttResponse.totalTime;
+            that.calculateQueTimeToIndex();
+          }
+        });
     },
     queModified: function(info) {
-      if(info && info.totalCount === 0) {
+      if (this.hide || (info && info.totalCount === 0)) {
         this.stop();
         this.loaded = false;
         return;
       }
       this.$nextTick(() => {
-        this.$playQue.totalTime()
-        .then(response => {
+        this.$playQue.totalTime().then(response => {
           // removed all tracks from que stop playing hide player
           if (!response.isSuccess || response.totalTime === 0) {
             this.stop();
@@ -311,9 +315,14 @@ export default {
             this.firstTrackIndex = response.firstTrackIndex;
             this.lastTrackIndex = response.lastTrackIndex;
           }
-          this.quePlayTime = response.totalTime;
+          this.quePlayTotalTime = response.totalTime;
         });
-      })
+      });
+    },
+    calculateQueTimeToIndex() {
+      this.$playQue.trackTimeToIndex(this.queIndex).then(response => {
+        this.quePlayTimeToBeforeIndex = response.time;
+      });
     },
     toggleFullScreen() {
       let docElm = document.documentElement;
@@ -361,13 +370,13 @@ export default {
     play: function() {
       if (this.queIndex != this.currentTrack.index) {
         let that = this;
-        this.$playQue.trackByIndex(this.queIndex)
-        .then(response => {
+        this.$playQue.trackByIndex(this.queIndex).then(response => {
           if (response.isSuccess) {
             that.queIndex = response.track.index;
             that.trackDownloading = true;
             that.currentTrack = response.track;
             that.loaded = true;
+            that.calculateQueTimeToIndex();
           }
         });
       } else {
@@ -440,7 +449,7 @@ export default {
       });
     },
     toggleBookmark: function() {
-      this.bookmarkToggle({
+      this.trackBookmarkToggle({
         trackId: this.currentTrack.id,
         userBookmarked: !this.currentTrack.userBookmarked
       }).then(() => {
@@ -448,7 +457,7 @@ export default {
       });
     },
     toggleFavorite: function() {
-      this.favoriteToggle({
+      this.trackFavoriteToggle({
         trackId: this.currentTrack.id,
         isFavorite: !this.currentTrack.userRating.isFavorite
       }).then(() => {
@@ -457,7 +466,7 @@ export default {
       });
     },
     hateToogle: function() {
-      this.dislikeToggle({
+      this.trackDislikeToggle({
         trackId: this.currentTrack.id,
         isDisliked: !this.currentTrack.userRating.isDisliked
       }).then(() => {
@@ -467,7 +476,7 @@ export default {
     },
     setRating: async function() {
       this.$nextTick(() => {
-        this.ratingChange({
+        this.trackRatingChange({
           trackId: this.currentTrack.id,
           newVal: this.currentTrack.userRating.rating
         }).then(this.updateData);
@@ -482,6 +491,12 @@ export default {
     toggleMute() {
       Howler.mute(!this.muted);
       this.muted = !this.muted;
+    },
+    toggleQuePlayTime() {
+      this.quePlayTimeDisplay++;
+      if (this.quePlayTimeDisplay > 2) {
+        this.quePlayTimeDisplay = 0;
+      }
     },
     updatePlaying() {
       document.title = this.currentTrack.title;
@@ -528,22 +543,28 @@ export default {
     },
     playing(playing) {
       this.seek = this.howl ? this.howl.seek() : 0;
-      let updateSeek;
+      if (this.seek > 0) {
+        this.quePlayTimeToBeforeIndex += 1000;
+      }
       if (playing) {
-        updateSeek = setInterval(() => {
+        this.updateSeekInterval = setInterval(() => {
           try {
-            this.seek = this.howl ? this.howl.seek() : 0;
+            this.seek = this.howl ? parseInt(this.howl.seek()) : 0;
+            if (this.seek > 0) {
+              this.quePlayTimeToBeforeIndex += 500;
+            }
           } catch (e) {
-            clearInterval(updateSeek);
+            clearInterval(this.updateSeekInterval);
           }
-        }, 250);
+        }, 500);
       } else {
-        clearInterval(updateSeek);
+        clearInterval(this.updateSeekInterval);
+        this.calculateQueTimeToIndex();
       }
       this.$store.dispatch("nowPlaying", playing);
     },
     playRequestTrackInfo(trackInfo) {
-      if(this.queIndex != trackInfo.index) {
+      if (this.queIndex != trackInfo.index) {
         this.queIndex = trackInfo.index;
         this.$nextTick(() => {
           this.stop();
@@ -551,12 +572,21 @@ export default {
           return;
         });
       }
-      if(!this.playing) {
+      if (!this.playing) {
         this.play();
+      }
+    },
+    hide(hidden) {
+      if(hidden) {
+        this.stop();
+        this.loaded = false;
       }
     }
   },
   computed: {
+    hide() {
+      return !this.$store.state.isLoggedIn;
+    },    
     progress() {
       if (!this.howl || this.howl.duration() === 0) return 0;
       return this.seek / this.howl.duration();
@@ -566,10 +596,33 @@ export default {
     },
     playRequestTrackInfo() {
       return this.$store.getters.playRequestTrackInfo;
+    },
+    queDisplayTime() {
+      switch (this.quePlayTimeDisplay) {
+        case 1:
+          return this.quePlayTimeToBeforeIndex; // Total Time of Que Played
+        case 2:
+          return this.quePlayTotalTime - this.quePlayTimeToBeforeIndex; // Total Remaining Que Time
+        default:
+          return this.quePlayTotalTime; // Total Que Time
+      }
+    },
+    queDisplayTimeTooltip() {
+      switch (this.quePlayTimeDisplay) {
+        case 1:
+          return "Total Time of Que Played (Click to cycle)";
+        case 2:
+          return "Total Remaining Que Time (Click to cycle)";
+        default:
+          return "Total Time of Que (Click to cycle)";
+      }
     }
   },
   data: () => ({
-    quePlayTime: 0,
+    updateSeekInterval: null,
+    quePlayTimeDisplay: 0,
+    quePlayTimeToBeforeIndex: 0,
+    quePlayTotalTime: 0,
     isFullScreen: false,
     currentTrack: {},
     howl: {
@@ -604,12 +657,12 @@ export default {
   padding: 0;
   height: 35px;
 }
-.badge {
+.track-playing-card .badge {
   padding: 1px 4px;
   border-radius: 5px;
   color: white !important;
 }
-img.artist-image {
+.track-playing-card img.artist-image {
   height: 20px;
   vertical-align: middle;
 }

@@ -242,6 +242,27 @@ class PlayQue {
     })
   }
 
+  trackTimeToIndex(index) {
+    // Return total play time from 0 to index
+    const that = this;
+    return new Promise(resolve => {
+      const result = {
+        isSuccess: false,
+        time: 0
+      };      
+      that._db.tracks.where('index').above(0).toArray()
+        .then(function (tracks) {
+          _.takeWhile(tracks, function(tr){ return tr.index < index; }).forEach(tr => {
+            result.time += tr.duration;
+          });
+          return result;
+        })
+        .then(function(result) {
+          resolve(result);
+        })
+    })    
+  }
+
   totalTime() {
     // Return total play time of db in milliseconds
     const that = this;

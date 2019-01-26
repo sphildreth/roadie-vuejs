@@ -223,7 +223,7 @@ export default {
     id: String
   },
   created() {
-    EventBus.$on("tt:AddToQue", this.addTrackToQue);
+    EventBus.$on("tt:AddToQue", this.addToQue);
     EventBus.$on("tt:Play", this.playNow);
     EventBus.$on("favoriteToogle", this.toggleFavorite);
     EventBus.$on("toolbarRefresh", this.updateData);
@@ -236,7 +236,7 @@ export default {
     EventBus.$on("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
   },
   beforeDestroy() {
-    EventBus.$off("tt:AddToQue", this.addTrackToQue);
+    EventBus.$off("tt:AddToQue", this.addToQue);
     EventBus.$off("tt:Play", this.playNow);
     EventBus.$off("favoriteToogle", this.toggleFavorite);
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -314,14 +314,14 @@ export default {
     playNow: function() {
       this.$playQue.deleteAll()
       .then(() => {
-        this.addToQue(this.track);
+        this.addTrackToQue(this.track);
       });      
     },
-    addTrackToQue: function() {
-      this.addToQue(this.track);
+    addToQue: function() {
+      this.addTrackToQue(this.track);
     },
     toggleBookmark: function() {
-      this.bookmarkToggle({
+      this.trackBookmarkToggle({
         trackId: this.track.id,
         userBookmarked: !this.track.userBookmarked
       }).then(() => {
@@ -329,20 +329,20 @@ export default {
       });
     },
     toggleFavorite: function() {
-      this.favoriteToggle({
+      this.trackFavoriteToggle({
         trackId: this.track.id,
         isFavorite: !this.track.userRating.isFavorite
       }).then(this.updateData);  
     },
     hateToogle: function() {
-      this.dislikeToggle({
+      this.trackDislikeToggle({
         trackId: this.track.id,
         isDisliked: !this.track.userRating.isDisliked
       }).then(this.updateData);  
     },
     setRating: async function() {
       this.$nextTick(() => {
-        this.ratingChange({
+        this.trackRatingChange({
           trackId: this.track.id,
           newVal: this.track.userRating.rating
         }).then(this.updateData);

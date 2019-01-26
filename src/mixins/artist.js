@@ -4,7 +4,7 @@ import {
 export default {
   data: () => ({}),
   methods: {
-    ratingChange(changeInfo) {
+    artistRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
           this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistRating/' + changeInfo.artistId + '/' + changeInfo.newVal)
@@ -26,7 +26,7 @@ export default {
         }
       });
     },
-    favoriteToggle(toggleInfo) {
+    artistFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistFavorite/' + toggleInfo.artistId + '/' + toggleInfo.isFavorite)
           .then(response => {
@@ -46,7 +46,7 @@ export default {
           });
       });
     },
-    dislikeToggle(toggleInfo) {
+    artistDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
         this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistDisliked/' + toggleInfo.artistId + '/' + toggleInfo.isDisliked)
           .then(response => {

@@ -44,12 +44,16 @@
                 <div class="secondary--text text--lighten-1 release-title short">{{ '&nbsp;&#127932;&nbsp;' + track.release.release.text}}</div>
               </router-link>            
             </v-layout>            
-            <v-layout>
+            <v-layout class="on-show-hover">
               <router-link :to="'/track/' + track.id">
                 <div 
                 class="secondary--text text--lighten-1 track-title" 
-                :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }">{{ track.title}}</div>
+                :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }">{{ track.title}}</div>            
               </router-link>
+              <span class="on-hover">
+                <span class="pointer" @click="playTrack(track)"><i class="fas fa-play mx-2" title="Play"></i></span>
+                <span class="pointer" @click="queTrack(track)"><i class="fas fa-headphones" title="Add To Que"></i></span>
+              </span>                 
             </v-layout>
             <v-layout>
               <div class="caption accent--text">
@@ -89,9 +93,11 @@
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import { EventBus } from "@/event-bus.js";
+import trackMixin from "@/mixins/track.js";
 
 export default {
   name: "TrackCard",
+  mixins: [trackMixin],
   components: { ArtistCard, ReleaseCard },
   props: {
     track: {
@@ -144,7 +150,19 @@ export default {
           newVal: this.rating
         });
       });
-    }
+    },
+    playTrack: async function(track) {
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.queTrack(track);
+      });      
+    },
+    queTrack: async function(track) {
+      this.getTrackDetail(track.id)
+      .then(response => {
+        this.addTrackToQue(response.data.data);
+      })      
+    }    
   },
   computed: {
     userRating: function() {
@@ -183,5 +201,12 @@ export default {
 }
 .track-card .artist-title.short, .track-card .release-title.short {
   float: left;
+}
+.track-card .on-hover {
+  display: none;
+}
+
+.track-card .on-show-hover:hover .on-hover {
+  display: inline-block;
 }
 </style>

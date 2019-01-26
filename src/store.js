@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   getters: {
     playingIndex: (state) => {
-      if(!state.isLoggedIn) {
+      if (!state.isLoggedIn) {
         return [];
       }
       return state.playingIndex;
@@ -18,24 +18,24 @@ export default new Vuex.Store({
       return state.nowPlaying;
     },
     lastScanDate: (state) => {
-      if(!state.lastScanDate) {
+      if (!state.lastScanDate) {
         state.lastScanDate = localStorage.getItem("lastScanDate");
       }
-      if(!state.lastScanDate || state.lastScanDate === "undefined") {
-        return "Never";        
+      if (!state.lastScanDate || state.lastScanDate === "undefined") {
+        return "Never";
       }
-      if(state.user && state.user.timezone && state.user.timeformat) {        
-        return Vue.options.filters.formatTimeStamp( state.lastScanDate, state.user) + ' [ ' + Vue.options.filters.hoursFromDate(null, state.lastScanDate) + ' hours ago ]';
+      if (state.user && state.user.timezone && state.user.timeformat) {
+        return Vue.options.filters.formatTimeStamp(state.lastScanDate, state.user) + ' [ ' + Vue.options.filters.hoursFromDate(null, state.lastScanDate) + ' hours ago ]';
       }
       return state.lastScanDate;
     },
     user: (state) => {
-      if(!state.isLoggedIn) {
+      if (!state.isLoggedIn) {
         return {};
       }
-      if(!state.user || !state.user.username) {
+      if (!state.user || !state.user.username) {
         var data = localStorage.getItem("user");
-        if(!data) {
+        if (!data) {
           return {};
         }
         state.user = JSON.parse(data);
@@ -43,9 +43,9 @@ export default new Vuex.Store({
       return state.user;
     },
     theme: (state) => {
-      if(!state.theme) {
+      if (!state.theme) {
         let data = localStorage.getItem("theme");
-        if(!data) {
+        if (!data) {
           data = {
             id: 0,
             colors: {
@@ -55,7 +55,7 @@ export default new Vuex.Store({
               error: '#FF5252',
               info: '#2196F3',
               success: '#4CAF50',
-              warning: '#FFC107'            
+              warning: '#FFC107'
             },
             dark: true
           };
@@ -63,61 +63,60 @@ export default new Vuex.Store({
           state.theme = data;
         } else {
           state.theme = JSON.parse(data);
-        }        
+        }
       }
       return state.theme;
     },
-    authToken:(state) => {
-      if(!state.isLoggedIn) {
+    authToken: (state) => {
+      if (!state.isLoggedIn) {
         return null;
       }
       try {
-        if(!state.authToken)
-        {
-          if(!state.user || !state.user.username) {
+        if (!state.authToken) {
+          if (!state.user || !state.user.username) {
             var data = localStorage.getItem("user");
-            if(!data) {
+            if (!data) {
               return null;
             }
             state.user = JSON.parse(data);
           }
           state.authToken = state.user.token;
-        }      
-        return state.authToken;          
+        }
+        return state.authToken;
       } catch (error) {
         return null;
       }
     },
     userId: (state, getters) => {
       let at = getters.authToken;
-      if(!at) {
+      if (!at) {
         return 0;
       }
       let jwt = JSON.parse(atob(at.split('.')[1]));
-     return jwt.roadie_id;
+      return jwt.roadie_id;
     },
     isUserAdmin: (state, getters) => {
       let at = getters.authToken;
-      if(!at) {
+      if (!at) {
         return false;
-      }  
+      }
       try {
         let jwt = JSON.parse(atob(at.split('.')[1]));
         return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin";
-      } catch(e) {
+      } catch (e) {
         return false;
       }
     },
     isUserEditor: (state, getters) => {
       let at = getters.authToken;
-      if(!at) {
+      if (!at) {
         return false;
-      }      
+      }
       try {
         let jwt = JSON.parse(atob(at.split('.')[1]));
         return jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin" || jwt["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Editor";
-      } catch(e) {
-        return false;        
+      } catch (e) {
+        return false;
       }
     },
     usersAvatarUrl: (state) => {
@@ -127,8 +126,7 @@ export default new Vuex.Store({
       return state.isFullscreen;
     }
   },
-  computed: {  
-  },  
+  computed: {},
   state: {
     isLoggedIn: !!localStorage.getItem("user"),
     queSize: 0,
@@ -149,14 +147,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    signin (state) {
+    signin(state) {
       state.pending = true;
     },
-    updateLastScan (state, lastScanDate) {
+    updateLastScan(state, lastScanDate) {
       state.lastScanDate = lastScanDate;
       localStorage.setItem("lastScanDate", lastScanDate);
     },
-    signinSuccess (state, user) {
+    signinSuccess(state, user) {
       state.isLoggedIn = true;
       state.pending = false;
       state.user = user;
@@ -167,13 +165,13 @@ export default new Vuex.Store({
       state.user = null;
     },
     saveTheme(state, data) {
-      localStorage.setItem("theme", JSON.stringify(data));    
+      localStorage.setItem("theme", JSON.stringify(data));
       state.theme = data;
     },
     saveThemeDark(state, dark) {
       let data = localStorage.getItem("theme");
       let theme = null;
-      if(!data) {
+      if (!data) {
         data = {
           id: 0,
           colors: {
@@ -183,18 +181,18 @@ export default new Vuex.Store({
             error: '#FF5252',
             info: '#2196F3',
             success: '#4CAF50',
-            warning: '#FFC107'            
+            warning: '#FFC107'
           },
           dark: true
-        };      
-        theme = data;         
-      } else  {
+        };
+        theme = data;
+      } else {
         theme = JSON.parse(data);
-      }      
+      }
       theme.dark = dark;
-      localStorage.setItem("theme", JSON.stringify(theme)); 
+      localStorage.setItem("theme", JSON.stringify(theme));
       state.dark = dark;
-    },    
+    },
     playIndexChange(state, trackInfo) {
       state.playingIndex = trackInfo;
     },
@@ -209,20 +207,30 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    toggleFullscreen({ commit }, isFullscreen) {
+    toggleFullscreen({
+      commit
+    }, isFullscreen) {
       commit("isFullscreen", isFullscreen);
     },
-    signout({ commit }) {
+    signout({
+      commit
+    }) {
       localStorage.removeItem("user");
-      commit("signout");      
+      commit("signout");
     },
-    playIndexChange({ commit }, trackInfo) {
+    playIndexChange({
+      commit
+    }, trackInfo) {
       commit("playIndexChange", trackInfo);
     },
-    playRequest({ commit }, trackInfo) {
+    playRequest({
+      commit
+    }, trackInfo) {
       commit("playRequest", trackInfo);
     },
-    nowPlaying({ commit }, nowPlaying) {
+    nowPlaying({
+      commit
+    }, nowPlaying) {
       commit("nowPlaying", nowPlaying);
     }
   }

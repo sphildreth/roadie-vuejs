@@ -2,6 +2,10 @@
   <div class="playque-container">
     <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
     <v-layout v-if="!isFullScreen" row wrap>
+      <span class="mt-2">
+        <v-btn @click="selectAllTracks" flat small>Select All</v-btn>
+        <v-btn @click="selectNoTracks" flat small>Select None</v-btn>
+      </span>
       <v-spacer></v-spacer>
       <v-flex d-flex xs4 class="ma-2">
         <div class="stats-container">
@@ -60,7 +64,8 @@
             <td class="handle">
               <input
                 type="checkbox"
-                name="selected"
+                name="selectedTrack"
+                :value="props.item.track.id"
                 @click="toggleSelectedTrack($event, props.item)"
                 class="mr-2 track-selector"
               >
@@ -190,7 +195,8 @@ import Sortable from "sortablejs";
 
 export default {
   components: { Toolbar },
-  created() {
+  created() {    
+    EventBus.$on("pl:PlayQue", this.playFirstTrackInQue);
     EventBus.$on("pl:ClearQue", this.clearQue);
     EventBus.$on("pl:RemoveSelected", this.removeSelected);
     EventBus.$on("pl:SaveAsPlaylist", this.saveAsPlaylist);
@@ -199,6 +205,7 @@ export default {
     EventBus.$on("q:addedTracksToQue", this.updateData);
   },
   beforeDestroy() {
+    EventBus.$off("pl:PlayQue", this.playFirstTrackInQue);
     EventBus.$off("pl:ClearQue", this.clearQue);
     EventBus.$off("pl:RemoveSelected", this.removeSelected);
     EventBus.$off("pl:SaveAsPlaylist", this.saveAsPlaylist);
@@ -263,6 +270,23 @@ export default {
     }
   },
   methods: {
+    toggleSelected: function(checked) {
+      var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = checked;
+      }
+    },
+    selectAllTracks: function() {
+      this.selectedTracks = this.items;
+      this.toggleSelected(true);
+    },
+    selectNoTracks: function() {
+      this.selectedTracks = [];
+      this.toggleSelected(false)
+    },
+    playFirstTrackInQue: function() {      
+      this.playTrack(this.items[0].track.id );
+    },    
     playTrack: function(id) {
       this.items.forEach(t => {
         let tr = t.track;
@@ -389,6 +413,7 @@ export default {
       { text: "Time", value: "track.durationTime", width: "50" }
     ],
     menuItems: [
+      { title: "Play Que", class: "", click: "pl:PlayQue" },
       { title: "Clear Que", class: "hidden-sm-and-down", click: "pl:ClearQue" },
       {
         title: "Remove Selected",

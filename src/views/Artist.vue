@@ -59,6 +59,9 @@
                     <v-flex xs2>
                       <v-text-field v-bind:value="artist.artistType" label="Artist Type" readonly></v-text-field>
                     </v-flex>
+                    <v-flex xs2>
+                      <v-text-field v-bind:value="artist.statusVerbose" label="Artist Status" readonly></v-text-field>
+                    </v-flex>                    
                     <v-flex xs3 v-if="artist.isniList">
                       <v-text-field v-bind:value="artist.isniList.join(', ')" label="ISNI" readonly></v-text-field>
                     </v-flex>
@@ -387,18 +390,16 @@
             <v-tab v-if="artist.artistContributionReleases.length > 0">Contributions</v-tab>
             <v-tab v-if="artist.playlistsWithArtistReleases.length > 0">Playlists</v-tab>
             <v-tab v-if="releases.length > 0">Releases
-              <v-btn icon>
+              <v-btn @click="showReleaseTable=true" icon>
                 <v-icon
                   :color="showReleaseTable ? '' : 'accent'"
                   title="Show Release List"
-                  @click="showReleaseTable=true"
                 >view_list</v-icon>
               </v-btn>
-              <v-btn icon>
+              <v-btn @click="showReleaseTable=false" icon>
                 <v-icon
                   :color="showReleaseTable ? 'accent' : ''"
                   title="Show Release Cards"
-                  @click="showReleaseTable=false"
                 >view_module</v-icon>
               </v-btn>
             </v-tab>
@@ -896,14 +897,14 @@ export default {
     },
     setRating: async function() {
       this.$nextTick(() => {
-        this.ratingChange({
+        this.artistRatingChange({
           artistId: this.artist.id,
           newVal: this.artist.userRating.rating
         }).then(this.updateData);
       });
     },
     toggleFavorite: async function() {
-      this.favoriteToggle({
+      this.artistFavoriteToggle({
         artistId: this.artist.id,
         isFavorite: this.artist.userRating
           ? !this.artist.userRating.isFavorite
@@ -911,7 +912,7 @@ export default {
       }).then(this.updateData);
     },
     toggleHated: async function() {
-      this.dislikeToggle({
+      this.artistDislikeToggle({
         artistId: this.artist.id,
         isDisliked: this.artist.userRating
           ? !this.artist.userRating.isDisliked

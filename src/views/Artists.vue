@@ -144,7 +144,7 @@ export default {
         });
     },
     toggleFavorite: async function(toggleInfo) {
-      this.favoriteToggle(toggleInfo).then(() => {
+      this.artistFavoriteToggle(toggleInfo).then(() => {
         if (this.currentView == "favorite") {
           this.$nextTick(() => {
             this.updateData();
@@ -153,7 +153,7 @@ export default {
       });
     },
     toggleDislike: async function(toggleInfo) {
-      this.dislikeToggle(toggleInfo);
+      this.artistDislikeToggle(toggleInfo);
     }
   },
   watch: {

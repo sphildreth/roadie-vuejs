@@ -524,6 +524,9 @@ export default {
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
     EventBus.$on("t:selected", track => this.addSelectedTrack(track));
     EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
+    EventBus.$on("userTrackRatingChange", info => this.updateIfNeeded(info));
+    EventBus.$on("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
+    EventBus.$on("userTrackLikeChange", info => this.updateIfNeeded(info));
     this.debouncedMergeReleaseSearch = this.$_.debounce(
       this.doMergeReleaseSearch,
       500
@@ -548,6 +551,9 @@ export default {
     EventBus.$off("rr:Edit", this.edit);
     EventBus.$off("t:selected");
     EventBus.$off("t:unselected");
+    EventBus.$off("userTrackRatingChange",  info => this.updateIfNeeded(info));
+    EventBus.$off("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
+    EventBus.$off("userTrackLikeChange", info => this.updateIfNeeded(info));
   },
   async mounted() {
     this.updateData();
@@ -849,6 +855,25 @@ export default {
         .finally(() => {
           EventBus.$emit("loadingComplete");
         });
+    },
+    updateIfNeeded: async function(info) {
+      // If an user event happended and its related to this release then update release data
+      if(!info) {
+        return;
+      }
+      if(info.artistId == this.release.artist.id || info.releaseId == this.id) {
+        await this.updateData();
+        return;
+      }
+      const releaseTracks = this.$_.flatMap(this.release.medias, function(media) {
+        return media.tracks;
+      });
+      const trackOnThisRelease = this.$_.find(releaseTracks, function(t) {
+            return t.id === info.trackId;
+      })
+      if(trackOnThisRelease) {
+        await this.updateData();
+      }
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");

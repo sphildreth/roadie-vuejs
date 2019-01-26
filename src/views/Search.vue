@@ -31,7 +31,7 @@
             :total-items="artistPagination.totalItems"
             :pagination.sync="artistPagination"
             content-tag="v-layout"
-            :loading="true"
+            :loading="loading"
             row
             wrap
           >
@@ -51,7 +51,7 @@
             :total-items="releasePagination.totalItems"
             :pagination.sync="releasePagination"
             content-tag="v-layout"
-            :loading="true"
+            :loading="loading"
             row
             wrap
           >
@@ -71,7 +71,7 @@
             :total-items="trackPagination.totalItems"
             :pagination.sync="trackPagination"
             content-tag="v-layout"
-            :loading="true"
+            :loading="loading"
             row
             wrap
           >
@@ -91,7 +91,7 @@
             :total-items="playlistPagination.totalItems"
             :pagination.sync="playlistPagination"
             content-tag="v-layout"
-            :loading="true"
+            :loading="loading"
             row
             wrap
           >
