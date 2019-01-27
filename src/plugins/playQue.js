@@ -156,7 +156,9 @@ class PlayQue {
         resolve(result);
       })
       .finally(() => {
-        EventBus.$emit("q:deletedTrackFromQue", result);          
+        setTimeout(function() {
+          EventBus.$emit("q:deletedTrackFromQue", result);          
+        }, 1000);
       });
     })
   }

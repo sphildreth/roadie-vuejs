@@ -33,7 +33,7 @@
               >fas fa-thumbs-down</v-icon>
               <span v-if="artist.rank" class="ml-1 hidden-lg-and-down artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
             </div>
-            <router-link :to="'/artist/' + artist.id">
+            <router-link style="display:block;clear:both;" :to="'/artist/' + artist.id">
               <div
                 :title="artist.artist.text"
                 class="secondary--text artist-name text-no-wrap text-truncate subheading font-weight-medium pointer"

@@ -203,6 +203,7 @@ export default {
     EventBus.$on("pl:Shuffle", this.shuffleQue);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("q:addedTracksToQue", this.updateData);
+    EventBus.$on("q:deletedTrackFromQue", this.updateData);
   },
   beforeDestroy() {
     EventBus.$off("pl:PlayQue", this.playFirstTrackInQue);
@@ -212,6 +213,7 @@ export default {
     EventBus.$off("pl:Shuffle", this.shuffleQue);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("q:addedTracksToQue", this.updateData);
+    EventBus.$off("q:deletedTrackFromQue", this.updateData);
   },
   async mounted() {
     let table = document.querySelector(".v-datatable tbody");
@@ -380,7 +382,8 @@ export default {
         // TODO pagination; For now load first 1000 items
         this.$playQue.list(0,1000,doShuffle)
         .then(resolve => {
-          this.items = resolve.tracks;
+          //this.items = resolve.tracks;
+          this.items = this.$_.orderBy(resolve.tracks, ['listNumber']);
           EventBus.$emit("loadingComplete");
           this.loading = false;
         })

@@ -78,6 +78,14 @@
                         data-vv-name="profile.doUseHtmlPlayer" 
                       ></v-switch> 
                     </v-flex>
+                    <v-flex xs4>
+                      <v-switch
+                        color="success"
+                        label="Remove Track From Que After Played"
+                        v-model="profile.removeTrackFromQueAfterPlayed"
+                        data-vv-name="profile.removeTrackFromQueAfterPlayed" 
+                      ></v-switch> 
+                    </v-flex>                    
                   </v-layout>                  
                   <v-text-field
                     v-model="profile.userName"
@@ -329,6 +337,7 @@
               concurrencyStamp: that.profile.concurrencyStamp,              
               isPrivate: that.profile.isPrivate,
               doUseHtmlPlayer: that.profile.doUseHtmlPlayer,
+              removeTrackFromQueAfterPlayed: that.profile.removeTrackFromQueAfterPlayed,
               userName: that.profile.userName,
               apiToken: that.profile.apiToken,
               email: that.profile.email,
@@ -358,7 +367,8 @@
                   that.alert = true;
                 } else {
                   EventBus.$emit("showSnackbar", { text: "Successfully Edit Account settings"});
-                  this.$store.commit("signinSuccess", response.data);            
+                  localStorage.setItem("user", JSON.stringify(response.data));
+                  this.$store.commit("signinSuccess", response.data);         
                   this.updateData();      
                 }
             });

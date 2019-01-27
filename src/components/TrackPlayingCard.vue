@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hide && loaded">
-    <v-card class="track-playing-card" height="100px" hover>
+    <v-card v-if="!smallPlayer" class="track-playing-card" height="100px" hover>
       <v-progress-linear
         v-if="trackDownloading"
         height="2"
@@ -223,8 +223,146 @@
               <v-btn title="Toggle Fullscreen Mode" flat icon @click="toggleFullScreen">
                 <v-icon>fullscreen</v-icon>
               </v-btn>
+              <v-btn title="Show Small Player" flat icon @click="smallPlayer = !smallPlayer">
+                <v-icon>compress</v-icon>
+              </v-btn>
               <v-btn title="Display Playing/Que" flat icon to="/playque">
                 <v-icon>headset</v-icon>
+              </v-btn>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </div>
+    </v-card>
+    <v-card v-if="smallPlayer" class="track-playing-card small-player" height="30px">
+      <v-progress-linear
+        v-if="trackDownloading"
+        height="1"
+        color="accent"
+        class="ma-0 pa-0"
+        indeterminate
+      ></v-progress-linear>
+      <div>
+        <v-progress-linear
+          id="trackProgressBar"
+          height="3"
+          class="ma-0 pa-0 pointer"
+          color="info"
+          :value="trackProgress"
+          @click="updateSeek($event)"
+        ></v-progress-linear>
+        <v-layout style="padding-top:2px;">
+          <v-flex d-flex xs6>
+            <v-layout row wrap>
+              <v-flex xs12>
+                <span title="Artist" class="mr-2">
+                  <router-link :to="'/artist/' + currentTrack.releaseArtist.artist.value">       
+                    <img
+                      class="artist-image"
+                      :src="currentTrack.artist.thumbnail.url"
+                      :alt="currentTrack.artist.artist.text"
+                    >                             
+                    <span
+                      class="artist-name badge text-no-wrap text-truncate pointer"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.releaseArtist.artist.text }}</span>
+                  </router-link>
+                </span>
+                <span title="Release" class="mr-2">                 
+                  <router-link :to="'/release/' + currentTrack.release.value">
+                    <img
+                      class="release-image"
+                      :src="currentTrack.releaseImageUrl"
+                      :alt="currentTrack.release.text"
+                    >                   
+                    <span
+                      class="release-title badge text-no-wrap text-truncate pointer caption"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.release.text }}</span>
+                  </router-link>
+                </span>
+                <span title="Track">🎼
+                  <router-link :to="'/track/' + currentTrack.id">
+                    <span
+                      class="release-title badge text-no-wrap text-truncate pointer caption"
+                      :style="{ backgroundColor: this.$vuetify.theme.primary }"
+                    >{{ currentTrack.title }}</span>
+                  </router-link>
+                </span>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex xs3>
+            <v-layout d-flex row wrap>
+              <span title="Current Playing Time of Track">
+                <v-icon small>play_arrow</v-icon>
+                <span class="caption track-current-time mr-1">{{ seek | minutes }}</span>
+              </span>
+              <span title="Total Time of Track">
+                <v-icon small>audiotrack</v-icon>
+                <span class="caption track-time mr-1">{{ currentTrack.durationTime }}</span>
+              </span>
+              <span class="pointer" :title="queDisplayTimeTooltip" @click="toggleQuePlayTime">
+                <v-icon small>headset</v-icon>
+                <span class="caption track-time">{{ queDisplayTime | timeFromMilliseconds }}</span>
+              </span>
+            </v-layout>
+          </v-flex>
+          <v-flex xs3>
+            <v-layout d-flex row-wrap>
+              <v-btn
+                color="primary lighten-1"
+                title="Play Previous Track"
+                icon
+                @click="skip('prev')"
+                small                
+              >
+                <v-icon small>skip_previous</v-icon>
+              </v-btn>
+              <v-btn small title="Replay last 30 seconds" icon @click="seekByAmount(-30)">
+                <v-icon small>replay_30</v-icon>
+              </v-btn>
+              <v-btn small title="Rewind 1 second" icon @click="seekByAmount(-1)">
+                <v-icon small>fast_rewind</v-icon>
+              </v-btn>
+              <v-btn
+                color="green darken-2"
+                :title="playing ? 'Pause Playing' : 'Start Playing'"
+                icon
+                @click="play"
+                small              
+              >
+                <v-icon small>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
+              </v-btn>
+              <v-btn small color="red darken-2" title="Stop Playing" icon @click="stop">
+                <v-icon small>stop</v-icon>
+              </v-btn>
+              <v-btn small title="Forward 1 second" icon @click="seekByAmount(1)">
+                <v-icon small>fast_forward</v-icon>
+              </v-btn>
+              <v-btn small title="Forward 30 seconds" icon @click="seekByAmount(30)">
+                <v-icon small>forward_30</v-icon>
+              </v-btn>
+              <v-btn
+                small
+                color="primary lighten-1"
+                title="Play Next Track"
+                icon
+                @click="skip('next')"
+              >
+                <v-icon small>skip_next</v-icon>
+              </v-btn>
+              <v-btn small title="Enable Que Repeat" flat icon @click="toggleLoop">
+                <v-icon small :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
+              </v-btn>
+              <v-btn small title="Toggle Fullscreen Mode" flat icon @click="toggleFullScreen">
+                <v-icon small>fullscreen</v-icon>
+              </v-btn>
+              <v-btn small title="Show Large Player" flat icon @click="smallPlayer = !smallPlayer">
+                <v-icon small>expand</v-icon>
+              </v-btn>
+              <v-btn small title="Display Playing/Que" flat icon to="/playque">
+                <v-icon small>headset</v-icon>
               </v-btn>
             </v-layout>
           </v-flex>
@@ -263,7 +401,7 @@ export default {
   methods: {
     loadFirstTrackInQue() {
       const that = this;
-      if(that.hide) {
+      if (that.hide) {
         return false;
       }
       this.$playQue
@@ -420,6 +558,11 @@ export default {
       document.title = this.originalWindowTitle;
       this.playing = false;
     },
+    removeTrack: function(track) {
+      if(this.$store.getters.user.removeTrackFromQueAfterPlayed) {
+        this.$playQue.delete([track.id]);
+      }
+    },
     skip: function(direction) {
       if (direction === "next") {
         let isPlayingLastTrack = this.queIndex === this.lastTrackIndex;
@@ -504,7 +647,9 @@ export default {
       this.playingTrackId = this.currentTrack.id;
       this.playing = true;
       var image = document.getElementById("trackCover");
-      window.favIcon.image(image);
+      if(!this.smallPlayer) {
+        window.favIcon.image(image);
+      }
       this.$store.dispatch("playIndexChange", {
         index: this.queIndex,
         trackId: this.currentTrack.id,
@@ -538,6 +683,7 @@ export default {
         },
         onend: () => {
           this.skip("next");
+          this.removeTrack(trackInfo);
         }
       });
     },
@@ -577,7 +723,7 @@ export default {
       }
     },
     hide(hidden) {
-      if(hidden) {
+      if (hidden) {
         this.stop();
         this.loaded = false;
       }
@@ -586,7 +732,7 @@ export default {
   computed: {
     hide() {
       return !this.$store.state.isLoggedIn;
-    },    
+    },
     progress() {
       if (!this.howl || this.howl.duration() === 0) return 0;
       return this.seek / this.howl.duration();
@@ -619,6 +765,7 @@ export default {
     }
   },
   data: () => ({
+    smallPlayer: false,
     updateSeekInterval: null,
     quePlayTimeDisplay: 0,
     quePlayTimeToBeforeIndex: 0,
@@ -664,6 +811,14 @@ export default {
 }
 .track-playing-card img.artist-image {
   height: 20px;
+  vertical-align: middle;
+}
+.track-playing-card.small-player button, .track-playing-card.small-player a.v-btn {
+    height: 22px;
+    margin-top: 1px;  
+}
+.track-playing-card.small-player img {
+  max-height: 20px;
   vertical-align: middle;
 }
 </style>

@@ -233,7 +233,6 @@ export default {
         : [
             { title: "Delete", class: "warning--text", click: "c:Delete" },
             { title: "Edit", click: "c:Edit" },
-            { title: "Find Cover", click: "c:FindCover" },
             { title: "Rescan", click: "c:Rescan" }
           ];
     }
