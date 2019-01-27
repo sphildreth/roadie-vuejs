@@ -1266,7 +1266,6 @@ export default {
 }
 .artist-detail-container .biography p {
   max-height: 266px;
-  overflow: auto;
 }
 .artist-detail-container .artist-lists .v-list {
   max-height: 300px;

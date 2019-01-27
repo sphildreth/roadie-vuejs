@@ -100,7 +100,10 @@ Vue.filter('minutes', (value) => {
   return value
 });
 
-Vue.filter("formatTimeStamp", function (timestamp, user) {
+Vue.filter("formatTimeStamp", function (timestamp, user, returnNullIfInvalid) {
+  if(returnNullIfInvalid && !timestamp) {
+    return null;
+  }
   if(!user || !user.timeformat) {
     return moment
     .utc(timestamp);
@@ -122,6 +125,12 @@ Vue.filter("yearsFromDate", function (fromDate, toDate) {
   fromDate = fromDate || new Date();
   toDate = toDate || new Date();
   return moment(fromDate).diff(toDate, "years");
+});
+
+Vue.filter("daysFromDate", function (fromDate, toDate) {
+  fromDate = fromDate || new Date();
+  toDate = toDate || new Date();
+  return moment(fromDate).diff(toDate, "days");
 });
 
 Vue.prototype.$filters = Vue.options.filters;

@@ -149,7 +149,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120],
+    rowsPerPageItems: [12, 36, 60, 120,500],
     doRandomize: true,
     filterFavoriteOnly: false,
     currentView: "",

@@ -77,7 +77,7 @@ export default {
           process.env.VUE_APP_API_URL +
             `/genres?page=${this.pagination.page}&limit=${
               this.pagination.rowsPerPage
-            }&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`
+            }&order=${this.pagination.descending ? 'DESC' : 'ASC'}&sort=${this.pagination.sortBy}`
         )
         .then(response => {
           this.items = [];
@@ -106,7 +106,7 @@ export default {
       rowsPerPage: 10,
       totalItems: 0,
       sortBy: "genre.Text",
-      sortOrder: "ASC"
+      descending: false
     },
     headers: [
       { text: "Genre", value: "genre.Text" },

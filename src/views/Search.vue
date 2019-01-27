@@ -285,7 +285,7 @@ export default {
   data: () => ({
     searchQuery: null,
     loading: true,
-    rowsPerPageItems: [12, 36, 60, 120],
+    rowsPerPageItems: [12, 36, 60, 120,500],
     currentView: "",
     artistPagination: {
       page: 1,

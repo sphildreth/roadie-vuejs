@@ -382,7 +382,6 @@ export default {
         // TODO pagination; For now load first 1000 items
         this.$playQue.list(0,1000,doShuffle)
         .then(resolve => {
-          //this.items = resolve.tracks;
           this.items = this.$_.orderBy(resolve.tracks, ['listNumber']);
           EventBus.$emit("loadingComplete");
           this.loading = false;

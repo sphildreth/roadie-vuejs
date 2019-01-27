@@ -13,7 +13,6 @@
         solo
         @keyup.native="search"
         v-model="searchQuery"
-
       ></v-text-field>
       <v-icon
         @click="showHelp"
@@ -158,22 +157,42 @@ export default {
       links: [
         { icon: "dashboard", text: "Dashboard", route: "/" },
         { icon: "fas fa-users", text: "Artists", route: "/artists" },
-        { icon: "bookmarks", text: "Bookmarks", route: "/bookmarks" },
-        { icon: "collections", text: "Collections", route: "/collections" },
+        {
+          icon: "bookmarks",
+          text: "Bookmarks",
+          class: "hidden-xs-and-down",
+          route: "/bookmarks"
+        },
+        {
+          icon: "collections",
+          text: "Collections",
+          class: "hidden-sm-and-down",
+          route: "/collections"
+        },
         {
           icon: "category",
           text: "Genres",
-          class: "hidden-lg-and-down",
+          class: "hidden-md-and-down",
           route: "/genres"
         },
-        { icon: "label", text: "Labels", route: "/labels" },
-        { icon: "playlist_play", text: "Playlists", route: "/playlists" },
+        {
+          icon: "label",
+          text: "Labels",
+          class: "hidden-sm-and-down",
+          route: "/labels"
+        },
+        {
+          icon: "playlist_play",
+          text: "Playlists",
+          class: "hidden-sm-and-down",
+          route: "/playlists"
+        },
         { icon: "headset", text: "Playing/Que", route: "/playque" },
         { icon: "library_music", text: "Releases", route: "/releases" },
         {
           icon: "assessment",
           text: "Statistics",
-          class: "hidden-lg-and-down",
+          class: "hidden-md-and-down",
           route: "/statistics"
         },
         { icon: "audiotrack", text: "Tracks", route: "/tracks" }

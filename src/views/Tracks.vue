@@ -178,7 +178,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120],
+    rowsPerPageItems: [12, 36, 60, 120,500],
     doRandomize: false,
     filterFavoriteOnly: false,
     pagination: {

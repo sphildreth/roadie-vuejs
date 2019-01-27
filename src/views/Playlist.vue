@@ -316,7 +316,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [6, 12, 24, 36, 60, 120],
+    rowsPerPageItems: [6, 12, 24, 36, 60, 120,500],
     playlist: {
       maintainer: {
         thumbnail: {},

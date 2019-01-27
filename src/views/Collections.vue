@@ -102,7 +102,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120],
+    rowsPerPageItems: [12, 36, 60, 120, 500],
     pagination: {
       page: 1,
       rowsPerPage: 36,
