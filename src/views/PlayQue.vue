@@ -1,66 +1,72 @@
 <template>
   <div class="playque-container">
     <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
-    <v-layout v-if="!isFullScreen" row wrap>
+    <v-layout v-if="!isFullScreen" align-center row wrap>
       <span class="mt-2">
         <v-btn @click="selectAllTracks" flat small>Select All</v-btn>
         <v-btn @click="selectNoTracks" flat small>Select None</v-btn>
       </span>
       <v-spacer></v-spacer>
-      <v-flex d-flex xs4 class="ma-2">
-        <div class="stats-container">
-          <v-tooltip bottom>
-            <v-chip slot="activator" color="secondary" text-color="white">
-              <v-avatar>
-                <v-icon>fas fa-users</v-icon>
-              </v-avatar>
-              {{ queArtistCount | padNumber3 }}
-            </v-chip>
-            <span>Que Artist Count</span>
-          </v-tooltip>           
-          <v-tooltip bottom>
-            <v-chip slot="activator" color="secondary" text-color="white">
-              <v-avatar>
-                <v-icon>library_music</v-icon>
-              </v-avatar>
-              {{ queReleaseCount | padNumber3 }}
-            </v-chip>
-            <span>Que Release Count</span>
-          </v-tooltip>          
-          <v-tooltip bottom>
-            <v-chip slot="activator" color="secondary" text-color="white">
-              <v-avatar>
-                <v-icon>audiotrack</v-icon>
-              </v-avatar>
-              {{ queTrackCount | padNumber3 }}
-            </v-chip>
-            <span>Que Track Count</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <v-chip slot="activator" color="secondary" text-color="white">
-              <v-avatar>
-                <v-icon>play_circle_outline</v-icon>
-              </v-avatar>
-              {{ quePlayedCount | padNumber5 }}
-            </v-chip>
-            <span>Que Track Played Count</span>
-          </v-tooltip>          
-          <v-tooltip bottom>
-            <v-chip slot="activator" color="secondary" text-color="white">
-              <v-avatar>
-                <v-icon>speaker</v-icon>
-              </v-avatar>
-              {{ quePlaytime | timeFromMilliseconds }}
-            </v-chip>
-            <span>Que Playtime</span>
-          </v-tooltip>
-        </div>
-      </v-flex>
+      <div class="stats-container">
+        <v-tooltip bottom>
+          <v-chip slot="activator" color="secondary" text-color="white">
+            <v-avatar>
+              <v-icon>fas fa-users</v-icon>
+            </v-avatar>
+            {{ queArtistCount | padNumber3 }}
+          </v-chip>
+          <span>Que Artist Count</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-chip slot="activator" color="secondary" text-color="white">
+            <v-avatar>
+              <v-icon>library_music</v-icon>
+            </v-avatar>
+            {{ queReleaseCount | padNumber3 }}
+          </v-chip>
+          <span>Que Release Count</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-chip slot="activator" color="secondary" text-color="white">
+            <v-avatar>
+              <v-icon>audiotrack</v-icon>
+            </v-avatar>
+            {{ queTrackCount | padNumber3 }}
+          </v-chip>
+          <span>Que Track Count</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-chip slot="activator" color="secondary" text-color="white">
+            <v-avatar>
+              <v-icon>play_circle_outline</v-icon>
+            </v-avatar>
+            {{ quePlayedCount | padNumber5 }}
+          </v-chip>
+          <span>Que Track Played Count</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-chip slot="activator" color="secondary" text-color="white">
+            <v-avatar>
+              <v-icon>speaker</v-icon>
+            </v-avatar>
+            {{ quePlaytime | timeFromMilliseconds }}
+          </v-chip>
+          <span>Que Playtime</span>
+        </v-tooltip>
+      </div>
     </v-layout>
     <v-container fluid grid-list-md>
-      <v-data-table no-data-text="No Tracks In Que" :headers="headers" :items="items" class="elevation-1" hide-actions>
+      <v-data-table
+        no-data-text="No Tracks In Que"
+        :headers="headers"
+        :items="items"
+        class="elevation-1"
+        hide-actions
+      >
         <template slot="items" slot-scope="props">
-          <tr :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : ''">
+          <tr
+            :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : ''"
+          >
             <td class="handle">
               <input
                 type="checkbox"
@@ -94,23 +100,35 @@
             <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
             <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
             <td class>
-              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/track/' + props.item.track.id">            
-                {{ props.item.track.title }}
-              </router-link>
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/track/' + props.item.track.id"
+              >{{ props.item.track.title }}</router-link>
             </td>
             <td class="box">
-              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/release/' + props.item.track.release.value">
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/release/' + props.item.track.release.value"
+              >
                 <img
                   class="thumbnail"
                   :src="props.item.track.releaseImageUrl"
                   :alt="props.item.track.release.text"
                 >
-                <span class="thumbnail-text release-title pointer">{{ props.item.track.release.text }}</span>
+                <span
+                  class="thumbnail-text release-title pointer"
+                >{{ props.item.track.release.text }}</span>
               </router-link>
             </td>
             <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
             <td class="box">
-              <router-link class="body-1" :style="{ color: $vuetify.dark ? 'white' : 'black' }" :to="'/artist/' + props.item.track.artist.artist.value">
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/artist/' + props.item.track.artist.artist.value"
+              >
                 <img
                   class="thumbnail"
                   :src="props.item.track.artistImageUrl"
@@ -195,7 +213,7 @@ import Sortable from "sortablejs";
 
 export default {
   components: { Toolbar },
-  created() {    
+  created() {
     EventBus.$on("pl:PlayQue", this.playFirstTrackInQue);
     EventBus.$on("pl:ClearQue", this.clearQue);
     EventBus.$on("pl:RemoveSelected", this.removeSelected);
@@ -247,15 +265,15 @@ export default {
     },
     queReleaseCount() {
       let releaseIds = this.$_.flatMap(this.items, function(e) {
-          return e.track.release.value;
+        return e.track.release.value;
       });
       return this.$_.uniqBy(releaseIds).length;
     },
     queArtistCount() {
-      let artistIds = [];      
+      let artistIds = [];
       this.items.forEach(t => {
         artistIds.push(t.track.artist.id);
-        if(t.track.releaseArtist) {
+        if (t.track.releaseArtist) {
           artistIds.push(t.track.releaseArtist.id);
         }
       });
@@ -284,24 +302,27 @@ export default {
     },
     selectNoTracks: function() {
       this.selectedTracks = [];
-      this.toggleSelected(false)
+      this.toggleSelected(false);
     },
-    playFirstTrackInQue: function() {      
-      this.playTrack(this.items[0].track.id );
-    },    
+    playFirstTrackInQue: function() {
+      if (this.items.length === 0) {
+        return;
+      }
+      this.playTrack(this.items[0].track.id);
+    },
     playTrack: function(id) {
       this.items.forEach(t => {
         let tr = t.track;
-        if(tr.id === id) {
+        if (tr.id === id) {
           this.$store.dispatch("playRequest", {
             index: tr.index,
             trackId: tr.id,
             releaseId: tr.release.value,
             artistId: tr.artist.id
-          });        
-          return;  
+          });
+          return;
         }
-      })      
+      });
     },
     shuffleQue: function() {
       this.updateData(true);
@@ -317,7 +338,10 @@ export default {
         };
         this.$axios.post("/playlists/add", playlistData).then(response => {
           if (!response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });            
+            EventBus.$emit("showSnackbar", {
+              text: "An error has occured",
+              color: "red"
+            });
             return false;
           }
           this.$router.push("/playlist/" + response.data.data.id);
@@ -326,7 +350,10 @@ export default {
     },
     saveAsPlaylist: function() {
       if (this.items.length === 0) {
-        EventBus.$emit("showSnackbar", { text: "Add some Tracks to save to a Playlist", color: "red" });        
+        EventBus.$emit("showSnackbar", {
+          text: "Add some Tracks to save to a Playlist",
+          color: "red"
+        });
         return false;
       }
       this.newPlaylistname = "";
@@ -334,17 +361,24 @@ export default {
     },
     removeSelected: function() {
       this.removeTracksFromQue(this.selectedTracks);
-      EventBus.$emit("showSnackbar", { text: "Removed [" + this.selectedTracks.length + "] from Que" });
+      EventBus.$emit("showSnackbar", {
+        text: "Removed [" + this.selectedTracks.length + "] from Que"
+      });
       this.selectedTracks = [];
     },
-    removeTrackFromQue: function(track) {   
-      this.removeTracksFromQue([ track ]);
+    removeTrackFromQue: function(track) {
+      this.removeTracksFromQue([track]);
     },
-    removeTracksFromQue: function(tracks) {   
-      this.$playQue.delete(this.$_.map(tracks, function(track){ return track.track.id; }))
-      .then(() => {
-        this.updateData();
-      })
+    removeTracksFromQue: function(tracks) {
+      this.$playQue
+        .delete(
+          this.$_.map(tracks, function(track) {
+            return track.track.id;
+          })
+        )
+        .then(() => {
+          this.updateData();
+        });
     },
     toggleSelectedTrack: function(e, track) {
       var isTrackSelected = e.target.checked;
@@ -363,16 +397,17 @@ export default {
       }
     },
     clearQue: function() {
-      this.$playQue.deleteAll()
-      .then(() => {
-        this.updateData();
-      })
-      .then(() => {
-        this.$store.dispatch("playIndexChange", {});
-      })
-      .then(() => {
-        EventBus.$emit("showSnackbar", { text: "Cleared Que" });                
-      });
+      this.$playQue
+        .deleteAll()
+        .then(() => {
+          this.updateData();
+        })
+        .then(() => {
+          this.$store.dispatch("playIndexChange", {});
+        })
+        .then(() => {
+          EventBus.$emit("showSnackbar", { text: "Cleared Que" });
+        });
     },
     updateData: async function(doShuffle) {
       EventBus.$emit("loadingStarted");
@@ -380,12 +415,11 @@ export default {
       this.items = [];
       this.$nextTick(() => {
         // TODO pagination; For now load first 1000 items
-        this.$playQue.list(0,1000,doShuffle)
-        .then(resolve => {
-          this.items = this.$_.orderBy(resolve.tracks, ['listNumber']);
+        this.$playQue.list(0, 1000, doShuffle).then(resolve => {
+          this.items = this.$_.orderBy(resolve.tracks, ["listNumber"]);
           EventBus.$emit("loadingComplete");
           this.loading = false;
-        })
+        });
       });
     }
   },
@@ -453,7 +487,7 @@ export default {
   padding-right: 6px;
   vertical-align: middle;
 }
-.playque-container tr.playing-paused-track .playing-icon { 
+.playque-container tr.playing-paused-track .playing-icon {
   color: green !important;
 }
 .playque-container table.v-table thead td:not(:nth-child(1)),

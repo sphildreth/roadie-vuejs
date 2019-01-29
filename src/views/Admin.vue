@@ -24,10 +24,17 @@
       >
         <template slot="items" slot-scope="props">
           <td>
-            <router-link :to="'/user/' + props.item.id">{{ props.item.user.text }}</router-link>
+            <router-link :to="'/user/' + props.item.id">
+              <v-img 
+                :src="props.item.thumbnail.url" 
+                max-width="50" 
+                :alt="props.item.user.text"></v-img>
+            <span class="subheading secondary--text text--lighten-1">
+            {{ props.item.user.text }}
+            </span>
+            </router-link>
           </td>
-          <td>{{ formatTimeStamp(props.item.registeredDate) }}</td>
-          <td>{{ formatTimeStamp(props.item.lastUpdated) }}</td>
+          <td>{{ formatTimeStamp(props.item.lastActivity) }}</td>
           <td>{{ formatTimeStamp(props.item.lastLoginDate) }}</td>
           <td>{{ formatTimeStamp(props.item.lastApiAccessDate) }}</td>
           <td>{{ props.item.isPrivate }}</td>
@@ -176,13 +183,12 @@ export default {
       page: 1,
       rowsPerPage: 25,
       totalItems: 0,
-      sortBy: "lastUpdated",
+      sortBy: "lastActivity",
       descending: true
     },
     userHeaders: [
       { text: "Username", align: "left", sortable: true, value: "user.text" },
-      { text: "Registered", sortable: true, value: "registeredDate" },
-      { text: "Last Updated", sortable: true, value: "lastUpdated" },
+      { text: "Last Activity", sortable: true, value: "lastActivity" },
       { text: "Last Login", sortable: true, value: "lastLoginDate" },
       { text: "Last Api Access", sortable: true, value: "lastApiAccessDate" },
       { text: "Priv", sortable: true, value: "isPrivate", width: "75px" },

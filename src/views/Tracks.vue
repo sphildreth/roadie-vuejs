@@ -29,8 +29,10 @@
 import Toolbar from "@/components/Toolbar";
 import TrackCard from "@/components/TrackCard";
 import { EventBus } from "@/event-bus.js";
+import trackMixin from "@/mixins/track.js";
 
 export default {
+  mixins: [trackMixin],
   components: { TrackCard, Toolbar },
   created() {
     EventBus.$on("t:viewRandom", this.viewRandom);
@@ -41,6 +43,9 @@ export default {
     EventBus.$on("t:viewRecentlyPlayed", this.viewRecentlyPlayed);
     EventBus.$on("t:viewAll", this.viewAll);
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("t:ratingChange", info => this.ratingChange(info));
+    EventBus.$on("t:dislikeToggle", info => this.dislikeToggle(info));
+    EventBus.$on("t:favoriteToggle", info => this.favoriteToggle(info));    
   },
   beforeDestroy() {
     EventBus.$off("t:viewRandom", this.viewRandom);
@@ -57,9 +62,6 @@ export default {
   },
   async mounted() {
     this.viewRandom();
-    EventBus.$on("t:ratingChange", info => this.ratingChange(info));
-    EventBus.$on("t:dislikeToggle", info => this.dislikeToggle(info));
-    EventBus.$on("t:favoriteToggle", info => this.favoriteToggle(info));
   },
   methods: {
     resetView: function() {
@@ -127,47 +129,36 @@ export default {
           });
         });
     },
-    ratingChange: async function(changeInfo) {
-      if (changeInfo.newVal !== changeInfo.oldVal) {
-        this.$axios
-          .post(
-            process.env.VUE_APP_API_URL +
-              "/users/setTrackRating/" +
-              changeInfo.releaseId +
-              "/" +
-              changeInfo.newVal
-          )
-          .then(response => {
-            if (response.data.isSuccess && changeInfo.newVal > 0) {
-              EventBus.$emit("showSnackbar", { text: "Successfully set rating" });              
-            } else if (response.data.isSuccess) {
-              EventBus.$emit("showSnackbar", { text: "Successfully removed rating" });               
-            }
-          });
-      }
+    dislikeToggle: async function(toggleInfo) {
+      this.$nextTick(() => {
+        this.trackDislikeToggle({
+          trackId: toggleInfo.trackId,
+          isDisliked: toggleInfo.isDisliked
+        });
+      });
     },
-    favoriteToggle: async function(toggleInfo) {
-      var that = this;
-      this.$axios
-        .post(
-          process.env.VUE_APP_API_URL +
-            "/users/setTrackFavorite/" +
-            toggleInfo.releaseId +
-            "/" +
-            toggleInfo.isFavorite
-        )
-        .then(response => {
-          if (response.data.isSuccess && toggleInfo.isFavorite > 0) {
-            EventBus.$emit("showSnackbar", { text: "Track is now a favorite" });            
-          } else if (response.data.isSuccess) {
-            EventBus.$emit("showSnackbar", { text: "Track is no longer a favorite" });                        
-          }
+    ratingChange: async function(changeInfo) {
+      this.$nextTick(() => {
+        this.trackRatingChange({
+          trackId: changeInfo.trackId,
+          newVal: changeInfo.newVal
+        });
+      });
+    },
+    favoriteToggle: async function(toggleInfo) {      
+      const that = this;
+      this.$nextTick(() => {
+        this.trackFavoriteToggle({
+          trackId: toggleInfo.trackId,
+          isFavorite: toggleInfo.isFavorite
+        }).then(() => {
           if (that.currentView == "favorite") {
             this.$nextTick(() => {
               that.updateData();
             });
           }
         });
+      });
     }
   },
   watch: {
@@ -178,7 +169,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120,500],
+    rowsPerPageItems: [12, 36, 60, 120, 500],
     doRandomize: false,
     filterFavoriteOnly: false,
     pagination: {

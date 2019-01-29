@@ -97,7 +97,7 @@ export default {
             });
             resolve({
               isSuccess: response.data.isSuccess,
-              isFavorite: toggleInfo.isFavorite
+              isDisliked: toggleInfo.isDisliked
             });
           });
       });

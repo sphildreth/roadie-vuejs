@@ -30,7 +30,7 @@
               >{{ release.release.text }}</div>
             </router-link>
             <div class="caption accent--text">
-              <span title="Release Date">{{ release.releaseYear }}</span> |
+              <span class="info--text" title="Release Date">{{ release.releaseYear }}</span> |
               <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> |
               <span title="Release Play Time">{{ release.durationTime }}</span>
             </div>

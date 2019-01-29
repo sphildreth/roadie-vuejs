@@ -37,7 +37,7 @@
               @change.native="dislikeToggle"
             >far fa-thumbs-down</v-icon>
             <v-layout>
-              <router-link v-if="track.artist" :to="'/artist/' + track.artist.id">
+              <router-link  v-if="track.artist" :to="'/artist/' + track.artist.id">
                 <div class="secondary--text text--lighten-1 artist-title short">{{ track.artist.artist.text}}</div>
               </router-link>
               <router-link v-if="track.release" :to="'/release/' + track.release.id">
@@ -117,7 +117,14 @@ export default {
     mediaCount: Number,
     doShowSelector: Boolean
   },
-  async mounted() {},
+  async mounted() {
+    if(this.userRating.isDisliked === undefined) {
+      this.userRating.isDisliked = false;
+    }
+    if(this.userRating.isFavorite === undefined) {
+      this.userRating.isFavorite = false;
+    }
+  },
   methods: {
     selectedTrack: function(e) {
       var isTrackSelected = e.target.checked;
@@ -128,25 +135,27 @@ export default {
     favoriteToggle: function() {
       this.$nextTick(() => {
         EventBus.$emit("t:favoriteToggle", {
-          trackId: this.$el.dataset.id,
-          isFavorite: !this.track.userRating.isFavorite
+          trackId: this.track.id,
+          isFavorite: !this.userRating.isFavorite
         });
-        this.track.userRating.isFavorite = !this.track.userRating.isFavorite;
+        this.userRating.isFavorite = !this.userRating.isFavorite;
+        this.track.userRating = this.userRating;
       });
     },
     dislikeToggle: function() {
       this.$nextTick(() => {
         EventBus.$emit("t:dislikeToggle", {
-          trackId: this.$el.dataset.id,
-          isDisliked: !this.track.userRating.isDisliked
+          trackId: this.track.id,
+          isDisliked: !this.userRating.isDisliked
         });
-        this.track.userRating.isDisliked = !this.track.userRating.isDisliked;
+        this.userRating.isDisliked = !this.userRating.isDisliked;
+        this.track.userRating = this.userRating;        
       });
     },
     ratingChanged: function() {
       this.$nextTick(() => {
         EventBus.$emit("t:ratingChange", {
-          trackId: this.$el.dataset.id,
+          trackId: this.track.id,
           newVal: this.rating
         });
       });
@@ -166,7 +175,15 @@ export default {
   },
   computed: {
     userRating: function() {
-      return this.track && this.track.userRating ? this.track.userRating : 0;
+      let userRating = {
+        rating: 0,
+        isFavorite: false,
+        isDisliked: false
+      };
+      if(this.track && this.track.userRating) {
+        return this.track.userRating;
+      }
+      return userRating;
     }
   },
   data: () => ({})

@@ -10,7 +10,7 @@
     <v-layout>
       <v-flex xs4 :class="'release-status-' + release.status">
         <!-- <div v-if="listNumber" class="caption list-number info--text">{{ this.$filters.padNumber4(listNumber) }}</div>                                                                                                  -->
-        <router-link :to="'/release/' + release.id">
+        <router-link style="display:block;clear:both;" :to="'/release/' + release.id">
           <v-img
             :src="release.thumbnail.url"
             :alt="release.release.text"

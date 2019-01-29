@@ -28,17 +28,11 @@ myApi.interceptors.request.use (
     return config;
   },
   function (error) {
-    return Promise.reject (error);
+    if (401 === error.response.status || 403 === error.reponse.status) {
+      window.location = '/signin';
+    }    
   }
-)
-
-myApi.interceptors.response.use((response) => { return response }, function (error) {
-  if (error.response.status === 401) {
-    store.dispatch('signout')
-    return;
-  }
-  return Promise.reject(error)
-});
+);
 
 Vue.prototype.$axios = myApi;
 
