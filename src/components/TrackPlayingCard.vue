@@ -681,6 +681,20 @@ export default {
         onplay: () => {
           this.updatePlaying();
         },
+        onplayerror : () => {
+          EventBus.$emit("showSnackbar", {
+              text: "Error Playing Track.",
+              color: "red"
+          });
+          this.skip("next");
+        },
+        onloaderror: () => {
+          EventBus.$emit("showSnackbar", {
+              text: "Error Loading Track",
+              color: "red"
+          });          
+          this.skip("next");
+        },
         onend: () => {
           this.skip("next");
           this.removeTrack(trackInfo);

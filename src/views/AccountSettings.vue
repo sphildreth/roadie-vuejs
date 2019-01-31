@@ -142,7 +142,7 @@
                   <v-text-field
                     v-model="profile.randomReleaseLimit"
                     type="number"
-                    label="Rdnom Release Limit"
+                    label="Random Release Limit"
                     data-vv-name="profile.randomReleaseLimit" 
                     name="randomReleaseLimit"
                   ></v-text-field> 

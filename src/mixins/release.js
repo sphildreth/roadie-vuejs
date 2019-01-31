@@ -57,6 +57,78 @@ export default {
           });                
         });
       });
+    },
+    releaseById: function(id, doLoadingEvents) {
+      return new Promise(resolve => {
+        let release = null;
+        if(doLoadingEvents) {
+          EventBus.$emit("loadingStarted");
+        }
+        this.$axios
+          .get(process.env.VUE_APP_API_URL + `/releases/${id}`)
+          .then(response => {
+            release = response.data.data;
+            release.artist = release.artist || {};
+            release.images = release.images || [];
+            release.medias = release.medias || [];
+            release.alternateNamesList = release.alternateNamesList || [];
+            release.genres = release.genres || [];
+            release.collections = release.collections || [];
+            release.playlists = release.playlists || [];
+            release.labels = release.labels || [];
+            release.tagsList = release.tagsList || [];
+            release.urLsList = release.urLsList || [];
+            resolve({
+              isSuccess: response.data.isSuccess,
+              release: release
+            });             
+          })
+          .finally(() => {          
+            if(doLoadingEvents) {
+              EventBus.$emit("loadingComplete");
+            }
+          });      
+      });          
+    },
+    addReleaseToQue(releaseId) {
+      this.releaseById(releaseId, true)
+      .then((response) => {
+        let release = response.release;
+        let queTracks = [];
+        let t = this.$_.flatMap(release.medias, function(media) {
+          return media.tracks;
+        });
+        t.forEach(tr => {
+          let artist = tr.trackArtist || release.artist;
+          let queTrack = {
+            id: tr.id,
+            mediaNumber: tr.mediaNumber,
+            trackNumber: tr.trackNumber,
+            title: tr.title,
+            duration: tr.duration,
+            durationTime: tr.durationTime,
+            rating: tr.rating,
+            playedCount: tr.playedCount,
+            trackPlayUrl: tr.trackPlayUrl,
+            release: {
+              text: release.title,
+              value: release.id,
+              releaseDate: release.releaseDate
+            },
+            artist: artist,
+            releaseArtist: release.artist,
+            releaseImageUrl: release.thumbnail.url,
+            artistImageUrl: artist.thumbnail.url,
+            userRating: tr.userRating || { rating: 0 }
+          };
+          queTracks.push(queTrack); 
+        });
+        this.$playQue.add(queTracks)
+        .then(function(result) {
+          const message = result.message ||  "Added [" + result.addedCount + "] tracks to Que";
+          EventBus.$emit("showSnackbar", { text: message });
+        });
+      })
     }
   }
 }

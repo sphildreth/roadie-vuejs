@@ -70,7 +70,7 @@
                 class="caption font-italic text-no-wrap text-truncate"
               >
                 <span
-                  class="pr-2"
+                  class="pr-2 ml-1"
                   v-for="partTitle in track.partTitlesList"
                   :key="partTitle"
                 >{{ partTitle }}</span>

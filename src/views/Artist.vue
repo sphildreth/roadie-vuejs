@@ -13,7 +13,7 @@
       :hated="artist.userRating && artist.userRating.isDisliked"
     ></Toolbar>
     <v-container
-      v-if="!showMergingArtist && artistImageSearchItems.length === 0"
+      v-if="!loading && !showMergingArtist && artistImageSearchItems.length === 0"
       fluid
       grid-list-md
     >
@@ -514,7 +514,7 @@
       </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="!showMergingArtist && artistImageSearchItems.length > 0" fluid grid-list-md>
+    <v-container v-if="!loading && !showMergingArtist && artistImageSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="artistImageSearchItems = []">Cancel</v-btn>
       </v-flex>
@@ -547,7 +547,7 @@
         </v-flex>
       </v-data-iterator>
     </v-container>
-    <v-container v-if="showMergingArtist">
+    <v-container v-if="!loading && showMergingArtist">
       <div>Select Artist To Merge "{{ this.artist.name }}" Artist into</div>
       <v-layout row>
         <v-autocomplete
@@ -565,6 +565,15 @@
         <v-btn color="success" @click="doMerge()">Merge</v-btn>
       </v-flex>
     </v-container>
+    <v-container v-if="loading">
+        <v-progress-linear
+          v-if="loading"
+          height="2"
+          color="accent"
+          class="ma-0 pa-0"
+          indeterminate
+        ></v-progress-linear>
+    </v-container>    
   </div>
 </template>
 
@@ -972,7 +981,7 @@ export default {
             isFavorite: false,
             isDisliked: false
           };
-
+          this.loading = false;
           this.$axios
             .get(
               process.env.VUE_APP_API_URL +
@@ -998,7 +1007,6 @@ export default {
                   playedCount: r.trackPlayedCount
                 });
               });
-              this.loaded = true;
               let tabIndex = 0;
               if (this.artist.collectionsWithArtistReleases.length > 0) {
                 tabIndex++;
@@ -1023,9 +1031,11 @@ export default {
             Authorization: "Bearer " + this.$store.getters.authToken
           };
           this.$nextTick(() => {
-            var image = document.getElementById("artistImage");
-            window.favIcon.image(image);
             document.title = this.artist.name;
+            setTimeout(function() {
+              var image = document.getElementById("artistImage");
+              window.favIcon.image(image);
+            }, 500);
           });
         });
     },
@@ -1155,7 +1165,7 @@ export default {
     }
   },
   data: () => ({
-    loaded: false,
+    loading: true,
     showReleaseTable: false,
     searchArtistsLoading: false,
     selectedMergeArtist: null,

@@ -28,11 +28,18 @@ myApi.interceptors.request.use (
     return config;
   },
   function (error) {
-    if (401 === error.response.status || 403 === error.reponse.status) {
-      window.location = '/signin';
-    }    
+    return Promise.reject (error);
   }
 );
+// This redirects to signin on 401 or 403 responses
+myApi.interceptors.response.use((response) => {
+  return response;
+}, function (error) {
+  if (error.response.status === 401 || error.response.status === 403) {
+      router.replace('/signin');
+  }
+  return Promise.reject(error.response);
+});
 
 Vue.prototype.$axios = myApi;
 

@@ -50,7 +50,7 @@ class PlayQue {
             resolve(result);
           });
       } else {
-        that._db.tracks.where('index').above(0).offset(offset).limit(limit).toArray()
+        that._db.tracks.where('index').above(0).offset(offset).limit(limit).sortBy('index')
           .then(function (array) {
             const r = [];
             let looper = offset;
@@ -158,7 +158,7 @@ class PlayQue {
       .finally(() => {
         setTimeout(function() {
           EventBus.$emit("q:deletedTrackFromQue", result);          
-        }, 5000);
+        }, 2000);
       });
     })
   }

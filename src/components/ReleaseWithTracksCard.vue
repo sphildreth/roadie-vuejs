@@ -22,13 +22,19 @@
               title="Rank"
             >{{ release.rank }}</span>
             <span v-if="!release.rank">&nbsp;</span>
-            <router-link :to="'/release/' + release.id">
-              <div
-                :title="release.release.text"
-                :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
-                class="release-title subheading font-weight-medium pointer"
-              >{{ release.release.text }}</div>
-            </router-link>
+            <div class="on-show-hover">
+              <router-link class="inline-block" :to="'/release/' + release.id">
+                <div
+                  :title="release.release.text"
+                  :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
+                  class="release-title subheading font-weight-medium pointer"
+                >{{ release.release.text }}</div>                     
+              </router-link>
+              <span class="on-hover pointer">
+                <span @click="playRelease()"><i class="fas fa-play mx-2" title="Play"></i></span>
+                <span @click="queRelease()"><i class="fas fa-headphones" title="Add To Que"></i></span>
+              </span>                 
+            </div>
             <div class="caption accent--text">
               <span class="info--text" title="Release Date">{{ release.releaseYear }}</span> |
               <span title="Track Count">{{ release.trackCount | padNumber3 }}</span> |
@@ -84,11 +90,12 @@
 </template>
 
 <script>
+import releaseMixin from "@/mixins/release.js";
 import trackMixin from "@/mixins/track.js";
 
 export default {
   name: "ReleaseWithTracksCard",
-  mixins: [trackMixin],
+  mixins: [releaseMixin,trackMixin],
   props: {
     release: Object
   },
@@ -96,6 +103,15 @@ export default {
     isPlayingTrack: function(trackId) {
       return this.$store.getters.playingIndex.trackId == trackId ? 'playing-track' : ''
     },
+    playRelease: async function() {
+      this.$playQue.deleteAll()
+      .then(() => {
+        this.addReleaseToQue(this.release.id);
+      });
+    },
+    queRelease: async function() {
+      this.addReleaseToQue(this.release.id);
+    },    
     playTrack: async function(track) {
       this.$playQue.deleteAll()
       .then(() => {
@@ -185,6 +201,10 @@ tr.Missing td {
 
 .release-with-tracks .on-hover {
   display: none;
+}
+
+.release-with-tracks .inline-block {
+  display: inline-block;
 }
 
 .release-with-tracks .on-show-hover:hover .on-hover {

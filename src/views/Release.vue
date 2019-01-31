@@ -12,7 +12,7 @@
       :doShowHated="true"
       :hated="release.userRating && release.userRating.isDisliked"
     ></Toolbar>
-    <v-container v-if="!showMergingRelease && coverSearchItems.length === 0" fluid grid-list-md>
+    <v-container v-if="!loading && !showMergingRelease && coverSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -416,7 +416,7 @@
       </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="!showMergingRelease && coverSearchItems.length > 0" fluid grid-list-md>
+    <v-container v-if="!loading && !showMergingRelease && coverSearchItems.length > 0" fluid grid-list-md>
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="coverSearchItems = []">Cancel</v-btn>
       </v-flex>
@@ -449,7 +449,7 @@
         </v-flex>
       </v-data-iterator>
     </v-container>
-    <v-container v-if="showMergingRelease">
+    <v-container v-if="!loading && showMergingRelease">
       <div>Select Release To Merge "{{ this.release.title }}" Release into</div>
       <v-layout row>
         <v-autocomplete
@@ -466,6 +466,15 @@
         <v-btn color="warning" @click="showMergingRelease=false">Cancel</v-btn>
         <v-btn color="success" @click="doMerge()">Merge</v-btn>
       </v-flex>
+    </v-container>
+    <v-container v-if="loading">
+        <v-progress-linear
+          v-if="loading"
+          height="2"
+          color="accent"
+          class="ma-0 pa-0"
+          indeterminate
+        ></v-progress-linear>
     </v-container>
   </div>
 </template>
@@ -877,37 +886,29 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
-        .get(process.env.VUE_APP_API_URL + `/releases/${this.id}`)
-        .then(response => {
-          this.release = response.data.data;
-          this.release.artist = this.release.artist || {};
-          this.release.images = this.release.images || [];
-          this.release.medias = this.release.medias || [];
-          this.release.alternateNamesList =
-            this.release.alternateNamesList || [];
-          (this.release.genres = this.release.genres || []),
-            (this.release.collections = this.release.collections || []),
-            (this.release.playlists = this.release.playlists || []),
-            (this.release.labels = this.release.labels || []);
-          this.release.tagsList = this.release.tagsList || [];
-          this.release.urLsList = this.release.urLsList || [];
-        })
-        .finally(() => {
-          this.dropzoneOptions.url =
-            process.env.VUE_APP_API_URL +
-            "/releases/uploadImage/" +
-            this.release.id;
-          this.dropzoneOptions.headers = {
-            Authorization: "Bearer " + this.$store.getters.authToken
-          };
-          this.$nextTick(() => {
+      this.releaseById(this.id)
+      .then((response) => {
+        this.release = response.release;
+      })
+      .finally(() =>{
+        this.dropzoneOptions.url =
+          process.env.VUE_APP_API_URL +
+          "/releases/uploadImage/" +
+          this.release.id;
+        this.dropzoneOptions.headers = {
+          Authorization: "Bearer " + this.$store.getters.authToken
+        };
+        this.$nextTick(() => {
+          this.loading = false;                    
+          document.title = this.release.title;          
+          EventBus.$emit("loadingComplete");          
+          setTimeout(function() {
             var image = document.getElementById("releaseImage");
             window.favIcon.image(image);
-            document.title = this.release.title;
-          });
-          EventBus.$emit("loadingComplete");
+          }, 500);
         });
+
+      });
     },
     metaDataSources: function() {
       return [
@@ -955,6 +956,7 @@ export default {
     }
   },
   data: () => ({
+    loading: true,
     tab: 0,
     releaseTab: 2,
     selectedTracks: [],
