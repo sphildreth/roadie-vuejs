@@ -2,7 +2,7 @@
   <div class="search-results-container">
     <v-container fluid>
       <div class="heading mb-2">Search Results for:
-        <span class="accent--text title ml-2">{{ decodeURIComponent(query) }}</span>
+        <span class="accent--text title ml-2">{{ decodeURIComponent(this.searchQuery) }}</span>
       </div>
       <div v-if="loading">
         <v-progress-linear
@@ -15,7 +15,7 @@
       </div>      
       <v-divider></v-divider>
     </v-container>
-    <v-container fluid class="pa-0 pr-3 pl-3 ma-0" >
+    <v-container v-if="!loading" fluid class="pa-0 pr-3 pl-3 ma-0" >
       <div v-if="noResults">
         <v-icon class="mr-3">far fa-frown</v-icon>Sorry, nothing was found.
       </div>
@@ -62,7 +62,12 @@
         </v-card-text>
       </v-card>
       <v-card v-if="trackItems.length > 0">
-        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading accent--text"><v-icon class="mr-2">audiotrack</v-icon>Tracks</v-card-title>
+        <v-card-title class="pa-0 ma-0 pt-2 pl-3 subheading">
+          <v-icon class="mr-2">audiotrack</v-icon>
+          <span class="accent--text">Tracks</span>
+          <span @click="playTracks()"><i class="fas fa-play mx-2 pointer" title="Play All (only visible tracks - will not load multiple pages)"></i></span>
+          <span @click="queTracks()"><i class="fas fa-headphones pointer" title="Add All To Que (only visible tracks - will not load multiple pages)"></i></span>          
+        </v-card-title>
         <v-card-text>
           <v-data-iterator
             :items="trackItems"
@@ -106,13 +111,16 @@
 </template>
 
 <script>
+
 import { EventBus } from "@/event-bus.js";
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import TrackCard from "@/components/TrackCard";
 import PlaylistCard from "@/components/PlaylistCard";
+import trackMixin from "@/mixins/track.js";
 
 export default {
+  mixins: [trackMixin],
   components: { ArtistCard, ReleaseCard, TrackCard, PlaylistCard },
   props: {
     q: String
@@ -131,29 +139,64 @@ export default {
       );
     },
     query() {
-      return this.searchQuery.replace('a: ', '').replace('r: ', '').replace('t: ', '').replace('p: ', '');
+      const ratingRegex = /(\s?)(:?)(rating)(:?)(\s?)[0-9]/g;
+      const s = decodeURIComponent(this.searchQuery);
+      return s
+                 .replace('a: ', '')
+                 .replace('r: ', '')
+                 .replace('t: ', '')
+                 .replace('p: ', '')
+                 .replace(ratingRegex,'');
     },
     doArtistSearch() {
-      return !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("t:") && !this.searchQuery.startsWith("p:");
+      const s = decodeURIComponent(this.searchQuery);
+      return !s.startsWith("r:") && !s.startsWith("t:") && !s.startsWith("p:");
     },
     doReleaseSearch() {
-      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("t:") && !this.searchQuery.startsWith("p:");
+      const s = decodeURIComponent(this.searchQuery);
+      return !s.startsWith("a:") && !s.startsWith("t:") && !s.startsWith("p:");
     },
     doTrackSearch() {
-      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("p:");
+      const s = decodeURIComponent(this.searchQuery);
+      return !s.startsWith("a:") && !s.startsWith("r:") && !s.startsWith("p:");
     },
     doPlaylistSearch() {
-      return !this.searchQuery.startsWith("a:") && !this.searchQuery.startsWith("r:") && !this.searchQuery.startsWith("t:");
+      const ratingRegex = /(\s?)(:?)(rating)(:?)(\s?)[0-9]/g;
+      const s = decodeURIComponent(this.searchQuery);
+      if(ratingRegex.test(s)) {
+        return false;
+      }
+      return !s.startsWith("a:") && !s.startsWith("r:") && !s.startsWith("t:");
+    },
+    filterToRated() {
+      const ratingRegex = /(\s?)(:?)(rating)(:?)(\s?)[0-9]/g;
+      const s = decodeURIComponent(this.searchQuery);
+      if(!ratingRegex.test(s)) {
+        return '';
+      }
+      const p = s.indexOf("rating");
+      const l = s.length;
+      const r = parseInt(s.substring(p, l).replace("rating", '').replace(":", '').trim());
+      return r;
     }
-
   },
   async mounted() {
     this.updateData();
   },
   methods: {
+    playTracks() {
+      this.$playQue
+        .deleteAll()
+        .then(response => {
+          this.queTracks();
+        })
+    },
+    queTracks() {
+      this.addTracksToQue(this.trackItems);
+    },
     updateData: async function() {
       this.loading = true;
-      if(!this.query) {
+      if(!this.searchQuery) {
         this.loading = false;
         EventBus.$emit("showSnackbar", {
           text: "You won't find anything if you don't search for something.",
@@ -188,7 +231,7 @@ export default {
               this.artistPagination.rowsPerPage
             }&order=${this.artistPagination.sortOrder}&sort=${
               this.artistPagination.sortBy
-            }&filter=${this.query}`
+            }&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
           this.artistItems = response.data.rows;
@@ -207,7 +250,7 @@ export default {
               this.releasePagination.rowsPerPage
             }&order=${this.releasePagination.sortOrder}&sort=${
               this.releasePagination.sortBy
-            }&filter=${this.query}`
+            }&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
           this.releaseItems = response.data.rows;
@@ -226,7 +269,7 @@ export default {
               this.trackPagination.rowsPerPage
             }&order=${this.trackPagination.sortOrder}&sort=${
               this.trackPagination.sortBy
-            }&filter=${this.query}`
+            }&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
           this.trackItems = response.data.rows;
@@ -282,7 +325,7 @@ export default {
       }
     }
   },
-  data: () => ({
+  data: () => ({    
     searchQuery: null,
     loading: true,
     rowsPerPageItems: [12, 36, 60, 120,500],
@@ -318,7 +361,7 @@ export default {
     artistItems: [],
     releaseItems: [],
     trackItems: [],
-    playlistItems: []
+    playlistItems: []  
   })
 };
 </script>
