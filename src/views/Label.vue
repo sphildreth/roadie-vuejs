@@ -6,7 +6,7 @@
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
             <v-flex xs12>
-              <v-card color="primary" class="profile darken-1">
+              <v-card color="primary" class="darken-1">
                 <v-card-text class="title">
                   {{ label.name }}
                   <v-icon
@@ -57,13 +57,13 @@
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
           <v-tabs right color="primary" slider-color="accent">
-            <v-tab>Profile</v-tab>
+            <v-tab v-if="label.profile">Profile</v-tab>
             <v-tab v-if="label.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="label.urLsList.length">Urls</v-tab>
             <v-tab>Metadata Sources</v-tab>
-            <v-tab-item>
+            <v-tab-item v-if="label.profile">
               <v-card flat class="profile darken-3">
-                <v-card-text v-html="label.profile">Loading...</v-card-text>
+                <vue-markdown>{{label.profile}}</vue-markdown>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="label.tagsList.length > 0">
