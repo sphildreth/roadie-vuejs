@@ -138,6 +138,16 @@ var router = new VueRouter({
       }
     }, 
     {
+      path: '/label/edit/:id',
+      name: 'labelEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "labelEdit" */ './views/LabelEdit.vue'),
+      meta: {
+        guest: false,
+        is_admin: true
+      }
+    },        
+    {
       path: '/playlists',
       name: 'playlists',
       component: () => import(/* webpackChunkName: "playlists" */ './views/Playlists.vue'),

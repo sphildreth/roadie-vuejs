@@ -187,7 +187,7 @@ export default {
     playTracks() {
       this.$playQue
         .deleteAll()
-        .then(response => {
+        .then(() => {
           this.queTracks();
         })
     },

@@ -57,14 +57,15 @@
             </v-layout>
             <v-layout>
               <div class="caption accent--text">
+                <span v-if="mediaCount > 1"><span class="media-number info--text" title="Media Number">{{ this.$filters.padNumber2(mediaNumber) }}</span> | </span>
                 <span title="Played Count">{{ track.playedCount | padNumber4 }}</span> |
                 <span title="Track Play Time">{{ track.durationTime }}</span>
               </div>
-              <div
+              <!-- <div
                 v-if="mediaCount > 1"
                 class="caption accent-text ml-1"
               >{{ 'Media ' + this.$filters.padNumber2(mediaNumber) + ' of ' + this.$filters.padNumber2(mediaCount) }}
-              </div>
+              </div> -->
               <div
                 v-if="track.partTitlesList && track.partTitlesList.length > 0"
                 class="caption font-italic text-no-wrap text-truncate"

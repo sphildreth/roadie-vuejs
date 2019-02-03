@@ -28,6 +28,7 @@
                 label="Password"
                 type="password"
                 required
+                @keyup.enter.native="submit"
               ></v-text-field>
               <v-card-actions>
                 <v-btn to="/register" round>Register</v-btn>
