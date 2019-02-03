@@ -268,6 +268,7 @@ export default {
     EventBus.$on("l:Delete", this.delete);
     EventBus.$on("l:FindLabelImage", this.findLabelImage);
     EventBus.$on("l:Edit", this.edit);    
+    this.debouncedFindLabelImage = this.$_.debounce(this.findLabelImage, 800);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -421,6 +422,9 @@ export default {
       this.id = to.params.id;
       this.updateData();
     },
+    labelImageSearchQuery: function() {
+      this.debouncedFindLabelImage();
+    },    
     artistPagination: {
       async handler() {
         this.updateArtistData();
