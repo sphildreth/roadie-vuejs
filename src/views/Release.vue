@@ -268,7 +268,7 @@
         <v-flex d-flex xs5>
           <v-tabs class="release-lists" color="primary" v-model="releaseTab" slider-color="accent">
             <v-tab>Tracks</v-tab>
-            <v-tab-item>
+            <v-tab-item class="">
               <v-card flat class="tracks">
                 <v-data-iterator
                   :items="release.medias"
@@ -278,6 +278,7 @@
                   row
                   wrap
                 >
+                  <span class="pt-2">asdfasdfsadf</span>
                   <v-flex slot="item" slot-scope="props" xs12>
                     <MediaCard
                       :media="props.item"
