@@ -207,6 +207,7 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <confirm ref="confirm"></confirm>    
   </div>
 </template>
 
@@ -216,9 +217,10 @@ import { EventBus } from "@/event-bus.js";
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import trackMixin from "@/mixins/track.js";
+import Confirm from "@/views/Confirm";
 export default {
   mixins: [trackMixin],
-  components: { Toolbar, ArtistCard, ReleaseCard },
+  components: { Toolbar, ArtistCard, Confirm, ReleaseCard },
   props: {
     id: String
   },
@@ -234,6 +236,8 @@ export default {
     EventBus.$on("tt:searchInternetRelease", this.searchInternetRelease);
     EventBus.$on("tt:searchInternetTitle", this.searchInternetTitle);
     EventBus.$on("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
+    EventBus.$on("tt:Delete", () => { this.delete(false); });
+    EventBus.$on("tt:DeleteAndFile", () => { this.delete(true); });
   },
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addToQue);
@@ -247,6 +251,8 @@ export default {
     EventBus.$off("tt:searchInternetRelease", this.searchInternetRelease);
     EventBus.$off("tt:searchInternetTitle", this.searchInternetTitle);    
     EventBus.$off("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
+    EventBus.$off("tt:Delete");
+    EventBus.$off("tt:DeleteAndFile");
   },
   async mounted() {
     this.updateData();
@@ -262,8 +268,9 @@ export default {
       return !this.$store.getters.isUserAdmin
         ? []
         : [
-            { title: "Delete", class: "warning--text", click: "aa:Delete" },
-            { title: "Edit", click: "aa:Edit" }
+            { title: "Delete", class: "warning--text", click: "tt:Delete" },
+            { title: "Delete Track And File", class: "warning--text", click: "tt:DeleteAndFile" },
+            { title: "Edit", click: "tt:Edit" }
           ];
     },
     searchQuery() {
@@ -290,6 +297,24 @@ export default {
     }
   },
   methods: {
+    delete(andDeleteFile) {
+      let trackId = this.track.id;
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/track/" + trackId + '?doDeleteFile=' + andDeleteFile
+              )
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });
+    },
     searchForTitle: function() {
       this.$router.push({ name: "search", params: { q: 't: ' + this.track.title } });
     },
