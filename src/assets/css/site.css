@@ -59,6 +59,10 @@
   float: left !important;
 }
 
+img.modal-image {
+  max-width: 100%;
+}
+
 .rainbow, .playing-artist, .playing-release, .playing-track {
   background: red;
   background: -webkit-linear-gradient(left, orange , yellow, green, cyan, blue, violet);

@@ -36,7 +36,8 @@ myApi.interceptors.response.use((response) => {
   return response;
 }, function (error) {
   if (error.response.status === 401 || error.response.status === 403) {
-      router.replace('/signin');
+      this.$store.dispatch("signout");
+      this.$router.go("/signin");
   }
   return Promise.reject(error.response);
 });
