@@ -1019,6 +1019,7 @@ export default {
               }
               this.releaseTab = tabIndex;
               this.selectedMergeArtist = this.artist.name;
+              this.artistImageSearchQuery = null;
               EventBus.$emit("loadingComplete");
             });
         })
@@ -1103,8 +1104,7 @@ export default {
     },
     findArtistImage: async function() {
       EventBus.$emit("loadingStarted");
-      this.artistImageSearchQuery =
-        this.artistImageSearchQuery || this.artist.name;
+      this.artistImageSearchQuery = this.artistImageSearchQuery || this.artist.name;
       this.$axios
         .post(
           process.env.VUE_APP_API_URL +

@@ -901,7 +901,8 @@ export default {
         };
         this.$nextTick(() => {
           this.loading = false;                    
-          document.title = this.release.title;          
+          document.title = this.release.title;        
+          this.coverSearchQuery = null;  
           EventBus.$emit("loadingComplete");          
           setTimeout(function() {
             var image = document.getElementById("releaseImage");

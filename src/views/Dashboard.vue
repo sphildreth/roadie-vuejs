@@ -106,7 +106,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="accent--text">Recently Added Releases</v-card-title>
+        <v-card-title class="headline accent--text"><v-icon class="mr-1" medium>library_music</v-icon>Recently Added Releases</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator
             :items="latestReleases"
@@ -126,7 +126,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="accent--text">Recently Added Artists</v-card-title>
+        <v-card-title class="headline accent--text"><v-icon class="mr-1" medium>fas fa-users</v-icon>Recently Added Artists</v-card-title>
         <v-container fluid grid-list-md>
           <v-data-iterator
             :items="latestArtists"
