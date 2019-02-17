@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-detail-container">
+  <div class="dashboard-detail-container">
     <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>
     <v-layout hidden-xs-only row wrap>
       <v-flex d-flex md12 class="ma-3">
@@ -13,12 +13,14 @@
           <span>Total Users in the system</span>
         </v-tooltip>
         <v-tooltip bottom>
-          <v-chip slot="activator" color="secondary" text-color="white">
+          <v-chip slot="activator" color="secondary" text-color="white">            
             <v-avatar>
               <v-icon>collections</v-icon>
             </v-avatar>
+            <a href="/collections/">                                    
             {{ statistics.collectionCount | formatNumber }}
-          </v-chip>
+            </a>
+          </v-chip>          
           <span>Total Collections in the system</span>
         </v-tooltip>
         <v-tooltip bottom>
@@ -26,7 +28,9 @@
             <v-avatar>
               <v-icon>playlist_play</v-icon>
             </v-avatar>
+            <a href="/playlists/">                                    
             {{ statistics.playlistCount | formatNumber }}
+            </a>
           </v-chip>
           <span>Total Playlists in the system</span>
         </v-tooltip>
@@ -35,7 +39,9 @@
             <v-avatar>
               <v-icon>label</v-icon>
             </v-avatar>
+            <a href="/labels/">                                    
             {{ statistics.labelCount | formatNumber }}
+            </a>
           </v-chip>
           <span>Total Labels in the system</span>
         </v-tooltip>
@@ -44,7 +50,9 @@
             <v-avatar>
               <v-icon>fas fa-users</v-icon>
             </v-avatar>
+            <a href="/artists/">   
             {{ statistics.artistCount | formatNumber }}
+            </a>
           </v-chip>
           <span>Total Artists in the system</span>
         </v-tooltip>
@@ -53,7 +61,9 @@
             <v-avatar>
               <v-icon>library_music</v-icon>
             </v-avatar>
+            <a href="/releases/">   
             {{ statistics.releaseCount | formatNumber }}
+            </a>
           </v-chip>
           <span>Total Releases in the Library</span>
         </v-tooltip>
@@ -71,7 +81,9 @@
             <v-avatar>
               <v-icon>audiotrack</v-icon>
             </v-avatar>
+            <a href="/tracks/">   
             {{ statistics.trackCount | formatNumber }}
+            </a>
           </v-chip>
           <span>Total Tracks in Library</span>
         </v-tooltip>
@@ -106,8 +118,12 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="headline accent--text"><v-icon class="mr-1" medium>library_music</v-icon>Recently Added Releases</v-card-title>
-        <v-container fluid grid-list-md>
+        <v-card-title class="title accent--text">
+          <a href="/releases/recentlyadded">   
+          <v-icon class="mr-1">library_music</v-icon>Recently Added Releases
+          </a>
+          </v-card-title>
+        <v-container fluid grid-list-md class="my-0 py-0">
           <v-data-iterator
             :items="latestReleases"
             :total-items="latestReleases.length"
@@ -126,8 +142,12 @@
     </v-layout>
     <v-layout row wrap>
       <v-card xs12 class="ma-3">
-        <v-card-title class="headline accent--text"><v-icon class="mr-1" medium>fas fa-users</v-icon>Recently Added Artists</v-card-title>
-        <v-container fluid grid-list-md>
+        <v-card-title class="title accent--text">
+          <a href="/artists/recentlyadded">   
+          <v-icon class="mr-1">fas fa-users</v-icon>Recently Added Artists
+          </a>
+          </v-card-title>
+        <v-container fluid grid-list-md class="my-0 py-0">
           <v-data-iterator
             :items="latestArtists"
             :total-items="latestArtists.length"
@@ -286,7 +306,11 @@ export default {
 
 
 <style>
-.playlist-detail-container .v-chip {
+.dashboard-detail-container .v-chip {
   padding: 4px;
+}
+.dashboard-detail-container a {
+  text-decoration: none;
+  color: inherit;
 }
 </style>

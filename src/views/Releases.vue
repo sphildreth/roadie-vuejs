@@ -28,6 +28,9 @@ import releaseMixin from "@/mixins/release.js";
 export default {
   mixins: [releaseMixin],
   components: { ReleaseCard, Toolbar },
+  props: {
+    view: String
+  },  
   created() {
     EventBus.$on("r:viewRandom", this.viewRandom);
     EventBus.$on("r:viewRecentlyAdded", this.viewRecentlyAdded);
@@ -41,6 +44,7 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("r:favoriteToggle", info => this.toggleFavorite(info));
     EventBus.$on("r:dislikeToggle", info => this.hateToggle(info));
+
   },
   beforeDestroy() {
     EventBus.$off("r:viewRandom", this.viewRandom);
@@ -56,7 +60,18 @@ export default {
     EventBus.$off("r:favoriteToggle");
     EventBus.$off("r:dislikeToggle");
   },
-  async mounted() {},
+  mounted() {
+    if(this.view) {
+      switch (this.view) {
+        case "recentlyadded":
+          document.querySelectorAll('[data-eventmessage="r:viewRecentlyAdded"]')[0].click();          
+          break;      
+        default:
+          document.querySelectorAll('[data-eventmessage="r:viewRandom"]')[0].click();   
+          break;
+      }
+    }
+  },
   methods: {
     resetView: function() {
       this.doRandomize = false;
@@ -146,7 +161,22 @@ export default {
       async handler() {
         this.updateData();
       }
-    }
+    },
+    $route(to) {
+      this.view = to.params.view;
+      if(this.view) {
+        switch (this.view) {
+          case "recentlyadded":
+            document.querySelectorAll('[data-eventmessage="r:viewRecentlyAdded"]')[0].click();          
+            break;      
+          default:
+            document.querySelectorAll('[data-eventmessage="r:viewRandom"]')[0].click();   
+            break;
+        }
+      } else {
+        document.querySelectorAll('[data-eventmessage="r:viewRandom"]')[0].click();   
+      }
+    },
   },
   data: () => ({
     rowsPerPageItems: [12, 36, 60, 120,500],

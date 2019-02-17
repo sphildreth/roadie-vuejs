@@ -30,6 +30,9 @@ import artistMixin from "@/mixins/artist.js";
 export default {
   mixins: [artistMixin],
   components: { ArtistCard, Toolbar },
+  props: {
+    view: String
+  },  
   created() {
     EventBus.$on("a:viewRandom", this.viewRandom);
     EventBus.$on("a:viewRecentlyAdded", this.viewRecentlyAdded);
@@ -61,7 +64,18 @@ export default {
     EventBus.$off("a:favoriteToggle");
     EventBus.$off("a:dislikeToggle");
   },
-  async mounted() {},
+  mounted() {
+    if(this.view) {
+      switch (this.view) {
+        case "recentlyadded":
+          document.querySelectorAll('[data-eventmessage="a:viewRecentlyAdded"]')[0].click();          
+          break;      
+        default:
+          document.querySelectorAll('[data-eventmessage="a:viewRandom"]')[0].click();   
+          break;
+      }
+    }
+  },
   methods: {
     resetView: function() {
       this.doRandomize = false;
@@ -161,7 +175,22 @@ export default {
       async handler() {
         this.updateData();
       }
-    }
+    },
+    $route(to) {
+      this.view = to.params.view;
+      if(this.view) {
+        switch (this.view) {
+          case "recentlyadded":
+            document.querySelectorAll('[data-eventmessage="a:viewRecentlyAdded"]')[0].click();          
+            break;      
+          default:
+            document.querySelectorAll('[data-eventmessage="a:viewRandom"]')[0].click();   
+            break;
+        }
+      } else {
+        document.querySelectorAll('[data-eventmessage="a:viewRandom"]')[0].click();   
+      }
+    },    
   },
   data: () => ({
     rowsPerPageItems: [12, 36, 60, 120, 500],

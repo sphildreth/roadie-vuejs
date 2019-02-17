@@ -18,8 +18,9 @@ var router = new VueRouter({
       }
     },    
     {
-      path: '/releases',
+      path: '/releases/:view?',
       name: 'releases',
+      props: true,
       component: () => import(/* webpackChunkName: "releases" */ './views/Releases.vue'),
       meta: {
         guest: false
@@ -43,8 +44,9 @@ var router = new VueRouter({
       }      
     },        
     {
-      path: '/artists',
+      path: '/artists/:view?',
       name: 'artists',
+      props: true,      
       component: () => import(/* webpackChunkName: "artists" */ './views/Artists.vue'),
       meta: {
         guest: false
