@@ -796,6 +796,9 @@ export default {
         });
     },
     findCover: async function() {
+      if(this.loading) {
+        return;
+      }      
       EventBus.$emit("loadingStarted");
       this.coverSearchQuery =
         this.coverSearchQuery ||
@@ -886,6 +889,8 @@ export default {
       }
     },
     updateData: async function() {
+      this.loading = true;
+      this.coverSearchQuery = null;        
       EventBus.$emit("loadingStarted");
       this.releaseById(this.id)
       .then((response) => {
@@ -902,7 +907,6 @@ export default {
         this.$nextTick(() => {
           this.loading = false;                    
           document.title = this.release.title;        
-          this.coverSearchQuery = null;  
           EventBus.$emit("loadingComplete");          
           setTimeout(function() {
             var image = document.getElementById("releaseImage");
@@ -948,7 +952,9 @@ export default {
       this.updateData();
     },
     coverSearchQuery: function() {
-      this.debouncedFindCover();
+      if(!this.loading) {
+        this.debouncedFindCover();
+      }
     },
     searchForMergeRelease(val) {
       if (!val) {

@@ -709,7 +709,7 @@ export default {
         });
     },
     doMergeArtistSearch: function(val) {
-      if (this.searchArtistsLoading) {
+      if (this.loading || this.searchArtistsLoading) {
         return;
       }
       this.searchArtistsLoading = true;
@@ -956,6 +956,8 @@ export default {
         });
     },
     updateData: async function() {
+      this.loading = true;
+      this.artistImageSearchQuery = null;
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(process.env.VUE_APP_API_URL + `/artists/${this.id}`)
@@ -981,7 +983,6 @@ export default {
             isFavorite: false,
             isDisliked: false
           };
-          this.loading = false;
           this.$axios
             .get(
               process.env.VUE_APP_API_URL +
@@ -1019,7 +1020,6 @@ export default {
               }
               this.releaseTab = tabIndex;
               this.selectedMergeArtist = this.artist.name;
-              this.artistImageSearchQuery = null;
               EventBus.$emit("loadingComplete");
             });
         })
@@ -1037,6 +1037,7 @@ export default {
               var image = document.getElementById("artistImage");
               window.favIcon.image(image);
             }, 500);
+            this.loading = false;            
           });
         });
     },
@@ -1103,6 +1104,9 @@ export default {
         });
     },
     findArtistImage: async function() {
+      if(this.loading) {
+        return;
+      }
       EventBus.$emit("loadingStarted");
       this.artistImageSearchQuery = this.artistImageSearchQuery || this.artist.name;
       this.$axios
@@ -1126,7 +1130,9 @@ export default {
       this.updateData();
     },
     artistImageSearchQuery: function() {
-      this.debouncedFindartistImage();
+      if(!this.loading) {
+        this.debouncedFindartistImage();
+      }
     },
     searchForMergeArtist(val) {
       if (!val) {
