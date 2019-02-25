@@ -534,6 +534,8 @@ export default {
     this.debouncedFindCover = this.$_.debounce(this.findCover, 800);
     EventBus.$on("t:selected", track => this.addSelectedTrack(track));
     EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
+    EventBus.$on("t:dislikeToggle", info => this.dislikeTrackToggle(info));
+    EventBus.$on("t:favoriteToggle", info => this.favoriteTrackToggle(info));       
     EventBus.$on("userTrackRatingChange", info => this.updateIfNeeded(info));
     EventBus.$on("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
     EventBus.$on("userTrackLikeChange", info => this.updateIfNeeded(info));
@@ -561,6 +563,8 @@ export default {
     EventBus.$off("rr:Edit", this.edit);
     EventBus.$off("t:selected");
     EventBus.$off("t:unselected");
+    EventBus.$off("t:dislikeToggle", info => this.dislikeTrackToggle(info));
+    EventBus.$off("t:favoriteToggle", info => this.favoriteTrackToggle(info));      
     EventBus.$off("userTrackRatingChange",  info => this.updateIfNeeded(info));
     EventBus.$off("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
     EventBus.$off("userTrackLikeChange", info => this.updateIfNeeded(info));
@@ -576,15 +580,17 @@ export default {
       return this.release.mediumThumbnail.url;
     },
     adminMenuItems() {
-      return !this.$store.getters.isUserAdmin
-        ? []
-        : [
-            { title: "Delete", class: "warning--text", click: "rr:Delete" },
-            { title: "Edit", click: "rr:Edit" },
-            { title: "Find Cover", click: "rr:FindCover" },
-            { title: "Merge Release", click: "rr:MergeReleases" },
-            { title: "Rescan", click: "rr:Rescan" }
-          ];
+      let items = [];
+      if(this.$store.getters.isUserEditor) {
+        items.push({ title: "Edit", click: "rr:Edit" });        
+        items.push({ title: "Find Cover", click: "rr:FindCover" });
+        items.push({ title: "Rescan", click: "rr:Rescan" });
+      }
+      if(this.$store.getters.isUserAdmin) {
+        items.push({ title: "Delete", class: "warning--text", click: "rr:Delete" });
+        items.push({ title: "Merge Release", click: "rr:MergeReleases" });
+      }      
+      return items;
     },
     fileUploadUrl() {
       return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
@@ -600,6 +606,24 @@ export default {
     }
   },
   methods: {
+    dislikeTrackToggle: async function(toggleInfo) {
+      this.$nextTick(() => {
+        this.doUpdateIfNeeded = false;
+        this.trackDislikeToggle({
+          trackId: toggleInfo.trackId,
+          isDisliked: toggleInfo.isDisliked
+        });
+      });
+    },    
+    favoriteTrackToggle: async function(toggleInfo) {      
+      this.$nextTick(() => {
+        this.doUpdateIfNeeded = false;
+        this.trackFavoriteToggle({
+          trackId: toggleInfo.trackId,
+          isFavorite: toggleInfo.isFavorite
+        });
+      });
+    },    
     doMerge() {
       this.$axios
         .post(
@@ -871,7 +895,7 @@ export default {
     },
     updateIfNeeded: async function(info) {
       // If an user event happended and its related to this release then update release data
-      if(!info) {
+      if(!info || !this.doUpdateIfNeeded) {
         return;
       }
       if(info.artistId == this.release.artist.id || info.releaseId == this.id) {
@@ -887,6 +911,7 @@ export default {
       if(trackOnThisRelease) {
         await this.updateData();
       }
+      this.doUpdateIfNeeded = true;
     },
     updateData: async function() {
       this.loading = true;
@@ -965,6 +990,7 @@ export default {
   },
   data: () => ({
     loading: true,
+    doUpdateIfNeeded: true,
     tab: 0,
     releaseTab: 2,
     selectedTracks: [],

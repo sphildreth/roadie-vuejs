@@ -68,7 +68,7 @@ var router = new VueRouter({
       component: () => import(/* webpackChunkName: "artistEdit" */ './views/ArtistEdit.vue'),
       meta: {
         guest: false,
-        is_admin: true
+        is_editor: true
       }
     },        
     {
@@ -103,7 +103,7 @@ var router = new VueRouter({
       component: () => import(/* webpackChunkName: "collectionEdit" */ './views/CollectionEdit.vue'),
       meta: {
         guest: false,
-        is_admin: true
+        is_editor: true
       }
     },      
     {
@@ -146,7 +146,7 @@ var router = new VueRouter({
       component: () => import(/* webpackChunkName: "labelEdit" */ './views/LabelEdit.vue'),
       meta: {
         guest: false,
-        is_admin: true
+        is_editor: true
       }
     },        
     {
@@ -206,7 +206,7 @@ var router = new VueRouter({
       component: () => import(/* webpackChunkName: "releaseEdit" */ './views/ReleaseEdit.vue'),
       meta: {
         guest: false,
-        is_admin: true
+        is_editor: true
       }
     },      
     {
@@ -280,7 +280,14 @@ router.beforeEach((to, from, next) => {
             else{
                 next('/');
             }
-        }else {
+        } else if(to.matched.some(record => record.meta.is_editor)) {
+              if(store.getters.isUserEditor){
+                  next()
+              }
+              else{
+                  next('/');
+              }
+        } else {
             next();
         }
     }

@@ -359,18 +359,23 @@ export default {
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("aa:Save", this.save);
+    EventBus.$on("aa:Cancel", this.cancel);
     this.debouncedArtistSearch = this.$_.debounce(this.doArtistSearch, 500);
     this.debouncedGenreSearch = this.$_.debounce(this.doGenreSearch, 500);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("aa:Save", this.save);
+    EventBus.$off("aa:Cancel", this.cancel);
   },
   async mounted() {
     this.$validator.localize("en", this.dictionary);
     this.updateData();
   },
   methods: {
+    cancel() {
+      this.$router.go(-1);
+    },
     resetImage() {
       this.imageUrl =
         this.artist.mediumThumbnail.url + "?ts=" + new Date().getTime();
@@ -576,7 +581,10 @@ export default {
       bandStatus: [],
       genreItems: []
     },
-    menuItems: [{ title: "Save", class: "hidden-xs-only", click: "aa:Save" }]
+    menuItems: [
+      { title: "Save", class: "hidden-xs-only", click: "aa:Save" },
+      { title: "Cancel", class: "hidden-xs-only", click: "aa:Cancel" }
+    ]
   })
 };
 </script>

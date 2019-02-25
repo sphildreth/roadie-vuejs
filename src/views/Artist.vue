@@ -664,20 +664,18 @@ export default {
       return this.artist.mediumThumbnail.url;
     },
     adminMenuItems() {
-      return !this.$store.getters.isUserAdmin
-        ? []
-        : [
-            { title: "Delete", class: "warning--text", click: "aa:Delete" },
-            {
-              title: "Delete Releases",
-              class: "warning--text",
-              click: "aa:DeleteReleases"
-            },
-            { title: "Edit", click: "aa:Edit" },
-            { title: "Find Artist Image", click: "aa:FindArtistImage" },
-            { title: "Merge Artist", click: "aa:MergeArtist" },
-            { title: "Rescan", click: "aa:Rescan" }
-          ];
+      let items = [];
+      if(this.$store.getters.isUserEditor) {
+        items.push({ title: "Edit", click: "aa:Edit" });        
+        items.push({ title: "Find Artist Image", click: "aa:FindArtistImage" });
+        items.push({ title: "Rescan", click: "aa:Rescan" });
+      }
+      if(this.$store.getters.isUserAdmin) {
+        items.push({ title: "Delete", class: "warning--text", click: "aa:Delete" });
+        items.push({ title: "Delete Releases", class: "warning--text", click: "aa:DeleteReleases" });
+        items.push({ title: "Merge Artist", click: "aa:MergeArtist" });
+      }       
+      return items;          
     },
     searchQuery() {
       return this.artist.name;

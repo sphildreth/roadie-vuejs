@@ -90,7 +90,7 @@ export default {
               EventBus.$emit("showSnackbar", {
                 text: "You no longer hate this Track"
               });              
-            }
+            }            
             EventBus.$emit("userTrackLikeChange", {
               trackId: toggleInfo.trackId,
               liked:toggleInfo.isDisliked

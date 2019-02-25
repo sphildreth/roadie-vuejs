@@ -462,12 +462,6 @@ export default {
         class: "hidden-sm-and-down",
         click: "pl:SaveAsPlaylist"
       },
-      {
-        title: "Save To Playlist",
-        tooltip: "Add to existing Playlist",
-        class: "hidden-sm-and-down",
-        click: "pl:SaveToPlaylist"
-      },
       { title: "Shuffle", class: "hidden-sm-and-down", click: "pl:Shuffle" }
     ],
     items: []
