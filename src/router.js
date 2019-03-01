@@ -173,7 +173,25 @@ var router = new VueRouter({
       meta: {
         guest: false
       }
-    },         
+    },      
+    {
+      path: '/playlist/edit/:id',
+      name: 'playlistEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "playlistEdit" */ './views/PlaylistEdit.vue'),
+      meta: {
+        guest: false
+      }
+    },        
+    {
+      path: '/playlist/edittracks/:id',
+      name: 'playlistEditTracks',
+      props: true,
+      component: () => import(/* webpackChunkName: "playlistEditTracks" */ './views/PlaylistTracksEdit.vue'),
+      meta: {
+        guest: false
+      }
+    },        
     {
       path: '/register',
       name: 'register',

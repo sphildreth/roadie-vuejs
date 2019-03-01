@@ -232,8 +232,6 @@
           </v-flex>
         </v-layout>
         <v-layout row wrap>
-        <v-spacer></v-spacer>
-        <v-btn @click="save" color="info">Save</v-btn>
         </v-layout>
     </v-container> 
     <v-alert
@@ -272,10 +270,14 @@
     $_veeValidate: {
       validator: 'new'
     },        
-    created() {
-    },    
-    beforeDestroy() {
-    },    
+  created() {
+    EventBus.$on("as:Save", this.save);
+    EventBus.$on("as:Cancel", this.cancel);
+  },
+  beforeDestroy() {
+    EventBus.$off("as:Save", this.save);
+    EventBus.$off("as:Cancel", this.cancel);
+  },  
     async mounted() {
       this.$validator.localize('en', this.dictionary);
       this.updateData();      
@@ -283,6 +285,9 @@
     computed: {
     },    
     methods: {          
+      cancel() {
+        this.$router.push('/');
+      },
       signOut: function() {
         this.$store.dispatch('signout')
         this.$router.go('/'); 
@@ -403,7 +408,10 @@
       },        
       originalEmail: '',
       originalUsername: '',
-      menuItems: [],
+      menuItems: [
+        { title: "Save", class: "hidden-xs-only", click: "as:Save" },
+        { title: "Cancel", class: "hidden-xs-only", click: "as:Cancel" }
+      ],
       profile: {
         concurrencyStamp: null,
         userName: null,

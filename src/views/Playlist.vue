@@ -189,6 +189,8 @@ export default {
     EventBus.$on("pl:AddToQue", this.addToQue);
     EventBus.$on("pl:PlayNow", this.playNow);
     EventBus.$on("pl:Delete", this.delete);
+    EventBus.$on("pl:Edit", this.edit);  
+    EventBus.$on("pl:EditTracks", this.editTracks);  
     EventBus.$on("toolbarRefresh", this.updateData);
   },
   beforeDestroy() {
@@ -196,6 +198,8 @@ export default {
     EventBus.$off("pl:Delete", this.delete);
     EventBus.$off("pl:AddToQue", this.addToQue);
     EventBus.$off("pl:PlayNow", this.playNow);
+    EventBus.$off("pl:Edit", this.edit);  
+    EventBus.$off("pl:EditTracks", this.editTracks);      
   },
   async mounted() {
     this.updateData();
@@ -212,6 +216,12 @@ export default {
         this.addToQue();
       });
     },
+    edit: function() {
+      this.$router.push("/playlist/edit/" + this.playlist.id);
+    },    
+    editTracks: function() {
+      this.$router.push("/playlist/edittracks/" + this.playlist.id);
+    }, 
     delete: function() {
       this.$refs.confirm
         .open("Delete", "Are you sure?", { color: "red" })
@@ -297,7 +307,9 @@ export default {
               EventBus.$emit("loadingComplete");
               this.$nextTick(() => {
                 var image=document.getElementById('playlistImage')
-                window.favIcon.image(image);             
+                if(image) {
+                  window.favIcon.image(image);             
+                }
                 document.title = this.playlist.name;
               });              
             });
@@ -351,7 +363,13 @@ export default {
         class: "hidden-xs-only",
         permission: "edit",
         click: "pl:Edit"
-      }
+      },
+      {
+        title: "Edit Tracks",
+        class: "hidden-xs-only",
+        permission: "edit",
+        click: "pl:EditTracks"
+      }      
     ],
     trackItems: []
   })

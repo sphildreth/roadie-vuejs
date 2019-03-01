@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'fas fa-edit'"></Toolbar>
+    <Toolbar :menuItems="menuItems" :doShowRefresh=false :toolbarIcon="'fas fa-edit'"></Toolbar>
     <v-container v-if="loaded" fluid grid-list-md class="release-edit-container">
       <v-layout row class="ma-1 mb-3">
         <v-flex xs3>

@@ -34,10 +34,10 @@ myApi.interceptors.request.use (
 // This redirects to signin on 401 or 403 responses
 myApi.interceptors.response.use((response) => {
   return response;
-}, function (error) {
+}, function (error) {  
   if (error.response.status === 401 || error.response.status === 403) {
-      this.$store.dispatch("signout");
-      this.$router.go("/signin");
+    store.dispatch("signout");
+    router.go("/signin");
   }
   return Promise.reject(error.response);
 });
