@@ -14,7 +14,7 @@ Support:
 
 Installation
 ------------
-Please see [the wiki](https://github.com/sphildreth/roadie-dotnetcore/wiki)
+Please see [the wiki](https://github.com/sphildreth/roadie-vuejs/wiki)
 
 License
 -------
