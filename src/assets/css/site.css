@@ -80,3 +80,12 @@ img.modal-image {
   -webkit-background-clip: initial  !important;
   -webkit-text-fill-color: initial !important;
 }
+
+@media only screen and (max-width: 959px) {
+  .sign-in-container .container, .register-container .container {
+    padding: 4px;
+  }
+  .search-input {
+    width: 115px;
+  }
+}

@@ -2,7 +2,9 @@
   <v-card class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id">
     <v-layout>
       <v-flex xs3>
+        <router-link style="display:block;clear:both;" :to="'/release/' + release.id">
         <v-img :src="release.thumbnail.url" :alt="release.release.text" max-width="80" class="ma-1"></v-img>
+        </router-link>
       </v-flex>
       <v-flex xs9>
         <v-card-title primary-title class="pa-0 ma-0">

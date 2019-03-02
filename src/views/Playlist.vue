@@ -36,7 +36,7 @@
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
-                    <v-flex xs4 class="mt-2">
+                    <v-flex xs4 class="mt-2" xs8 md3>
                       <UserCard :user="playlist.maintainer"></UserCard>
                     </v-flex>
                   </v-layout>
@@ -89,7 +89,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="stats-container">
+          <div class="stats-container hidden-sm-and-down">
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>

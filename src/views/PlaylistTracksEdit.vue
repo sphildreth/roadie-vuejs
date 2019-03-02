@@ -163,7 +163,7 @@ export default {
       }      
       this.selectedTracks = [];
     },
-    updateData: async function(doShuffle) {
+    updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.loading = true;
       this.items = [];

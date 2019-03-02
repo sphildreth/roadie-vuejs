@@ -1,18 +1,16 @@
 <template>
-  <v-container>
+  <v-container class="sign-in-container">
     <v-layout row wrap class="text-xs-center">
-      <v-flex xs3 sm5 md4 lg3>
-        <v-card height="450px">
-          <v-img :src="logoUrl" class="pt-2"></v-img>
-        </v-card>
+      <v-flex xs12 sm5 md4 lg3>
+        <v-img :src="logoUrl" class=""></v-img>
       </v-flex>
-      <v-flex xs9 sm7 md8 lg9 class="grey darken-2">
+      <v-flex xs12 sm7 md8 lg9 class="grey darken-2">
         <v-container class="text-xs-center">
           <v-card flat>
             <v-card-title primary-title>
               <h4>Sign In</h4>
             </v-card-title>
-            <v-form ref="form" class="ma-2" v-model="valid" lazy-validation>
+            <v-form ref="form" class="ma-1" v-model="valid" lazy-validation>
               <v-text-field
                 prepend-icon="person"
                 v-model="username"
@@ -31,10 +29,10 @@
                 @keyup.enter.native="submit"
               ></v-text-field>
               <v-card-actions>
-                <v-btn to="/register" round>Register</v-btn>
-                <v-btn @click="resetPassword" round>Forgot Password</v-btn>
+                <v-btn to="/register" small round>Register</v-btn>
+                <v-btn @click="resetPassword" small round>Forgot Password</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn :disabled="!valid" @click="submit" color="success" round large>Sign In</v-btn>
+                <v-btn :disabled="!valid" @click="submit" color="success" round medium>Sign In</v-btn>
               </v-card-actions>
             </v-form>
           </v-card>
@@ -131,6 +129,8 @@ export default {
   }
 };
 </script>
+
+
 
 
 <style>

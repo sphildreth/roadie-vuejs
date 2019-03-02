@@ -40,40 +40,40 @@
             </v-flex>
             <v-flex xs12>
               <v-layout row wrap>
-                <v-flex xs3>
+                <v-flex xs12 md3>
                   <v-img :src="releaseCoverUrl" :alt="release.title" class="ma-1" aspect-ratio="1"></v-img>
                   <img id="releaseImage" :src="releaseCoverUrl" style="display:none;">
                 </v-flex>
-                <v-flex xs9 class="title">
+                <v-flex xs12 md9 class="title">
                   <v-layout row wrap>
-                    <v-flex xs4 class="mt-3">
+                    <v-flex xs12 md4 class="mt-3">
                       <ArtistCard :artist="release.artist"></ArtistCard>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.releaseDate | shortDate"
                         label="Release Date"
                         readonly
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field v-bind:value="release.mediaCount" label="Media Count" readonly></v-text-field>
                     </v-flex>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field v-bind:value="release.trackCount" label="Track Count" readonly></v-text-field>
                     </v-flex>                 
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.releaseType"
                         label="Release Type"
                         readonly
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.statusVerbose"
                         label="Release Status"
@@ -184,7 +184,7 @@
               </v-chip>
               <span>Release Average Rating</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>album</v-icon>
@@ -193,7 +193,7 @@
               </v-chip>
               <span>Release Medias</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>audiotrack</v-icon>
@@ -202,7 +202,7 @@
               </v-chip>
               <span>Release Tracks</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>play_circle_outline</v-icon>
@@ -211,7 +211,7 @@
               </v-chip>
               <span>Release Played Count</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip
                 v-if="release.statistics.missingTrackCount"
                 slot="activator"
@@ -225,7 +225,7 @@
               </v-chip>
               <span>Release Tracks Missing</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>speaker</v-icon>
@@ -234,7 +234,7 @@
               </v-chip>
               <span>Release Track Playtime</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>folder_open</v-icon>
@@ -243,7 +243,7 @@
               </v-chip>
               <span>Release Media File Size</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>date_range</v-icon>
@@ -252,7 +252,7 @@
               </v-chip>
               <span>Release Created Date</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>update</v-icon>
@@ -265,7 +265,7 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs5>
+        <v-flex d-flex xs12 md6>
           <v-tabs class="release-lists" color="primary" v-model="releaseTab" slider-color="accent">
             <v-tab>Tracks</v-tab>
             <v-tab-item class="">
@@ -291,7 +291,7 @@
             </v-tab-item>
           </v-tabs>
         </v-flex>
-        <v-flex d-flex xs7>
+        <v-flex d-flex xs12 md6>
           <v-tabs class="release-lists" color="primary" slider-color="accent">
             <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
             <v-tab v-if="release.tagsList.length > 0">Tags</v-tab>
@@ -310,7 +310,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs4>
+                  <v-flex slot="item" slot-scope="props" xs12 md4>
                     <PlaylistCard :playlist="props.item"></PlaylistCard>
                   </v-flex>
                 </v-data-iterator>
@@ -1049,12 +1049,11 @@ export default {
       {
         title: "Play",
         tooltip: "Remove anything in Que and start Playing",
-        class: "hidden-xs-only",
         click: "rr:PlayNow"
       }
     ],
     seachMenuItems: [
-      { title: "Search for Artist", click: "rr:searchForArtist" },
+      { title: "Search for Artist",  click: "rr:searchForArtist" },
       { title: "Search for Title", click: "rr:searchForTitle" },
       { title: "Internet Artist", click: "rr:searchInternetArtist" },
       { title: "Internet Title", click: "rr:searchInternetTitle" },

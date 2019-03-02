@@ -291,7 +291,7 @@ export default {
       },
       {
         title: "Play Random Tracks",
-        class: "hidden-sm-and-down",
+        class: "",
         click: "db:PlayRandomTracks"
       },
       {

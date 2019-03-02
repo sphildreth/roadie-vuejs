@@ -2,12 +2,12 @@
   <div class="playque-container">
     <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
     <v-layout v-if="!isFullScreen" align-center row wrap>
-      <span class="mt-2">
+      <span class="mt-2 hidden-md-and-down">
         <v-btn @click="selectAllTracks" flat small>Select All</v-btn>
         <v-btn @click="selectNoTracks" flat small>Select None</v-btn>
       </span>
       <v-spacer></v-spacer>
-      <div class="stats-container">
+      <div class="stats-container hidden-md-and-down">
         <v-tooltip bottom>
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
@@ -55,7 +55,8 @@
         </v-tooltip>
       </div>
     </v-layout>
-    <v-container fluid grid-list-md>
+
+    <v-container class="hidden-xs-only" fluid grid-list-md>
       <v-data-table
         no-data-text="No Tracks In Que"
         :headers="headers"
@@ -73,22 +74,24 @@
                 name="selectedTrack"
                 :value="props.item.track.id"
                 @click="toggleSelectedTrack($event, props.item)"
-                class="mr-2 track-selector"
+                class="mr-2 track-selector  hidden-md-and-down"
               >
-              {{ props.item.listNumber | padNumber3 }}
+              <span @click="playTrack(props.item.track.id)">
+                {{ props.item.listNumber | padNumber3 }}
+              </span>
               <v-icon
-                class="no-rainbow playing-icon"
+                class="no-rainbow playing-icon  hidden-md-and-down"
                 title="Click to play track"
                 @click="playTrack(props.item.track.id)"
                 :color="nowPlaying && (playingTrackId === props.item.track.id) ? 'info' : 'accent'"
               >play_circle_outline</v-icon>
               <span
-                class="no-rainbow"
+                class="no-rainbow hidden-md-and-down"
                 title="Click and drag to change order"
                 style="max-width: 10px;font-size:18px;"
               >&#128075;</span>
             </td>
-            <td>
+            <td class="hidden-md-and-down">
               <v-progress-linear
                 height="12"
                 background-color="secondary"
@@ -96,24 +99,24 @@
                 :value="props.item.track.rating * 20"
               ></v-progress-linear>
             </td>
-            <td class>{{ props.item.track.mediaNumber | padNumber2 }}</td>
-            <td class>{{ props.item.track.playedCount | padNumber5 }}</td>
-            <td class>{{ props.item.track.trackNumber | padNumber4 }}</td>
-            <td class>
+            <td class="hidden-md-and-down">{{ props.item.track.mediaNumber | padNumber2 }}</td>
+            <td class="hidden-md-and-down">{{ props.item.track.playedCount | padNumber5 }}</td>
+            <td class="hidden-xs-only">{{ props.item.track.trackNumber | padNumber4 }}</td>
+            <td class="track-text">
               <router-link
                 class="body-1"
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/track/' + props.item.track.id"
               >{{ props.item.track.title }}</router-link>
             </td>
-            <td class="box">
+            <td class="box release-text">
               <router-link
                 class="body-1"
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/release/' + props.item.track.release.value"
               >
                 <img
-                  class="thumbnail"
+                  class="thumbnail hidden-md-and-down"
                   :src="props.item.track.releaseImageUrl"
                   :alt="props.item.track.release.text"
                 >
@@ -122,15 +125,15 @@
                 >{{ props.item.track.release.text }}</span>
               </router-link>
             </td>
-            <td class>{{ props.item.track.release.releaseDate | formattedYear }}</td>
-            <td class="box">
+            <td class="hidden-xs-only">{{ props.item.track.release.releaseDate | formattedYear }}</td>
+            <td class="box artist-text">
               <router-link
                 class="body-1"
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/artist/' + props.item.track.artist.artist.value"
               >
                 <img
-                  class="thumbnail"
+                  class="thumbnail hidden-md-and-down"
                   :src="props.item.track.artistImageUrl"
                   :alt="props.item.track.artist.artist.text"
                 >
@@ -139,7 +142,7 @@
                 >{{ props.item.track.artist.artist.text }}</span>
               </router-link>
             </td>
-            <td class>
+            <td class="hidden-md-and-down">
               <span class="mr-2">{{ props.item.track.durationTime }}</span>
               <v-icon
                 color="red"
@@ -159,6 +162,59 @@
         </template>
       </v-data-table>
     </v-container>
+
+    <v-container class="hidden-sm-and-up" fluid grid-list-md>
+      <v-data-table
+        no-data-text="No Tracks In Que"
+        :headers="smallHeaders"
+        :items="items"
+        class="elevation-1"
+        hide-actions
+      >
+        <template slot="items" slot-scope="props">
+          <tr
+            :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : ''"
+          >
+            <td class="handle">
+              <span @click="playTrack(props.item.track.id)">
+                {{ props.item.listNumber | padNumber3 }}
+              </span>
+            </td>
+            <td class="track-text">
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/track/' + props.item.track.id"
+              >{{ props.item.track.title }}</router-link>
+            </td>
+            <td class="release-text">
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/release/' + props.item.track.release.value"
+              >
+                <span
+                  class="thumbnail-text release-title pointer"
+                >{{ props.item.track.release.text }}</span>
+              </router-link>
+            </td>
+            <td class="artist-text">
+              <router-link
+                class="body-1"
+                :style="{ color: $vuetify.dark ? 'white' : 'black' }"
+                :to="'/artist/' + props.item.track.artist.artist.value"
+              >
+                <span
+                  class="thumbnail-text artist-name pointer"
+                >{{ props.item.track.artist.artist.text }}</span>
+              </router-link>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-container>
+
+
     <v-dialog v-model="showSaveAsPlaylist" persistent max-width="400px">
       <v-card class="playque-edit-container">
         <v-card-title>
@@ -437,23 +493,29 @@ export default {
     newPlaylistDescription: "",
     selectedTracks: [],
     headers: [
-      { text: "Index", value: "listNumber", width: "120" },
-      { text: "Rating", value: "track.rating", width: "55" },
-      { text: "Media", value: "track.mediaNumber", width: "50" },
-      { text: "Played", value: "track.playedCount", width: "50" },
+      { text: "Index", value: "listNumber", width: "120"},
+      { text: "Rating", value: "track.rating", class:"hidden-md-and-down", width: "55" },
+      { text: "Media", value: "track.mediaNumber", class:"hidden-md-and-down", width: "50" },
+      { text: "Played", value: "track.playedCount", class:"hidden-md-and-down", width: "50" },
       { text: "Number", value: "track.trackNumber", width: "50" },
       { text: "Track", value: "track.track.text" },
       { text: "Release", value: "track.release.text" },
       { text: "Year", value: "track.release.releaseDate", width: "50" },
       { text: "Artist", value: "track.artist.artist.text" },
-      { text: "Time", value: "track.durationTime", width: "50" }
+      { text: "Time", value: "track.durationTime", class:"hidden-md-and-down", width: "50" }
     ],
+    smallHeaders: [
+      { text: "Index", value: "listNumber", width: "10"},
+      { text: "Track", value: "track.track.text" },
+      { text: "Release", value: "track.release.text" },
+      { text: "Artist", value: "track.artist.artist.text" }
+    ],    
     menuItems: [
       { title: "Play Que", class: "", click: "pl:PlayQue" },
-      { title: "Clear Que", class: "hidden-sm-and-down", click: "pl:ClearQue" },
+      { title: "Clear Que", class: "hidden-xs-and-down", click: "pl:ClearQue" },
       {
         title: "Remove Selected",
-        class: "hidden-sm-and-down",
+        class: "hidden-md-and-down",
         click: "pl:RemoveSelected"
       },
       {

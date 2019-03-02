@@ -6,7 +6,8 @@
         <v-toolbar-title class="text-uppercase pointer funky">{{ appName }}</v-toolbar-title>
       </router-link>
       <v-spacer></v-spacer>
-      <v-text-field
+      <v-text-field 
+        class="search-input"
         label="Search"
         append-icon="search"
         single-line
@@ -172,7 +173,7 @@ export default {
         {
           icon: "category",
           text: "Genres",
-          class: "hidden-md-and-down",
+          class: "hidden-xs-and-down",
           route: "/genres"
         },
         {
@@ -184,7 +185,7 @@ export default {
         {
           icon: "playlist_play",
           text: "Playlists",
-          class: "hidden-sm-and-down",
+          class: "hidden-xs-and-down",
           route: "/playlists"
         },
         { icon: "headset", text: "Playing/Que", route: "/playque" },

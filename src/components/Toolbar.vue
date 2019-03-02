@@ -12,7 +12,7 @@
         <v-btn icon v-if="loading">
           <img src="@/assets/img/loading.gif" alt="Loading..." class="loading">
         </v-btn>  
-        <div v-if="searchItems">
+        <div v-if="searchItems"  class="hidden-xs-only">
           <v-menu bottom left>
             <v-btn slot="activator" icon>
               <v-icon title="Search Options">fas fa-search-plus</v-icon>
@@ -36,7 +36,7 @@
           <v-icon v-if="hated" color="lime" title="Click to remove hate">fas fa-thumbs-down</v-icon>
           <v-icon v-if="!hated" title="Click to hate">far fa-thumbs-down</v-icon>
         </v-btn>                       
-        <v-btn v-if="doShowRefresh" icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
+        <v-btn class="hidden-xs-only" v-if="doShowRefresh" icon data-eventmessage="toolbarRefresh" @click="refreshClicked">
           <v-icon title="Refresh">refresh</v-icon>
         </v-btn>        
         <v-menu bottom left class="hidden-lg-and-up">
@@ -44,7 +44,7 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile v-for="(item, index) in menuItems" :key="index">
+            <v-list-tile v-for="(item, index) in menuItems" :data-eventmessage="item.click" @click="clicked" :key="index">
               <v-list-tile-title>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>

@@ -15,9 +15,12 @@
       </div>      
       <v-divider></v-divider>
     </v-container>
-    <v-container v-if="!loading" fluid class="pa-0 pr-3 pl-3 ma-0" >
-      <div v-if="noResults">
-        <v-icon class="mr-3">far fa-frown</v-icon>Sorry, nothing was found.
+    <v-container fluid class="pa-0 pr-3 pl-3 ma-0" >
+      <div v-if="loading" class="mx-3 mb-4 text-xs-center">
+        <img class="mr-3" height="60px;" style="vertical-align:middle;"  src="@/assets/img/odyssey.gif" /> Seeking answers from the oracle 🧙 ✌ ✨ 🙌 🔮 🦄 ...
+      </div>
+      <div v-if="!loading && noResults" class="text-xs-center">
+        <v-icon class="mr-3">far fa-frown</v-icon>Sorry, nothing was found.<span class="ml-3">ε(´סּ︵סּ`)з</span>
       </div>
     </v-container>
     <v-container class="mt-0 pt-0" fluid grid-list-md>
@@ -31,7 +34,7 @@
             :total-items="artistPagination.totalItems"
             :pagination.sync="artistPagination"
             content-tag="v-layout"
-            :loading="loading"
+            :loading="artistsLoading"
             row
             wrap
           >
@@ -51,7 +54,7 @@
             :total-items="releasePagination.totalItems"
             :pagination.sync="releasePagination"
             content-tag="v-layout"
-            :loading="loading"
+            :loading="releasesLoading"
             row
             wrap
           >
@@ -76,7 +79,7 @@
             :total-items="trackPagination.totalItems"
             :pagination.sync="trackPagination"
             content-tag="v-layout"
-            :loading="loading"
+            :loading="tracksLoading"
             row
             wrap
           >
@@ -96,7 +99,7 @@
             :total-items="playlistPagination.totalItems"
             :pagination.sync="playlistPagination"
             content-tag="v-layout"
-            :loading="loading"
+            :loading="playlistsLoading"
             row
             wrap
           >
@@ -328,6 +331,10 @@ export default {
   data: () => ({    
     searchQuery: null,
     loading: true,
+    artistsLoading: false,
+    releasesLoading: false,
+    tracksLoading: false,
+    playlistsLoading: false,
     rowsPerPageItems: [12, 36, 60, 120,500],
     currentView: "",
     artistPagination: {

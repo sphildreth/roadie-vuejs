@@ -47,15 +47,15 @@ export default new Vuex.Store({
         let data = localStorage.getItem("theme");
         if (!data) {
           data = {
-            id: 0,
+            id: 6,
             colors: {
-              primary: '#1976D2',
-              secondary: '#424242',
-              accent: '#82B1FF',
-              error: '#FF5252',
-              info: '#2196F3',
-              success: '#4CAF50',
-              warning: '#FFC107'
+              primary: "#212121",
+              secondary: "#757575",
+              accent: "#BDBDBD",
+              error: "#D50000",
+              warning: "#F57C00",
+              info: "#2196f3",
+              success: "#4caf50"
             },
             dark: true
           };

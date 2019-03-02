@@ -297,6 +297,7 @@ export default {
       const that = this;
       this.$validator.validateAll().then(result => {
         if (!result) {
+          // eslint-disable-next-line
           console.log("form invalid");
         } else {
           if (that.imageUrl != that.collection.mediumThumbnail.url) {

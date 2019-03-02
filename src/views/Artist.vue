@@ -38,7 +38,7 @@
             </v-flex>
             <v-flex xs12>
               <v-layout row wrap>
-                <v-flex xs3>
+                <v-flex xs12 md3>
                   <v-img :src="artistThumbnailUrl" :alt="artist.name" class="ma-1" aspect-ratio="1"></v-img>
                   <img id="artistImage" :src="artistThumbnailUrl" style="display:none;">
                 </v-flex>
@@ -56,16 +56,16 @@
                     readonly
                   ></v-text-field>
                   <v-layout row wrap>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field v-bind:value="artist.artistType" label="Artist Type" readonly></v-text-field>
                     </v-flex>
-                    <v-flex xs2>
+                    <v-flex xs4>
                       <v-text-field v-bind:value="artist.statusVerbose" label="Artist Status" readonly></v-text-field>
                     </v-flex>                    
-                    <v-flex xs3 v-if="artist.isniList">
+                    <v-flex xs4 v-if="artist.isniList">
                       <v-text-field v-bind:value="artist.isniList.join(', ')" label="ISNI" readonly></v-text-field>
                     </v-flex>
-                    <v-flex xs1 v-if="artist.rank">
+                    <v-flex xs3 v-if="artist.rank">
                       <v-text-field v-bind:value="artist.rank" title="Calculated Rank" label="Rank" readonly></v-text-field>
                     </v-flex>                      
                   </v-layout>
@@ -198,7 +198,7 @@
               </v-chip>
               <span>Artist Average Rating</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>library_music</v-icon>
@@ -207,7 +207,7 @@
               </v-chip>
               <span>Artist Releases</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>album</v-icon>
@@ -216,7 +216,7 @@
               </v-chip>
               <span>Artist Release Medias</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>audiotrack</v-icon>
@@ -225,7 +225,7 @@
               </v-chip>
               <span>Artist Release Tracks</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>play_circle_outline</v-icon>
@@ -234,7 +234,7 @@
               </v-chip>
               <span>Artist Played Count</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip v-if="artist.statistics.missingTrackCount" slot="activator" color="warning">
                 <v-avatar>
                   <v-icon>error</v-icon>
@@ -243,7 +243,7 @@
               </v-chip>
               <span>Artist Tracks Missing</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>speaker</v-icon>
@@ -252,7 +252,7 @@
               </v-chip>
               <span>Artist Track Playtime</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>folder_open</v-icon>
@@ -261,7 +261,7 @@
               </v-chip>
               <span>Artist Media File Size</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>date_range</v-icon>
@@ -270,7 +270,7 @@
               </v-chip>
               <span>Artist Created Date</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>update</v-icon>
@@ -358,7 +358,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs4>
+                  <v-flex slot="item" slot-scope="props" xs12 md4>
                     <ArtistCard :artist="props.item"></ArtistCard>
                   </v-flex>
                 </v-data-iterator>
@@ -445,7 +445,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs4>
+                  <v-flex slot="item" slot-scope="props" xs12 md4>
                     <PlaylistCard :playlist="props.item"></PlaylistCard>
                   </v-flex>
                 </v-data-iterator>
@@ -503,7 +503,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs3>
+                  <v-flex slot="item" slot-scope="props" xs12 md3>
                     <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
                   </v-flex>
                 </v-data-iterator>

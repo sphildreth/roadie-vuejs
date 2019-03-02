@@ -1,6 +1,6 @@
 <template>
   <div v-if="!hide && loaded">
-    <v-card v-if="!smallPlayer" class="track-playing-card" height="100px" hover>
+    <v-card v-if="!smallPlayer" class="track-playing-card" hover>
       <v-progress-linear
         v-if="trackDownloading"
         height="2"
@@ -17,8 +17,72 @@
           :value="trackProgress"
           @click="updateSeek($event)"
         ></v-progress-linear>
-        <v-layout>
-          <v-flex d-flex xs6>
+        <v-layout row wrap class="hidden-md-and-up">
+          <v-btn
+            color="primary lighten-1"
+            title="Play Previous Track"
+            icon
+            @click="skip('prev')"
+          >
+            <v-icon>skip_previous</v-icon>
+          </v-btn>
+          <v-btn
+            color="green darken-2"
+            :title="playing ? 'Pause Playing' : 'Start Playing'"
+            icon
+            @click="play"
+          >
+            <v-icon large>{{ playing ? 'pause' : 'play_arrow'}}</v-icon>
+          </v-btn>
+          <v-btn color="red darken-2" title="Stop Playing" icon @click="stop">
+            <v-icon>stop</v-icon>
+          </v-btn>      
+          <v-btn color="primary lighten-1" title="Play Next Track" icon @click="skip('next')">
+            <v-icon>skip_next</v-icon>
+          </v-btn>
+          <v-btn title="Enable Que Repeat" flat icon @click="toggleLoop">
+            <v-icon :color="loop ? 'light-blue' : 'white'">repeat</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>       
+          <v-btn class="hidden-xs-only" icon @click="toggleBookmark">
+            <v-icon
+              v-if="currentTrack.userBookmarked"
+              medium
+              color="info"
+              title="Click to remove from bookmarks"
+            >bookmark</v-icon>
+            <v-icon
+              v-if="!currentTrack.userBookmarked"
+              medium
+              title="Add to bookmarks"
+            >bookmark_border</v-icon>
+          </v-btn>          
+          <v-btn class="hidden-xs-only" icon @click="toggleFavorite">
+            <v-icon
+              medium
+              class="favorite pointer"
+              :color="currentTrack.userRating.isFavorite ? 'red' : ''"
+            >favorite</v-icon>
+          </v-btn>          
+          <v-btn class="hidden-xs-only" icon @click="hateToogle">
+            <v-icon
+              v-if="currentTrack.userRating.isDisliked"
+              medium
+              color="lime"
+              title="Click to remove hate"
+            >fas fa-thumbs-down</v-icon>
+            <v-icon
+              v-if="!currentTrack.userRating.isDisliked"
+              medium
+              title="Click to hate"
+            >far fa-thumbs-down</v-icon>
+          </v-btn>            
+          <v-btn title="Display Playing/Que" flat icon to="/playque">
+            <v-icon>headset</v-icon>
+          </v-btn>
+        </v-layout>        
+        <v-layout wrap row>
+          <v-flex d-flex xs12 md6>
             <v-layout row wrap>
               <v-flex xs12>
                 <router-link :to="'/release/' + currentTrack.release.value">
@@ -76,11 +140,13 @@
                 <div title="View Track Details">
                   <router-link :to="'/track/' + currentTrack.id">
                     <span
-                      class="release-date badge title mr-2"
+                      class="release-date badge mr-2 hidden-xs-only"
+                      :class="this.$vuetify.breakpoint.name === 'xs' ? 'subheading' : 'title'"
                       :style="{ backgroundColor: this.$vuetify.theme.primary }"
                     >{{ currentTrack.trackNumber | padNumber3 }}</span>
                     <span
-                      class="release-title badge text-no-wrap text-truncate pointer title"
+                      class="release-title badge text-no-wrap text-truncate pointer"
+                      :class="this.$vuetify.breakpoint.name === 'xs' ? 'subheading' : 'title'"
                       :style="{ backgroundColor: this.$vuetify.theme.primary }"
                     >{{ currentTrack.title }}</span>
                   </router-link>
@@ -88,7 +154,7 @@
                 <div>
                   <v-rating
                     v-model="currentTrack.rating"
-                    class="track-rating"
+                    class="track-rating hidden-sm-and-down"
                     background-color="orange lighten-3"
                     color="orange"
                     small
@@ -99,7 +165,7 @@
               </v-flex>
             </v-layout>
           </v-flex>
-          <v-flex xs3>
+          <v-flex md3 class="hidden-sm-and-down">
             <v-layout d-flex row wrap>
               <v-btn icon @click="toggleBookmark">
                 <v-icon
@@ -163,7 +229,7 @@
               </span>
             </v-layout>
           </v-flex>
-          <v-flex xs3>
+          <v-flex md3 class="hidden-sm-and-down">
             <v-layout row-wrap>
               <v-btn flat icon @click="toggleMute">
                 <template v-if="!this.muted">

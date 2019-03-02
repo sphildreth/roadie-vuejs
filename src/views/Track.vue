@@ -47,7 +47,7 @@
                 </v-flex>
                 <v-flex xs9>
                   <v-layout row wrap>
-                    <v-flex xs4 class="mt-2">
+                    <v-flex xs12 md4 class="mt-2">
                       <ArtistCard :artist="track.artist"></ArtistCard>
                     </v-flex>
                     <v-flex v-if="track.trackArtist" xs4 class="mt-2">
@@ -55,7 +55,7 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs8 class="mt-2">
+                    <v-flex xs12 md6 class="mt-2">
                       <ReleaseCard :release="track.release"></ReleaseCard>
                     </v-flex>
                   </v-layout>
@@ -140,7 +140,7 @@
               </v-chip>
               <span>Track Average Rating</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon color="red">favorite</v-icon>
@@ -149,7 +149,7 @@
               </v-chip>
               <span>Track Favorite Count</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon color="lime">fas fa-thumbs-down</v-icon>
@@ -158,7 +158,7 @@
               </v-chip>
               <span>Track Disliked Count</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>play_circle_outline</v-icon>
@@ -167,7 +167,7 @@
               </v-chip>
               <span>Track Played Count</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>speaker</v-icon>
@@ -176,7 +176,7 @@
               </v-chip>
               <span>Track Track Playtime</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>folder_open</v-icon>
@@ -185,7 +185,7 @@
               </v-chip>
               <span>Track File Size</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>date_range</v-icon>
@@ -194,7 +194,7 @@
               </v-chip>
               <span>Track Created Date</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>update</v-icon>
