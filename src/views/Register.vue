@@ -6,9 +6,9 @@
         <v-img v-if="registering" :src="registeringUrl" alt="Registering..." class></v-img>
       </v-flex>
       <v-flex xs12 sm7 md8 lg9 class="grey darken-2">
-        <v-conainter v-if="registering">
+        <v-container v-if="registering">
           <h3 class="pa-2 accent">Contacting the cosmos...</h3>
-        </v-conainter>
+        </v-container>
         <v-container v-if="!registering" class="text-xs-center">
           <v-card flat>
             <v-card-title primary-title>
