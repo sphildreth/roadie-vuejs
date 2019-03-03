@@ -9,30 +9,32 @@
       <v-flex xs8>
         <v-card-text primary-title class="pa-0 ma-0">
           <div>
-            <div class="artist-rating-container">
-              <v-icon
-                small
-                class="favorite pointer hidden-lg-and-down"
-                @click="isFavorite = !isFavorite"
-                :color="isFavorite ? 'red' : 'accent'"
-              >favorite</v-icon>
-              <v-rating
-                v-model="artist.rating"
-                background-color="orange lighten-3"
-                color="orange"
-                small
-                dense
-                hover
-                readonly
-              ></v-rating>
-              <v-icon
-                small
-                class="disliked pointer hidden-lg-and-down"
-                @click="isDisliked = !isDisliked"
-                :color="isDisliked ? 'green' : 'accent'"
-              >fas fa-thumbs-down</v-icon>
-              <span v-if="artist.rank" class="ml-1 hidden-lg-and-down artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
-            </div>
+            <v-layout>
+              <div class="artist-rating-container">
+                <v-icon
+                  small
+                  class="favorite pointer hidden-lg-and-down"
+                  @click="isFavorite = !isFavorite"
+                  :color="isFavorite ? 'red' : 'accent'"
+                >favorite</v-icon>
+                <v-rating
+                  v-model="artist.rating"
+                  background-color="orange lighten-3"
+                  color="orange"
+                  small
+                  dense
+                  hover
+                  readonly
+                ></v-rating>
+                <v-icon
+                  small
+                  class="disliked pointer hidden-lg-and-down"
+                  @click="isDisliked = !isDisliked"
+                  :color="isDisliked ? 'green' : 'accent'"
+                >fas fa-thumbs-down</v-icon>
+                <span v-if="artist.rank" class="ml-1 hidden-lg-and-down artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
+              </div>
+            </v-layout>
             <router-link style="display:block;clear:both;" :to="'/artist/' + artist.id">
               <div
                 :title="artist.artist.text"

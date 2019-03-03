@@ -1,105 +1,102 @@
 <template>
   <v-card
     :class="track.cssClass"
-    class="track-card ml-2"
-    height="105px"
+    class="track-card ml-2 pt-1"
     hover
     :data-playurl="track.trackPlayUrl"
     :data-id="track.id"
   >
-    <v-layout>
-      <v-flex d-flex xs12>
-        <v-layout row wrap>
-          <v-flex :xs7="track.trackArtist || release" :xl8="track.trackArtist || release" :xs11="!track.trackArtist && !release">
-            <input
-              v-if="doShowSelector"
-              type="checkbox"
-              name="selected"
-              @click="selectedTrack"
-              class="track-selector"
-            >
-            <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>
-            <v-icon
-              small
-              class="favorite pointer"
-              @click.native="favoriteToggle"
-              :color="userRating.isFavorite ? 'red' : 'accent'"
-              @change.native="favoriteToggle"
-            >favorite</v-icon>
-            <v-rating
-              v-model="track.rating"
-              class="track-rating"
-              background-color="orange lighten-3"
-              color="orange"
-              small
-              dense
-              readonly
-            ></v-rating>
-            <v-icon
-              small
-              class="hated pointer"
-              @click.native="dislikeToggle"
-              :color="userRating.isDisliked ? 'green' : 'accent'"
-              @change.native="dislikeToggle"
-            >far fa-thumbs-down</v-icon>
-            <v-layout>
-              <router-link v-if="track.artist" :to="'/artist/' + track.artist.id">
-                <div
-                  class="secondary--text text--lighten-1 artist-title short"
-                >{{ track.artist.artist.text}}</div>
-              </router-link>
-              <router-link v-if="track.release" :to="'/release/' + track.release.id">
-                <div
-                  class="secondary--text text--lighten-1 release-title short"
-                >{{ '&nbsp;&#127932;&nbsp;' + track.release.release.text}}</div>
-              </router-link>
-            </v-layout>
-            <v-layout class="on-show-hover">
-              <router-link :to="'/track/' + track.id">
-                <div
-                  class="secondary--text text--lighten-1 track-title"
-                  :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }"
-                >{{ track.title}}</div>
-              </router-link>
-              <span class="on-hover">
-                <span class="pointer" @click="playTrack(track)">
-                  <i class="fas fa-play mx-2" title="Play"></i>
-                </span>
-                <span class="pointer" @click="queTrack(track)">
-                  <i class="fas fa-headphones" title="Add To Que"></i>
-                </span>
-              </span>
-            </v-layout>
-            <v-layout>
-              <div class="caption accent--text">
-                <span v-if="mediaCount > 1">
-                  <span
-                    class="media-number info--text"
-                    title="Media Number"
-                  >{{ this.$filters.padNumber2(mediaNumber) }}</span> |
-                </span>
-                <span title="Played Count">{{ track.playedCount | padNumber4 }}</span> |
-                <span title="Track Play Time">{{ track.durationTime }}</span>
-              </div>
-              <div
-                v-if="track.partTitlesList && track.partTitlesList.length > 0"
-                class="caption font-italic text-no-wrap text-truncate"
-              >
-                <span
-                  class="pr-2 ml-1"
-                  v-for="partTitle in track.partTitlesList"
-                  :key="partTitle"
-                >{{ partTitle }}</span>
-              </div>
-            </v-layout>
-          </v-flex>
-          <v-flex xs5 xl4 d-flex v-if="track.trackArtist">
-            <ArtistCard class="mt-2" v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>
-          </v-flex>
-          <v-flex xs4 d-flex v-if="release && !track.trackArtist">
-            <ReleaseCard v-if="release" :release="release"></ReleaseCard>
-          </v-flex>
+    <v-layout row wrap>
+      <v-flex xs12 :lg8="(track.trackArtist || release) || (track.trackArtist || release)" :lg12="!track.trackArtist && !release"  :xl7="track.trackArtist || release" :xl8="track.trackArtist || release" :xl11="!track.trackArtist && !release">      
+        <input
+          v-if="doShowSelector"
+          type="checkbox"
+          name="selected"
+          @click="selectedTrack"
+          class="track-selector"
+        >
+        <div class="track-number accent--text display-1">{{ track.trackNumber | padNumber3 }}</div>
+        <v-layout>
+          <v-icon
+            small
+            class="favorite pointer"
+            @click.native="favoriteToggle"
+            :color="userRating.isFavorite ? 'red' : 'accent'"
+            @change.native="favoriteToggle"
+          >favorite</v-icon>
+          <v-rating
+            v-model="track.rating"
+            class="track-rating"
+            background-color="orange lighten-3"
+            color="orange"
+            small
+            dense
+            readonly
+          ></v-rating>
+          <v-icon
+            small
+            class="hated pointer"
+            @click.native="dislikeToggle"
+            :color="userRating.isDisliked ? 'green' : 'accent'"
+            @change.native="dislikeToggle"
+          >far fa-thumbs-down</v-icon>
         </v-layout>
+        <v-layout>
+          <router-link v-if="track.artist" :to="'/artist/' + track.artist.id">
+            <div
+              class="secondary--text text--lighten-1 artist-title short"
+            >{{ track.artist.artist.text}}</div>
+          </router-link>
+          <router-link v-if="track.release" :to="'/release/' + track.release.id">
+            <div
+              class="secondary--text text--lighten-1 release-title short"
+            >{{ '&nbsp;&#127932;&nbsp;' + track.release.release.text}}</div>
+          </router-link>
+        </v-layout>
+        <v-layout class="on-show-hover">
+          <router-link :to="'/track/' + track.id">
+            <div
+              class="secondary--text text--lighten-1 track-title"
+              :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }"
+            >{{ track.title}}</div>
+          </router-link>
+          <span class="on-hover">
+            <span class="pointer" @click="playTrack(track)">
+              <i class="fas fa-play mx-2" title="Play"></i>
+            </span>
+            <span class="pointer" @click="queTrack(track)">
+              <i class="fas fa-headphones" title="Add To Que"></i>
+            </span>
+          </span>
+        </v-layout>
+        <v-layout>
+          <div class="caption accent--text">
+            <span v-if="mediaCount > 1">
+              <span
+                class="media-number info--text"
+                title="Media Number"
+              >{{ this.$filters.padNumber2(mediaNumber) }}</span> |
+            </span>
+            <span title="Played Count">{{ track.playedCount | padNumber4 }}</span> |
+            <span title="Track Play Time">{{ track.durationTime }}</span>
+          </div>
+          <div
+            v-if="track.partTitlesList && track.partTitlesList.length > 0"
+            class="caption font-italic text-no-wrap text-truncate"
+          >
+            <span
+              class="pr-2 ml-1"
+              v-for="partTitle in track.partTitlesList"
+              :key="partTitle"
+            >{{ partTitle }}</span>
+          </div>
+        </v-layout>
+      </v-flex>
+      <v-flex lg5 xl4 d-flex v-if="track.trackArtist">
+        <ArtistCard class="mt-2 hidden-md-and-down" v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>
+      </v-flex>
+      <v-flex lg5 xl4 d-flex v-if="release && !track.trackArtist">
+        <ReleaseCard class="hidden-md-and-down" v-if="release" :release="release"></ReleaseCard>
       </v-flex>
     </v-layout>
   </v-card>
@@ -216,7 +213,6 @@ export default {
   float: left;
 }
 .track-card i.favorite {
-  float: left;
   margin-top: 2px;
 }
 .track-card .track-number {
@@ -232,6 +228,7 @@ export default {
   float: left;
   margin-top: 27px;
 }
+
 .track-card .artist-title.short,
 .track-card .release-title.short {
   float: left;
@@ -239,7 +236,6 @@ export default {
 .track-card .on-hover {
   display: none;
 }
-
 .track-card .on-show-hover:hover .on-hover {
   display: inline-block;
 }

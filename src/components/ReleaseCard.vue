@@ -22,30 +22,32 @@
       <v-flex xs8>
         <v-card-text primary-title class="pa-0 ma-0">
           <div v-if="release.isValid">
-            <div class="release-rating-container">
-              <v-icon
-                small
-                class="favorite pointer"
-                @click="isFavorite = !isFavorite"
-                :color="isFavorite ? 'red' : ''"
-              >favorite</v-icon>
-              <v-rating
-                v-model="release.rating"
-                background-color="orange lighten-3"
-                color="orange"
-                small
-                dense
-                hover
-                readonly
-              ></v-rating>
-              <v-icon
-                small
-                class="disliked pointer"
-                @click="isDisliked = !isDisliked"
-                :color="isDisliked ? 'green' : ''"
-              >fas fa-thumbs-down</v-icon>
-              <span v-if="release.rank" class="hidden-md-and-down ml-1 release-rank accent--text" title="Rank">{{ release.rank }}</span>
-            </div>
+            <v-layout>
+              <div class="release-rating-container">
+                <v-icon
+                  small
+                  class="favorite pointer"
+                  @click="isFavorite = !isFavorite"
+                  :color="isFavorite ? 'red' : ''"
+                >favorite</v-icon>
+                <v-rating
+                  v-model="release.rating"
+                  background-color="orange lighten-3"
+                  color="orange"
+                  small
+                  dense
+                  hover
+                  readonly
+                ></v-rating>
+                <v-icon
+                  small
+                  class="disliked pointer"
+                  @click="isDisliked = !isDisliked"
+                  :color="isDisliked ? 'green' : ''"
+                >fas fa-thumbs-down</v-icon>
+                <span v-if="release.rank" class="hidden-md-and-down ml-1 release-rank accent--text" title="Rank">{{ release.rank }}</span>
+              </div>
+            </v-layout>
             <router-link :to="'/release/' + release.id">
               <div
                 :title="release.release.text"
