@@ -1,7 +1,7 @@
-Roadie
+Roadie 
 ======
 
-Roadie is a web based media manager with integrated streaming. Roadie also has a full [Subsonic compatible API](http://www.subsonic.org/pages/apps.jsp) that works with many Subsonic mobile applications. Roadie was built to be able to handle music collections with [hundreds of thousands of songs](http://www.redferret.net/?page_id=38781).
+Roadie (aka "roadie-vuejs") is a web based media manager with integrated streaming. Best experienced on a widescreen desktop but also works on mobile devices.
 
 ![Snapshot](https://raw.githubusercontent.com/sphildreth/roadie-vuejs/master/roadie-vuejs_snapshot_01.jpg)
 
