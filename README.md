@@ -7,7 +7,7 @@ Roadie (aka "roadie-vuejs") is a web based media manager with integrated streami
 
 Built on:
 ---------
-* .Net Core
+* npm
 * Vue + Vuetify + Vuex + loDash + DexieJS
 
 Support:
