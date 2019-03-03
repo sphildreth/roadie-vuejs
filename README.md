@@ -8,9 +8,13 @@ Built on:
 * .Net Core
 * Vue + Vuetify + Vuex + loDash + DexieJS
 
+Support:
+------------
+[Discord server](https://discord.gg/pZyznJN)
+
 Installation
 ------------
-Please see [the wiki](https://github.com/sphildreth/roadie-nancy/wiki)
+Please see [the wiki](https://github.com/sphildreth/roadie-vuejs/wiki)
 
 License
 -------
