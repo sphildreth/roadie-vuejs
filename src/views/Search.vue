@@ -83,7 +83,7 @@
             row
             wrap
           >
-            <v-flex slot="item" slot-scope="props" xs12 sm6>
+            <v-flex slot="item" slot-scope="props" xs12 md6>
               <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
             </v-flex>
           </v-data-iterator>

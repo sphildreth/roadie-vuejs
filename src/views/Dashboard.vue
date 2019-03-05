@@ -3,7 +3,7 @@
     <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>
     <v-layout hidden-xs-only row wrap>
       <v-flex d-flex md12 class="ma-3">
-        <v-tooltip bottom>
+        <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
               <v-icon>supervisor_account</v-icon>
@@ -12,7 +12,7 @@
           </v-chip>
           <span>Total Users in the system</span>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">            
             <v-avatar>
               <v-icon>collections</v-icon>
@@ -23,7 +23,7 @@
           </v-chip>          
           <span>Total Collections in the system</span>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
               <v-icon>playlist_play</v-icon>
@@ -34,7 +34,7 @@
           </v-chip>
           <span>Total Playlists in the system</span>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
               <v-icon>label</v-icon>
@@ -45,7 +45,7 @@
           </v-chip>
           <span>Total Labels in the system</span>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
               <v-icon>fas fa-users</v-icon>

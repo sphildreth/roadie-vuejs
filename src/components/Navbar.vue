@@ -167,7 +167,7 @@ export default {
         {
           icon: "collections",
           text: "Collections",
-          class: "hidden-sm-and-down",
+          class: "hidden-xs-and-down",
           route: "/collections"
         },
         {
