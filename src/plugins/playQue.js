@@ -8,6 +8,9 @@ const db = new Dexie('RoadieDatabase');
 db.version(1).stores({
   tracks: '++index,&id'
 });
+db.version(2).stores({
+  tracks: '++index,&id,played'
+});
 
 class PlayQue {
 
@@ -103,6 +106,60 @@ class PlayQue {
     })
   }
 
+  setTrackAsPlayed(trackId) {
+    // Update given track as played 
+    const that = this;
+    const result = {
+      isSuccess: false,
+      trackId: trackId
+    }     
+    return new Promise(resolve => {
+      that.track(trackId)
+      .then(function(r) {
+        that._db.tracks.update(r.track.index, { played: 1})
+        .then(function(updated) {
+          result.isSuccess = updated;
+          resolve(result);
+        })
+        .finally(() => {
+          setTimeout(function() {
+            EventBus.$emit("q:markTrackAsPlayed", result);          
+          }, 500);
+        });         
+      })      
+    })    
+  }
+
+  removePlayed() {
+    // Remove any tracks from Que that are marked as played
+    const that = this;
+    return new Promise(resolve => {
+      const result = {
+        isSuccess: false,
+        totalCount: 0,
+        deleteCount: 0,
+        message: null
+      }      
+      that._db.tracks.where('played').equals(1).delete()
+      .then(count => {
+        result.deleteCount = count;
+        return this.trackCount();        
+      })
+      .then(trackCount => {
+        result.isSuccess = true;
+        result.totalCount = trackCount.totalCount;          
+        resolve(result);
+      })      
+      .finally(() => {
+        if(result.deleteCount > 0) {
+          setTimeout(function() {
+            EventBus.$emit("q:deletedTrackFromQue", result);          
+          }, 2000);
+        }
+      });      
+    });
+  }
+
   add(tracks) {
     // Put tracks in db
     const that = this;
@@ -110,6 +167,8 @@ class PlayQue {
       const noTrackMessage = "No Tracks To Add";
       const result = {
         isSuccess: false,
+        totalCount: 0,
+        addedCount: 0,
         message: null,
       }
       if (!Array.isArray(tracks) || !tracks.length) {
@@ -299,11 +358,6 @@ class PlayQue {
 
 export default {
   install(Vue) {
-    // Vue.mixin({
-    //   mounted() {
-    //     console.log('Mounted!');
-    //   }
-    // });  
     Vue.prototype.$playQue = new PlayQue(db);
   }
 }

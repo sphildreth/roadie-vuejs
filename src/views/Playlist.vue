@@ -253,6 +253,7 @@ export default {
             let artist = tr.trackArtist || tr.artist;
             let queTrack = {
               id: tr.id,
+              played: 0,
               mediaNumber: tr.mediaNumber,
               trackNumber: tr.trackNumber,
               title: tr.title,

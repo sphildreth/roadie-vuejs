@@ -27,9 +27,10 @@
     "vue-moment": "^4.0.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
+    "vue-scrollto": "^2.14.0",
     "vue-simplemde": "^0.5.1",
     "vue2-dropzone": "^3.5.2",
-    "vuetify": "^1.5.4",
+    "vuetify": "^1.5.5",
     "vuex": "^3.1.0"
   },
   "devDependencies": {
@@ -37,11 +38,11 @@
     "@vue/cli-plugin-eslint": "^3.4.1",
     "@vue/cli-service": "^3.4.1",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.15.0",
+    "eslint": "^5.15.1",
     "eslint-plugin-vue": "^5.2.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
-    "vue-cli-plugin-vuetify": "^0.4.6",
+    "vue-cli-plugin-vuetify": "^0.5.0",
     "vue-template-compiler": "^2.6.8",
     "vuetify-loader": "^1.2.1"
   },

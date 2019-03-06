@@ -133,6 +133,7 @@ export default {
       let artist = track.trackArtist || track.artist;
       return {
         id: track.id,
+        played: 0,
         mediaNumber: track.mediaNumber,
         trackNumber: track.trackNumber,
         title: track.title,

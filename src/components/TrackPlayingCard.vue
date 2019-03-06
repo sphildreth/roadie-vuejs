@@ -627,6 +627,9 @@ export default {
     removeTrack: function(track) {
       if(this.$store.getters.user.removeTrackFromQueAfterPlayed) {
         this.$playQue.delete([track.id]);
+      } else {
+        this.$playQue.setTrackAsPlayed(track.id);
+        
       }
     },
     skip: function(direction) {

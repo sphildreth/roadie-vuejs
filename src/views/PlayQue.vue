@@ -1,11 +1,19 @@
 <template>
   <div class="playque-container">
     <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
-    <v-layout v-if="!isFullScreen" align-center row wrap>
+    <v-layout v-if="!isFullScreen" align-center row wrap>      
       <span class="mt-2 hidden-md-and-down">
         <v-btn @click="selectAllTracks" flat small>Select All</v-btn>
         <v-btn @click="selectNoTracks" flat small>Select None</v-btn>
       </span>
+      <v-switch
+        height="2"
+        class="mt-4 hidden-md-and-down"
+        small          
+        color="success"
+        label="Scroll to playing Track"
+        v-model="doScrollIntoView"
+      ></v-switch>      
       <v-spacer></v-spacer>
       <div class="stats-container hidden-md-and-down">
         <v-tooltip bottom>
@@ -66,7 +74,8 @@
       >
         <template slot="items" slot-scope="props">
           <tr
-            :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : ''"
+            :data-trackid="props.item.track.id"          
+            :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'playing-track' : (playingTrackId === props.item.track.id) ? 'playing-paused-track' : 'pending-track'"
           >
             <td class="handle">
               <input
@@ -74,9 +83,9 @@
                 name="selectedTrack"
                 :value="props.item.track.id"
                 @click="toggleSelectedTrack($event, props.item)"
-                class="mr-2 track-selector  hidden-md-and-down"
+                class="mr-2 track-selector hidden-md-and-down"
               >
-              <span @click="playTrack(props.item.track.id)">
+              <span @click="playTrack(props.item.track.id)" class="track-list-number" :class="props.item.track.played ? 'played' : 'pending'">
                 {{ props.item.listNumber | padNumber3 }}
               </span>
               <v-icon
@@ -266,6 +275,7 @@
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
 import Sortable from "sortablejs";
+var VueScrollTo = require('vue-scrollto');
 
 export default {
   components: { Toolbar },
@@ -273,21 +283,25 @@ export default {
     EventBus.$on("pl:PlayQue", this.playFirstTrackInQue);
     EventBus.$on("pl:ClearQue", this.clearQue);
     EventBus.$on("pl:RemoveSelected", this.removeSelected);
+    EventBus.$on("pl:RemovePlayed", this.removePlayed);
     EventBus.$on("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$on("pl:Shuffle", this.shuffleQue);
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("q:addedTracksToQue", this.updateData);
     EventBus.$on("q:deletedTrackFromQue", this.updateData);
+    EventBus.$on("q:markTrackAsPlayed",  info => this.markTrackAsPlayed(info));    
   },
   beforeDestroy() {
     EventBus.$off("pl:PlayQue", this.playFirstTrackInQue);
     EventBus.$off("pl:ClearQue", this.clearQue);
     EventBus.$off("pl:RemoveSelected", this.removeSelected);
+    EventBus.$off("pl:RemovePlayed", this.removePlayed);
     EventBus.$off("pl:SaveAsPlaylist", this.saveAsPlaylist);
     EventBus.$off("pl:Shuffle", this.shuffleQue);
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("q:addedTracksToQue", this.updateData);
     EventBus.$off("q:deletedTrackFromQue", this.updateData);
+    EventBus.$off("q:markTrackAsPlayed",  info => this.markTrackAsPlayed(info));    
   },
   async mounted() {
     let table = document.querySelector(".v-datatable tbody");
@@ -422,6 +436,13 @@ export default {
       });
       this.selectedTracks = [];
     },
+    removePlayed: function() {
+      this.$playQue
+        .removePlayed()
+        .then(() => {
+          this.updateData();
+        });
+    },
     removeTrackFromQue: function(track) {
       this.removeTracksFromQue([track]);
     },
@@ -477,6 +498,23 @@ export default {
           this.loading = false;
         });
       });
+    },
+    markTrackAsPlayed: async function(info) {
+      let track = this.$_.find(this.items, function(t) {
+        return t.track.id === info.trackId;
+      });
+      if(track) {
+        track.played = true;
+        var te = document.querySelectorAll("[data-trackid='" + info.trackId + "']")[0];
+        var e = te.querySelector(".track-list-number")
+        if(e) {
+          e.classList.add('played');
+          e.classList.remove('pending');
+        }
+        if(this.doScrollIntoView) {
+          var cancelScroll = VueScrollTo.scrollTo(te)
+        }
+      }
     }
   },
   watch: {
@@ -487,6 +525,7 @@ export default {
   data: () => ({
     loading: true,
     valid: true,
+    doScrollIntoView: true,
     showSaveAsPlaylist: false,
     newPlaylistnameIsPublic: true,
     newPlaylistname: "",
@@ -518,6 +557,11 @@ export default {
         class: "hidden-md-and-down",
         click: "pl:RemoveSelected"
       },
+      {
+        title: "Remove Played",
+        class: "hidden-md-and-down",
+        click: "pl:RemovePlayed"
+      },      
       {
         title: "Save As Playlist",
         tooltip: "Save as a new Playlist",
@@ -567,5 +611,8 @@ export default {
 .sortable-ghost {
   opacity: 0.75;
   background: #f5f500;
+}
+.playque-container .played { 
+  color: darkgray !important;
 }
 </style>
