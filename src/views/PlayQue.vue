@@ -512,7 +512,7 @@ export default {
           e.classList.remove('pending');
         }
         if(this.doScrollIntoView) {
-          var cancelScroll = VueScrollTo.scrollTo(te)
+          VueScrollTo.scrollTo(te)
         }
       }
     }
