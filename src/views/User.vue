@@ -58,17 +58,17 @@
 
         <v-layout row wrap>
 
-            <v-flex xs5 md4 lg3>
+            <v-flex xs12 sm6 lg4 xl3>
               <span>Most Played Artist</span>
               <ArtistCard v-if="user.statistics.mostPlayedArtist" :artist="user.statistics.mostPlayedArtist"></ArtistCard>
             </v-flex>
 
-            <v-flex xs5 md4 lg3>
+            <v-flex xs12 sm6 lg4 xl3>
               <span>Most Played Release</span>
               <ReleaseCard v-if="user.statistics.mostPlayedRelease" :release="user.statistics.mostPlayedRelease"></ReleaseCard>
             </v-flex>
 
-            <v-flex xs9 md6 lg5>
+            <v-flex xs12 sm6 lg4 xl3>
               <span class="ml-2">Most Played Track</span>
               <TrackCard v-if="user.statistics.mostPlayedTrack" :track="user.statistics.mostPlayedTrack"></TrackCard>
             </v-flex> 

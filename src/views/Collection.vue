@@ -187,7 +187,7 @@
             row
             wrap
           >
-            <v-flex slot="item" slot-scope="props" xs12 sm6 lg2>
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
               <ReleaseCard :release="props.item" :listNumber="props.item.listNumber"></ReleaseCard>
             </v-flex>
           </v-data-iterator>

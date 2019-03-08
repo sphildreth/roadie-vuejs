@@ -38,7 +38,7 @@
             row
             wrap
           >
-            <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
               <ArtistCard :artist="props.item"></ArtistCard>
             </v-flex>
           </v-data-iterator>
@@ -58,7 +58,7 @@
             row
             wrap
           >
-            <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
+            <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
               <ReleaseCard :release="props.item"></ReleaseCard>
             </v-flex>
           </v-data-iterator>
