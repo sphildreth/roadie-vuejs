@@ -1,12 +1,25 @@
 <template>
-  <v-card class="mb-3" hover :data-id="artist.id">
+  <v-card 
+    class="mb-3" 
+    :color="!artist.isValid ? 'warning' : ''"
+    hover 
+    :data-id="artist.id"
+    :disabled="!artist.isValid"
+    >
     <v-layout>
-      <v-flex xs4 :class="'artist-status-' + artist.status">
-        <router-link :to="'/artist/' + artist.id">
-          <v-img :src="artist.thumbnail.url" :alt="artist.artist.text" max-width="80" class="ma-1"></v-img>
+      <v-flex xs4 md3 :class="'artist-status-' + artist.status">
+        <router-link style="display:block;clear:both;" :to="'/artist/' + artist.id">
+          <v-img 
+            :src="artist.thumbnail.url" 
+            :alt="artist.artist.text" 
+            class="ma-1 artist-image"
+            max-height="80px"
+            contain
+            lazy-src="data:image/jpeg;base64,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"            
+            ></v-img>
         </router-link>
       </v-flex>
-      <v-flex xs8>
+      <v-flex xs8 md9>
         <v-card-text primary-title class="pa-0 ma-0">
           <div>
             <v-layout>
@@ -32,7 +45,11 @@
                   @click="isDisliked = !isDisliked"
                   :color="isDisliked ? 'green' : 'accent'"
                 >fas fa-thumbs-down</v-icon>
-                <span v-if="artist.rank" class="ml-1 hidden-lg-and-down artist-rank accent--text" title="Rank">{{ artist.rank }}</span>
+                <span
+                  v-if="artist.rank"
+                  class="ml-1 hidden-lg-and-down artist-rank accent--text"
+                  title="Rank"
+                >{{ artist.rank }}</span>
               </div>
             </v-layout>
             <router-link style="display:block;clear:both;" :to="'/artist/' + artist.id">

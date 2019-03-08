@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-detail-container">
     <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>
-    <v-layout hidden-xs-only row wrap>
+    <v-layout class="hidden-xs-only" row wrap>
       <v-flex d-flex md12 class="ma-3">
         <v-tooltip bottom class="hidden-md-and-down">
           <v-chip slot="activator" color="secondary" text-color="white">
@@ -13,14 +13,12 @@
           <span>Total Users in the system</span>
         </v-tooltip>
         <v-tooltip bottom class="hidden-md-and-down">
-          <v-chip slot="activator" color="secondary" text-color="white">            
+          <v-chip slot="activator" color="secondary" text-color="white">
             <v-avatar>
               <v-icon>collections</v-icon>
             </v-avatar>
-            <a href="/collections/">                                    
-            {{ statistics.collectionCount | formatNumber }}
-            </a>
-          </v-chip>          
+            <a href="/collections/">{{ statistics.collectionCount | formatNumber }}</a>
+          </v-chip>
           <span>Total Collections in the system</span>
         </v-tooltip>
         <v-tooltip bottom class="hidden-md-and-down">
@@ -28,9 +26,7 @@
             <v-avatar>
               <v-icon>playlist_play</v-icon>
             </v-avatar>
-            <a href="/playlists/">                                    
-            {{ statistics.playlistCount | formatNumber }}
-            </a>
+            <a href="/playlists/">{{ statistics.playlistCount | formatNumber }}</a>
           </v-chip>
           <span>Total Playlists in the system</span>
         </v-tooltip>
@@ -39,9 +35,7 @@
             <v-avatar>
               <v-icon>label</v-icon>
             </v-avatar>
-            <a href="/labels/">                                    
-            {{ statistics.labelCount | formatNumber }}
-            </a>
+            <a href="/labels/">{{ statistics.labelCount | formatNumber }}</a>
           </v-chip>
           <span>Total Labels in the system</span>
         </v-tooltip>
@@ -50,9 +44,7 @@
             <v-avatar>
               <v-icon>fas fa-users</v-icon>
             </v-avatar>
-            <a href="/artists/">   
-            {{ statistics.artistCount | formatNumber }}
-            </a>
+            <a href="/artists/">{{ statistics.artistCount | formatNumber }}</a>
           </v-chip>
           <span>Total Artists in the system</span>
         </v-tooltip>
@@ -61,9 +53,7 @@
             <v-avatar>
               <v-icon>library_music</v-icon>
             </v-avatar>
-            <a href="/releases/">   
-            {{ statistics.releaseCount | formatNumber }}
-            </a>
+            <a href="/releases/">{{ statistics.releaseCount | formatNumber }}</a>
           </v-chip>
           <span>Total Releases in the Library</span>
         </v-tooltip>
@@ -81,9 +71,7 @@
             <v-avatar>
               <v-icon>audiotrack</v-icon>
             </v-avatar>
-            <a href="/tracks/">   
-            {{ statistics.trackCount | formatNumber }}
-            </a>
+            <a href="/tracks/">{{ statistics.trackCount | formatNumber }}</a>
           </v-chip>
           <span>Total Tracks in Library</span>
         </v-tooltip>
@@ -117,14 +105,15 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-card xs12 class="ma-3">
+      <v-card xs12 class="ma-3 recent-card">
         <v-card-title class="title accent--text">
-          <a href="/releases/recentlyadded">   
-          <v-icon class="mr-1">library_music</v-icon>Recently Added Releases
+          <a href="/releases/recentlyadded">
+            <v-icon class="mr-1">library_music</v-icon>Recently Added Releases
           </a>
-          </v-card-title>
+        </v-card-title>
         <v-container fluid grid-list-md class="my-0 py-0">
           <v-data-iterator
+            v-if="!loadingReleases"
             :items="latestReleases"
             :total-items="latestReleases.length"
             :hide-actions="true"
@@ -137,18 +126,20 @@
               <ReleaseCard :release="props.item"></ReleaseCard>
             </v-flex>
           </v-data-iterator>
+          <v-progress-linear v-if="loadingReleases" height="2" color="accent" class indeterminate></v-progress-linear>
         </v-container>
       </v-card>
     </v-layout>
     <v-layout row wrap>
-      <v-card xs12 class="ma-3">
+      <v-card xs12 class="ma-3 recent-card">
         <v-card-title class="title accent--text">
-          <a href="/artists/recentlyadded">   
-          <v-icon class="mr-1">fas fa-users</v-icon>Recently Added Artists
+          <a href="/artists/recentlyadded">
+            <v-icon class="mr-1">fas fa-users</v-icon>Recently Added Artists
           </a>
-          </v-card-title>
+        </v-card-title>
         <v-container fluid grid-list-md class="my-0 py-0">
           <v-data-iterator
+            v-if="!loadingArtists"
             :items="latestArtists"
             :total-items="latestArtists.length"
             :hide-actions="true"
@@ -161,6 +152,7 @@
               <ArtistCard :artist="props.item"></ArtistCard>
             </v-flex>
           </v-data-iterator>
+          <v-progress-linear v-if="loadingArtists" height="2" color="accent" class indeterminate></v-progress-linear>
         </v-container>
       </v-card>
     </v-layout>
@@ -201,7 +193,7 @@ export default {
   },
   methods: {
     playRandomTracks: function() {
-      EventBus.$emit("loadingStarted");      
+      EventBus.$emit("loadingStarted");
       this.$playQue
         .deleteAll()
         .then(() => {
@@ -258,20 +250,28 @@ export default {
         .then(rr => {
           that.statistics = rr.data.data;
           that.$store.commit("updateLastScan", rr.data.data.lastScan);
-          return that.$axios.get(
-            process.env.VUE_APP_API_URL +
-              `/releases?page=1&limit=${this.recentLimit}&sort=CreatedDate&order=DESC`
-          );
-        })
-        .then(rr => {
-          that.latestReleases = rr.data.rows;
-          return that.$axios.get(
-            process.env.VUE_APP_API_URL +
-              `/artists?page=1&limit=${this.recentLimit}&sort=CreatedDate&order=DESC`
-          );
-        })
-        .then(rr => {
-          that.latestArtists = rr.data.rows;
+          that.$axios
+            .get(
+              process.env.VUE_APP_API_URL +
+                `/releases?page=1&limit=${
+                  this.recentLimit
+                }&sort=CreatedDate&order=DESC`
+            )
+            .then(rr => {
+              that.latestReleases = rr.data.rows;
+              that.loadingReleases = false;
+            });
+          that.$axios
+            .get(
+              process.env.VUE_APP_API_URL +
+                `/artists?page=1&limit=${
+                  this.recentLimit
+                }&sort=CreatedDate&order=DESC`
+            )
+            .then(rr => {
+              that.latestArtists = rr.data.rows;
+              that.loadingArtists = false;
+            });
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -280,6 +280,8 @@ export default {
   },
   watch: {},
   data: () => ({
+    loadingReleases: true,
+    loadingArtists: true,
     statistics: {},
     latestReleases: [],
     latestArtists: [],
@@ -312,5 +314,8 @@ export default {
 .dashboard-detail-container a {
   text-decoration: none;
   color: inherit;
+}
+.dashboard-detail-container .recent-card {
+  width: 100%;
 }
 </style>

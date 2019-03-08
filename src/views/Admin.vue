@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="admin-container">
     <Toolbar :menuItems="menuItems" :doShowRefresh="false" :toolbarIcon="'settings'"></Toolbar>
     <v-container fluid grid-list-md>
       <div class="col-12">
@@ -23,28 +23,41 @@
         :total-items="userPagination.totalItems"
       >
         <template slot="items" slot-scope="props">
-          <td>
+          <td class="avatar-container">
             <router-link :to="'/user/' + props.item.id">
-              <v-img 
-                :src="props.item.thumbnail.url" 
-                max-width="50" 
-                :alt="props.item.user.text"></v-img>
-            <span class="subheading secondary--text text--lighten-1">
-            {{ props.item.user.text }}
-            </span>
+              <v-img :src="props.item.thumbnail.url" max-width="50" :alt="props.item.user.text"></v-img>
+              <span class="subheading secondary--text text--lighten-1">{{ props.item.user.text }}</span>
             </router-link>
           </td>
           <td>{{ formatTimeStamp(props.item.lastActivity) }}</td>
           <td>{{ formatTimeStamp(props.item.lastLoginDate) }}</td>
           <td>{{ formatTimeStamp(props.item.lastApiAccessDate) }}</td>
-          <td>{{ props.item.isPrivate }}</td>
+          <td class="hidden-md-and-down">{{ props.item.isPrivate }}</td>
           <td title="Played Tracks">{{ props.item.statistics.playedTracks }}</td>
-          <td title="Rated Artists">{{ props.item.statistics.ratedArtists }}</td>
-          <td title="Rated Releases">{{ props.item.statistics.ratedReleases }}</td>
-          <td title="Rated Tracks">{{ props.item.statistics.ratedTracks }}</td>
-          <td title="Favorite Artists">{{ props.item.statistics.favoritedArtists }}</td>
-          <td title="Favorite Releases">{{ props.item.statistics.favoritedReleases }}</td>
-          <td title="Favorite Tracks">{{ props.item.statistics.favoritedTracks }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Rated Artists"
+          >{{ props.item.statistics.ratedArtists }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Rated Releases"
+          >{{ props.item.statistics.ratedReleases }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Rated Tracks"
+          >{{ props.item.statistics.ratedTracks }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Favorite Artists"
+          >{{ props.item.statistics.favoritedArtists }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Favorite Releases"
+          >{{ props.item.statistics.favoritedReleases }}</td>
+          <td
+            class="hidden-md-and-down"
+            title="Favorite Tracks"
+          >{{ props.item.statistics.favoritedTracks }}</td>
         </template>
       </v-data-table>
     </v-container>
@@ -187,11 +200,23 @@ export default {
       descending: true
     },
     userHeaders: [
-      { text: "Username", align: "left", sortable: true, value: "user.text" },
+      {
+        text: "Username",
+        align: "left",
+        class: "avatar-container",
+        sortable: true,
+        value: "user.text"
+      },
       { text: "Last Activity", sortable: true, value: "lastActivity" },
       { text: "Last Login", sortable: true, value: "lastLoginDate" },
       { text: "Last Api Access", sortable: true, value: "lastApiAccessDate" },
-      { text: "Priv", sortable: true, value: "isPrivate", width: "75px" },
+      {
+        text: "Priv",
+        sortable: true,
+        value: "isPrivate",
+        width: "75px",
+        class: "hidden-md-and-down"
+      },
       {
         text: "Played",
         sortable: true,
@@ -202,37 +227,43 @@ export default {
         text: "R A",
         sortable: true,
         value: "statistics.ratedArtists",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       },
       {
         text: "R R",
         sortable: true,
         value: "statistics.ratedReleases",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       },
       {
         text: "R T",
         sortable: true,
         value: "statistics.ratedTracks",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       },
       {
         text: "F A",
         sortable: true,
         value: "statistics.favoritedArtists",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       },
       {
         text: "F R",
         sortable: true,
         value: "statistics.favoritedReleases",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       },
       {
         text: "F T",
         sortable: true,
         value: "statistics.favoritedTracks",
-        width: "75px"
+        width: "75px",
+        class: "hidden-md-and-down"
       }
     ]
   })

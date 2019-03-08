@@ -24,15 +24,15 @@
             </v-flex>
             <v-flex xs12>
               <v-layout row wrap>
-                <v-flex xs3>
-                  <v-img
+                <v-flex xs6 md3>
+                  <v-img  
                     :src="collection.mediumThumbnail.url"
                     :alt="collection.name"
                     class="ma-1"
                     aspect-ratio="1"
                   ></v-img>
                 </v-flex>
-                <v-flex xs9 class="title">
+                <v-flex xs6 md9 class="title">
                   <v-text-field
                     v-if="collection.edition"
                     v-bind:value="collection.edition"
@@ -98,7 +98,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex d-flex xs12>
-          <div class="stats-container">
+          <div class="stats-container hidden-xs-only">
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
@@ -117,7 +117,7 @@
               </v-chip>
               <span>Collection Release Count</span>
             </v-tooltip>
-            <v-tooltip bottom v-if="collection.missingReleaseCount ">
+            <v-tooltip bottom class="hidden-md-and-down" v-if="collection.missingReleaseCount ">
               <v-chip slot="activator" color="warning" text-color="black">
                 <v-avatar>
                   <v-icon>error</v-icon>
@@ -144,7 +144,7 @@
               </v-chip>
               <span>Collection Track Playtime</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-md-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>folder_open</v-icon>
@@ -153,7 +153,7 @@
               </v-chip>
               <span>Collection Media File Size</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip bottom class="hidden-sm-and-down">
               <v-chip slot="activator" color="secondary" text-color="white">
                 <v-avatar>
                   <v-icon>date_range</v-icon>

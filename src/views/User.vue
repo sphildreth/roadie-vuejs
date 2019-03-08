@@ -207,6 +207,9 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/users/${this.id}`)
         .then(response => {
           this.user = response.data.data;
+          if(this.$store.getters.isUserAdmin) {
+            this.user.isPrivate = false;
+          }
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");

@@ -7,7 +7,14 @@
     :data-id="track.id"
   >
     <v-layout row wrap>
-      <v-flex xs12 :lg8="(track.trackArtist || release) || (track.trackArtist || release)" :lg12="!track.trackArtist && !release"  :xl7="track.trackArtist || release" :xl8="track.trackArtist || release" :xl11="!track.trackArtist && !release">      
+      <v-flex
+        xs12
+        :lg8="(track.trackArtist || release) || (track.trackArtist || release)"
+        :lg12="!track.trackArtist && !release"
+        :xl7="track.trackArtist || release"
+        :xl8="track.trackArtist || release"
+        :xl11="!track.trackArtist && !release"
+      >
         <input
           v-if="doShowSelector"
           type="checkbox"
@@ -93,7 +100,11 @@
         </v-layout>
       </v-flex>
       <v-flex lg5 xl4 d-flex v-if="track.trackArtist">
-        <ArtistCard class="mt-2 hidden-md-and-down" v-if="track.trackArtist" :artist="track.trackArtist"></ArtistCard>
+        <ArtistCard
+          class="mt-2 hidden-md-and-down"
+          v-if="track.trackArtist"
+          :artist="track.trackArtist"
+        ></ArtistCard>
       </v-flex>
       <v-flex lg5 xl4 d-flex v-if="release && !track.trackArtist">
         <ReleaseCard class="hidden-md-and-down" v-if="release" :release="release"></ReleaseCard>
