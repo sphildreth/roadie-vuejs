@@ -46,7 +46,7 @@
                 </v-flex>
                 <v-flex xs12 md9 class="title">
                   <v-layout row wrap>
-                    <v-flex xs12 md4 class="mt-3">
+                    <v-flex xs12 md5 class="mt-3">
                       <ArtistCard :artist="release.artist"></ArtistCard>
                     </v-flex>
                   </v-layout>
@@ -338,7 +338,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs6>
+                  <v-flex slot="item" slot-scope="props" xs12 lg6>
                     <CollectionCard
                       :collection="props.item.collection"
                       :listNumber="props.item.listNumber"

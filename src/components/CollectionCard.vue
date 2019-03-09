@@ -1,16 +1,18 @@
 <template>
-    <v-card max-height="100px"  class="mb-3 collection-card" hover :data-id="collection.id" >
+    <v-card height="105px"  class="mb-2 collection-card" hover :data-id="collection.id" >
         <v-layout>
-            <v-flex xs2 >
+            <v-flex xs3>
                 <router-link :to="'/collection/' + collection.id">
                 <v-img
                     :src="collection.thumbnail.url"
-                    :alt="collection.collection.text"                    
-                    class="ma-1"
+                    :alt="collection.collection.text"
+                    max-height="80px"          
+                    contain 
+                    class="ma-1 collection-image"
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs10>
+            <v-flex xs9>
                 <v-card-title primary-title class="pa-0 ma-0">
                 <div>
                     <router-link :to="'/collection/' + collection.id">                   

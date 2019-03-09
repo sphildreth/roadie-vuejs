@@ -6,7 +6,7 @@
       :doMenuSelected="true"
       :toolbarIcon="'collections'"
     ></Toolbar>
-    <v-container fluid grid-list-md>
+    <v-container v-if="!missingData" fluid grid-list-md>
       <v-data-iterator
         :items="items"
         :rows-per-page-items="rowsPerPageItems"
@@ -21,6 +21,9 @@
           <CollectionCard :collection="props.item"></CollectionCard>
         </v-flex>
       </v-data-iterator>
+    </v-container>
+    <v-container v-if="missingData">
+      {{ missingData }}
     </v-container>
     <confirm ref="confirm"></confirm>    
   </div>
@@ -38,11 +41,13 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("c:RescanAll", this.rescanAll);
     EventBus.$on("c:AddNew", this.addNew);
+    EventBus.$on("c:MissingCollectionReleases", this.missingCollectionReleases);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("c:RescanAll", this.rescanAll);
     EventBus.$off("c:AddNew", this.addNew);
+    EventBus.$off("c:MissingCollectionReleases", this.missingCollectionReleases);
   },
   async mounted() {
     this.updateData();
@@ -53,6 +58,7 @@ export default {
         ? []
         : [
           { title: "Add", click: "c:AddNew" },
+          { title: "View Missing Artists/Releases For All", click: "c:MissingCollectionReleases" },
           { title: "Rescan All", click: "c:RescanAll" }
         ];
     }
@@ -60,6 +66,17 @@ export default {
   methods: {
     addNew() {
       this.$router.push("/collection/edit/__new__");
+    },
+    missingCollectionReleases: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL + "/admin/missingcollectionreleases"
+        )
+        .then(rr => {
+          this.missingData = rr.data.data;
+          EventBus.$emit("loadingComplete");
+        });
     },
     rescanAll: async function() {
       this.$refs.confirm
@@ -102,6 +119,7 @@ export default {
     }
   },
   data: () => ({
+    missingData: null,
     rowsPerPageItems: [12, 36, 60, 120, 500],
     pagination: {
       page: 1,
