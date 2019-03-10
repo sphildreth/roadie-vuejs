@@ -36,6 +36,55 @@
       </v-card>
       <v-card>
         <v-card-title primary-title>
+          <h5 class="headline mb-0">Can I search for only Artists?</h5>
+        </v-card-title>
+        <v-card-text>
+          <p>By default when a search is performed it searches for: Artists, Releases, Tracks and Playlists that contain the search value.</p>
+          <p>You can limit to a specific type by starting the search with a type indicator like "x:", where the indicator is the first letter of the type:</p>
+          <p>
+            <ul>
+              <li>a: Artist</li>
+              <li>r: Release</li>            
+              <li>t: Track</li>                        
+              <li>p: Playlist</li>                                    
+            </ul>
+          </p>
+          <p>You can also include a rating filter to only show matches that are equal or greater than the rating value. An Example would be "t: batman :rating 3", which would show all tracks with the word 'batman' and have a rating of 3 or more.</p>
+          <p>By default all searches are contains (or like) searches you can perform a equals (or exact) search by using quotes. Here are some search examples:</p>
+          <p>
+            <ul>
+              <li>a: Diana
+                <ul>
+                  <li>Find all Artists that have the word 'Diana' in their: name, sort name or alternate name.</li>
+                  <li>Diana Ross</li>
+                  <li>Diana Krall</li>
+                  <li>Diana Washington</li>
+                  <li>Dixie Diana</li>
+                  <li>Diana Ross & The Supremes</li>
+                </ul>
+              </li>
+              <li>a: "Diana Ross"
+                <ul>
+                  <li>Find all Artists that are named 'Diana Ross', have the sort name of 'Diana Ross' or the alternate name of 'Diana Ross'.</li>
+                  <li>Diana Ross</li>
+                </ul>                
+              </li>
+              <li>t: :rating 3
+                <ul>
+                  <li>Find all Tracks that have a rating of at least 3.</li>
+                </ul> 
+              </li>              
+              <li>t: batman :rating 3
+                <ul>
+                  <li>Find all Tracks that have the word 'batman' in the title and have a rating of at least 3.</li>
+                </ul> 
+              </li>
+            </ul>
+          </p>
+        </v-card-text>
+      </v-card>      
+      <v-card>
+        <v-card-title primary-title>
           <h5 class="headline mb-0">How do I keep my activity private?</h5>
         </v-card-title>
         <v-card-text>

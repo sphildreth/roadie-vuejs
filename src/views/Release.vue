@@ -565,9 +565,9 @@ export default {
     EventBus.$off("t:unselected");
     EventBus.$off("t:dislikeToggle", info => this.dislikeTrackToggle(info));
     EventBus.$off("t:favoriteToggle", info => this.favoriteTrackToggle(info));      
-    EventBus.$off("userTrackRatingChange",  info => this.updateIfNeeded(info));
-    EventBus.$off("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
-    EventBus.$off("userTrackLikeChange", info => this.updateIfNeeded(info));
+    EventBus.$off("userTrackRatingChange");
+    EventBus.$off("userTrackFavoriteChange");
+    EventBus.$off("userTrackLikeChange");
   },
   async mounted() {
     this.updateData();
@@ -907,7 +907,7 @@ export default {
         return media.tracks;
       });
       const trackOnThisRelease = this.$_.find(releaseTracks, function(t) {
-            return t.id === info.trackId;
+        return t.id === info.trackId;
       })
       if(trackOnThisRelease) {
         await this.updateData();

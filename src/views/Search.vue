@@ -4,9 +4,8 @@
       <div class="heading mb-2">Search Results for:
         <span class="accent--text title ml-2">{{ decodeURIComponent(this.searchQuery) }}</span>
       </div>
-      <div v-if="loading">
+      <div v-if="isLoading">
         <v-progress-linear
-          v-if="loading"
           height="2"
           color="accent"
           class="ma-0 pa-0"
@@ -16,10 +15,10 @@
       <v-divider></v-divider>
     </v-container>
     <v-container fluid class="pa-0 pr-3 pl-3 ma-0" >
-      <div v-if="loading" class="mx-3 mb-4 text-xs-center">
+      <div v-if="isLoading" class="mx-3 mb-4 text-xs-center">
         <img class="mr-3" height="60px;" style="vertical-align:middle;"  src="@/assets/img/odyssey.gif" /> Seeking answers from the oracle 🧙 ✌ ✨ 🙌 🔮 🦄 ...
       </div>
-      <div v-if="!loading && noResults" class="text-xs-center">
+      <div v-if="!isLoading && noResults" class="text-xs-center">
         <v-icon class="mr-3">far fa-frown</v-icon>Sorry, nothing was found.<span class="ml-3">ε(´סּ︵סּ`)з</span>
       </div>
     </v-container>
@@ -54,7 +53,6 @@
             :total-items="releasePagination.totalItems"
             :pagination.sync="releasePagination"
             content-tag="v-layout"
-            :loading="releasesLoading"
             row
             wrap
           >
@@ -79,7 +77,6 @@
             :total-items="trackPagination.totalItems"
             :pagination.sync="trackPagination"
             content-tag="v-layout"
-            :loading="tracksLoading"
             row
             wrap
           >
@@ -99,7 +96,6 @@
             :total-items="playlistPagination.totalItems"
             :pagination.sync="playlistPagination"
             content-tag="v-layout"
-            :loading="playlistsLoading"
             row
             wrap
           >
@@ -181,6 +177,9 @@ export default {
       const l = s.length;
       const r = parseInt(s.substring(p, l).replace("rating", '').replace(":", '').trim());
       return r;
+    },
+    isLoading() {
+      return this.artistsLoading || this.releasesLoading || this.tracksLoading || this.playlistsLoading;
     }
   },
   async mounted() {
@@ -198,35 +197,45 @@ export default {
       this.addTracksToQue(this.trackItems);
     },
     updateData: async function() {
-      this.loading = true;
+      this.artistItems = [];
+      this.releaseItems = [];
+      this.trackItems = [];
+      this.playlistItems= [];
       if(!this.searchQuery) {
-        this.loading = false;
+        this.artistsLoading = false;
+        this.releasesLoading = false;
+        this.tracksLoading =false;
+        this.playlistsLoading = false;
         EventBus.$emit("showSnackbar", {
           text: "You won't find anything if you don't search for something.",
           color: "red"
         });        
         return;
       }
-      this.artistItems = [];
-      this.releaseItems = [];
-      this.trackItems = [];
-      this.playlistItems= [];
       if(this.doArtistSearch) {
         this.updateArtistData();
+      } else {
+        this.artistsLoading = false;
       }
       if(this.doReleaseSearch) {
         this.updateReleaseData();
+      } else {
+        this.releasesLoading = false;
       }
       if(this.doTrackSearch) {
         this.updateTracksData();
+      } else {
+        this.tracksLoading =false;
       }
       if(this.doPlaylistSearch) {
         this.updatePlaylistData();
+      } else {
+        this.playlistsLoading = false;
       }
-      this.loading = false;
     },
     updateArtistData: async function() {
       EventBus.$emit("loadingStarted");
+      this.artistsLoading = true;
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -242,10 +251,12 @@ export default {
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
+          this.artistsLoading = false;
         });
     },
     updateReleaseData: async function() {
       EventBus.$emit("loadingStarted");
+      this.releasesLoading = true;
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -261,10 +272,12 @@ export default {
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
+          this.releasesLoading = false;
         });
     },
     updateTracksData: async function() {
       EventBus.$emit("loadingStarted");
+      this.tracksLoading = true;
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -280,10 +293,12 @@ export default {
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
+          this.tracksLoading = false;
         });
     },
     updatePlaylistData: async function() {
       EventBus.$emit("loadingStarted");
+      this.playlistsLoading = true;
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
@@ -299,6 +314,7 @@ export default {
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
+          this.playlistsLoading = false;
         });
     }
   },
@@ -330,11 +346,10 @@ export default {
   },
   data: () => ({    
     searchQuery: null,
-    loading: true,
-    artistsLoading: false,
-    releasesLoading: false,
-    tracksLoading: false,
-    playlistsLoading: false,
+    artistsLoading: true,
+    releasesLoading: true,
+    tracksLoading: true,
+    playlistsLoading: true,
     rowsPerPageItems: [12, 36, 60, 120,500],
     currentView: "",
     artistPagination: {
