@@ -77,10 +77,24 @@
             </div>
           </div>
           <div v-if="!release.isValid" class="black--text">
-            <div
-              :title="release.release.text"
-              class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
-            >{{ release.release.text }}</div>
+            <div class="mb-2">
+              <v-icon
+                small
+                class="pointer mr-1"
+                style="float:left;"
+                @click="copyReleaseText"
+              >fas fa-copy</v-icon>            
+              <div
+                :title="release.release.text"
+                class="release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
+              >{{ release.release.text }}</div>
+            </div>
+            <v-icon
+              small
+              class="pointer mr-1"
+              style="float:left;"
+              @click="copyArtistText"
+            >fas fa-copy</v-icon>                
             <div
               :title="release.artist.text"
               class="release-artist text-no-wrap text-truncate body-1 pointer"
@@ -111,6 +125,25 @@ export default {
       isDisliked: false
     }
   }),
+  methods: {
+    copyToClipBoard: function(text) {
+      navigator.clipboard.writeText(text)
+      .then(() => {
+        EventBus.$emit("showSnackbar", {
+            text: "Copied To Clipboard!"
+        });        
+      })
+      .catch(err => {
+        console.log('Something went wrong', err);
+      })
+    },
+    copyArtistText: function() {
+      this.copyToClipBoard(this.release.artist.text);
+    },    
+    copyReleaseText: function() {
+      this.copyToClipBoard(this.release.release.text);
+    }
+  },
   computed: {
     isFavorite: {
       get: function() {
@@ -162,7 +195,7 @@ i.favorite {
   float: left;
 }
 .missing-release-spacer {
-  height: 21px;
+  height: 18px;
 }
 
 </style>

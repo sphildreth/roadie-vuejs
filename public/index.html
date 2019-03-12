@@ -8,11 +8,18 @@
     <title><%= process.env.VUE_APP_APP_NAME %></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/favico.js/0.3.10/favico.min.js"></script>    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/favico.js/0.3.10/favico.min.js"></script>      
     <script>
       window.favIcon = new Favico();
     </script>
+    <script> 
+      var isIE = /*@cc_on!@*/false || !!document.documentMode;
+      if(isIE) {
+        alert("You're using a terrible browser. Try Chrome or Firefox.")
+        window.location.href = 'https://www.google.com/search?q=where+to+download+chrome+or+firefox';
+      }
+    </script>    
   </head>
   <body>
     <noscript>

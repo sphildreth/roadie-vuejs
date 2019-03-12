@@ -106,7 +106,7 @@
           :artist="track.trackArtist"
         ></ArtistCard>
       </v-flex>
-      <v-flex lg5 xl4 d-flex v-if="release && !track.trackArtist">
+      <v-flex lg5 xl4 d-flex v-if="release && !track.trackArtist" class="">
         <ReleaseCard class="hidden-md-and-down" v-if="release" :release="release"></ReleaseCard>
       </v-flex>
     </v-layout>

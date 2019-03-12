@@ -12,7 +12,7 @@
         row
         wrap
       >
-        <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
+        <v-flex slot="item" slot-scope="props" xs12 sm6 lg3 xl2>
           <ArtistCard :artist="props.item"></ArtistCard>
         </v-flex>
       </v-data-iterator>
