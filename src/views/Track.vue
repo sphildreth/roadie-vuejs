@@ -357,23 +357,27 @@ export default {
       this.trackFavoriteToggle({
         trackId: this.track.id,
         isFavorite: !this.track.userRating.isFavorite
-      }).then(this.updateData);  
+      }).then(this.updatePartial);  
     },
     hateToogle: function() {
       this.trackDislikeToggle({
         trackId: this.track.id,
         isDisliked: !this.track.userRating.isDisliked
-      }).then(this.updateData);  
+      }).then(this.updatePartial);  
     },
     setRating: async function() {
       this.$nextTick(() => {
         this.trackRatingChange({
           trackId: this.track.id,
           newVal: this.track.userRating.rating
-        }).then(this.updateData);
+        }).then(this.updatePartial);
       });
     },
-    updateData: async function() {
+    updatePartial: async function() {
+      this.updateData(true)
+    },
+    updateData: async function(isLoading) {
+      this.loaded = isLoading == undefined ? false : isLoading;
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}`)

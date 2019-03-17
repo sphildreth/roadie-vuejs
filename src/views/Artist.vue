@@ -908,7 +908,7 @@ export default {
         this.artistRatingChange({
           artistId: this.artist.id,
           newVal: this.artist.userRating.rating
-        }).then(this.updateData);
+        }).then(this.updatePartial);
       });
     },
     toggleFavorite: async function() {
@@ -917,7 +917,7 @@ export default {
         isFavorite: this.artist.userRating
           ? !this.artist.userRating.isFavorite
           : true
-      }).then(this.updateData);
+      }).then(this.updatePartial);
     },
     toggleHated: async function() {
       this.artistDislikeToggle({
@@ -925,7 +925,7 @@ export default {
         isDisliked: this.artist.userRating
           ? !this.artist.userRating.isDisliked
           : true
-      }).then(this.updateData);
+      }).then(this.updatePartial);
     },
     showImageModal: function(e) {
       this.modalImage = e;
@@ -954,8 +954,11 @@ export default {
           EventBus.$emit("loadingComplete");
         });
     },
-    updateData: async function() {
-      this.loading = true;
+    updatePartial: async function() {
+      this.updateData(false);
+    },
+    updateData: async function(isLoading) {
+      this.loading = isLoading == undefined ? true : isLoading;
       this.artistImageSearchQuery = null;
       EventBus.$emit("loadingStarted");
       this.$axios

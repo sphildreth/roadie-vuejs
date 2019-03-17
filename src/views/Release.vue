@@ -732,7 +732,7 @@ export default {
         this.releaseRatingChange({
           releaseId: this.release.id,
           newVal: this.userRating.rating
-        }).then(this.updateData);
+        }).then(this.updatePartial);
       });
     },    
     toggleFavorite: async function() {
@@ -740,14 +740,14 @@ export default {
         this.releaseFavoriteToggle({
           releaseId: this.release.id,
           isFavorite: !this.userRating.isFavorite
-        }).then(this.updateData);
+        }).then(this.updatePartial);
       })
     },
     toggleHated: async function() {
       this.releaseDislikeToggle({
         releaseId: this.release.id,
         isDisliked: !this.userRating.isDisliked
-      }).then(this.updateData);
+      }).then(this.updatePartial);
     },
     addToQue: function() {
       let queTracks = [];
@@ -914,8 +914,11 @@ export default {
       }
       this.doUpdateIfNeeded = true;
     },
-    updateData: async function() {
-      this.loading = true;
+    updatePartial: async function() {
+      this.updateData(false);
+    },
+    updateData: async function(isLoading) {
+      this.loading = isLoading == undefined ? true : isLoading;
       this.coverSearchQuery = null;        
       EventBus.$emit("loadingStarted");
       this.releaseById(this.id)
