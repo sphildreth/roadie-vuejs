@@ -101,7 +101,7 @@
               v-model="release.releaseDate"
               label="Release Date"
               :error-messages="errors.collect('release.releaseDate')"
-              v-validate="'required|date_format:YYYY-MM-DD'"
+              v-validate="'required|date_format:yyyy-MM-dd'"
               data-vv-name="release.releaseDate"
               name="releaseDate"
             ></v-text-field>

@@ -78,7 +78,7 @@
               v-model="label.beginDate"
               label="Begin Date"
               :error-messages="errors.collect('label.beginDate')"
-              v-validate="'date_format:YYYY-MM-DD'"
+              v-validate="'date_format:yyyy-MM-dd'"
               data-vv-name="label.beginDate"
               name="beginDate"
             ></v-text-field>
@@ -106,7 +106,7 @@
               v-model="label.endDate"
               label="End Date"
               :error-messages="errors.collect('label.endDate')"
-              v-validate="'date_format:YYYY-MM-DD'"
+              v-validate="'date_format:yyyy-MM-dd'"
               data-vv-name="label.endDate"
               name="endDate"
             ></v-text-field>
