@@ -66,23 +66,7 @@
         </v-flex>
         <v-flex d-flex xs12 sm5 md5>
           <v-tabs right color="primary" v-model="tab" slider-color="accent">
-            <v-tab v-if="track.partTitlesList && track.partTitlesList.length">Part Titles</v-tab>
             <v-tab>Metadata Sources</v-tab>
-            <v-tab-item v-if="track.partTitlesList && track.partTitlesList.length">
-              <v-list>
-                <template v-for="(parTitle, index) in track.partTitlesList">
-                  <v-list-tile :key="`t-${parTitle}-${index}`">
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ parTitle }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider
-                    v-if="index + 1 < track.partTitlesList.length"
-                    :key="`tdivider-${index}`"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-tab-item>
             <v-tab-item>
               <v-data-table
                 :headers="metaDataHeaders"
@@ -206,6 +190,62 @@
           </div>
         </v-flex>
       </v-layout>
+      <v-layout row wrap>
+        <v-flex d-flex xs12 md6>
+          <v-tabs class="track-lists" color="primary" slider-color="accent">
+            <v-tab v-if="track.partTitlesList && track.partTitlesList.length">Part Titles</v-tab>
+            <v-tab-item v-if="track.partTitlesList && track.partTitlesList.length">
+              <v-list>
+                <template v-for="(parTitle, index) in track.partTitlesList">
+                  <v-list-tile :key="`t-${parTitle}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ parTitle }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider
+                    v-if="index + 1 < track.partTitlesList.length"
+                    :key="`tdivider-${index}`"
+                  ></v-divider>
+                </template>
+              </v-list>
+            </v-tab-item>       
+          </v-tabs>
+        </v-flex>         
+        <v-flex d-flex xs12 md6>
+          <v-tabs class="track-lists" color="primary" slider-color="accent">
+            <v-tab v-if="track.alternateNamesList.length">Alternate Names</v-tab>
+            <v-tab v-if="track.tagsList.length > 0">Tags</v-tab>            
+            <v-tab-item v-if="track.alternateNamesList.length">
+              <v-list>
+                <template v-for="(name, index) in track.alternateNamesList">
+                  <v-list-tile :key="`al-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider
+                    v-if="index + 1 < track.alternateNamesList.length"
+                    :key="`adivider-${index}`"
+                  ></v-divider>
+                </template>
+              </v-list>
+            </v-tab-item>       
+            <v-tab-item v-if="track.tagsList.length > 0">
+              <v-list>
+                <template v-for="(name, index) in track.tagsList">
+                  <v-list-tile :key="`t-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < track.tagsList.length" :key="`tdivider-${index}`"></v-divider>
+                </template>
+              </v-list>
+            </v-tab-item>
+
+          </v-tabs>
+        </v-flex>        
+      </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>    
   </div>
@@ -238,6 +278,7 @@ export default {
     EventBus.$on("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
     EventBus.$on("tt:Delete", () => { this.delete(false); });
     EventBus.$on("tt:DeleteAndFile", () => { this.delete(true); });
+    EventBus.$on("tt:Edit", this.edit);
   },
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addToQue);
@@ -253,6 +294,7 @@ export default {
     EventBus.$off("tt:searchInternetArtistReleaseAndTitle", this.searchInternetArtistReleaseAndTitle);
     EventBus.$off("tt:Delete");
     EventBus.$off("tt:DeleteAndFile");
+    EventBus.$off("tt:Edit", this.edit);
   },
   async mounted() {
     this.updateData();
@@ -315,6 +357,9 @@ export default {
           }
         });
     },
+    edit: function() {
+      this.$router.push("/track/edit/" + this.track.id);
+    },    
     searchForTitle: function() {
       this.$router.push({ name: "search", params: { q: 't: ' + this.track.title } });
     },
@@ -383,6 +428,8 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}`)
         .then(response => {
           this.track = response.data.data;
+          this.track.alternateNamesList = this.track.alternateNamesList || [];          
+          this.track.tagsList = this.track.tagsList || [];          
           this.track.userRating = this.track.userRating || {
             rating: 0,
             isFavorite: false,
@@ -435,7 +482,10 @@ export default {
     }
   },
   data: () => ({
-    track: [],
+    track: {
+      alternateNamesList: [],
+      tagsList: [],    
+    },
     tab: 0,
     loaded: false,
     menuItems: [

@@ -270,6 +270,16 @@ var router = new VueRouter({
       }      
     },
     {
+      path: '/track/edit/:id',
+      name: 'trackEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "trackEdit" */ './views/TrackEdit.vue'),
+      meta: {
+        guest: false,
+        is_editor: true
+      }
+    },     
+    {
       path: '/user/:id',
       name: 'user',
       props: true,
