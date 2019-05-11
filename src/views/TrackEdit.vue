@@ -71,6 +71,21 @@
         ></v-combobox>
       </v-layout>
       <v-layout row>
+        <v-autocomplete
+          :items="lookupData.artistItems"
+          v-model="track.trackArtistToken"
+          :search-input.sync="searchForArtist"
+          @change="modifiedTrackArtist = true"
+          :loading="searchArtistsLoading"
+          label="Track Artist"
+          return-object
+          deletable-chips
+          clearable
+          chips
+          append-icon="fas fa-database"
+        ></v-autocomplete>
+      </v-layout>      
+      <v-layout row>
         <v-flex xs2>
           <v-text-field
             v-model="track.amgId"
@@ -151,6 +166,7 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("aa:Save", this.save);
     EventBus.$on("aa:Cancel", this.cancel);
+    this.debouncedArtistSearch = this.$_.debounce(this.doArtistSearch, 500);    
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -197,9 +213,18 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}`)
         .then(rr => {
           this.track = rr.data.data;
+          // ▜ Setup values to work with the autocompletes
+          if(this.track.trackArtist) {
+            this.lookupData.artistItems.push({
+              text: this.track.trackArtist.artist.text,
+              value: this.track.trackArtist.artist.value
+            });
+          }
+          // ▟          
           this.imageUrl =
             this.track.mediumThumbnail.url + "?ts=" + new Date().getTime();
           this.track.alternateNames = this.track.alternateNames || [];
+          this.track.partTitlesList = this.track.partTitlesList || [];
           this.track.partTitlesList = this.track.partTitlesList.join('\n');
         })
         .finally(() => {
@@ -229,16 +254,57 @@ export default {
           });
         }
       });
-    }
+    },
+    doArtistSearch: function(val) {
+      if (this.searchArtistsLoading) {
+        return;
+      }
+      this.searchArtistsLoading = true;
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + "/artists?filter=" + val + "&limit=10"
+        )
+        .then(res => {
+          res.data.rows.forEach(a => {
+            let artist = {
+              text: a.artist.text,
+              value: a.artist.value
+            };
+            if (
+              !this.$_.find(this.lookupData.artistItems, function(l) {
+                return l.value === artist.value;
+              })
+            ) {
+              this.lookupData.artistItems.push(artist);
+            }
+          });
+        })
+        .catch(err => {
+          EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red", error: err });
+        })
+        .finally(() => (this.searchArtistsLoading = false));
+    },    
   },
   watch: {
     $route(to) {
       this.id = to.params.id;
       this.updateData();
-    }
+    },
+    searchForArtist(val) {
+      if (!val) {
+        return;
+      }
+      this.debouncedArtistSearch(val);
+    },    
   },
   data: () => ({
     loaded: false,
+    modifiedTrackArtist: false,
+    searchForArtist: null,
+    searchArtistsLoading: false,
+    lookupData: {
+      artistItems: []
+    },    
     imageName: "",
     imageUrl: "",
     imageFile: "",

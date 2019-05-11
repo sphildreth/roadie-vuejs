@@ -389,7 +389,7 @@
             <v-tab v-if="artist.collectionsWithArtistReleases.length > 0">Collections</v-tab>
             <v-tab v-if="artist.artistContributionReleases.length > 0">Contributions</v-tab>
             <v-tab v-if="artist.playlistsWithArtistReleases.length > 0">Playlists</v-tab>
-            <v-tab v-if="releases.length > 0">Releases
+            <v-tab>Releases              
               <v-btn @click="showReleaseTable=true" icon>
                 <v-icon
                   :color="showReleaseTable ? '' : 'accent'"
@@ -404,110 +404,131 @@
               </v-btn>
             </v-tab>
             <v-tab-item v-if="artist.collectionsWithArtistReleases.length > 0">
-              <v-card flat class="collections">
-                <v-data-iterator
-                  :items="artist.collectionsWithArtistReleases"
-                  :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs4>
-                    <CollectionCard :collection="props.item"></CollectionCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
+              <v-flex>
+                <v-card flat class="collections">
+                  <v-data-iterator
+                    :items="artist.collectionsWithArtistReleases"
+                    :total-items="artist.collectionsWithArtistReleases ? artist.collectionsWithArtistReleases.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs4>
+                      <CollectionCard :collection="props.item"></CollectionCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </v-card>
+              </v-flex>              
             </v-tab-item>
             <v-tab-item v-if="artist.artistContributionReleases.length > 0">
-              <v-card flat class="contributions">
-                <v-data-iterator
-                  :items="artist.artistContributionReleases"
-                  :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
-                    <ReleaseCard :release="props.item"></ReleaseCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
+              <v-flex>
+                <v-card flat class="contributions pt-2">
+                  <v-data-iterator
+                    :items="artist.artistContributionReleases"
+                    :total-items="artist.artistContributionReleases ? artist.artistContributionReleases.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
+                      <ReleaseCard :release="props.item"></ReleaseCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </v-card>
+              </v-flex>
             </v-tab-item>
             <v-tab-item v-if="artist.playlistsWithArtistReleases.length > 0">
-              <v-card flat class="playlists">
-                <v-data-iterator
-                  :items="artist.playlistsWithArtistReleases"
-                  :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs12 md4>
-                    <PlaylistCard :playlist="props.item"></PlaylistCard>
-                  </v-flex>
-                </v-data-iterator>
-              </v-card>
+              <v-flex>
+                <v-card flat class="playlists">
+                  <v-data-iterator
+                    :items="artist.playlistsWithArtistReleases"
+                    :total-items="artist.playlistsWithArtistReleases ? artist.playlistsWithArtistReleases.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs12 md4>
+                      <PlaylistCard :playlist="props.item"></PlaylistCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </v-card>
+              </v-flex>
             </v-tab-item>
-            <v-tab-item v-if="releases.length > 0">
-              <v-card flat class="releases">
-                <v-text-field
-                  v-if="showReleaseTable"
-                  class="ml-4 mr-4"
-                  v-model="releaseTableSearch"
-                  append-icon="search"
-                  label="Filter"
-                  single-line
-                  hide-details
-                ></v-text-field>
-                <v-data-table
-                  v-if="showReleaseTable"
-                  :headers="releaseHeaders"
-                  :items="releaseTableData"
-                  hide-actions
-                  class="elevation-1"
-                >
-                  <template slot="items" slot-scope="props">
-                    <td>
-                      <router-link :to="'/release/' + props.item.id">
-                        <v-img
-                          :src="props.item.thumbnailUrl"
-                          :alt="props.item.title"
-                          width="40"
-                          height="40"
-                          class="mt-1 release-grid-image"
-                        ></v-img>
-                        <span
-                          class="release-grid-title secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
-                        >{{ props.item.title }}</span>
-                      </router-link>
-                    </td>
-                    <td>{{ props.item.year }}</td>
-                    <td>{{ props.item.trackCount }}</td>
-                    <td>{{ props.item.duration }}</td>
-                    <td>{{ props.item.rating }}</td>
-                    <td>{{ props.item.rank }}</td>
-                    <td>{{ props.item.lastPlayed }}</td>
-                    <td>{{ props.item.playedCount }}</td>
-                  </template>
-                </v-data-table>
-
-                <v-data-iterator
-                  v-if="!showReleaseTable"
-                  :items="releases"
-                  :total-items="releases ? releases.length : 0"
-                  content-tag="v-layout"
-                  hide-actions
-                  row
-                  wrap
-                >
-                  <v-flex slot="item" slot-scope="props" xs12 md3>
-                    <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
+            <v-tab-item>
+              <v-flex class="ma-0 pa-0 mt-1">
+                <v-card v-if="loadingReleases">
+                  <v-progress-linear                  
+                    height="2"
+                    color="accent"
+                    class="ma-0 pa-0 my-2 py-2"
+                    indeterminate
+                  ></v-progress-linear>
+                </v-card>
+                <v-card v-if="!loadingReleases && releases.length == 0">
+                  <v-flex class="ma-2">                    
+                  No Data Found
                   </v-flex>
-                </v-data-iterator>
-              </v-card>
+                </v-card>
+                <v-card v-if="!loadingReleases && releases.length > 0">
+                  <v-text-field
+                    v-if="showReleaseTable"
+                    class="ml-4 mr-4"
+                    v-model="releaseTableSearch"
+                    append-icon="search"
+                    label="Filter"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                  <v-data-table
+                    v-if="showReleaseTable"
+                    :headers="releaseHeaders"
+                    :items="releaseTableData"
+                    hide-actions
+                    class="elevation-1"
+                  >
+                    <template slot="items" slot-scope="props">
+                      <td>
+                        <router-link :to="'/release/' + props.item.id">
+                          <v-img
+                            :src="props.item.thumbnailUrl"
+                            :alt="props.item.title"
+                            width="40"
+                            height="40"
+                            class="mt-1 release-grid-image"
+                          ></v-img>
+                          <span
+                            class="release-grid-title secondary--text text--lighten-1 release-title text-no-wrap text-truncate subheading font-weight-medium pointer"
+                          >{{ props.item.title }}</span>
+                        </router-link>
+                      </td>
+                      <td>{{ props.item.year }}</td>
+                      <td>{{ props.item.trackCount }}</td>
+                      <td>{{ props.item.duration }}</td>
+                      <td>{{ props.item.rating }}</td>
+                      <td>{{ props.item.rank }}</td>
+                      <td>{{ props.item.lastPlayed }}</td>
+                      <td>{{ props.item.playedCount }}</td>
+                    </template>
+                  </v-data-table>
+
+                  <v-data-iterator
+                    v-if="!showReleaseTable"
+                    :items="releases"
+                    :total-items="releases ? releases.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs12 md3>
+                      <ReleaseWithTracksCard :release="props.item"></ReleaseWithTracksCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </v-card>
+              </v-flex>
             </v-tab-item>
           </v-tabs>
         </v-flex>
@@ -1010,20 +1031,28 @@ export default {
                   playedCount: r.trackPlayedCount
                 });
               });
-              let tabIndex = 0;
-              if (this.artist.collectionsWithArtistReleases.length > 0) {
-                tabIndex++;
-              }
-              if (this.artist.artistContributionReleases.length > 0) {
-                tabIndex++;
-              }
-              if (this.artist.playlistsWithArtistReleases.length > 0) {
-                tabIndex++;
-              }
-              this.releaseTab = tabIndex;
               this.selectedMergeArtist = this.artist.name;
-              EventBus.$emit("loadingComplete");
-            });
+            })
+            .finally(() => {     
+              this.$nextTick(() => {
+                let tabIndex = -1;
+                if (this.artist.collectionsWithArtistReleases.length > 0) {
+                  tabIndex++;
+                }
+                if (this.artist.artistContributionReleases.length > 0) {
+                  tabIndex++;
+                }
+                if (this.artist.playlistsWithArtistReleases.length > 0) {
+                  tabIndex++;
+                }
+                if (this.releases.length > 0) {
+                  tabIndex++;
+                }                
+                this.releaseTab = tabIndex;                
+                this.loadingReleases = false;                
+                EventBus.$emit("loadingComplete");                
+              });
+            });       
         })
         .finally(() => {
           this.dropzoneOptions.url =
@@ -1174,6 +1203,7 @@ export default {
   },
   data: () => ({
     loading: true,
+    loadingReleases: true,
     showReleaseTable: false,
     searchArtistsLoading: false,
     selectedMergeArtist: null,
