@@ -744,6 +744,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.howl = new Howl({
         volume: this.volume,
+        html5: true,
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
         autoplay: true,

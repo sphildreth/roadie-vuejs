@@ -17,7 +17,7 @@
             <v-icon color="pink" class="mr-1 hidden-xs-only" small>fas fa-archive</v-icon>
             <span class="caption mr-1 hidden-xs-only">Last System Scan: {{ this.$store.getters.lastScanDate }}</span>
             <v-spacer></v-spacer>
-            <span class="caption mr-1">Roadie v20190511.1 beta</span>
+            <span class="caption mr-1">Roadie v20190514.1 beta</span>
             <v-icon color="pink" small>fa fa-flask</v-icon>
           </v-footer>
           <v-bottom-sheet v-model="showPlayer" persistent full-width hide-overlay>
