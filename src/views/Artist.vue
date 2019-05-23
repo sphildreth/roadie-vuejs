@@ -144,8 +144,7 @@
                           v-bind:src="modalImage.url"
                           v-bind:title="modalImage.caption"
                           v-bind:alt="modalImage.caption"
-                        >
-                        
+                        >                        
                       </v-card-text>
                     </v-card>
                   </v-dialog>

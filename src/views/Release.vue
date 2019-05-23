@@ -106,11 +106,12 @@
                       ></v-img>
                     </v-flex>
                   </v-layout>
-                  <v-dialog v-model="showModal">
+                  <v-dialog v-model="showModal" content-class="modal-image-container">
                     <v-card @click="showModal = !showModal">
                       <v-card-title class="headline">{{ modalImage.caption}}</v-card-title>
-                      <v-card-text class="grey" max-height="820px">
+                      <v-card-text class="grey">
                         <img
+                          style="max-height:800px;"
                           class="modal-image"
                           v-bind:src="modalImage.url"
                           v-bind:title="modalImage.caption"
