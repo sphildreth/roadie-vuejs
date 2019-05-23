@@ -112,19 +112,40 @@
                         :src="image.thumbnailUrl"
                         class="grey lighten-2"
                         @click="showImageModal(artist.images[index])"
+                        :data-id="index"
+                        @contextmenu="show"
                       ></v-img>
                     </v-flex>
                   </v-layout>
-                  <v-dialog v-model="showModal">
-                    <v-card @click="showModal = !showModal">
+                  <v-menu
+                    v-model="showImageMenu"
+                    :position-x="imageMenuX"
+                    :position-y="imageMenuY"
+                    absolute
+                    offset-y
+                  >
+                    <v-list>
+                      <v-list-tile
+                        v-for="(item, index) in imageMenuItems"
+                        :key="index"
+                        @click="imageMenuClicked(index)"
+                      >
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>                  
+                  <v-dialog v-model="showModal" content-class="modal-image-container">
+                    <v-card @click="showModal = !showModal" >
                       <v-card-title class="headline">{{ modalImage.caption}}</v-card-title>
-                      <v-card-text class="grey" max-height="820px">
+                      <v-card-text class="grey">
                         <img
+                          style="max-height:800px;"
                           class="modal-image"
                           v-bind:src="modalImage.url"
                           v-bind:title="modalImage.caption"
                           v-bind:alt="modalImage.caption"
                         >
+                        
                       </v-card-text>
                     </v-card>
                   </v-dialog>
@@ -688,15 +709,27 @@ export default {
       let items = [];
       if(this.$store.getters.isUserEditor) {
         items.push({ title: "Edit", click: "aa:Edit" });        
-        items.push({ title: "Find Artist Image", click: "aa:FindArtistImage" });
+        items.push({ title: "Find Artist Thumbnail", click: "aa:FindArtistImage" });
         items.push({ title: "Rescan", click: "aa:Rescan" });
       }
       if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", class: "warning--text", click: "aa:Delete" });
-        items.push({ title: "Delete Releases", class: "warning--text", click: "aa:DeleteReleases" });
+        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "aa:Delete" });
+        items.push({ title: "Delete Releases", icon: "fa fa-trash-alt", class: "warning--text", click: "aa:DeleteReleases" });
         items.push({ title: "Merge Artist", click: "aa:MergeArtist" });
       }       
+      items.sort(function(a,b){
+        const aTitle = a.title.toUpperCase();
+        const bTitle = b.title.toUpperCase();
+        return aTitle > bTitle ? 1 : -1;
+      });
       return items;          
+    },
+    imageMenuItems() {
+      let items = [];
+      if(this.$store.getters.isUserEditor) {
+        items.push({ title: 'Delete' });
+      }      
+      return items;
     },
     searchQuery() {
       return this.artist.name;
@@ -706,6 +739,37 @@ export default {
     }
   },
   methods: {
+    show (e) {
+      e.preventDefault()
+      this.selectedImageIndex = parseInt(e.currentTarget.attributes["data-id"].value);
+      this.showImageMenu = false
+      this.imageMenuX = e.clientX
+      this.imageMenuY = e.clientY
+      this.$nextTick(() => {
+        this.showImageMenu = true
+      })
+    },   
+    imageMenuClicked(e) {
+      if(e === 0) {
+        let artistId = this.artist.id;
+        let selectedImageUrl = this.artist.images[this.selectedImageIndex].url;
+        this.$refs.confirm
+          .open("Delete Artist Image", "Are you sure?", { color: "red" })
+          .then(confirm => {
+            if (confirm) {
+              let apiPath = process.env.VUE_APP_API_URL + "/admin/delete/artistsecondaryimage/" + artistId + "/" + this.selectedImageIndex;
+              if(!selectedImageUrl.includes('artist-secondary')) {
+                apiPath = process.env.VUE_APP_API_URL + "/images/delete/" + selectedImageUrl.split('/').pop();
+              }
+              this.$axios
+                .post(apiPath)
+                .then(() => {
+                    this.updateData();
+                });
+            }
+          });     
+      }      
+    },
     doMerge() {
       this.$axios
         .post(
@@ -1203,6 +1267,10 @@ export default {
   },
   data: () => ({
     loading: true,
+    showImageMenu: false,
+    selectedImageIndex: null,
+    imageMenuX: 0,
+    imageMenuY: 0,    
     loadingReleases: true,
     showReleaseTable: false,
     searchArtistsLoading: false,
@@ -1286,7 +1354,7 @@ export default {
     releaseTableData: [],
     dropzoneOptions: {
       thumbnailWidth: 100,
-      maxFilesize: 0.5,
+      maxFilesize: 5,
       dictDefaultMessage:
         "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
     }

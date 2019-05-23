@@ -26,7 +26,7 @@
               >
             </v-flex>
             <v-flex xs8 md11>
-              <v-btn @click="changeAvatar" color="info">Upload new photo</v-btn>
+              <v-btn @click="changeAvatar" color="info">Upload new thumbnail</v-btn>
               <v-btn @click="resetImage" color>Reset</v-btn>
               <div
                 class="caption ml-2"

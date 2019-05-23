@@ -81,6 +81,10 @@ img.modal-image {
   -webkit-text-fill-color: initial !important;
 }
 
+.modal-image-container {
+  width: unset;
+}
+
 @media only screen and (max-width: 959px) {
   .sign-in-container .container, .register-container .container {
     padding: 4px;

@@ -55,7 +55,7 @@
           </v-btn>
           <v-list>
             <v-list-tile :class="item.class" @click="clicked" :data-eventmessage="item.click" v-for="(item, index) in adminItems" :key="index">
-              <v-list-tile-title >{{ item.title }}</v-list-tile-title>
+              <v-list-tile-title ><v-icon class="pr-1">{{item.icon}}</v-icon>{{ item.title }}</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>            

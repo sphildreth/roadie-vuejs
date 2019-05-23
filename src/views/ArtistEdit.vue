@@ -16,11 +16,16 @@
           >
         </v-flex>
         <v-flex xs11>
-          <v-btn @click="changeAvatar" color="info">Upload new photo</v-btn>
+          <v-btn @click="changeAvatar" color="info">Upload new thumbnail</v-btn>
           <v-btn @click="resetImage" color>Reset</v-btn>
           <div
-            class="caption ml-2"
+            class="caption ml-2 pb-3"
           >Allowed JPG, GIF or PNG. Image will be converted to JPG and Artist thumbnail will be resized to 320x320 pixels.</div>
+          <vue-dropzone            
+            ref="myVueDropzone"
+            id="dropzone"
+            :options="dropzoneOptions"
+          ></vue-dropzone>           
         </v-flex>
       </v-layout>
       <v-layout row>
@@ -344,6 +349,8 @@
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
 
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
 import Vue from "vue";
@@ -352,7 +359,7 @@ import VeeValidate from "vee-validate";
 Vue.use(VeeValidate);
 
 export default {
-  components: { Toolbar, markdownEditor },
+  components: { Toolbar, markdownEditor, vueDropzone: vue2Dropzone },
   props: {
     id: String
   },
@@ -372,7 +379,7 @@ export default {
     this.$validator.localize("en", this.dictionary);
     this.updateData();
   },
-  methods: {
+  methods: { 
     cancel() {
       this.$router.go(-1);
     },
@@ -461,6 +468,10 @@ export default {
                   });
                 })
                 .finally(() => {
+                  this.dropzoneOptions.url = process.env.VUE_APP_API_URL + "/artists/uploadImage/" + this.artist.id;
+                  this.dropzoneOptions.headers = {
+                    Authorization: "Bearer " + this.$store.getters.authToken
+                  };                  
                   EventBus.$emit("loadingComplete");
                   this.loaded = true;
                 });
@@ -474,6 +485,10 @@ export default {
           // eslint-disable-next-line
           console.log("form invalid");
         } else  {
+          that.artist.newSecondaryImagesData = [];
+          this.$refs.myVueDropzone.getAcceptedFiles().forEach(f => {
+            that.artist.newSecondaryImagesData.push(f.dataURL);
+          });          
           if (that.imageUrl != that.artist.mediumThumbnail.url) {
             that.artist.newThumbnailData = this.imageUrl;
             that.artist.mediumThumbnail = null;
@@ -582,6 +597,14 @@ export default {
       bandStatus: [],
       genreItems: []
     },
+    dropzoneOptions: {
+      thumbnailWidth: 200,
+      autoProcessQueue: false,
+      maxFilesize: 5,
+      maxFiles: 10,
+      dictDefaultMessage:
+        "<i class='fa fa-cloud-upload'></i> Add images to upload to Artist"      
+    },    
     menuItems: [
       { title: "Save", class: "hidden-xs-only", click: "aa:Save" },
       { title: "Cancel", class: "hidden-xs-only", click: "aa:Cancel" }

@@ -439,9 +439,9 @@ export default {
       return !this.$store.getters.isUserAdmin
         ? []
         : [
-            { title: "Delete", class: "warning--text", click: "l:Delete" },
+            { title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "l:Delete" },                      
             { title: "Edit", click: "l:Edit" },
-            { title: "Find Label Image", click: "l:FindLabelImage" }
+            { title: "Find Label Thumbnail", click: "l:FindLabelImage" }
         ];
     },    
   },
@@ -485,7 +485,7 @@ export default {
     artistItems: [],
     dropzoneOptions: {
       thumbnailWidth: 100,
-      maxFilesize: 0.5,
+      maxFilesize: 5,
       dictDefaultMessage:
         "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
     }    

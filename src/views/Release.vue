@@ -583,13 +583,18 @@ export default {
       let items = [];
       if(this.$store.getters.isUserEditor) {
         items.push({ title: "Edit", click: "rr:Edit" });        
-        items.push({ title: "Find Cover", click: "rr:FindCover" });
+        items.push({ title: "Find Release Thumbnail", click: "rr:FindCover" });
         items.push({ title: "Rescan", click: "rr:Rescan" });
       }
       if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", class: "warning--text", click: "rr:Delete" });
+        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "rr:Delete" });
         items.push({ title: "Merge Release", click: "rr:MergeReleases" });
       }      
+      items.sort(function(a,b){
+        const aTitle = a.title.toUpperCase();
+        const bTitle = b.title.toUpperCase();
+        return aTitle > bTitle ? 1 : -1;
+      });      
       return items;
     },
     fileUploadUrl() {
@@ -1068,7 +1073,7 @@ export default {
     ],
     dropzoneOptions: {
       thumbnailWidth: 100,
-      maxFilesize: 0.5,
+      maxFilesize: 5,
       dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>Upload new Cover"
     }
   })
