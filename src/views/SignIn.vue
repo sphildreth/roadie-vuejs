@@ -37,6 +37,11 @@
             </v-form>
           </v-card>
         </v-container>
+        <v-container v-if="signInMessage">
+          <v-card flat>
+            <v-card-text v-html="signInMessage"></v-card-text>
+          </v-card>
+        </v-container>        
       </v-flex>
     </v-layout>
     <confirm ref="confirm"></confirm>
@@ -60,9 +65,23 @@ export default {
   components: {
     Confirm
   },
+  async mounted() {
+    let that = this;
+    this.$axios
+      .get(
+        window.location.protocol + "//" + window.location.host + "/messages/signin_message.html"
+      )
+      .then(response => {
+        that.signInMessage = response.data;  
+      })
+      .catch(function () {
+        that.signInMessage = null;
+    });       
+  },
   data: () => ({
     valid: false,
     dialog: false,
+    signInMessage: null,
     username: "",
     usernameRules: [v => !!v || "Username is required"],
     password: "",

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-detail-container">
-    <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>
+    <Toolbar :menuItems="menuItems" :toolbarIcon="'dashboard'"></Toolbar>  
     <v-layout class="hidden-xs-only" row wrap>
       <v-flex d-flex md12 class="ma-3">
         <v-tooltip bottom class="hidden-md-and-down">
@@ -104,6 +104,11 @@
         </v-tooltip>
       </v-flex>
     </v-layout>
+    <v-row row v-if="dashboardMessage">
+      <v-card xs12 flat class="ma-3">
+        <v-card-text v-html="dashboardMessage"></v-card-text>
+      </v-card>
+    </v-row>    
     <v-layout row wrap>
       <v-card xs12 class="ma-3 recent-card">
         <v-card-title class="title accent--text">
@@ -183,8 +188,19 @@ export default {
     EventBus.$off("db:PlayRandomRatedTracks", this.playRandomRatedTracks);
     EventBus.$off("db:PlayRandomFavoriteTracks", this.playRandomFavoriteTracks);
   },
-  async mounted() {
+  async mounted() {    
     this.updateData();
+    let that = this;
+    this.$axios
+      .get(
+        window.location.protocol + "//" + window.location.host + "/messages/dashboard_message.html"
+      )
+      .then(response => {
+        that.dashboardMessage = response.data;  
+      })
+      .catch(function () {
+        that.dashboardMessage = null;
+    });       
   },
   computed: {
     recentLimit() {
@@ -280,6 +296,7 @@ export default {
   },
   watch: {},
   data: () => ({
+    dashboardMessage: null,
     loadingReleases: true,
     loadingArtists: true,
     statistics: {},

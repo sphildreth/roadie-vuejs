@@ -3,6 +3,11 @@
     <template>
       <v-app :dark="$vuetify.dark">
         <v-content>
+          <v-container v-if="indexMessage">
+            <v-card flat>
+              <v-card-text v-html="indexMessage"></v-card-text>
+            </v-card>
+          </v-container>           
           <Navbar/>
           <div class="page-wrapper">
             <router-view></router-view>
@@ -51,6 +56,19 @@ export default {
   beforeDestroy() {
     EventBus.$off("showSnackbar", info => this.showSnackbar(info));
   },  
+  async mounted() {
+    let that = this;
+    this.$axios
+      .get(
+        window.location.protocol + "//" + window.location.host + "/messages/site_message.html"
+      )
+      .then(response => {
+        that.indexMessage = response.data;  
+      })
+      .catch(function () {
+        that.indexMessage = null;
+    });       
+  },  
   created() {
     EventBus.$on("showSnackbar", info => this.showSnackbar(info));
   },
@@ -68,6 +86,7 @@ export default {
   },
   data: () => ({
     showPlayer: true,
+    indexMessage: null,
     snackbarVisible: false,
     snackbarText: "",
     snackbarColor: "success"
