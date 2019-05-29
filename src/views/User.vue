@@ -1,5 +1,10 @@
 <template>
   <div class="user-detail-container">
+    <Toolbar
+      :menuItems="menuItems"
+      :adminItems="adminMenuItems"
+      :toolbarIcon="'account_circle'"
+    ></Toolbar>    
     <div class="ma-5" v-if="loaded && user.isPrivate">
       <v-icon>fas fa-user-shield</v-icon>
       User has elected to be private, mysterious and elusive.
@@ -58,19 +63,19 @@
 
         <v-layout row wrap>
 
-            <v-flex xs12 sm6 lg4 xl3>
+            <v-flex xs12 sm6 lg4 xl3 v-if="user.statistics.mostPlayedArtist">
               <span>Most Played Artist</span>
-              <ArtistCard v-if="user.statistics.mostPlayedArtist" :artist="user.statistics.mostPlayedArtist"></ArtistCard>
+              <ArtistCard  :artist="user.statistics.mostPlayedArtist"></ArtistCard>
             </v-flex>
 
-            <v-flex xs12 sm6 lg4 xl3>
+            <v-flex xs12 sm6 lg4 xl3 v-if="user.statistics.mostPlayedRelease">
               <span>Most Played Release</span>
-              <ReleaseCard v-if="user.statistics.mostPlayedRelease" :release="user.statistics.mostPlayedRelease"></ReleaseCard>
+              <ReleaseCard  :release="user.statistics.mostPlayedRelease"></ReleaseCard>
             </v-flex>
 
-            <v-flex xs12 sm6 lg4 xl3>
+            <v-flex xs12 sm6 lg4 xl3 v-if="user.statistics.mostPlayedTrack">
               <span class="ml-2">Most Played Track</span>
-              <TrackCard v-if="user.statistics.mostPlayedTrack" :track="user.statistics.mostPlayedTrack"></TrackCard>
+              <TrackCard  :track="user.statistics.mostPlayedTrack"></TrackCard>
             </v-flex> 
 
         </v-layout>
@@ -175,32 +180,77 @@
         </v-flex>
       </v-layout>
     </div>
+    <confirm ref="confirm"></confirm>    
   </div>
 </template>
 
 <script>
+import Toolbar from "@/components/Toolbar";
 import VueMarkdown from "vue-markdown";
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import TrackCard from "@/components/TrackCard";
+import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
 export default {
-  components: { VueMarkdown, ArtistCard, ReleaseCard, TrackCard },
+  components: { 
+    Toolbar, 
+    VueMarkdown, 
+    ArtistCard, 
+    ReleaseCard, 
+    TrackCard,
+    Confirm    
+  },
   props: {
     id: String
   },
   created() {
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("uu:Delete", this.delete);    
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
+    EventBus.$off("uu:Delete", this.delete);    
   },
   async mounted() {
     this.updateData();
   },
+  computed: {
+    adminMenuItems() {
+      let items = [];
+      if(this.$store.getters.isUserAdmin) {
+        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "uu:Delete" });
+      }      
+      items.sort(function(a,b){
+        const aTitle = a.title.toUpperCase();
+        const bTitle = b.title.toUpperCase();
+        return aTitle > bTitle ? 1 : -1;
+      });      
+      return items;
+    },
+  },
   methods: {
     addToQue: function() {},
+    delete: async function() {
+      let userId = this.user.userId;
+      this.$refs.confirm
+        .open("Delete", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/user/" +
+                  userId
+              )
+              .then(() => {
+                EventBus.$emit("loadingComplete");
+                this.$router.go(-1);
+              });
+          }
+        });
+    },    
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -226,6 +276,7 @@ export default {
   },
   data: () => ({
     loaded: false,
+    menuItems: [],    
     user: {}
   })
 };
