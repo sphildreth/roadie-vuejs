@@ -12,6 +12,7 @@
         <v-tab>Password</v-tab>
         <v-tab>FTP</v-tab>
         <v-tab>Profile</v-tab>
+        <v-tab>Integrations</v-tab>
         <v-tab-item>
           <v-layout row class="ma-1 mb-3">
             <v-flex xs4 md1>
@@ -189,6 +190,16 @@
         <v-tab-item>
           <markdown-editor v-model="profile.profile" ref="markdownEditor"></markdown-editor>
         </v-tab-item>
+        <v-tab-item>
+          <v-layout row class="ma-1 mb-3" v-if="additionalClientData.lastFMIntegrationUrl">
+            <v-flex xs3 xl1>
+              <v-btn @click="integrateLastFM" color="info">Enable LastFM</v-btn>
+            </v-flex>
+            <v-flex xs9 xl10 class="mt-2 ml-2">
+              <div>Click to enable 'Scrobbling' and 'Now Playing' integration on LastFM</div>              
+            </v-flex>
+          </v-layout>
+        </v-tab-item>        
       </v-tabs>
     </v-container>
     <v-alert
@@ -262,6 +273,7 @@ export default {
           this.profile.avatarUrl = rr.data.data.avatar.url;
           this.originalEmail = this.profile.email;
           this.originalUsername = this.profile.username;
+          this.additionalClientData = rr.data.additionalClientData;
           this.loaded = true;
           EventBus.$emit("loadingComplete");
         });
@@ -271,6 +283,9 @@ export default {
     },
     changeAvatar() {
       this.$refs.image.click();
+    },
+    integrateLastFM() {
+      window.open(this.additionalClientData.lastFMIntegrationUrl, "_blank");
     },
     onFilePicked(e) {
       const files = e.target.files;
@@ -378,6 +393,9 @@ export default {
       { title: "Save", class: "hidden-xs-only", click: "as:Save" },
       { title: "Cancel", class: "hidden-xs-only", click: "as:Cancel" }
     ],
+    additionalClientData: {
+      lastFMIntegrationUrl: null
+    },    
     profile: {
       concurrencyStamp: null,
       userName: null,

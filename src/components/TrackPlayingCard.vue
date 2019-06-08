@@ -624,12 +624,11 @@ export default {
       document.title = this.originalWindowTitle;
       this.playing = false;
     },
-    removeTrack: function(track) {
+    removeTrack: function(track) {      
       if(this.$store.getters.user.removeTrackFromQueAfterPlayed) {
         this.$playQue.delete([track.id]);
       } else {
-        this.$playQue.setTrackAsPlayed(track.id);
-        
+        this.$playQue.setTrackAsPlayed(track.id);        
       }
     },
     skip: function(direction) {
@@ -710,6 +709,9 @@ export default {
         this.quePlayTimeDisplay = 0;
       }
     },
+    sendScrobble() {
+      this.$axios.post(process.env.VUE_APP_API_URL + `/play/track/scrobble/${this.currentTrack.id}/${this.startedPlayingCurrentTrack}/${this.isRandomized}`)
+    },    
     updatePlaying() {
       document.title = this.currentTrack.title;
       this.trackDownloading = false;
@@ -749,6 +751,7 @@ export default {
         src: this.currentTrack.trackPlayUrl,
         autoplay: true,
         onplay: () => {
+          this.startedPlayingCurrentTrack = this.$moment().format();
           this.updatePlaying();
         },
         onplayerror : () => {
@@ -767,6 +770,7 @@ export default {
         },
         onend: () => {
           this.skip("next");
+          this.sendScrobble();
           this.removeTrack(trackInfo);
         }
       });
@@ -849,6 +853,8 @@ export default {
     }
   },
   data: () => ({
+    isRandomized: false,
+    startedPlayingCurrentTrack: null,
     smallPlayer: false,
     updateSeekInterval: null,
     quePlayTimeDisplay: 0,
