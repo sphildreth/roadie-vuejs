@@ -52,7 +52,12 @@
             <v-tab v-if="playlist.urLsList.length">Urls</v-tab>
             <v-tab-item>
               <v-card flat class="description darken-3">
-                <v-card-text v-html="playlist.description">Loading...</v-card-text>
+                <v-card-text v-html="playlist.description">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>                  
+                </v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="playlist.tagsList.length > 0">

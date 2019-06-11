@@ -178,7 +178,45 @@
             </v-tooltip>
           </div>
         </v-flex>
+      </v-layout>    
+      <v-layout row wrap v-scroll="onScroll">
+        <v-flex d-flex xs12 class="ma-5">          
+          <v-timeline v-if="groupedRatedTrackHistory">
+            <v-timeline-item 
+              v-for="a in groupedRatedTrackHistory"
+              :key="a.artistUrl"            
+              large>
+              <template v-slot:icon>
+                <v-avatar>
+                  <img :src="a.artistThumbnail" :alt="a.artistTooltip" :title="a.artistTooltip">
+                </v-avatar>
+              </template>
+              <template v-slot:opposite>
+                <span>{{ a.playedDay }}</span>
+              </template>
+              <v-card>                
+                <v-card-text>
+                  <TrackCard v-for="t in a.tracks"
+                    :key="t.track.id"
+                    :track="t.track"
+                    :mediaNumber="t.track.mediaNumber"
+                    :release="t.track.release"
+                    :mediaCount="t.track.release.mediaCount"
+                  ></TrackCard>
+                </v-card-text>                         
+              </v-card>
+            </v-timeline-item>
+          </v-timeline>  
+        </v-flex>              
       </v-layout>
+      <v-layout v-if="loadingMoreRatedTracks" row wrap>
+        <v-flex d-flex xs12>
+          <v-progress-circular
+            indeterminate
+            color="primary"
+          ></v-progress-circular>    
+        </v-flex>
+      </v-layout>       
     </div>
     <confirm ref="confirm"></confirm>    
   </div>
@@ -229,9 +267,56 @@ export default {
       });      
       return items;
     },
+    groupedRatedTrackHistory() {
+      if(!this.ratedTrackHistory || this.ratedTrackHistory.length === 0) {
+        return null;
+      }
+      let that = this;
+      let byArtistsAndDay = [];
+      this.$_.forEach(this.ratedTrackHistory, function(d) {
+        let dayEntry = {
+          artistThumbnail : d.artistThumbnail.url,
+          artistTooltip: d.artist.text,
+          playedDay: d.playedDay,
+          tracks: []
+        };
+        if(!that.$_.find(byArtistsAndDay, function(x) { return x.artistThumbnail === d.artistThumbnail.url && x.playedDay === d.playedDay;}))
+        {
+          that.$_.forEach(that.ratedTrackHistory, function(dd) {
+            if(dd.artistThumbnail.url === dayEntry.artistThumbnail && dd.playedDay === dayEntry.playedDay) {
+              dayEntry.tracks.push(dd);
+            }
+          });
+          byArtistsAndDay.push(dayEntry);
+        }
+      });
+      return byArtistsAndDay;
+    }
   },
   methods: {
-    addToQue: function() {},
+    onScroll (e) {
+      let height = document.documentElement.offsetHeight,
+          offset = document.documentElement.scrollTop + window.innerHeight;
+      let getMore = offset === height;
+      if (getMore && !this.loadingMoreRatedTracks) { 
+        EventBus.$emit("loadingStarted");
+        this.loadingMoreRatedTracks = true;
+        this.ratedTrackPagination.page = this.ratedTrackPagination.page + 1;
+        this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + 
+          `/playactivities/${ this.id }?page=${this.ratedTrackPagination.page}&limit=${this.ratedTrackPagination.rowsPerPage}&filterRatedOnly=true`)
+        .then(response => {
+          this.$nextTick(() => {
+            this.ratedTrackHistory = this.ratedTrackHistory.concat(response.data.rows);
+          });            
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+          this.loadingMoreRatedTracks = false;
+        });        
+      }
+    },    
     delete: async function() {
       let userId = this.user.userId;
       this.$refs.confirm
@@ -250,7 +335,7 @@ export default {
               });
           }
         });
-    },    
+    },        
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
@@ -260,6 +345,21 @@ export default {
           if(this.$store.getters.isUserAdmin) {
             this.user.isPrivate = false;
           }
+
+        })
+        .then(() => {
+          this.$axios
+          .get(
+            process.env.VUE_APP_API_URL + 
+            `/playactivities/${ this.id }?page=${this.ratedTrackPagination.page}&limit=${this.ratedTrackPagination.rowsPerPage}&filterRatedOnly=true`)
+          .then(response => {
+            this.ratedTrackHistory = [];
+            this.$nextTick(() => {
+              this.ratedTrackHistory = response.data.rows;
+              this.ratedTrackPagination.totalItems = response.data.totalCount;
+              this.loadingMoreRatedTracks = false;
+            });            
+          })              
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -276,12 +376,18 @@ export default {
   },
   data: () => ({
     loaded: false,
+    loadingMoreRatedTracks: true,
     menuItems: [],    
-    user: {}
+    user: {},
+    ratedTrackPagination: {
+      page: 1,
+      rowsPerPage: 50,
+      totalItems: 0
+    },    
+    ratedTrackHistory: []
   })
 };
 </script>
-
 
 <style>
 .user-detail-container .profile {

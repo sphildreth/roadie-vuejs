@@ -58,7 +58,12 @@
             <v-tab v-if="collection.urLsList.length">Urls</v-tab>
             <v-tab-item>
               <v-card flat class="description darken-3">
-                <v-card-text v-html="collection.description">Loading...</v-card-text>
+                <v-card-text v-html="collection.description">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>                      
+                </v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item v-if="collection.tagsList.length > 0">
