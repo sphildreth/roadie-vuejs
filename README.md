@@ -21,7 +21,8 @@ Features:
 * Profile editing.
 * Artist, Release and Track Bookmarking.
 * Robust search capabilities.
-* HTML 5 Track streaming
+* HTML 5 Track streaming.
+* Theming including several custom Vuetify themes.
 * Scrobbling
 
 Support:
