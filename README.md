@@ -1,7 +1,7 @@
-Roadie 
+Roadie Web
 ======
 
-Roadie (aka "roadie-vuejs") is a web based media manager with integrated streaming. Intended to work with [roadie-dotnetcore API](https://github.com/sphildreth/roadie-dotnetcore). Best experienced on a widescreen desktop but is mobile friendly(ish).
+Roadie Web (aka "roadie-vuejs") is a web based media manager with integrated streaming. Intended to work with [roadie-dotnetcore API](https://github.com/sphildreth/roadie). Best experienced on a widescreen desktop but is mobile friendly(ish).
 
 [DEMO SITE](https://www.roadie.rocks/)
 
