@@ -17,7 +17,9 @@ Built on:
 Features:
 ---------
 * Role based security.
-* Artist, Release, Track management.
+* Artist, Release, Track, Collection, Playlist management.
+* Profile editing.
+* Artist, Release and Track Bookmarking.
 * Robust search capabilities.
 * HTML 5 Track streaming
 * Scrobbling
