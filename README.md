@@ -12,13 +12,14 @@ Roadie Web (aka "roadie-vuejs") is a web client for the [Roadie API](https://git
 Built on:
 ---------
 * npm
-* Vue + Vuetify + Vuex + loDash + DexieJS
+* [Vue](https://github.com/vuejs/vue) + [Vuetify](https://github.com/vuetifyjs/vuetify) + [Vuex](https://github.com/vuejs/vuex) + [loDash](https://github.com/lodash/lodash) + [DexieJS](https://github.com/dfahlander/Dexie.js/) + [HowlerJS](https://github.com/goldfire/howler.js/)
 
 Features:
 ---------
 * Role based security.
 * Artist, Release, Track management.
-* Streaming via HowlerJS (HTML5) 
+* Robust search capabilities.
+* HTML 5 Track streaming
 * Scrobbling
 
 Support:
