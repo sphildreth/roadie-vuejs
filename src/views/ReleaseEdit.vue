@@ -20,6 +20,11 @@
           <div
             class="caption ml-2"
           >Allowed JPG, GIF or PNG. Image will be converted to JPG and Release thumbnail will be resized to 320x320 pixels.</div>
+          <vue-dropzone            
+            ref="myVueDropzone"
+            id="dropzone"
+            :options="dropzoneOptions"
+          ></vue-dropzone>              
         </v-flex>
       </v-layout>
       <v-layout row>
@@ -284,6 +289,8 @@
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
 
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
 import Vue from "vue";
@@ -292,7 +299,7 @@ import VeeValidate from "vee-validate";
 Vue.use(VeeValidate);
 
 export default {
-  components: { Toolbar, markdownEditor },
+  components: { Toolbar, markdownEditor, vueDropzone: vue2Dropzone },
   props: {
     id: String
   },
@@ -348,6 +355,10 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/releases/${this.id}`)
         .then(rr => {
           this.release = rr.data.data;
+          this.dropzoneOptions.url = process.env.VUE_APP_API_URL + "/releases/uploadImage/" + this.release.id;
+          this.dropzoneOptions.headers = {
+            Authorization: "Bearer " + this.$store.getters.authToken
+          };              
           this.loaded = true;
           // ▜ Setup values to work with the autocompletes
           this.release.artist = {
@@ -396,7 +407,7 @@ export default {
                   this.lookupData.artistItems.push({
                     text: this.release.artist.text,
                     value: this.release.artist.value
-                  });
+                  });             
                   EventBus.$emit("loadingComplete");
                 });
             });
@@ -406,6 +417,10 @@ export default {
       let that = this;
       this.$validator.validateAll().then(result => {
         if (result) {
+          that.release.newSecondaryImagesData = [];
+          this.$refs.myVueDropzone.getAcceptedFiles().forEach(f => {
+            that.release.newSecondaryImagesData.push(f.dataURL);
+          });            
           if (this.imageUrl != that.release.mediumThumbnail.url) {
             that.release.newThumbnailData = this.imageUrl;
             that.release.mediumThumbnail = null;
@@ -421,6 +436,8 @@ export default {
             }
             this.$router.go(-1);
           });
+        } else {
+          alert("Form is invalid!");
         }
       });
     },
@@ -517,6 +534,14 @@ export default {
       artistItems: [],
       genreItems: []
     },
+    dropzoneOptions: {
+      thumbnailWidth: 200,
+      autoProcessQueue: false,
+      maxFilesize: 5,
+      maxFiles: 10,
+      dictDefaultMessage:
+        "<i class='fa fa-cloud-upload'></i> Add images to upload to Release"      
+    },        
     menuItems: [
       { title: "Save", class: "hidden-xs-only", click: "rr:Save" },
       { title: "Cancel", class: "hidden-xs-only", click: "rr:Cancel" }

@@ -103,9 +103,28 @@
                         :src="image.thumbnailUrl"
                         class="grey lighten-2"
                         @click="showImageModal(release.images[index])"
+                        :data-id="index"                        
+                        @contextmenu="show"                        
                       ></v-img>
                     </v-flex>
                   </v-layout>
+                  <v-menu
+                    v-model="showImageMenu"
+                    :position-x="imageMenuX"
+                    :position-y="imageMenuY"
+                    absolute
+                    offset-y
+                  >
+                    <v-list>
+                      <v-list-tile
+                        v-for="(item, index) in imageMenuItems"
+                        :key="index"
+                        @click="imageMenuClicked(index)"
+                      >
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>                   
                   <v-dialog v-model="showModal" content-class="modal-image-container">
                     <v-card @click="showModal = !showModal">
                       <v-card-title class="headline">{{ modalImage.caption}}</v-card-title>
@@ -601,6 +620,13 @@ export default {
     fileUploadUrl() {
       return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
     },
+    imageMenuItems() {
+      let items = [];
+      if(this.$store.getters.isUserEditor) {
+        items.push({ title: 'Delete' });
+      }      
+      return items;
+    },    
     userRating() {
       return (
         this.release.userRating || {
@@ -612,6 +638,37 @@ export default {
     }
   },
   methods: {
+    show (e) {
+      e.preventDefault()
+      this.selectedImageIndex = parseInt(e.currentTarget.attributes["data-id"].value);
+      this.showImageMenu = false
+      this.imageMenuX = e.clientX
+      this.imageMenuY = e.clientY
+      this.$nextTick(() => {
+        this.showImageMenu = true
+      })
+    },       
+    imageMenuClicked(e) {
+      if(e === 0) {
+        let releaseId = this.release.id;
+        let selectedImageUrl = this.release.images[this.selectedImageIndex].url;
+        this.$refs.confirm
+          .open("Delete Release Image", "Are you sure?", { color: "red" })
+          .then(confirm => {
+            if (confirm) {
+              let apiPath = process.env.VUE_APP_API_URL + "/admin/delete/releasesecondaryimage/" + releaseId + "/" + this.selectedImageIndex;
+              if(!selectedImageUrl.includes('release-secondary')) {
+                apiPath = process.env.VUE_APP_API_URL + "/images/delete/" + selectedImageUrl.split('/').pop();
+              }
+              this.$axios
+                .post(apiPath)
+                .then(() => {
+                    this.updateData();
+                });
+            }
+          });     
+      }      
+    },    
     dislikeTrackToggle: async function(toggleInfo) {
       this.$nextTick(() => {
         this.doUpdateIfNeeded = false;
@@ -1000,6 +1057,10 @@ export default {
   },
   data: () => ({
     loading: true,
+    showImageMenu: false,
+    selectedImageIndex: null,
+    imageMenuX: 0,
+    imageMenuY: 0,    
     doUpdateIfNeeded: true,
     tab: 0,
     releaseTab: 2,
