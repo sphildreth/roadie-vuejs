@@ -64,33 +64,33 @@
                     </v-flex>                    
                     <v-flex xs4 v-if="artist.isniList">
                       <v-text-field v-bind:value="artist.isniList.join(', ')" label="ISNI" readonly></v-text-field>
-                    </v-flex>
-                    <v-flex xs3 v-if="artist.rank">
-                      <v-text-field v-bind:value="artist.rank" title="Calculated Rank" label="Rank" readonly></v-text-field>
-                    </v-flex>                      
+                    </v-flex>                     
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs4 v-if="artist.birthDate">
+                    <v-flex xs3 v-if="artist.birthDate">
                       <v-text-field
                         v-bind:value="shortDateWithAge(artist.birthDate)"
                         label="Birth Date"
                         readonly
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs4 v-if="artist.beginDate">
+                    <v-flex xs3 v-if="artist.beginDate">
                       <v-text-field
                         v-bind:value="shortDateWithAge(artist.beginDate)"
                         label="Begin Date"
                         readonly
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs4 v-if="artist.endDate">
+                    <v-flex xs3 v-if="artist.endDate">
                       <v-text-field
                         v-bind:value="shortDateWithAge(artist.endDate)"
                         label="End Date"
                         readonly
                       ></v-text-field>
                     </v-flex>
+                    <v-flex xs3 v-if="artist.rank">
+                      <v-text-field v-bind:value="artist.rank + ' (#' + artist.rankPosition + ')'" title="Calculated Rank (# Position)" label="Rank" readonly></v-text-field>
+                    </v-flex>                    
                   </v-layout>
                 </v-flex>
               </v-layout>

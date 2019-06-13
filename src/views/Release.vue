@@ -80,8 +80,8 @@
                         readonly
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs1 v-if="release.rank">
-                      <v-text-field v-bind:value="release.rank" title="Calculated Rank" label="Rank" readonly></v-text-field>
+                    <v-flex xs4 v-if="release.rank">
+                      <v-text-field v-bind:value="release.rank + ' (#' + release.rankPosition + ')'" title="Calculated Rank (# Position)" label="Rank" readonly></v-text-field>
                     </v-flex>                      
                   </v-layout>
                 </v-flex>
