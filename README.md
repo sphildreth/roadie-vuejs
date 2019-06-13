@@ -1,7 +1,7 @@
-Roadie 
+Roadie Web
 ======
 
-Roadie (aka "roadie-vuejs") is a web based media manager with integrated streaming. Intended to work with [roadie-dotnetcore API](https://github.com/sphildreth/roadie-dotnetcore). Best experienced on a widescreen desktop but is mobile friendly(ish).
+Roadie Web (aka "roadie-vuejs") is a web client for the [Roadie API](https://github.com/sphildreth/roadie) media server. Best experienced on a widescreen desktop but is mobile friendly(ish).
 
 [DEMO SITE](https://www.roadie.rocks/)
 
@@ -12,7 +12,18 @@ Roadie (aka "roadie-vuejs") is a web based media manager with integrated streami
 Built on:
 ---------
 * npm
-* Vue + Vuetify + Vuex + loDash + DexieJS
+* [Vue](https://github.com/vuejs/vue) + [Vuetify](https://github.com/vuetifyjs/vuetify) + [Vuex](https://github.com/vuejs/vuex) + [loDash](https://github.com/lodash/lodash) + [DexieJS](https://github.com/dfahlander/Dexie.js/) + [HowlerJS](https://github.com/goldfire/howler.js/)
+
+Features:
+---------
+* Role based security.
+* Artist, Release, Track, Collection, Playlist management.
+* Profile editing.
+* Artist, Release and Track Bookmarking.
+* Robust search capabilities.
+* HTML 5 Track streaming.
+* Theming including several custom Vuetify themes.
+* Scrobbling
 
 Support:
 ------------
