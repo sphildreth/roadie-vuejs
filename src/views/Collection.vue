@@ -122,14 +122,14 @@
               </v-chip>
               <span>Collection Release Count</span>
             </v-tooltip>
-            <v-tooltip bottom class="hidden-md-and-down" v-if="collection.missingReleaseCount ">
-              <v-chip slot="activator" color="warning" text-color="black">
+            <v-tooltip bottom class="hidden-md-and-down" v-if="collection.missingReleaseCount">
+              <v-chip slot="activator" color="warning" text-color="black" @click="showMissing">
                 <v-avatar>
                   <v-icon>error</v-icon>
                 </v-avatar>
                 {{ collection.missingReleaseCount | padNumber3 }}
               </v-chip>
-              <span>Collection Missing Release Count</span>
+              <span>Collection Missing Release Count (Click to toggle displaying only missing)</span>
             </v-tooltip>
             <v-tooltip bottom>
               <v-chip slot="activator" color="secondary" text-color="white">
@@ -243,6 +243,10 @@ export default {
     }
   },
   methods: {
+    showMissing: function() {
+      this.showingMissing = !this.showingMissing;
+      this.updateData();
+    },
     edit: function() {
       this.$router.push("/collection/edit/" + this.collection.id);
     },
@@ -349,7 +353,7 @@ export default {
           process.env.VUE_APP_API_URL +
             `/releases?page=${this.pagination.page}&limit=${
               this.pagination.rowsPerPage
-            }&filterToCollectionId=${this.id}`
+            }&filterToCollectionId=${this.id}&filterToStatus=${this.showingMissing ? 4 : 0 }`
         )
         .then(response => {
           this.releaseItems = response.data.rows;
@@ -379,6 +383,7 @@ export default {
       tagsList: [],
       urLsList: []
     },
+    showingMissing: false,
     pagination: {
       page: 1,
       rowsPerPage: 36,

@@ -41,16 +41,22 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("c:RescanAll", this.rescanAll);
     EventBus.$on("c:AddNew", this.addNew);
+    EventBus.$on("c:viewComplete", this.viewComplete);
+    EventBus.$on("c:viewIncomplete", this.viewIncomplete);
+    EventBus.$on("c:viewAll", this.viewAll);    
     EventBus.$on("c:MissingCollectionReleases", this.missingCollectionReleases);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("c:RescanAll", this.rescanAll);
+    EventBus.$off("c:viewComplete", this.viewComplete);
+    EventBus.$off("c:viewIncomplete", this.viewIncomplete);
+    EventBus.$off("c:viewAll", this.viewAll);    
     EventBus.$off("c:AddNew", this.addNew);
     EventBus.$off("c:MissingCollectionReleases", this.missingCollectionReleases);
   },
-  async mounted() {
-    this.updateData();
+  mounted() {
+    this.viewAll();
   },
   computed: {
     adminMenuItems() {
@@ -64,6 +70,28 @@ export default {
     }
   },
   methods: {
+    resetView: function() {
+      this.currentView = null;
+      this.pagination.page = 1;
+    },    
+    viewComplete: function() {
+      this.resetView();
+      this.filterToStatus = 2;
+      this.currentView = "complete";
+      this.updateData();
+    },    
+    viewIncomplete: function() {
+      this.resetView();
+      this.filterToStatus = 3;
+      this.currentView = "incomplete";
+      this.updateData();
+    },    
+    viewAll: function() {
+      this.resetView();
+      this.filterToStatus = 0;
+      this.currentView = "all";
+      this.updateData();
+    },      
     addNew() {
       this.$router.push("/collection/edit/__new__");
     },
@@ -100,9 +128,7 @@ export default {
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
-            `/collections?page=${this.pagination.page}&limit=${
-              this.pagination.rowsPerPage
-            }&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`
+            `/collections?page=${this.pagination.page}&limit=${this.pagination.rowsPerPage}&filterToStatus=${this.filterToStatus}&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`
         )
         .then(response => {
           this.items = response.data.rows;
@@ -116,10 +142,11 @@ export default {
       async handler() {
         this.updateData();
       }
-    }
+    }   
   },
   data: () => ({
     missingData: null,
+    currentView: "",    
     rowsPerPageItems: [12, 36, 60, 120, 500],
     pagination: {
       page: 1,
@@ -129,7 +156,20 @@ export default {
       sortOrder: "DESC"
     },
     selected: [],
-    menuItems: [],
+    filterToStatus: 0,
+    menuItems: [
+      {
+        title: "Complete",
+        class: "hidden-sm-and-down",
+        click: "c:viewComplete"
+      },       
+      {
+        title: "Incomplete",
+        class: "hidden-sm-and-down",
+        click: "c:viewIncomplete"
+      },      
+      { title: "All", class: "selected-toolbar-item", click: "c:viewAll" }
+    ],
     items: []
   })
 };

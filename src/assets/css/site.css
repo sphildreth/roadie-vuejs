@@ -20,7 +20,7 @@
 }
 
 .pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .funky {

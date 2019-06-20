@@ -33,7 +33,7 @@ export default {
   },  
   created() {
     EventBus.$on("r:viewRandom", this.viewRandom);
-    EventBus.$on("r:viewRecentlyAdded", this.viewRecentlyAdded);
+    EventBus.$on("r:viewRecentlyAdded", this.viewRecentlyAdded);history
     EventBus.$on("r:viewStarred", this.viewStarred);
     EventBus.$on("r:viewTopRated", this.viewTopRated);
     EventBus.$on("r:viewTopRanked", this.viewTopRanked);
