@@ -27,6 +27,21 @@
   font-family: funk_font;
 }
 
+blockquote {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 10px;
+  margin-inline-end: 10px;
+}
+
+blockquote p {
+  font-size: 1rem;
+  margin-bottom: .33999rem;
+  padding: .66001rem 1rem 1rem;
+  border-left: 3px solid #a0aabf;
+}
+
 .selected-toolbar-item .v-btn__content::after {
   display: block;
   content: '';

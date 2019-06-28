@@ -215,6 +215,7 @@
           <v-tabs class="track-lists" color="primary" slider-color="accent">
             <v-tab v-if="track.alternateNamesList.length">Alternate Names</v-tab>
             <v-tab v-if="track.tagsList.length > 0">Tags</v-tab>            
+            <v-tab class="hidden-md-and-down">{{'Comments' + ( track.comments.length > 0 ? ' (' + track.comments.length + ')' : '') }}</v-tab>                                              
             <v-tab-item v-if="track.alternateNamesList.length">
               <v-list>
                 <template v-for="(name, index) in track.alternateNamesList">
@@ -242,7 +243,26 @@
                 </template>
               </v-list>
             </v-tab-item>
-
+            <v-tab-item class="hidden-md-and-down">
+              <v-flex>
+                <CommentCard :isNew="true" :addUrl="newCommentUrl"></CommentCard>
+                <div v-if="track.comments.length > 0">
+                  <hr class="ma-3"/>
+                  <v-data-iterator
+                    :items="track.comments"
+                    :total-items="track.comments ? track.comments.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs12>
+                      <CommentCard :isNew="false" :isReadOnly="true" :comment="props.item"></CommentCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </div>
+              </v-flex>              
+            </v-tab-item> 
           </v-tabs>
         </v-flex>        
       </v-layout>
@@ -258,9 +278,11 @@ import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import trackMixin from "@/mixins/track.js";
 import Confirm from "@/views/Confirm";
+import CommentCard from "@/components/CommentCard";
+
 export default {
   mixins: [trackMixin],
-  components: { Toolbar, ArtistCard, Confirm, ReleaseCard },
+  components: { Toolbar, ArtistCard, CommentCard, Confirm, ReleaseCard },
   props: {
     id: String
   },
@@ -279,6 +301,8 @@ export default {
     EventBus.$on("tt:Delete", () => { this.delete(false); });
     EventBus.$on("tt:DeleteAndFile", () => { this.delete(true); });
     EventBus.$on("tt:Edit", this.edit);
+    EventBus.$on("addedComment", this.updateComments);
+    EventBus.$on("deletedComment", this.updateComments);      
   },
   beforeDestroy() {
     EventBus.$off("tt:AddToQue", this.addToQue);
@@ -295,11 +319,17 @@ export default {
     EventBus.$off("tt:Delete");
     EventBus.$off("tt:DeleteAndFile");
     EventBus.$off("tt:Edit", this.edit);
+    EventBus.$off("addedComment", this.updateComments);
+    EventBus.$off("deletedComment", this.updateComments);      
+
   },
   async mounted() {
     this.updateData();
   },
   computed: {
+    newCommentUrl() {
+      return process.env.VUE_APP_API_URL + "/comments/add/track/" + this.track.id;
+    },     
     rating() {
       return this.track.rating;
     },
@@ -421,6 +451,19 @@ export default {
     updatePartial: async function() {
       this.updateData(true)
     },
+    updateComments: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}?inc=comments`)
+        .then(response => {
+          this.track.comments = response.data.data.comments || [];
+        })
+        .finally(() => {     
+          this.$nextTick(() => {
+            EventBus.$emit("loadingComplete");                
+          });
+        });           
+    },       
     updateData: async function(isLoading) {
       this.loaded = isLoading == undefined ? false : isLoading;
       EventBus.$emit("loadingStarted");
@@ -430,6 +473,7 @@ export default {
           this.track = response.data.data;
           this.track.alternateNamesList = this.track.alternateNamesList || [];          
           this.track.tagsList = this.track.tagsList || [];          
+          this.track.comments = this.track.comments || [];          
           this.track.userRating = this.track.userRating || {
             rating: 0,
             isFavorite: false,
@@ -485,6 +529,7 @@ export default {
     track: {
       alternateNamesList: [],
       tagsList: [],    
+      comments: []      
     },
     tab: 0,
     loaded: false,
@@ -524,6 +569,12 @@ export default {
 };
 </script>
 
-
 <style>
+.track-detail-container .markdown-editor, .track-detail-container .comments .v-card { 
+  max-width: 717px;
+  margin-left: 17px;
+}
+.track-detail-container .comments .v-card { 
+  max-width: 806px;
+}
 </style>

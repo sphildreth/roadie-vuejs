@@ -234,7 +234,7 @@ import { EventBus } from "@/event-bus.js";
 export default {
   components: { 
     Toolbar, 
-    VueMarkdown, 
+    'vue-markdown': VueMarkdown, 
     ArtistCard, 
     ReleaseCard, 
     TrackCard,
@@ -294,7 +294,7 @@ export default {
     }
   },
   methods: {
-    onScroll (e) {
+    onScroll () {
       let height = document.documentElement.offsetHeight,
           offset = document.documentElement.scrollTop + window.innerHeight;
       let getMore = offset === height;

@@ -406,6 +406,7 @@
       <v-layout row wrap>
         <v-flex d-flex xs12>
           <v-tabs class="artist-lists" color="primary" v-model="releaseTab" slider-color="accent">
+            <v-tab>{{'Comments' + ( artist.comments.length > 0 ? ' (' + artist.comments.length + ')' : '') }}</v-tab>
             <v-tab v-if="artist.collectionsWithArtistReleases.length > 0">Collections</v-tab>
             <v-tab v-if="artist.artistContributionReleases.length > 0">Contributions</v-tab>
             <v-tab v-if="artist.playlistsWithArtistReleases.length > 0">Playlists</v-tab>
@@ -423,6 +424,24 @@
                 >view_module</v-icon>
               </v-btn>
             </v-tab>
+            <v-tab-item>
+              <v-flex v-if="!loading">
+                <CommentCard :isNew="true" :addUrl="newCommentUrl"></CommentCard>
+                <hr class="ma-3"/>
+                <v-data-iterator
+                  :items="artist.comments"
+                  :total-items="artist.comments ? artist.comments.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs12>
+                    <CommentCard :isNew="false" :isReadOnly="true" :comment="props.item"></CommentCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-flex>              
+            </v-tab-item>            
             <v-tab-item v-if="artist.collectionsWithArtistReleases.length > 0">
               <v-flex>
                 <v-card flat class="collections">
@@ -625,6 +644,7 @@ import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import CollectionCard from "@/components/CollectionCard";
 import PlaylistCard from "@/components/PlaylistCard";
+import CommentCard from "@/components/CommentCard";
 import ReleaseWithTracksCard from "@/components/ReleaseWithTracksCard";
 import { EventBus } from "@/event-bus.js";
 import store from "@/store";
@@ -642,13 +662,14 @@ export default {
     Toolbar,
     LabelCard,
     ArtistCard,
+    CommentCard,
     ReleaseCard,
     CollectionCard,
     PlaylistCard,
     ReleaseWithTracksCard,
     Confirm,
     vueDropzone: vue2Dropzone,
-    VueMarkdown
+    'vue-markdown': VueMarkdown
   },
   props: {
     id: String
@@ -670,6 +691,8 @@ export default {
     EventBus.$on("aa:DeleteReleases", this.deleteReleases);
     EventBus.$on("aa:FindArtistImage", this.findArtistImage);
     EventBus.$on("aa:Edit", this.edit);
+    EventBus.$on("addedComment", this.updateComments);
+    EventBus.$on("deletedComment", this.updateComments);
     this.debouncedFindartistImage = this.$_.debounce(this.findArtistImage, 800);
     this.debouncedMergeArtistSearch = this.$_.debounce(
       this.doMergeArtistSearch,
@@ -693,11 +716,16 @@ export default {
     EventBus.$off("aa:DeleteReleases", this.deleteReleases);
     EventBus.$off("aa:FindArtistImage", this.findArtistImage);
     EventBus.$off("aa:Edit", this.edit);
+    EventBus.$off("addedComment", this.updateComments);
+    EventBus.$off("deletedComment", this.updateComments);
   },
   async mounted() {
     this.updateData();
   },
   computed: {
+    newCommentUrl() {
+      return process.env.VUE_APP_API_URL + "/comments/add/artist/" + this.artist.id;
+    }, 
     rating() {
       return this.artist.rating;
     },
@@ -1041,6 +1069,19 @@ export default {
     updatePartial: async function() {
       this.updateData(false);
     },
+    updateComments: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/artists/${this.id}?inc=comments`)
+        .then(response => {
+          this.artist.comments = response.data.data.comments || [];
+        })
+        .finally(() => {     
+          this.$nextTick(() => {
+            EventBus.$emit("loadingComplete");                
+          });
+        });          
+    },
     updateData: async function(isLoading) {
       this.loading = isLoading == undefined ? true : isLoading;
       this.artistImageSearchQuery = null;
@@ -1055,6 +1096,7 @@ export default {
           this.artist.associatedArtists = this.artist.associatedArtists || [];
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
           this.artist.genres = this.artist.genres || [];
+          this.artist.comments = this.artist.comments || [];
           this.artist.collectionsWithArtistReleases =
             this.artist.collectionsWithArtistReleases || [];
           this.artist.playlistsWithArtistReleases =
@@ -1098,7 +1140,7 @@ export default {
             })
             .finally(() => {     
               this.$nextTick(() => {
-                let tabIndex = -1;
+                let tabIndex = 0;
                 if (this.artist.collectionsWithArtistReleases.length > 0) {
                   tabIndex++;
                 }
@@ -1290,6 +1332,7 @@ export default {
       associatedArtists: [],
       alternateNamesList: [],
       genres: [],
+      comments: [],
       collectionsWithArtistReleases: [],
       playlistsWithArtistReleases: [],
       artistContributionReleases: [],

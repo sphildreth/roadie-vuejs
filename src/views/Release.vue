@@ -287,7 +287,7 @@
       <v-layout row wrap>
         <v-flex d-flex xs12 md6>
           <v-tabs class="release-lists" color="primary" v-model="releaseTab" slider-color="accent">
-            <v-tab>Tracks</v-tab>
+            <v-tab>Tracks</v-tab>           
             <v-tab-item class="">
               <v-card flat class="tracks">
                 <v-data-iterator
@@ -320,6 +320,7 @@
             <v-tab v-if="release.genres.length">Genres</v-tab>
             <v-tab v-if="release.labels.length > 0">Labels</v-tab>
             <v-tab v-if="release.urLsList.length">Urls</v-tab>
+            <v-tab class="hidden-md-and-down">{{'Comments' + ( release.comments.length > 0 ? ' (' + release.comments.length + ')' : '') }}</v-tab>                                              
             <v-tab-item v-if="release.playlists.length > 0">
               <v-card flat class="playlists">
                 <v-data-iterator
@@ -432,6 +433,27 @@
                 </template>
               </v-list>
             </v-tab-item>
+            <v-tab-item class="hidden-md-and-down">
+              <v-flex>
+                <CommentCard :isNew="true" :addUrl="newCommentUrl"></CommentCard>
+                <div v-if="release.comments.length > 0">
+                  <hr class="ma-3"/>
+                  <v-data-iterator
+                    :items="release.comments"
+                    :total-items="release.comments ? release.comments.length : 0"
+                    content-tag="v-layout"
+                    hide-actions
+                    row
+                    wrap
+                  >
+                    <v-flex slot="item" slot-scope="props" xs12>
+                      <CommentCard :isNew="false" :isReadOnly="true" :comment="props.item"></CommentCard>
+                    </v-flex>
+                  </v-data-iterator>
+                </div>
+              </v-flex>              
+            </v-tab-item>              
+
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -507,6 +529,7 @@ import ArtistCard from "@/components/ArtistCard";
 import CollectionCard from "@/components/CollectionCard";
 import PlaylistCard from "@/components/PlaylistCard";
 import MediaCard from "@/components/MediaCard";
+import CommentCard from "@/components/CommentCard";
 import Confirm from "@/views/Confirm";
 import { EventBus } from "@/event-bus.js";
 import vue2Dropzone from "vue2-dropzone";
@@ -522,11 +545,12 @@ export default {
     LabelCard,
     ArtistCard,
     CollectionCard,
+    CommentCard,        
     PlaylistCard,
     MediaCard,
     Confirm,
     vueDropzone: vue2Dropzone,
-    VueMarkdown
+    'vue-markdown': VueMarkdown
   },
   props: {
     id: String
@@ -559,6 +583,8 @@ export default {
     EventBus.$on("userTrackRatingChange", info => this.updateIfNeeded(info));
     EventBus.$on("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
     EventBus.$on("userTrackLikeChange", info => this.updateIfNeeded(info));
+    EventBus.$on("addedComment", this.updateComments);
+    EventBus.$on("deletedComment", this.updateComments);    
     this.debouncedMergeReleaseSearch = this.$_.debounce(
       this.doMergeReleaseSearch,
       500
@@ -588,11 +614,16 @@ export default {
     EventBus.$off("userTrackRatingChange");
     EventBus.$off("userTrackFavoriteChange");
     EventBus.$off("userTrackLikeChange");
+    EventBus.$off("addedComment", this.updateComments);
+    EventBus.$off("deletedComment", this.updateComments);    
   },
   async mounted() {
     this.updateData();
   },
   computed: {
+    newCommentUrl() {
+      return process.env.VUE_APP_API_URL + "/comments/add/release/" + this.release.id;
+    },    
     searchQuery() {
       return this.release.title;
     },
@@ -980,13 +1011,26 @@ export default {
     updatePartial: async function() {
       this.updateData(false);
     },
+    updateComments: async function() {
+      EventBus.$emit("loadingStarted");
+      this.$axios
+        .get(process.env.VUE_APP_API_URL + `/releases/${this.id}?inc=comments`)
+        .then(response => {
+          this.release.comments = response.data.data.comments || [];
+        })
+        .finally(() => {     
+          this.$nextTick(() => {
+            EventBus.$emit("loadingComplete");                
+          });
+        });           
+    },    
     updateData: async function(isLoading) {
       this.loading = isLoading == undefined ? true : isLoading;
       this.coverSearchQuery = null;        
       EventBus.$emit("loadingStarted");
       this.releaseById(this.id)
       .then((response) => {
-        this.release = response.release;
+        this.release = response.release;      
       })
       .finally(() =>{
         this.dropzoneOptions.url =
@@ -1082,6 +1126,7 @@ export default {
         thumbnail: {},
         artist: {}
       },
+      comments: [],      
       mediumThumbnail: {},
       userRating: {},
       statistics: {},
@@ -1163,5 +1208,12 @@ export default {
 .release-detail-container .release-lists .v-list {
   max-height: 300px;
   overflow: auto;
+}
+.release-detail-container .markdown-editor, .release-detail-container .comments .v-card { 
+  max-width: 717px;
+  margin-left: 17px;
+}
+.release-detail-container .comments .v-card { 
+  max-width: 806px;
 }
 </style>

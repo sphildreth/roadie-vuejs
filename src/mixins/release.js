@@ -71,6 +71,7 @@ export default {
             release.artist = release.artist || {};
             release.images = release.images || [];
             release.medias = release.medias || [];
+            release.comments = release.comments || [];             
             release.alternateNamesList = release.alternateNamesList || [];
             release.genres = release.genres || [];
             release.collections = release.collections || [];

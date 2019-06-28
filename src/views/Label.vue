@@ -259,7 +259,7 @@ import VueMarkdown from "vue-markdown";
 
 import { EventBus } from "@/event-bus.js";
 export default {
-  components: { Toolbar, ArtistCard, Confirm,     vueDropzone: vue2Dropzone,    VueMarkdown },
+  components: { Toolbar, ArtistCard, Confirm,     vueDropzone: vue2Dropzone, 'vue-markdown': VueMarkdown },
   props: {
     id: String
   },
