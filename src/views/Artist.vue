@@ -367,9 +367,10 @@
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" slider-color="accent">
             <v-tab v-if="artist.associatedArtists.length">Associated Artists</v-tab>
+            <v-tab v-if="artist.similarArtists.length">similar Artists</v-tab>
             <v-tab>Labels</v-tab>
             <v-tab-item v-if="artist.associatedArtists.length">
-              <v-card flat class="labels">
+              <v-card flat class="artist-associations">
                 <v-data-iterator
                   :items="artist.associatedArtists"
                   :total-items="artist.associatedArtists ? artist.associatedArtists.length : 0"
@@ -384,6 +385,22 @@
                 </v-data-iterator>
               </v-card>
             </v-tab-item>
+            <v-tab-item v-if="artist.similarArtists.length">
+              <v-card flat class="artist-similar">
+                <v-data-iterator
+                  :items="artist.similarArtists"
+                  :total-items="artist.similarArtists ? artist.similarArtists.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs12 md4>
+                    <ArtistCard :artist="props.item"></ArtistCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>
+            </v-tab-item>            
             <v-tab-item>
               <v-card flat class="artist-labels">
                 <v-data-iterator
@@ -1094,6 +1111,7 @@ export default {
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
           this.artist.images = this.artist.images || [];
           this.artist.associatedArtists = this.artist.associatedArtists || [];
+          this.artist.similarArtists = this.artist.similarArtists || [];
           this.artist.alternateNamesList = this.artist.alternateNamesList || [];
           this.artist.genres = this.artist.genres || [];
           this.artist.comments = this.artist.comments || [];
@@ -1330,6 +1348,7 @@ export default {
       statistics: {},
       images: [],
       associatedArtists: [],
+      similarArtists: [],
       alternateNamesList: [],
       genres: [],
       comments: [],

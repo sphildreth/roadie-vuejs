@@ -44,10 +44,9 @@
             <v-list-tile-title>Admin</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-
         <v-list-tile
           v-for="link in links"
-          :class="link.class"
+          :class="link.class + ' ' + ($route.path.indexOf(link.highlightRoute) > -1 ? 'secondary--text v-list__tile--active' : '')"
           :key="link.text"
           router
           :to="link.route"
@@ -70,7 +69,7 @@
             <v-list-tile-title>Account Settings</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="openThemeSettings">
+        <v-list-tile tabindex="0" @click="openThemeSettings">
           <v-list-tile-action>
             <v-icon>color_lens</v-icon>
           </v-list-tile-action>
@@ -78,7 +77,7 @@
             <v-list-tile-title>Change Theme</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="signout">
+        <v-list-tile tabindex="0" @click="signout">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
@@ -106,6 +105,7 @@
 import store from "@/store";
 import router from "@/router";
 import ThemeSettings from "@/components/ThemeSettings";
+import { RSA_PKCS1_PADDING } from 'constants';
 export default {
   store,
   router,
@@ -156,8 +156,18 @@ export default {
       rightDrawer: false,
       appName: process.env.VUE_APP_APP_NAME,
       links: [
-        { icon: "dashboard", text: "Dashboard", route: "/" },
-        { icon: "fas fa-users", text: "Artists", route: "/artists" },
+        { 
+          icon: "dashboard", 
+          text: "Dashboard", 
+          route: "/",
+          class: ""
+        },
+        { icon: "fas fa-users", 
+          text: "Artists",       
+          highlightRoute: "/artist/",   
+          route: "/artists",
+          class: ""          
+        },
         {
           icon: "bookmarks",
           text: "Bookmarks",
@@ -168,35 +178,56 @@ export default {
           icon: "collections",
           text: "Collections",
           class: "hidden-xs-and-down",
+          highlightRoute: "/collection/",   
           route: "/collections"
         },
         {
           icon: "category",
           text: "Genres",
           class: "hidden-xs-and-down",
+          highlightRoute: "/genre/",   
           route: "/genres"
         },
         {
           icon: "label",
           text: "Labels",
           class: "hidden-sm-and-down",
+          highlightRoute: "/label/",   
           route: "/labels"
         },
         {
           icon: "playlist_play",
           text: "Playlists",
           class: "hidden-xs-and-down",
+          highlightRoute: "/playlist/",
           route: "/playlists"
         },
-        { icon: "headset", text: "Playing/Que", route: "/playque" },
-        { icon: "library_music", text: "Releases", route: "/releases" },
+        { 
+          icon: "headset", 
+          text: "Playing/Que", 
+          route: "/playque",
+          class: ""          
+        },
+        { 
+          icon: "library_music", 
+          text: "Releases", 
+          highlightRoute: "/release/",            
+          route: "/releases",
+          class: ""          
+        },
         {
           icon: "assessment",
           text: "Statistics",
           class: "hidden-md-and-down",
           route: "/statistics"
         },
-        { icon: "audiotrack", text: "Tracks", route: "/tracks" }
+        { 
+          icon: "audiotrack", 
+          text: "Tracks", 
+          highlightRoute: "/track/",          
+          route: "/tracks",
+          class: ""          
+        }
       ]
     };
   }

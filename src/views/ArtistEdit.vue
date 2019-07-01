@@ -216,6 +216,22 @@
       </v-layout>
       <v-layout row>
         <v-autocomplete
+          :items="lookupData.artistItems"
+          v-model="artist.similarArtistsTokens"
+          :search-input.sync="searchForArtist"
+          @change="modifiedsimilarArtists = true"
+          :loading="searchArtistsLoading"
+          label="Similar Artists"
+          return-object
+          multiple
+          deletable-chips
+          clearable
+          chips
+          append-icon="fas fa-database"
+        ></v-autocomplete>
+      </v-layout>      
+      <v-layout row>
+        <v-autocomplete
           :items="lookupData.genreItems"
           v-model="artist.genres"
           :search-input.sync="searchForGenre"
@@ -430,6 +446,13 @@ export default {
               value: a.artist.value
             });
           });
+          this.artist.similarArtists = this.artist.similarArtists || [];
+          this.artist.similarArtists.forEach(a => {
+            this.lookupData.artistItems.push({
+              text: a.artist.text,
+              value: a.artist.value
+            });
+          });          
           // ▟
           this.artist.birthDate = this.artist.birthDate
             ? new Date(this.artist.birthDate).toISOString().substr(0, 10)
@@ -581,6 +604,7 @@ export default {
     loaded: false,
     modifiedGenres: false,
     modifiedAssociatedArtists: false,
+    modifiedsimilarArtists: false,
     showArtistBirthdateDatePicker: false,
     showArtistBeginDatePicker: false,
     showArtistEndDateDatePicker: false,
