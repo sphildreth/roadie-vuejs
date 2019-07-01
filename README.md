@@ -23,7 +23,8 @@ Features:
 * Robust search capabilities.
 * HTML 5 Track streaming.
 * Theming including several custom Vuetify themes.
-* Scrobbling
+* Scrobbling.
+* Commenting on Artists, Releases and Tracks.
 
 Support:
 ------------
