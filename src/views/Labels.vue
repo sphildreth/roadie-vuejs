@@ -23,14 +23,14 @@
       EventBus.$on('l:viewRecentlyAdded', this.viewRecentlyAdded);
       EventBus.$on('l:viewMostArtists', this.viewMostArtists);
       EventBus.$on('l:viewAll', this.viewAll);
-      EventBus.$on('toolbarRefresh', this.updateData);      
+      EventBus.$on("toolbarRefresh", this.updateData);   
     },  
     beforeDestroy() {
       EventBus.$off('l:viewRandom', this.viewRandom);
       EventBus.$off('l:viewRecentlyAdded', this.viewRecentlyAdded);
       EventBus.$off('l:viewMostArtists', this.viewMostArtists);
       EventBus.$off('l:viewAll', this.viewAll);
-      EventBus.$off('toolbarRefresh', this.updateData);  
+      EventBus.$off("toolbarRefresh", this.updateData);  
     },     
     async mounted() {
       this.viewRandom();            

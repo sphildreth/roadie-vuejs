@@ -30,7 +30,7 @@
   export default {
     components: { Toolbar, ReleaseCard, ArtistCard, TrackCard, LabelCard, PlaylistCard, CollectionCard }, 
     created() {
-      EventBus.$on('toolbarRefresh', this.updateData);
+      EventBus.$on("toolbarRefresh", this.updateData);
     }, 
     beforeDestroy() {
       EventBus.$off("toolbarRefresh", this.updateData);     

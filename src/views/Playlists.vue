@@ -19,7 +19,7 @@
   export default {
     components: { PlaylistCard, Toolbar }, 
     created() {
-      EventBus.$on('toolbarRefresh', this.updateData);
+      EventBus.$on("toolbarRefresh", this.updateData);
     },    
     beforeDestroy() {
       EventBus.$off("toolbarRefresh", this.updateData);     

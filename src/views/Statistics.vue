@@ -17,10 +17,10 @@
   export default {
     components: { Toolbar, ReleasesByDateChart }, 
     created() {
-      EventBus.$on('toolbarRefresh', this.updateData);
+      EventBus.$on("toolbarRefresh", this.updateData);
     },    
     beforeDestroy() {
-      EventBus.$off('toolbarRefresh', this.updateData);  
+      EventBus.$off("toolbarRefresh", this.updateData);  
     },     
     async mounted() {
       this.updateData();
