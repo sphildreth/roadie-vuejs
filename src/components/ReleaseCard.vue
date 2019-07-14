@@ -134,6 +134,7 @@ export default {
         });        
       })
       .catch(err => {
+        // eslint-disable-next-line
         console.log('Something went wrong', err);
       })
     },

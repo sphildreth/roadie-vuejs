@@ -870,9 +870,7 @@ export default {
       this.$axios
         .get(
           process.env.VUE_APP_API_URL +
-            `/tracks?page=1&limit=${
-              this.playTrackLimit
-            }&sort=Rating&order=DESC&FilterToArtistId=${this.artist.id}`
+            `/tracks?page=1&limit=${this.playTrackLimit}&sort=Rating&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
           queTracks = this.queTracksForTrackRows(response.data.rows);

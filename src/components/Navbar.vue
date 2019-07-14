@@ -105,7 +105,7 @@
 import store from "@/store";
 import router from "@/router";
 import ThemeSettings from "@/components/ThemeSettings";
-import { RSA_PKCS1_PADDING } from 'constants';
+
 export default {
   store,
   router,

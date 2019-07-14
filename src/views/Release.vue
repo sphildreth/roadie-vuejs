@@ -572,6 +572,7 @@ export default {
     EventBus.$on("hateToogle", this.toggleHated);
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);
+    EventBus.$on("rr:DeleteFiles", this.deleteWithFiles);
     EventBus.$on("rr:MergeReleases", this.mergeReleases);
     EventBus.$on("rr:FindCover", this.findCover);
     EventBus.$on("rr:Edit", this.edit);
@@ -604,6 +605,7 @@ export default {
     EventBus.$off("hateToogle", this.toggleHated);
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);
+    EventBus.$off("rr:DeleteFiles", this.deleteWithFiles);
     EventBus.$off("rr:MergeReleases", this.mergeReleases);
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
@@ -639,6 +641,7 @@ export default {
       }
       if(this.$store.getters.isUserAdmin) {
         items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "rr:Delete" });
+        items.push({ title: "Delete (delete Files)", icon: "fa fa-trash-alt", class: "warning--text", click: "rr:DeleteFiles" });
         items.push({ title: "Merge Release", click: "rr:MergeReleases" });
       }      
       items.sort(function(a,b){
@@ -947,6 +950,12 @@ export default {
         });
     },
     delete: async function() {
+      this.deleteAction(false);
+    },
+    deleteWithFiles: async function() {
+      this.deleteAction(true);
+    },
+    deleteAction: async function(deleteFiles) {
       let releaseId = this.release.id;
       this.$refs.confirm
         .open("Delete", "Are you sure?", { color: "red" })
@@ -955,8 +964,7 @@ export default {
             this.$axios
               .post(
                 process.env.VUE_APP_API_URL +
-                  "/admin/delete/release/" +
-                  releaseId
+                  "/admin/delete/release/" + releaseId + '?doDeleteFiles=' + deleteFiles
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");

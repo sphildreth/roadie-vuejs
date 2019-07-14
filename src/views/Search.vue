@@ -2,8 +2,15 @@
   <div class="search-results-container">
     <v-container fluid>
       <div class="heading mb-2">Search Results for:
-        <span class="accent--text title ml-2">{{ decodeURIComponent(this.searchQuery) }}</span>
+        <v-chip disabled medium slot="activator" color="secondary" text-color="white">
+          {{ this.queryDisplay }}
+        </v-chip>        
       </div>
+      <div v-if="filterDisplay" class="heading mb-2">Filter(s) applied:
+        <v-chip @input="removeFilter" medium slot="activator" color="secondary" text-color="white" close>
+          {{ this.filterDisplay }}
+        </v-chip>        
+      </div>      
       <div v-if="isLoading">
         <v-progress-linear
           height="2"
@@ -137,6 +144,31 @@ export default {
         this.playlistItems.length == 0
       );
     },
+    filterDisplay() {
+      if(this.filterToRated) {
+        return "Rated: " + this.filterToRated;
+      }
+      return null;
+    },
+    queryDisplay() {
+      let isOnlyArtistSearch = this.doArtistSearch && !this.doReleaseSearch && !this.doTrackSearch && !this.doPlaylistSearch;
+      let isOnlyReleaseSearch = !this.doArtistSearch && this.doReleaseSearch && !this.doTrackSearch && !this.doPlaylistSearch;
+      let isOnlyTrackSearch = !this.doArtistSearch && !this.doReleaseSearch && this.doTrackSearch && !this.doPlaylistSearch;
+      let isOnlyPlaylistSearch = !this.doArtistSearch && !this.doReleaseSearch && !this.doTrackSearch && this.doPlaylistSearch;
+      if(isOnlyArtistSearch) {
+        return "Artist: " + this.query;
+      }
+      if(isOnlyReleaseSearch) {
+        return "Release: " + this.query;
+      }     
+      if(isOnlyTrackSearch) {
+        return "Track: " + this.query;
+      }           
+      if(isOnlyPlaylistSearch) {
+        return "Playlist: " + this.query;
+      }         
+      return this.query;
+    },
     query() {
       const ratingRegex = /(\s?)(:?)(rating)(:?)(\s?)[0-9]/g;
       const s = decodeURIComponent(this.searchQuery);
@@ -186,6 +218,11 @@ export default {
     this.updateData();
   },
   methods: {
+    removeFilter() {
+      const ratingRegex = /(\s?)(:?)(rating)(:?)(\s?)[0-9]/g;
+      this.searchQuery = this.searchQuery.replace(ratingRegex,'');
+       this.updateData();
+    },
     playTracks() {
       this.$playQue
         .deleteAll()
