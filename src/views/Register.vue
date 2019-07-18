@@ -16,6 +16,17 @@
             </v-card-title>
             <form class="ma-2">
               <v-text-field
+                v-if="requireInviteToken"
+                prepend-icon="redeem"
+                v-model="inviteToken"
+                v-validate="'required|max:50'"
+                :counter="20"
+                label="Invite Token"
+                data-vv-name="inviteToken"
+                :error-messages="errors.collect('inviteToken')"
+                required
+              ></v-text-field>              
+              <v-text-field
                 prepend-icon="person"
                 v-model="username"
                 v-validate="'required|max:20'"
@@ -68,7 +79,7 @@
       </v-flex>
     </v-layout>
     <v-layout v-if="errorMessage" row wrap class="error-container">
-      <h3 class="my-2 error">{{ errorMessage }}</h3>
+      <h3 class="text-xs-center my-2 error">{{ errorMessage }}</h3>
     </v-layout>
   </v-container>
 </template>
@@ -99,6 +110,8 @@ export default {
   data: () => ({
     valid: false,
     registering: false,
+    requireInviteToken: false,
+    inviteToken: null,
     username: "",
     email: "",
     password: "",
@@ -123,6 +136,11 @@ export default {
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
+    this.inviteToken = this.$route.query.it;
+    this.$axios.get("/auth/registeroptions")
+        .then(response => {
+            this.requireInviteToken = response.data.useRegistrationTokens
+        });      
   },
   methods: {
     submit() {
@@ -133,18 +151,11 @@ export default {
           this.registering = true;                  
           this.$axios
             .post("/auth/register", {
+              inviteToken: that.inviteToken,
               username: that.username,
               password: that.password,
               passwordconfirmation: that.passwordConfirmation,
               email: that.email
-            })
-            .catch(error => {
-              if(error && error.data) {
-                this.errorMessage = error.data[0].description;
-              } else {
-                this.errorMessage = "An error has occured.";
-              }
-              this.registering = false;
             })
             .then(response => {
               localStorage.setItem("user", JSON.stringify(response.data));
@@ -155,7 +166,15 @@ export default {
               } else {
                 that.$router.push("/");
               }
-            });
+            })
+            .catch(error => {
+              if(error && error.data) {
+                this.errorMessage = error.data.title;
+              } else {
+                this.errorMessage = "An error has occured.";
+              }
+              this.registering = false;
+            });            
         }
       });
     }

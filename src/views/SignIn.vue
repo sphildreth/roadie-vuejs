@@ -29,7 +29,7 @@
                 @keyup.enter.native="submit"
               ></v-text-field>
               <v-card-actions>
-                <v-btn to="/register" small round>Register</v-btn>
+                <v-btn v-if="!isRegistrationClosed" to="/register" small round>Register</v-btn>
                 <v-btn @click="resetPassword" small round>Forgot Password</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn :disabled="!valid" @click="submit" color="success" round medium>Sign In</v-btn>
@@ -77,11 +77,16 @@ export default {
       .catch(function () {
         that.signInMessage = null;
     });       
+    this.$axios.get("/auth/registeroptions")
+        .then(response => {
+            this.isRegistrationClosed = response.data.isRegistrationClosed
+        });      
   },
   data: () => ({
     valid: false,
     dialog: false,
     signInMessage: null,
+    isRegistrationClosed: true,
     username: "",
     usernameRules: [v => !!v || "Username is required"],
     password: "",
