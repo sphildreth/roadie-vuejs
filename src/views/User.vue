@@ -258,7 +258,7 @@ export default {
     adminMenuItems() {
       let items = [];
       if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "uu:Delete" });
+        items.push({ title: "Delete", icon: "delete", class: "warning--text", click: "uu:Delete" });
       }      
       items.sort(function(a,b){
         const aTitle = a.title.toUpperCase();

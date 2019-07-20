@@ -439,9 +439,9 @@ export default {
       return !this.$store.getters.isUserAdmin
         ? []
         : [
-            { title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "l:Delete" },                      
-            { title: "Edit", click: "l:Edit" },
-            { title: "Find Label Thumbnail", click: "l:FindLabelImage" }
+            { title: "Delete", icon: "delete", class: "warning--text", click: "l:Delete" },                      
+            { title: "Edit",icon: "create", click: "l:Edit" },
+            { title: "Find Label Thumbnail", icon: "photo_library", click: "l:FindLabelImage" }
         ];
     },    
   },

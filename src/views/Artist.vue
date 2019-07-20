@@ -752,14 +752,14 @@ export default {
     adminMenuItems() {
       let items = [];
       if(this.$store.getters.isUserEditor) {
-        items.push({ title: "Edit", click: "aa:Edit" });        
-        items.push({ title: "Find Artist Thumbnail", click: "aa:FindArtistImage" });
-        items.push({ title: "Rescan", click: "aa:Rescan" });
+        items.push({ title: "Edit", icon: "create", click: "aa:Edit" });        
+        items.push({ title: "Find Artist Thumbnail", icon: "photo_library", click: "aa:FindArtistImage" });
+        items.push({ title: "Rescan",  icon: "refresh", click: "aa:Rescan" });
       }
       if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "aa:Delete" });
-        items.push({ title: "Delete Releases", icon: "fa fa-trash-alt", class: "warning--text", click: "aa:DeleteReleases" });
-        items.push({ title: "Merge Artist", click: "aa:MergeArtist" });
+        items.push({ title: "Delete", icon: "delete", class: "warning--text", click: "aa:Delete" });
+        items.push({ title: "Delete Releases", icon: "delete_sweep", class: "warning--text", click: "aa:DeleteReleases" });
+        items.push({ title: "Merge Artist", icon: "call_merge", click: "aa:MergeArtist" });
       }       
       items.sort(function(a,b){
         const aTitle = a.title.toUpperCase();

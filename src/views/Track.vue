@@ -340,8 +340,8 @@ export default {
       return !this.$store.getters.isUserAdmin
         ? []
         : [
-            { title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "tt:Delete" },
-            { title: "Delete Track And File", icon: "fa fa-trash-alt", class: "warning--text", click: "tt:DeleteAndFile" },
+            { title: "Delete", icon: "delete", class: "warning--text", click: "tt:Delete" },
+            { title: "Delete Track And File", icon: "delete_forever", class: "warning--text", click: "tt:DeleteAndFile" },
             { title: "Edit", click: "tt:Edit" }
           ];
     },

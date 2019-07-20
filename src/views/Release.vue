@@ -560,10 +560,7 @@ export default {
     EventBus.$on("rr:PlayNow", this.playNow);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$on(
-      "rr:searchInternetreleaseandTitle",
-      this.searchInternetreleaseandTitle
-    );
+    EventBus.$on("rr:searchInternetreleaseandTitle",this.searchInternetreleaseandTitle);
     EventBus.$on("rr:searchForTitle", this.searchForTitle);
     EventBus.$on("rr:searchForArtist", this.searchForArtist);
     EventBus.$on("toolbarRefresh", this.updateData);
@@ -573,6 +570,8 @@ export default {
     EventBus.$on("rr:Rescan", this.rescan);
     EventBus.$on("rr:Delete", this.delete);
     EventBus.$on("rr:DeleteFiles", this.deleteWithFiles);
+    EventBus.$on("rr:DeleteTracks", this.deleteTracks);
+    EventBus.$on("rr:DeleteTracksFiles", this.deleteTracksFiles);
     EventBus.$on("rr:MergeReleases", this.mergeReleases);
     EventBus.$on("rr:FindCover", this.findCover);
     EventBus.$on("rr:Edit", this.edit);
@@ -606,6 +605,8 @@ export default {
     EventBus.$off("rr:Rescan", this.rescan);
     EventBus.$off("rr:Delete", this.delete);
     EventBus.$off("rr:DeleteFiles", this.deleteWithFiles);
+    EventBus.$off("rr:DeleteTracks", this.deleteTracks);
+    EventBus.$off("rr:DeleteTracksFiles", this.deleteTracksFiles);    
     EventBus.$off("rr:MergeReleases", this.mergeReleases);
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
@@ -635,14 +636,16 @@ export default {
     adminMenuItems() {
       let items = [];
       if(this.$store.getters.isUserEditor) {
-        items.push({ title: "Edit", click: "rr:Edit" });        
-        items.push({ title: "Find Release Thumbnail", click: "rr:FindCover" });
-        items.push({ title: "Rescan", click: "rr:Rescan" });
+        items.push({ title: "Edit", icon: "create", click: "rr:Edit" });        
+        items.push({ title: "Find Release Thumbnail", icon: "photo_library", click: "rr:FindCover" });
+        items.push({ title: "Rescan", icon: "refresh", click: "rr:Rescan" });
       }
       if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", icon: "fa fa-trash-alt", class: "warning--text", click: "rr:Delete" });
-        items.push({ title: "Delete (delete Files)", icon: "fa fa-trash-alt", class: "warning--text", click: "rr:DeleteFiles" });
-        items.push({ title: "Merge Release", click: "rr:MergeReleases" });
+        items.push({ title: "Delete", icon: "delete", class: "warning--text", click: "rr:Delete" });
+        items.push({ title: "Delete (delete Files)", icon: "delete_forever", class: "warning--text", click: "rr:DeleteFiles" });
+        items.push({ title: "Tracks - Delete", icon: "delete_forever", class: "warning--text", click: "rr:DeleteTracks" });
+        items.push({ title: "Tracks - Delete (delete Files)", icon: "delete_forever", class: "warning--text", click: "rr:DeleteTracksFiles" });
+        items.push({ title: "Merge Release", icon: "call_merge", click: "rr:MergeReleases" });
       }      
       items.sort(function(a,b){
         const aTitle = a.title.toUpperCase();
@@ -973,6 +976,33 @@ export default {
           }
         });
     },
+    deleteTracks:  async function() {
+      this.deleteTracksAction(false);
+    },
+    deleteTracksFiles: async function() { 
+      this.deleteTracksAction(true);
+    },
+    deleteTracksAction: async function(deleteFiles) {
+      let t = null;
+      if (this.selectedTracks.length > 0) {
+        t = this.selectedTracks.map(x => x.track.value );
+      }
+      if(!t) {
+        alert('No Tracks Selected!');
+        return false;
+      }
+      this.$refs.confirm
+        .open("Delete Tracks", "Are you sure?", { color: "red" })
+        .then(confirm => {
+          if (confirm) {
+            this.$axios
+              .post(process.env.VUE_APP_API_URL + "/admin/delete/tracks?doDeleteFile=" + deleteFiles, t)
+              .finally(() => {
+                this.updateData();                
+              });
+          }
+        });       
+    },
     toggleBookmark: async function() {
       this.$axios
         .post(
@@ -1049,7 +1079,8 @@ export default {
           Authorization: "Bearer " + this.$store.getters.authToken
         };
         this.$nextTick(() => {
-          this.loading = false;                    
+          this.loading = false;                 
+          this.selectedTracks = [];   
           document.title = this.release.title;        
           EventBus.$emit("loadingComplete");          
           setTimeout(function() {
