@@ -995,6 +995,7 @@ export default {
         .open("Delete Tracks", "Are you sure?", { color: "red" })
         .then(confirm => {
           if (confirm) {
+            EventBus.$emit("loadingStarted");            
             this.$axios
               .post(process.env.VUE_APP_API_URL + "/admin/delete/tracks?doDeleteFile=" + deleteFiles, t)
               .finally(() => {
