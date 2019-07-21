@@ -456,6 +456,7 @@ export default {
     EventBus.$off("q:addedTracksToQue", this.queModified);
     EventBus.$off("q:deletedTrackFromQue", info => this.queModified(info));
     EventBus.$off("q:deletedAllTrackFromQue", info => this.queModified(info));
+    window.removeEventListener('keyup', this.keyPressHandler, false);
     if (this.howl) {
       this.howl.unload();
     }
@@ -463,8 +464,27 @@ export default {
   async mounted() {
     this.originalWindowTitle = document.title;
     this.loadFirstTrackInQue();
+    window.addEventListener('keyup', this.keyPressHandler, false);
   },
   methods: {
+    keyPressHandler(event) {
+      if(!this.loaded) {
+        return false;
+      }
+      if (event.keyCode === 37) {        
+        this.skip('prev');
+      }
+      if(event.keyCode === 39) {
+        this.skip('next');
+      }
+      if(event.keyCode === 32) {
+        if(this.playing) {
+          this.stop();
+        } else {
+          this.play();
+        }
+      }      
+    },
     loadFirstTrackInQue() {
       const that = this;
       if (that.hide) {
