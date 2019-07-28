@@ -1248,6 +1248,10 @@ export default {
             });
             this.$nextTick(() => {
               this.artist.mediumThumbnail.url = response.data.data.url;
+              setTimeout(function() {
+                var image = document.getElementById("artistImage");
+                window.favIcon.image(image);
+              }, 500);              
             });
           }
         })

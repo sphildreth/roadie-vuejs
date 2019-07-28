@@ -483,10 +483,12 @@ export default {
         .finally(() => {
           this.loaded = true;
           this.$nextTick(() => {
-            EventBus.$emit("loadingComplete");
-            var image=document.getElementById('trackImage')
-            window.favIcon.image(image);             
-            document.title = this.track.title;
+            EventBus.$emit("loadingComplete");    
+            setTimeout(function() {
+              var image=document.getElementById('trackImage')
+              window.favIcon.image(image);   
+            }, 500);                   
+            document.title = this.track.title;            
           });
         });
     },

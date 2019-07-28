@@ -351,6 +351,10 @@ export default {
         )
         .then(response => {
           this.labelImageSearchItems = response.data.data;
+          setTimeout(function() {
+            var image = document.getElementById("labelImage");
+            window.favIcon.image(image);
+          }, 500);          
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");

@@ -913,6 +913,10 @@ export default {
             });
             this.$nextTick(() => {
               this.release.mediumThumbnail.url = response.data.data.url;
+              setTimeout(function() {
+                var image = document.getElementById("releaseImage");
+                window.favIcon.image(image);
+              }, 500);              
             });
           }
         })
