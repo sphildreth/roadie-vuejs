@@ -289,6 +289,7 @@ export default {
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("q:addedTracksToQue", this.updateData);
     EventBus.$on("q:deletedTrackFromQue", this.updateData);
+    EventBus.$on("q:deletedAllTrackFromQue", this.updateData);
     EventBus.$on("q:markTrackAsPlayed",  info => this.markTrackAsPlayed(info));    
   },
   beforeDestroy() {
@@ -301,6 +302,7 @@ export default {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("q:addedTracksToQue", this.updateData);
     EventBus.$off("q:deletedTrackFromQue", this.updateData);
+    EventBus.$off("q:deletedAllTrackFromQue", this.updateData);
     EventBus.$off("q:markTrackAsPlayed",  info => this.markTrackAsPlayed(info));    
   },
   async mounted() {

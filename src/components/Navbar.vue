@@ -8,6 +8,7 @@
       <v-spacer></v-spacer>
       <v-text-field 
         class="search-input"
+        name="searchInput"
         label="Search"
         append-icon="search"
         single-line
@@ -119,6 +120,7 @@ export default {
       this.$router.go("/signin");
     },
     search(e) {
+      e.preventDefault();      
       if (e.key === "Enter") {
         router.push({ name: "search", params: { q: this.searchQuery } });
         this.searchQuery = "";

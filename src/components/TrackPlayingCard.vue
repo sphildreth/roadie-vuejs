@@ -471,6 +471,10 @@ export default {
       if(!this.loaded) {
         return false;
       }
+      // likely an input event from the search box
+      if(event.target.name) { 
+        return;
+      }
       if (event.keyCode === 37) {        
         this.skip('prev');
       }
@@ -483,7 +487,14 @@ export default {
         } else {
           this.play();
         }
-      }      
+      }    
+      if(event.keyCode === 46) {
+        if(event.shiftKey) {
+          this.$playQue.deleteAll();
+        } else {
+          this.$playQue.removePlayed();
+        }        
+      }
     },
     loadFirstTrackInQue() {
       const that = this;
