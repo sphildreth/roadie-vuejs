@@ -41,7 +41,14 @@
             <v-flex xs12>
               <v-layout row wrap>
                 <v-flex xs12 md3>
-                  <v-img :src="releaseCoverUrl" :alt="release.title" class="ma-1" aspect-ratio="1"></v-img>
+                  <v-img 
+                    :src="releaseCoverUrl" 
+                    :alt="release.title" 
+                    class="ma-1" 
+                    aspect-ratio="1"
+                    lazy-src="data:image/jpeg;base64,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"                    
+                    >
+                  </v-img>
                   <img id="releaseImage" :src="releaseCoverUrl" style="display:none;">
                 </v-flex>
                 <v-flex xs12 md9 class="title">

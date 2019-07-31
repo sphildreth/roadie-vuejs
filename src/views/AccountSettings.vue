@@ -31,7 +31,7 @@
               <v-btn @click="resetImage" color>Reset</v-btn>
               <div
                 class="caption ml-2"
-              >Allowed JPG, GIF or PNG. Image will be converted to PNG and resized to 80x80 pixels.</div>
+              >Allowed JPG, GIF or PNG. Image will be converted to GIF.</div>
             </v-flex>
           </v-layout>
           <v-layout row>

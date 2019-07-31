@@ -1,7 +1,7 @@
 <template>
   <div class="label-detail-container">
     <Toolbar :menuItems="menuItems" :adminItems="adminMenuItems" :toolbarIcon="'label'"></Toolbar>
-    <v-container v-if="labelImageSearchItems.length === 0" fluid grid-list-md>
+    <v-container v-if="!showMergingLabel && labelImageSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -58,6 +58,7 @@
         <v-flex d-flex xs12 sm5 md5>
           <v-tabs right color="primary" slider-color="accent">
             <v-tab v-if="label.profile">Profile</v-tab>
+            <v-tab v-if="label.alternateNamesList.length">Alternate Names</v-tab>            
             <v-tab v-if="label.tagsList.length > 0">Tags</v-tab>
             <v-tab v-if="label.urLsList.length">Urls</v-tab>
             <v-tab>Metadata Sources</v-tab>
@@ -66,6 +67,21 @@
                 <vue-markdown>{{label.profile}}</vue-markdown>
               </v-card>
             </v-tab-item>
+            <v-tab-item v-if="label.alternateNamesList.length">
+              <v-list>
+                <template v-for="(name, index) in label.alternateNamesList">
+                  <v-list-tile :key="`al-${name}-${index}`">
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ name }}</v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-divider
+                    v-if="index + 1 < label.alternateNamesList.length"
+                    :key="`adivider-${index}`"
+                  ></v-divider>
+                </template>
+              </v-list>
+            </v-tab-item>            
             <v-tab-item v-if="label.tagsList.length > 0">
               <v-list>
                 <template v-for="(name, index) in label.tagsList">
@@ -237,6 +253,24 @@
         </v-flex>
       </v-data-iterator>
     </v-container>   
+    <v-container v-if="!loading && showMergingLabel">
+      <div>Select Label To Merge "{{ this.label.name }}" Label into</div>
+      <v-layout row>
+        <v-autocomplete
+          :items="lookupData.labelsItems"
+          v-model="selectedMergeLabel"
+          :search-input.sync="searchForMergeLabel"
+          :loading="searchLabelLoading"
+          label="Label"
+          append-icon="fas fa-database"
+          return-object
+        ></v-autocomplete>
+      </v-layout>
+      <v-flex xs3>
+        <v-btn color="warning" @click="showMergingLabel=false">Cancel</v-btn>
+        <v-btn color="success" @click="doMerge()">Merge</v-btn>
+      </v-flex>
+    </v-container>    
     <v-container v-if="loading">
         <v-progress-linear
           v-if="loading"
@@ -268,19 +302,78 @@ export default {
     EventBus.$on("l:Delete", this.delete);
     EventBus.$on("l:FindLabelImage", this.findLabelImage);
     EventBus.$on("l:Edit", this.edit);    
+    EventBus.$on("l:MergeLabel", this.mergeLabel);
     this.debouncedFindLabelImage = this.$_.debounce(this.findLabelImage, 800);
+    this.debouncedMergeLabelSearch = this.$_.debounce(
+      this.doMergeLabelSearch,
+      500
+    );    
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
     EventBus.$off("l:Delete", this.delete);
     EventBus.$off("l:FindLabelImage", this.findLabelImage);
     EventBus.$off("l:Edit", this.edit);        
+    EventBus.$off("l:MergeLabel", this.mergeLabel);
   },
   async mounted() {
     this.updateData();
   },
   methods: {
     addToQue: function() {},
+    mergeLabel: function() {
+      this.showMergingLabel = true;
+    },    
+    doMerge() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/labels/mergeLabels/" +
+            this.label.id +
+            "/" +
+            this.selectedMergeLabel.value
+        )
+        .then(response => {
+          if (!response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "An error has occured",
+              color: "red"
+            });
+            return false;
+          }
+          this.showMergingLabel = false; 
+          this.$router.push("/label/" + this.selectedMergeLabel.value);
+        });
+    },    
+    doMergeLabelSearch: function(val) {
+      if (this.searchLabelLoading) {
+        return;
+      }
+      this.searchLabelLoading = true;
+      this.$axios
+        .get(
+          process.env.VUE_APP_API_URL + "/labels?filter=" + val + "&limit=10"
+        )
+        .then(res => {
+          this.lookupData.labelsItems = [];
+          res.data.rows.forEach(l => {
+            if (l.label.value != this.id) {
+              this.lookupData.labelsItems.push({
+                text: l.label.text,
+                value: l.label.value
+              });
+            }
+          });
+        })
+        .catch(err => {
+          EventBus.$emit("showSnackbar", {
+            text: "An error has occured",
+            color: "red",
+            error: err
+          });
+        })
+        .finally(() => (this.searchLabelLoading = false));
+    },    
     shortDateWithAge: function(date, toDate) {
       return (
         this.$options.filters.shortDate(date) +
@@ -366,6 +459,7 @@ export default {
         .get(process.env.VUE_APP_API_URL + `/labels/${this.id}`)
         .then(response => {
           this.label = response.data.data;
+          this.label.alternateNamesList = this.label.alternateNamesList || [];
           this.label.tagsList = this.label.tagsList || [];
           this.label.urLsList = this.label.urLsList || [];
           this.loading = false;
@@ -433,7 +527,13 @@ export default {
       async handler() {
         this.updateArtistData();
       }
-    }
+    },
+    searchForMergeLabel(val) {
+      if (!val) {
+        return;
+      }
+      this.debouncedMergeLabelSearch(val);
+    }    
   },
   computed: {
     labelThumbnailUrl() {
@@ -445,7 +545,8 @@ export default {
         : [
             { title: "Delete", icon: "delete", class: "warning--text", click: "l:Delete" },                      
             { title: "Edit",icon: "create", click: "l:Edit" },
-            { title: "Find Label Thumbnail", icon: "photo_library", click: "l:FindLabelImage" }
+            { title: "Find Label Thumbnail", icon: "photo_library", click: "l:FindLabelImage" },
+            { title: "Merge with another Label", icon: "call_merge", click: "l:MergeLabel" },            
         ];
     },    
   },
@@ -454,6 +555,13 @@ export default {
     rowsPerPageItems: [6, 12, 24, 36, 60, 120, 500],
     labelImageSearchQuery: "",
     labelImageSearchItems: [],    
+    showMergingLabel: false,
+    searchLabelLoading: false,
+    selectedMergeLabel: null,
+    searchForMergeLabel: null,    
+    lookupData: {
+      labelsItems: []
+    },    
     label: {
       maintainer: {
         thumbnail: {},
@@ -461,6 +569,7 @@ export default {
       },
       mediumThumbnail: {},
       statistics: {},
+      alternateNamesList: [],
       tagsList: [],
       urLsList: []
     },

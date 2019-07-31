@@ -30,7 +30,9 @@
               <v-img :src="currentUserAvatarUrl" :alt="currentUserUsername"></v-img>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title class="accent--text">{{ currentUserUsername }}</v-list-tile-title>
+              <router-link :to="'/user/' + currentUserId">
+                <v-list-tile-title class="accent--text">{{ currentUserUsername }}</v-list-tile-title>
+              </router-link>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -144,6 +146,11 @@ export default {
         ? this.$store.getters.user.username
         : "";
     },
+    currentUserId() {
+      return this.$store.state.isLoggedIn
+        ? this.$store.getters.userId
+        : "";
+    },
     currentUserAvatarUrl() {
       return this.$store.getters.usersAvatarUrl;
     },
@@ -229,7 +236,14 @@ export default {
           highlightRoute: "/track/",          
           route: "/tracks",
           class: ""          
-        }
+        },
+        { 
+          icon: "supervised_user_circle", 
+          text: "Users", 
+          highlightRoute: "/user/",          
+          route: "/users",
+          class: "hidden-md-and-down"          
+        }        
       ]
     };
   }
