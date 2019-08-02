@@ -125,6 +125,9 @@ export default new Vuex.Store({
     defaultRowsPerPage: (state) => {
       return (state.user && state.user.defaultRowsPerPage) ? state.user.defaultRowsPerPage : state.defaultRowsPerPage;
     },
+    rowsPerPageItems: (state) => {
+      return state.rowsPerPageItems;
+    },
     isFullscreen: (state) => {
       return state.isFullscreen;
     }
@@ -134,6 +137,7 @@ export default new Vuex.Store({
     isLoggedIn: !!localStorage.getItem("user"),
     queSize: 0,
     defaultRowsPerPage: 12,
+    rowsPerPageItems: [6,12,24,36,48,96,144,288,480,960],
     isFullscreen: false,
     lastScanDate: null,
     authToken: null,

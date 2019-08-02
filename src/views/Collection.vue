@@ -184,7 +184,7 @@
         <v-card flat class="releases mt-2">
           <v-data-iterator
             :items="releaseItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="pagination.totalItems < pagination.rowsPerPage"
             :total-items="pagination.totalItems"
             :pagination.sync="pagination"
@@ -377,7 +377,6 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [6, 12, 24, 36, 60, 120, 500],
     collection: {
       mediumThumbnail: {},
       statistics: {},

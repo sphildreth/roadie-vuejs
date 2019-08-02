@@ -2,7 +2,7 @@
   <div>
     <Toolbar :menuItems="menuItems" :doMenuSelected=true :toolbarIcon="'label'"></Toolbar>
     <v-container fluid grid-list-md>
-      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
+      <v-data-iterator :items="items" :rows-per-page-items="this.$store.getters.rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
           <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
             <LabelCard :label="props.item"></LabelCard>
           </v-flex>
@@ -82,7 +82,6 @@
       }
     },
     data: () => ({
-      rowsPerPageItems: [6,12,36,60,120,500],
       doRandomize: false,      
       pagination: {
         page: 1,

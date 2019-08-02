@@ -158,7 +158,7 @@
           <v-card-text>
             <v-data-iterator
               :items="trackItems"
-              :rows-per-page-items="rowsPerPageItems"
+              :rows-per-page-items="this.$store.getters.rowsPerPageItems"
               :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"
               :total-items="trackPagination.totalItems"
               :pagination.sync="trackPagination"
@@ -336,7 +336,6 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [6, 12, 24, 36, 60, 120,500],
     playlist: {
       maintainer: {
         thumbnail: {},

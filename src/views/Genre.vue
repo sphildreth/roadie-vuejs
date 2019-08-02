@@ -142,7 +142,7 @@
             <v-card-text>
               <v-data-iterator
                 :items="artistItems"
-                :rows-per-page-items="rowsPerPageItems"
+                :rows-per-page-items="this.$store.getters.rowsPerPageItems"
                 :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage"
                 :total-items="artistPagination.totalItems"
                 :pagination.sync="artistPagination"
@@ -168,7 +168,7 @@
             <v-card-text>
               <v-data-iterator
                 :items="releaseItems"
-                :rows-per-page-items="rowsPerPageItems"
+                :rows-per-page-items="this.$store.getters.rowsPerPageItems"
                 :hide-actions="releasePagination.totalItems < releasePagination.rowsPerPage"
                 :total-items="releasePagination.totalItems"
                 :pagination.sync="releasePagination"
@@ -440,7 +440,7 @@ export default {
           this.genre.tagsList = this.genre.tagsList || [];
           this.genre.urLsList = this.genre.urLsList || [];
         })
-        .then(response => {
+        .then(() => {
           this.updateArtistData();
           this.updateReleaseData();
         })
@@ -524,11 +524,9 @@ export default {
   },
   data: () => ({
     loading: true,
-    rowsPerPageItems: [6, 12, 24, 36, 60, 120, 500],
     showMergingGenre: false,
     genreImageSearchQuery: "",
     genreImageSearchItems: [],    
-    showMergingGenre: false,
     searchGenreLoading: false,
     selectedMergeGenre: null,
     searchForMergeGenre: null,     

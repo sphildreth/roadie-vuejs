@@ -203,7 +203,7 @@
         <v-card flat class="artists mt-2">
           <v-data-iterator
             :items="artistItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage"
             :total-items="artistPagination.totalItems"
             :pagination.sync="artistPagination"
@@ -555,7 +555,6 @@ export default {
   },
   data: () => ({
     loading: true,
-    rowsPerPageItems: [6, 12, 24, 36, 60, 120, 500],
     labelImageSearchQuery: "",
     labelImageSearchItems: [],    
     showMergingLabel: false,

@@ -19,7 +19,7 @@
         class="elevation-1"
         :pagination.sync="userPagination"
         :loading="userLoading"
-        :rows-per-page-items="userRowsPerPageItems"
+        :rows-per-page-items="this.$store.getters.rowsPerPageItems"
         :total-items="userPagination.totalItems"
       >
         <template slot="items" slot-scope="props">
@@ -190,7 +190,6 @@ export default {
       { title: "Scan Library", class: "hidden-xs-only", click: "s:ScanLibrary" }
     ],
     userItems: [],
-    userRowsPerPageItems: [6,12, 25, 50, 100],
     userLoading: true,
     userPagination: {
       page: 1,

@@ -2,7 +2,7 @@
   <div>
     <Toolbar :menuItems="menuItems" :doMenuSelected=true :toolbarIcon="'supervised_user_circle'"></Toolbar>
     <v-container fluid grid-list-md>
-      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
+      <v-data-iterator :items="items" :rows-per-page-items="this.$store.getters.rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
           <v-flex slot="item" slot-scope="props" xs12 sm6 lg2>
             <UserCard :user="props.item" :showStats="true"></UserCard>            
           </v-flex>
@@ -47,7 +47,6 @@
       }
     },
     data: () => ({
-      rowsPerPageItems: [6,12,36,60,120,500],
       pagination: {
         page: 1,
         rowsPerPage: 36,

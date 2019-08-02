@@ -4,7 +4,7 @@
     <v-container fluid grid-list-md>
       <v-data-iterator
         :items="items"
-        :rows-per-page-items="rowsPerPageItems"
+        :rows-per-page-items="this.$store.getters.rowsPerPageItems"
         :hide-actions="pagination.totalItems < pagination.rowsPerPage"
         :total-items="pagination.totalItems"
         :pagination.sync="pagination"
@@ -99,7 +99,6 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [6,12,36,60,120,500],
     loading: true,
     currentView: "",
     pagination: {

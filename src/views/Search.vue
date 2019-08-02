@@ -123,7 +123,7 @@
         <v-card-text>
           <v-data-iterator
             :items="artistItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="artistPagination.totalItems < artistPagination.rowsPerPage"
             :total-items="artistPagination.totalItems"
             :pagination.sync="artistPagination"
@@ -147,7 +147,7 @@
         <v-card-text>
           <v-data-iterator
             :items="collectionItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="collectionPagination.totalItems < collectionPagination.rowsPerPage"
             :total-items="collectionPagination.totalItems"
             :pagination.sync="collectionPagination"
@@ -170,7 +170,7 @@
         <v-card-text>
           <v-data-iterator
             :items="genreItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="genrePagination.totalItems < genrePagination.rowsPerPage"
             :total-items="genrePagination.totalItems"
             :pagination.sync="genrePagination"
@@ -193,7 +193,7 @@
                 <v-card-text>
           <v-data-iterator
             :items="labelItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="labelPagination.totalItems < labelPagination.rowsPerPage"
             :total-items="labelPagination.totalItems"
             :pagination.sync="labelPagination"
@@ -216,7 +216,7 @@
         <v-card-text>
           <v-data-iterator
             :items="playlistItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="playlistPagination.totalItems < playlistPagination.rowsPerPage"
             :total-items="playlistPagination.totalItems"
             :pagination.sync="playlistPagination"
@@ -239,7 +239,7 @@
         <v-card-text>
           <v-data-iterator
             :items="releaseItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="releasePagination.totalItems < releasePagination.rowsPerPage"
             :total-items="releasePagination.totalItems"
             :pagination.sync="releasePagination"
@@ -274,7 +274,7 @@
         <v-card-text>
           <v-data-iterator
             :items="trackItems"
-            :rows-per-page-items="rowsPerPageItems"
+            :rows-per-page-items="this.$store.getters.rowsPerPageItems"
             :hide-actions="trackPagination.totalItems < trackPagination.rowsPerPage"
             :total-items="trackPagination.totalItems"
             :pagination.sync="trackPagination"
@@ -725,7 +725,6 @@ export default {
     releasesLoading: true,
     tracksLoading: true,
     playlistsLoading: true,
-    rowsPerPageItems: [6, 12, 36, 60, 120, 500],
     currentView: "",
     artistPagination: {
       page: 1,

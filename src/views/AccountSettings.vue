@@ -127,7 +127,7 @@
             name="recentlyPlayedLimit"
           ></v-text-field>
         <v-select
-          :items="rowsPerPageItems"
+          :items="this.$store.getters.rowsPerPageItems"
           v-model="profile.defaultRowsPerPage"
           label="Default Rows Per Page"
           data-vv-name="profile.defaultRowsPerPage"
@@ -400,7 +400,6 @@ export default {
     },
     originalEmail: "",
     originalUsername: "",
-    rowsPerPageItems: [6,12,36,60,120,500],
     menuItems: [
       { title: "Save", class: "hidden-xs-only", click: "as:Save" },
       { title: "Cancel", class: "hidden-xs-only", click: "as:Cancel" }
