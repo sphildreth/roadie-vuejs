@@ -35,6 +35,7 @@ export default {
   mixins: [trackMixin],
   components: { TrackCard, Toolbar },
   created() {
+    this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;    
     EventBus.$on("t:viewRandom", this.viewRandom);
     EventBus.$on("t:viewRecentlyAdded", this.viewRecentlyAdded);
     EventBus.$on("t:viewStarred", this.viewStarred);
@@ -169,7 +170,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120, 500],
+    rowsPerPageItems: [6,12,36,60,120,500],
     doRandomize: false,
     filterFavoriteOnly: false,
     pagination: {

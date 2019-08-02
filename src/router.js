@@ -115,6 +115,15 @@ var router = new VueRouter({
       }
     },    
     {
+      path: '/genre/:id',
+      name: 'genre',
+      props: true,      
+      component: () => import(/* webpackChunkName: "genre" */ './views/Genre.vue'),
+      meta: {
+        guest: false
+      }
+    },     
+    {
       path: '/help',
       name: 'help',
       component: () => import(/* webpackChunkName: "help" */ './views/Help.vue'),
@@ -301,6 +310,8 @@ var router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   window.favIcon.reset();
+  window.currentRoute = to;
+  window.prevRoute = from;
   document.title = process.env.VUE_APP_APP_NAME;
   if(to.matched.some(record => !record.meta.guest)) {
     if (!store.state.isLoggedIn) {

@@ -37,7 +37,7 @@
                 </v-flex>
                 <v-flex xs9 class="title">
                   <v-layout row wrap>
-                    <v-flex xs4 class="mt-2" xs8 md3>
+                    <v-flex xs4 class="mt-2" xs8 lg4>
                       <UserCard :user="playlist.maintainer"></UserCard>
                     </v-flex>
                   </v-layout>
@@ -167,7 +167,7 @@
               row
               wrap
             >
-              <v-flex slot="item" slot-scope="props" xs12 sm6>
+              <v-flex slot="item" slot-scope="props" d-flex xs12 md6>
                 <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
               </v-flex>
             </v-data-iterator>
@@ -192,6 +192,7 @@ export default {
     id: String
   },
   created() {
+    this.trackPagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;    
     EventBus.$on("pl:AddToQue", this.addToQue);
     EventBus.$on("pl:PlayNow", this.playNow);
     EventBus.$on("pl:Delete", this.delete);

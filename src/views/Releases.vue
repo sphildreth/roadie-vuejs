@@ -12,7 +12,7 @@
         row
         wrap
       >
-        <v-flex slot="item" slot-scope="props" xs12 sm6 lg3 xl2>
+        <v-flex slot="item" slot-scope="props" xs12 sm6 lg4 xl3>
           <ReleaseCard :release="props.item"></ReleaseCard>
         </v-flex>
       </v-data-iterator>
@@ -32,6 +32,7 @@ export default {
     view: String
   },  
   created() {
+    this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;    
     EventBus.$on("r:viewRandom", this.viewRandom);
     EventBus.$on("r:viewRecentlyAdded", this.viewRecentlyAdded);history
     EventBus.$on("r:viewStarred", this.viewStarred);
@@ -179,7 +180,7 @@ export default {
     },
   },
   data: () => ({
-    rowsPerPageItems: [12, 36, 60, 120,500],
+    rowsPerPageItems: [6,12,36,60,120,500],
     doRandomize: true,
     filterFavoriteOnly: false,
     currentView: "",

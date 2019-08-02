@@ -7,15 +7,19 @@
       </router-link>
       <v-spacer></v-spacer>
       <v-text-field 
+        v-if="displaySearch"
         class="search-input"
         name="searchInput"
-        label="Search"
         append-icon="search"
         single-line
         solo
         @keyup.native="search"
         v-model="searchQuery"
-      ></v-text-field>
+      >
+          <template v-slot:label>
+            {{ searchLabel }}
+          </template>      
+      </v-text-field>
       <v-icon
         @click="showHelp"
         class="ml-1 pointer"
@@ -132,6 +136,23 @@ export default {
       this.rightDrawer = !this.rightDrawer;
     }
   },
+  watch: {
+    $route(to) {
+      var r = to.name;
+      this.searchLabel = "Search All";
+      switch(r) {
+        case "artists":
+        case "collections":
+        case "genres":
+        case "labels":
+        case "playlists":
+        case "releases":
+        case "tracks":
+          this.searchLabel = "Search " + r.charAt(0).toUpperCase() + r.slice(1);
+          break;
+      }      
+    },
+  },  
   computed: {
     hide() {
       return (
@@ -140,6 +161,9 @@ export default {
         this.$route.path === "/register" ||
         this.$route.path === "/resetpassword"
       );
+    },
+    displaySearch() {
+      return true;
     },
     currentUserUsername() {
       return this.$store.state.isLoggedIn
@@ -160,6 +184,7 @@ export default {
   },
   data() {
     return {
+      searchLabel: "Search All",
       drawer: false,
       searchQuery: "",
       rightDrawer: false,

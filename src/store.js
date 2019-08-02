@@ -122,6 +122,9 @@ export default new Vuex.Store({
     usersAvatarUrl: (state) => {
       return (state.user && state.user.avatarUrl) ? state.user.avatarUrl + '?ts=' + new Date().getTime() : '';
     },
+    defaultRowsPerPage: (state) => {
+      return (state.user && state.user.defaultRowsPerPage) ? state.user.defaultRowsPerPage : state.defaultRowsPerPage;
+    },
     isFullscreen: (state) => {
       return state.isFullscreen;
     }
@@ -130,6 +133,7 @@ export default new Vuex.Store({
   state: {
     isLoggedIn: !!localStorage.getItem("user"),
     queSize: 0,
+    defaultRowsPerPage: 12,
     isFullscreen: false,
     lastScanDate: null,
     authToken: null,
@@ -143,7 +147,8 @@ export default new Vuex.Store({
       avatarUrl: null,
       isAdmin: false,
       timezone: null,
-      timeformat: null
+      timeformat: null,
+      defaultRowsPerPage: null
     }
   },
   mutations: {

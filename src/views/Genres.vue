@@ -2,32 +2,33 @@
   <div>
     <Toolbar :menuItems="menuItems" :doMenuSelected="true" :toolbarIcon="'category'"></Toolbar>
     <v-container fluid grid-list-md>
-      <v-data-table
-        :headers="headers"
+      <v-data-iterator
         :items="items"
-        class="elevation-1"
-        :pagination.sync="pagination"
-        :loading="loading"
         :rows-per-page-items="rowsPerPageItems"
+        :hide-actions="pagination.totalItems < pagination.rowsPerPage"
         :total-items="pagination.totalItems"
+        :pagination.sync="pagination"
+        content-tag="v-layout"
+        row
+        wrap
       >
-        <template slot="items" slot-scope="props">
-          <td><router-link :to="'/search/:genre ' + encodeURIComponent(props.item.genre.text)"><span class="secondary--text text--lighten-1 artist-name text-no-wrap text-truncate subheading font-weight-medium pointer">{{ props.item.genre.text }}</span></router-link></td>
-          <td>{{ props.item.artistCount }}</td>
-          <td>{{ props.item.releaseCount }}</td>
-        </template>
-      </v-data-table>
+        <v-flex slot="item" slot-scope="props" xs12 sm6 lg3>
+        <GenreCard :genre="props.item"></GenreCard>
+        </v-flex>
+      </v-data-iterator>
     </v-container>
   </div>
 </template>
 
 <script>
 import Toolbar from "@/components/Toolbar";
+import GenreCard from "@/components/GenreCard";
 import { EventBus } from "@/event-bus.js";
 
 export default {
-  components: { Toolbar },
+  components: { Toolbar, GenreCard },
   created() {
+    this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;    
     EventBus.$on("g:viewMostArtists", this.viewMostArtists);
     EventBus.$on("g:viewMostReleases", this.viewMostReleases);
     EventBus.$on("g:viewAll", this.viewAll);
@@ -98,7 +99,7 @@ export default {
     }
   },
   data: () => ({
-    rowsPerPageItems: [10, 25, 50, 100],
+    rowsPerPageItems: [6,12,36,60,120,500],
     loading: true,
     currentView: "",
     pagination: {

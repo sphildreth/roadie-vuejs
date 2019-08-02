@@ -126,6 +126,16 @@
             data-vv-name="profile.recentlyPlayedLimit"
             name="recentlyPlayedLimit"
           ></v-text-field>
+        <v-select
+          :items="rowsPerPageItems"
+          v-model="profile.defaultRowsPerPage"
+          label="Default Rows Per Page"
+          data-vv-name="profile.defaultRowsPerPage"
+          name="defaultRowsPerPage"
+          :error-messages="errors.collect('profile.defaultRowsPerPage')"     
+          required     
+        ></v-select>
+
         </v-tab-item>
         <v-tab-item>
           <v-text-field
@@ -264,7 +274,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + `/users/${this.$store.getters.userId}`
+          process.env.VUE_APP_API_URL + `/users/accountsettings/${this.$store.getters.userId}`
         )
         .then(rr => {
           this.profile = rr.data.data;
@@ -324,6 +334,7 @@ export default {
             playerTrackLimit: that.profile.playerTrackLimit,
             randomReleaseLimit: that.profile.randomReleaseLimit,
             recentlyPlayedLimit: that.profile.recentlyPlayedLimit,
+            defaultRowsPerPage: that.profile.defaultRowsPerPage,
             ftpUrl: that.profile.ftpUrl,
             ftpDirectory: that.profile.ftpDirectory,
             ftpUsername: that.profile.ftpUsername,
@@ -389,6 +400,7 @@ export default {
     },
     originalEmail: "",
     originalUsername: "",
+    rowsPerPageItems: [6,12,36,60,120,500],
     menuItems: [
       { title: "Save", class: "hidden-xs-only", click: "as:Save" },
       { title: "Cancel", class: "hidden-xs-only", click: "as:Cancel" }

@@ -19,6 +19,7 @@
   export default {
     components: { LabelCard, Toolbar }, 
     created() {
+      this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;      
       EventBus.$on('l:viewRandom', this.viewRandom);
       EventBus.$on('l:viewRecentlyAdded', this.viewRecentlyAdded);
       EventBus.$on('l:viewMostArtists', this.viewMostArtists);
@@ -81,7 +82,7 @@
       }
     },
     data: () => ({
-      rowsPerPageItems: [12, 36, 60, 120, 500],
+      rowsPerPageItems: [6,12,36,60,120,500],
       doRandomize: false,      
       pagination: {
         page: 1,

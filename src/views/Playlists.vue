@@ -19,6 +19,7 @@
   export default {
     components: { PlaylistCard, Toolbar }, 
     created() {
+      this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;      
       EventBus.$on("toolbarRefresh", this.updateData);
     },    
     beforeDestroy() {
@@ -46,7 +47,7 @@
       }
     },
     data: () => ({
-      rowsPerPageItems: [12, 36, 60, 120,500],
+      rowsPerPageItems: [6,12,36,60,120,500],
       pagination: {
         page: 1,
         rowsPerPage: 36,

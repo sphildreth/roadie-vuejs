@@ -38,6 +38,7 @@ import Confirm from "@/views/Confirm";
 export default {
   components: { CollectionCard, Toolbar, Confirm },
   created() {
+    this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;    
     EventBus.$on("toolbarRefresh", this.updateData);
     EventBus.$on("c:RescanAll", this.rescanAll);
     EventBus.$on("c:AddNew", this.addNew);
@@ -147,7 +148,7 @@ export default {
   data: () => ({
     missingData: null,
     currentView: "",    
-    rowsPerPageItems: [12, 36, 60, 120, 500],
+    rowsPerPageItems: [6,12,36,60,120,500],
     pagination: {
       page: 1,
       rowsPerPage: 36,

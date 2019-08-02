@@ -423,7 +423,10 @@ export default {
             });
             this.$nextTick(() => {
               this.label.mediumThumbnail.url = response.data.data.url;
-              
+              setTimeout(function() {
+                var image = document.getElementById("labelImage");
+                window.favIcon.image(image);
+              }, 500);               
             });
           }
         })
@@ -600,7 +603,7 @@ export default {
       thumbnailWidth: 100,
       maxFilesize: 5,
       dictDefaultMessage:
-        "<i class='fa fa-cloud-upload'></i>Upload new Artist image"
+        "<i class='fa fa-cloud-upload'></i>Upload new Label image"
     }    
   })
 };

@@ -3,8 +3,8 @@
     <Toolbar :menuItems="menuItems" :doMenuSelected=true :toolbarIcon="'supervised_user_circle'"></Toolbar>
     <v-container fluid grid-list-md>
       <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
-          <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
-            <UserCard :user="props.item"></UserCard>            
+          <v-flex slot="item" slot-scope="props" xs12 sm6 lg2>
+            <UserCard :user="props.item" :showStats="true"></UserCard>            
           </v-flex>
       </v-data-iterator>      
     </v-container> 
@@ -19,6 +19,7 @@
   export default {
     components: { UserCard, Toolbar }, 
     created() {
+      this.pagination.rowsPerPage = this.$store.getters.defaultRowsPerPage;      
       EventBus.$on("toolbarRefresh", this.updateData);
     },    
     beforeDestroy() {
@@ -46,13 +47,13 @@
       }
     },
     data: () => ({
-      rowsPerPageItems: [12, 36, 60, 120,500],
+      rowsPerPageItems: [6,12,36,60,120,500],
       pagination: {
         page: 1,
         rowsPerPage: 36,
         totalItems: 0,
-        sortBy: 'CreatedDate',
-        sortOrder: "DESC"
+        sortBy: 'user.text',
+        sortOrder: "ASC"
       },
       selected: [],
       menuItems: [],

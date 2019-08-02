@@ -305,7 +305,6 @@
                   row
                   wrap
                 >
-                  <span class="pt-2">asdfasdfsadf</span>
                   <v-flex slot="item" slot-scope="props" xs12>
                     <MediaCard
                       :media="props.item"

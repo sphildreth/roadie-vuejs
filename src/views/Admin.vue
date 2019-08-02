@@ -190,7 +190,7 @@ export default {
       { title: "Scan Library", class: "hidden-xs-only", click: "s:ScanLibrary" }
     ],
     userItems: [],
-    userRowsPerPageItems: [10, 25, 50, 100],
+    userRowsPerPageItems: [6,12, 25, 50, 100],
     userLoading: true,
     userPagination: {
       page: 1,
