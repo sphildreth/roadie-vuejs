@@ -435,7 +435,10 @@ export default {
               return false;
             }
             this.$router.go(-1);
-          });
+          })
+          .catch(err => {
+            EventBus.$emit("showSnackbar", { text: err.data[0], color: "red" });
+          })           
         } else {
           alert("Form is invalid!");
         }

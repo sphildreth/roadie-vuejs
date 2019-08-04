@@ -367,7 +367,10 @@ export default {
               this.$store.commit("signinSuccess", response.data);
               this.updateData();
             }
-          });
+          })
+          .catch(err => {
+            EventBus.$emit("showSnackbar", { text: err.data[0], color: "red" });
+          })           
         }
       });
     }
