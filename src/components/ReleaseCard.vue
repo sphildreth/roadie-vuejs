@@ -7,7 +7,7 @@
     :disabled="!release.isValid"
   >
     <v-layout>
-      <v-flex xs4 md3 :class="'release-status-' + release.status">
+      <v-flex xs4 md3 :class="'release-status-' + release.statusVerbose.toLowerCase()">
         <router-link style="display:block;clear:both;" :to="'/release/' + release.id">
           <v-img
             :src="release.thumbnail.url"

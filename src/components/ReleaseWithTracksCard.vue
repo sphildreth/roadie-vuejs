@@ -1,9 +1,18 @@
 <template>
-  <v-card class="mt-2 ma-1 release-with-tracks mb-2" hover :data-id="release.id">
+  <v-card
+    :class="'mt-2 ma-1 release-with-tracks mb-2 release-status-' +  release.statusVerbose.toLowerCase()"
+    hover
+    :data-id="release.id"
+  >
     <v-layout>
       <v-flex xs3>
         <router-link style="display:block;clear:both;" :to="'/release/' + release.id">
-        <v-img :src="release.thumbnail.url" :alt="release.release.text" max-width="80" class="ma-1"></v-img>
+          <v-img
+            :src="release.thumbnail.url"
+            :alt="release.release.text"
+            max-width="80"
+            class="ma-1"
+          ></v-img>
         </router-link>
       </v-flex>
       <v-flex xs9>
@@ -30,12 +39,16 @@
                   :title="release.release.text"
                   :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
                   class="release-title subheading font-weight-medium pointer"
-                >{{ release.release.text }}</div>                     
+                >{{ release.release.text }}</div>
               </router-link>
               <span class="on-hover pointer">
-                <span @click="playRelease()"><i class="fas fa-play mx-2" title="Play"></i></span>
-                <span @click="queRelease()"><i class="fas fa-headphones" title="Add To Que"></i></span>
-              </span>                 
+                <span @click="playRelease()">
+                  <i class="fas fa-play mx-2" title="Play"></i>
+                </span>
+                <span @click="queRelease()">
+                  <i class="fas fa-headphones" title="Add To Que"></i>
+                </span>
+              </span>
             </div>
             <div class="caption accent--text">
               <span class="info--text" title="Release Date">{{ release.releaseYear }}</span> |
@@ -64,19 +77,25 @@
                 <tbody>
                   <tr
                     v-for="track in media.tracks"
-                    :disabled="track.cssClass != 'Ok'"
+                    :disabled="track.status != 'Ok'"
                     :key="track.id"
-                    :class="track.cssClass == 'Missing' ? 'warning black--text' : ''"
+                    :class="'track-status-' + track.statusVerbose.toLowerCase()"
                   >
                     <td
-                      :class="'trackRating' + track.rating"
-                      class="track-number"
+                      :class="'track-number trackRating' + track.rating"
                     >{{ track.trackNumber | padNumber3 }}</td>
-                    <td :class="isPlayingTrack(track.id)" class="track-title secondary--text body-1 pointer on-show-hover">
+                    <td
+                      :class="isPlayingTrack(track.id)"
+                      class="track-title secondary--text body-1 pointer on-show-hover"
+                    >
                       <router-link :to="'/track/' + track.id">{{ track.title}}</router-link>
                       <span class="on-hover">
-                        <span @click="playTrack(track)"><i class="fas fa-play mx-2" title="Play"></i></span>
-                        <span @click="queTrack(track)"><i class="fas fa-headphones" title="Add To Que"></i></span>
+                        <span @click="playTrack(track)">
+                          <i class="fas fa-play mx-2" title="Play"></i>
+                        </span>
+                        <span @click="queTrack(track)">
+                          <i class="fas fa-headphones" title="Add To Que"></i>
+                        </span>
                       </span>
                     </td>
                     <td class="track-time right">{{ track.durationTime}}</td>
@@ -97,34 +116,33 @@ import trackMixin from "@/mixins/track.js";
 
 export default {
   name: "ReleaseWithTracksCard",
-  mixins: [releaseMixin,trackMixin],
+  mixins: [releaseMixin, trackMixin],
   props: {
     release: Object
   },
   methods: {
     isPlayingTrack: function(trackId) {
-      return this.$store.getters.playingIndex.trackId == trackId ? 'playing-track' : ''
+      return this.$store.getters.playingIndex.trackId == trackId
+        ? "playing-track"
+        : "";
     },
     playRelease: async function() {
-      this.$playQue.deleteAll()
-      .then(() => {
+      this.$playQue.deleteAll().then(() => {
         this.addReleaseToQue(this.release.id);
       });
     },
     queRelease: async function() {
       this.addReleaseToQue(this.release.id);
-    },    
+    },
     playTrack: async function(track) {
-      this.$playQue.deleteAll()
-      .then(() => {
+      this.$playQue.deleteAll().then(() => {
         this.queTrack(track);
-      });      
+      });
     },
     queTrack: async function(track) {
-      this.getTrackDetail(track.id)
-      .then(response => {
+      this.getTrackDetail(track.id).then(response => {
         this.addTrackToQue(response.data.data);
-      })      
+      });
     }
   },
   computed: {},
@@ -167,18 +185,6 @@ export default {
 .release-with-tracks .track-number {
   width: 30px;
 }
-/* .release-with-tracks .track-title {
-        -ms-text-overflow: ellipsis;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        text-align: left;
-    }
-    .release-with-tracks .track-time {
-        float: right;
-    }
-     */
-
 .release-with-tracks .release-card .v-card__text {
   margin: 0;
   padding: 5px 7px;
@@ -194,25 +200,18 @@ export default {
 .release-with-tracks td.right {
   text-align: right;
 }
-tr.Missing td {
-  border: 1px solid red;
-}
 .release-with-tracks .media-number {
   float: right;
 }
-
 .release-with-tracks .on-hover {
   display: none;
 }
-
 .release-with-tracks .inline-block {
   display: inline-block;
 }
-
 .release-with-tracks .on-show-hover:hover .on-hover {
   display: inline-block;
 }
-
 .release-with-tracks .trackRating1 {
   background: linear-gradient(
     to right,
@@ -222,7 +221,6 @@ tr.Missing td {
     transparent 100%
   );
 }
-
 .release-with-tracks .trackRating2 {
   background: linear-gradient(
     to right,
@@ -232,7 +230,6 @@ tr.Missing td {
     transparent 100%
   );
 }
-
 .release-with-tracks .trackRating3 {
   background: linear-gradient(
     to right,
@@ -242,7 +239,6 @@ tr.Missing td {
     transparent 100%
   );
 }
-
 .release-with-tracks .trackRating4 {
   background: linear-gradient(
     to right,
@@ -252,7 +248,6 @@ tr.Missing td {
     transparent 100%
   );
 }
-
 .release-with-tracks .trackRating5 {
   background: linear-gradient(
     to right,

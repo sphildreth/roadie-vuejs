@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :class="track.cssClass"
+    :class="'track-status-' + track.statusVerbose.toLowerCase()"
     class="track-card ml-2 pt-1"
     hover
     :data-playurl="track.trackPlayUrl"
@@ -231,9 +231,6 @@ export default {
   margin: 0px 15px 0px 5px;
   height: 90px;
   padding-top: 15px;
-}
-.track-card.Missing {
-  border: 1px solid yellow !important;
 }
 .track-card .track-selector {
   float: left;

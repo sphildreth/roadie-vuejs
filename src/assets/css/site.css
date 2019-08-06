@@ -53,17 +53,17 @@ blockquote p {
   left: 0;
 }
 
-
-
-/* Incomplete */
-.release-status-3 {
-  border: 1px solid lightcoral;
+.release-status-incomplete {
+  border: 1px solid lightcoral !important;
 }
 
-/* Missing */
-.release-status-4 {
-  border: 1px solid red;
+.release-with-tracks.release-status-incomplete table {
+  border-collapse: collapse;
 }
+.release-status-missing, .track-status-missing {
+  border: 1px solid yellow !important;
+}
+
 
 .release-rank, .artist-rank { 
   font-size: 8px;
