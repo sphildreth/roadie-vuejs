@@ -1,5 +1,6 @@
 <template>
   <v-card
+    v-if="loaded"
     :class="'track-status-' + track.statusVerbose.toLowerCase()"
     class="track-card ml-2 pt-1"
     hover
@@ -28,7 +29,7 @@
             small
             class="favorite pointer"
             @click.native="favoriteToggle"
-            :color="userRating.isFavorite ? 'red' : 'accent'"
+            :color="userRating.isFavorite === true ? 'red' : 'accent'"
             @change.native="favoriteToggle"
           >favorite</v-icon>
           <v-rating
@@ -44,7 +45,7 @@
             small
             class="hated pointer"
             @click.native="dislikeToggle"
-            :color="userRating.isDisliked ? 'green' : 'accent'"
+            :color="userRating.isDisliked === true ? 'green' : 'accent'"
             @change.native="dislikeToggle"
           >far fa-thumbs-down</v-icon>
         </v-layout>
@@ -141,50 +142,32 @@ export default {
     mediaCount: Number,
     doShowSelector: Boolean
   },
-  async mounted() {
-    if (this.userRating.isDisliked === undefined) {
-      this.userRating.isDisliked = false;
-    }
-    if (this.userRating.isFavorite === undefined) {
-      this.userRating.isFavorite = false;
-    }
-  },
   methods: {
     selectedTrack: function(e) {
       var isTrackSelected = e.target.checked;
-      this.$nextTick(() => {
-        EventBus.$emit(
-          isTrackSelected ? "t:selected" : "t:unselected",
-          this.track
-        );
-      });
+      EventBus.$emit(
+        isTrackSelected ? "t:selected" : "t:unselected",
+        this.track
+      );
     },
     favoriteToggle: function() {
-      this.$nextTick(() => {
-        EventBus.$emit("t:favoriteToggle", {
-          trackId: this.track.id,
-          isFavorite: !this.userRating.isFavorite
-        });
-        this.userRating.isFavorite = !this.userRating.isFavorite;
-        this.track.userRating = this.userRating;
+      this.track.userRating.isFavorite = !this.track.userRating.isFavorite;        
+      EventBus.$emit("t:favoriteToggle", {
+        trackId: this.track.id,
+        isFavorite: this.track.userRating.isFavorite
       });
     },
     dislikeToggle: function() {
-      this.$nextTick(() => {
-        EventBus.$emit("t:dislikeToggle", {
-          trackId: this.track.id,
-          isDisliked: !this.userRating.isDisliked
-        });
-        this.userRating.isDisliked = !this.userRating.isDisliked;
-        this.track.userRating = this.userRating;
+      this.track.userRating.isDisliked = !this.track.userRating.isDisliked;        
+      EventBus.$emit("t:dislikeToggle", {
+        trackId: this.track.id,
+        isDisliked: this.track.userRating.isDisliked
       });
     },
     ratingChanged: function() {
-      this.$nextTick(() => {
-        EventBus.$emit("t:ratingChange", {
-          trackId: this.track.id,
-          newVal: this.rating
-        });
+      EventBus.$emit("t:ratingChange", {
+        trackId: this.track.id,
+        newVal: this.rating
       });
     },
     playTrack: async function(track) {
@@ -198,20 +181,33 @@ export default {
       });
     }
   },
-  computed: {
-    userRating: function() {
-      let userRating = {
+  async mounted() {
+    this.track = this.track || {};
+    if(!this.track.userRating || this.track.userRating === undefined)
+    {
+      this.track.userRating = {
         rating: 0,
         isFavorite: false,
         isDisliked: false
       };
-      if (this.track && this.track.userRating) {
-        return this.track.userRating;
-      }
-      return userRating;
     }
+    if (this.track.userRating.isDisliked === undefined) {
+      this.track.userRating.isDisliked = false;
+    }
+    if (this.track.userRating.isFavorite === undefined) {
+      this.track.userRating.isFavorite = false;
+    }   
+    this.userRating = this.track.userRating;
+    this.loaded = true;
   },
-  data: () => ({})
+  data: () => ({
+    userRating: {
+      rating: 0,
+      isFavorite: false,
+      isDisliked: false
+    },
+    loaded: false
+  })
 };
 </script>
 
