@@ -527,9 +527,11 @@ export default {
         });
     },
     queModified: function(info) {
+      this.doAutoPlay = true;      
       if (this.hide || (info && info.totalCount === 0)) {
         this.stop();
         this.loaded = false;
+        this.doAutoPlay = false;
         return;
       }
       this.$nextTick(() => {
@@ -780,7 +782,8 @@ export default {
         html5: true,
         loop: this.loop,
         src: this.currentTrack.trackPlayUrl,
-        autoplay: true,
+        autoplay: this.doAutoPlay,
+        format: ['mp3'],
         onplay: () => {
           this.startedPlayingCurrentTrack = this.$moment().format();
           this.updatePlaying();
@@ -884,6 +887,7 @@ export default {
     }
   },
   data: () => ({
+    doAutoPlay: false,
     isRandomized: false,
     startedPlayingCurrentTrack: null,
     smallPlayer: false,
