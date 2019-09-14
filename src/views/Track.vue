@@ -79,6 +79,7 @@
                   <td v-if="props.item.sourceId">
                     <a
                       v-bind:href="props.item.url + props.item.sourceId"
+                      rel="noopener noreferrer"
                       target="_blank"
                     >{{ props.item.sourceId }}</a>
                   </td>

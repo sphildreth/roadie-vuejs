@@ -11,7 +11,7 @@
             <dt>Artist</dt>
             <dd>Someone who either creates a Release or creates/contributes to Tracks on a Release.</dd>
             <dd>
-              <a href="https://en.wikipedia.org/wiki/Billy_Joel" target="_blank">
+              <a href="https://en.wikipedia.org/wiki/Billy_Joel" rel="noopener noreferrer" target="_blank">
                 <i>Billy Joel</i>
               </a> is an example of an Artist who creates Releases.
             </dd>
@@ -22,7 +22,7 @@
             <dd>A collection of Tracks put out by an Artist on various mediums.</dd>
             <dd>These can be physical Releases (vinyl albums, Compact Discs, etc.) or digital Releases.</dd>
             <dd>
-              <a href="https://en.wikipedia.org/wiki/52nd_Street_(album)" target="_blank">
+              <a href="https://en.wikipedia.org/wiki/52nd_Street_(album)" rel="noopener noreferrer" target="_blank">
                 <i>52nd Street</i>
               </a> is an example of a Release.
             </dd>
@@ -183,8 +183,8 @@
         </v-card-title>
         <v-card-text>
           <p>You can use
-            <a href="http://www.subsonic.org" target="_blank">Subsonic</a>
-            <a href="http://www.subsonic.org/pages/apps.jsp" target="_blank">Applications</a> to connect via the Subsonic API layer built into Roadie. This will allow you to play tracks via the application on your mobile device (or other platforms). This is the recommended way to play tracks on the go to be able to stream via Bluetooth in automobiles to display track information on the automobiles built in stereo.
+            <a href="http://www.subsonic.org" rel="noopener noreferrer" target="_blank">Subsonic</a>
+            <a href="http://www.subsonic.org/pages/apps.jsp" rel="noopener noreferrer" target="_blank">Applications</a> to connect via the Subsonic API layer built into Roadie. This will allow you to play tracks via the application on your mobile device (or other platforms). This is the recommended way to play tracks on the go to be able to stream via Bluetooth in automobiles to display track information on the automobiles built in stereo.
           </p>
           <p>Under your 'Account Settings' the setting 'Third Party API Token' allows you to set a 'password' to use in the Subsonic application that should be different than your user password. This way you are never supplying your real password to a third party application</p>
           <p>You would use your username you use to log into this site for the

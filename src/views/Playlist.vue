@@ -79,7 +79,7 @@
                   <v-list-tile :key="`u-${name}-${index}`">
                     <v-list-tile-content>
                       <v-list-tile-title>
-                        <a v-bind:href="name" target="_blank">{{ name }}</a>
+                        <a v-bind:href="name" rel="noopener noreferrer" target="_blank">{{ name }}</a>
                       </v-list-tile-title>
                     </v-list-tile-content>
                   </v-list-tile>
