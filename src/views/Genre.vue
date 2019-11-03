@@ -313,6 +313,9 @@ export default {
         )
         .then(response => {
           this.genreImageSearchItems = response.data.data;
+          if(this.genreImageSearchItems.length == 0) {
+            this.genreImageSearchItems = [ "No Results "];
+          }           
           setTimeout(function() {
             var image = document.getElementById("genreImage");
             window.favIcon.image(image);

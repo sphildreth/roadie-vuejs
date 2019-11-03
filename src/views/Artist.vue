@@ -1282,6 +1282,9 @@ export default {
         )
         .then(response => {
           this.artistImageSearchItems = response.data.data;
+          if(this.artistImageSearchItems.length == 0) {
+            this.artistImageSearchItems = [ "No Results "];
+          }
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");

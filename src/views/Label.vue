@@ -447,6 +447,9 @@ export default {
         )
         .then(response => {
           this.labelImageSearchItems = response.data.data;
+          if(this.labelImageSearchItems.length == 0) {
+            this.labelImageSearchItems = [ "No Results "];
+          }            
           setTimeout(function() {
             var image = document.getElementById("labelImage");
             window.favIcon.image(image);

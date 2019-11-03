@@ -947,6 +947,9 @@ export default {
         )
         .then(response => {
           this.coverSearchItems = response.data.data;
+          if(this.coverSearchItems.length == 0) {
+            this.coverSearchItems = [ "No Results "];
+          }          
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
