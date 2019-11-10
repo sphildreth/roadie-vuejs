@@ -449,11 +449,7 @@ export default {
           this.labelImageSearchItems = response.data.data;
           if(this.labelImageSearchItems.length == 0) {
             this.labelImageSearchItems = [ "No Results "];
-          }            
-          setTimeout(function() {
-            var image = document.getElementById("labelImage");
-            window.favIcon.image(image);
-          }, 500);          
+          }                     
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -602,7 +598,7 @@ export default {
     menuItems: [],
     artistItems: [],
     dropzoneOptions: {
-      thumbnailWidth: 100,
+      thumbnailWidth: 100,    
       maxFilesize: 5,
       dictDefaultMessage:
         "<i class='fa fa-cloud-upload'></i>Upload new Label image"

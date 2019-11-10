@@ -314,12 +314,8 @@ export default {
         .then(response => {
           this.genreImageSearchItems = response.data.data;
           if(this.genreImageSearchItems.length == 0) {
-            this.genreImageSearchItems = [ "No Results "];
-          }           
-          setTimeout(function() {
-            var image = document.getElementById("genreImage");
-            window.favIcon.image(image);
-          }, 500);          
+            this.genreImageSearchItems = [{ mediaUrl: "", title: "No Results" }];
+          }                     
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -448,7 +444,21 @@ export default {
           this.updateReleaseData();
         })
         .finally(() => {
-          this.loading = false;
+          this.dropzoneOptions.url =
+            process.env.VUE_APP_API_URL +
+            "/genres/uploadImage/" +
+            this.genre.id;       
+          this.dropzoneOptions.headers = {
+            Authorization: "Bearer " + this.$store.getters.authToken
+          };               
+          this.$nextTick(() => {
+            document.title = this.genre.name;
+            setTimeout(function() {
+              var image = document.getElementById("genreImage");
+              window.favIcon.image(image);
+            }, 500);            
+            this.loading = false;
+          });
         });
     },
     updateArtistData: async function() {
