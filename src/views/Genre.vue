@@ -1,6 +1,11 @@
 <template>
   <div class="genre-detail-container">
-    <Toolbar :menuItems="menuItems" :adminItems="adminMenuItems" :toolbarIcon="'category'"></Toolbar>
+    <Toolbar 
+      :menuItems="menuItems" 
+      :adminItems="adminMenuItems" 
+      :searchItems="seachMenuItems"
+      :toolbarIcon="'category'">
+    </Toolbar>
     <v-container v-if="!loading && !showMergingGenre && genreImageSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
@@ -31,6 +36,12 @@
                   <img id="genreImage" :src="genreThumbnailUrl" style="display:none;" />
                 </v-flex>
                 <v-flex xs9 class="title">
+                  <v-text-field
+                    v-if="genre.sortName"
+                    v-bind:value="genre.sortName"
+                    label="Sort Name"
+                    readonly
+                  ></v-text-field>                  
                   <v-text-field
                     v-if="genre.normalizedName"
                     v-bind:value="genre.normalizedName"
@@ -275,6 +286,8 @@ export default {
     EventBus.$on("g:Edit", this.edit);
     EventBus.$on("g:MergeGenre", this.mergeGenre);
     EventBus.$on("g:FindGenreImage", this.findGenreImage);  
+    EventBus.$on("g:searchForGenre", this.searchForGenre);    
+    EventBus.$on("g:searchInternetName", this.internetNameSearch);     
     this.debouncedFindGenreImage = this.$_.debounce(this.findGenreImage, 800);      
     this.debouncedMergeGenreSearch = this.$_.debounce(
       this.doMergeGenreSearch,
@@ -289,6 +302,8 @@ export default {
     EventBus.$off("g:MergeGenre", this.mergeGenre);
     EventBus.$off("g:FindGenreImage", this.findGenreImage);   
     EventBus.$off("g:MergeGenre", this.mergeGenre);    
+    EventBus.$off("g:searchForLabel", this.searchForGenre);    
+    EventBus.$off("g:searchInternetName", this.internetNameSearch);    
   },
   async mounted() {
     this.updateData();
@@ -298,6 +313,19 @@ export default {
     mergeGenre: function() {
       this.showMergingGenre = true;
     },
+    internetNameSearch: function() {
+      return this.internetSearch(this.searchQuery + " music genre");
+    },    
+    internetSearch: function(q) {
+      var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
+    },    
+    searchForGenre: function() {
+      this.$router.push({
+        name: "search",
+        params: { q: 'g: ' + this.genre.name }
+      });
+    },        
     coverDragUploadComplete: function() {
       this.genreImageSearchItems = [];
     },     
@@ -512,6 +540,9 @@ export default {
     }
   },
   computed: {
+    searchQuery() {
+      return this.genre.name;
+    },       
     genreThumbnailUrl() {
       return this.genre.mediumThumbnail.url; // + "?ts=" + new Date().getTime();
     },
@@ -566,6 +597,10 @@ export default {
     menuItems: [],
     artistItems: [],
     releaseItems: [],
+    seachMenuItems: [
+      { title: "Search for Genre",  click: "g:searchForGenre" },
+      { title: "Internet Name", click: "g:searchInternetName" }
+    ],     
     dropzoneOptions: {
       thumbnailWidth: 100,
       maxFilesize: 5,

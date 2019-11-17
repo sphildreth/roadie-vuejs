@@ -2,7 +2,7 @@
   import { Bar } from 'vue-chartjs'
 
   export default {
-    name: 'ReleasesByDateChart',
+    name: 'ReleasesByDecadeChart',
     extends: Bar,
     props: {
       chartdata: {

@@ -265,6 +265,7 @@ export default {
             this.label.mediumThumbnail.url + "?ts=" + new Date().getTime();
           this.label.alternateNames = this.label.alternateNames || [];
           this.loaded = true;
+          EventBus.$emit("loadingComplete");          
         });
     },
     save() {

@@ -58,6 +58,14 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
+                    <v-text-field
+                      v-if="release.sortTitle"
+                      v-bind:value="release.sortTitle"
+                      label="Sort Name"
+                      readonly
+                    ></v-text-field>                    
+                  </v-layout>
+                  <v-layout row wrap>
                     <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.releaseDate | shortDate"
@@ -72,7 +80,7 @@
                       <v-text-field v-bind:value="release.trackCount" label="Track Count" readonly></v-text-field>
                     </v-flex>                 
                   </v-layout>
-                  <v-layout row wrap>
+                  <v-layout row wrap>                 
                     <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.releaseType"

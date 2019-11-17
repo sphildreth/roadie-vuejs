@@ -124,6 +124,16 @@ var router = new VueRouter({
       }
     },     
     {
+      path: '/genre/edit/:id',
+      name: 'genreEdit',
+      props: true,
+      component: () => import(/* webpackChunkName: "labelEdit" */ './views/GenreEdit.vue'),
+      meta: {
+        guest: false,
+        is_editor: true
+      }
+    },     
+    {
       path: '/help',
       name: 'help',
       component: () => import(/* webpackChunkName: "help" */ './views/Help.vue'),

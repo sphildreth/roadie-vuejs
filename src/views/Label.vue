@@ -1,6 +1,11 @@
 <template>
   <div class="label-detail-container">
-    <Toolbar :menuItems="menuItems" :adminItems="adminMenuItems" :toolbarIcon="'label'"></Toolbar>
+    <Toolbar 
+      :menuItems="menuItems" 
+      :searchItems="seachMenuItems"
+      :adminItems="adminMenuItems" 
+      :toolbarIcon="'label'">
+    </Toolbar>
     <v-container v-if="!showMergingLabel && labelImageSearchItems.length === 0" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
@@ -303,6 +308,8 @@ export default {
     EventBus.$on("l:FindLabelImage", this.findLabelImage);
     EventBus.$on("l:Edit", this.edit);    
     EventBus.$on("l:MergeLabel", this.mergeLabel);
+    EventBus.$on("l:searchForLabel", this.searchForLabel);    
+    EventBus.$on("l:searchInternetName", this.internetNameSearch);    
     this.debouncedFindLabelImage = this.$_.debounce(this.findLabelImage, 800);
     this.debouncedMergeLabelSearch = this.$_.debounce(
       this.doMergeLabelSearch,
@@ -315,6 +322,8 @@ export default {
     EventBus.$off("l:FindLabelImage", this.findLabelImage);
     EventBus.$off("l:Edit", this.edit);        
     EventBus.$off("l:MergeLabel", this.mergeLabel);
+    EventBus.$off("l:searchForLabel", this.searchForLabel);    
+    EventBus.$off("l:searchInternetName", this.internetNameSearch);    
   },
   async mounted() {
     this.updateData();
@@ -323,6 +332,19 @@ export default {
     addToQue: function() {},
     mergeLabel: function() {
       this.showMergingLabel = true;
+    },     
+    internetNameSearch: function() {
+      return this.internetSearch(this.searchQuery + " record label");
+    },    
+    internetSearch: function(q) {
+      var url = "https://www.google.com/search?q=" + encodeURIComponent(q);
+      window.open(url, "_blank");
+    },    
+    searchForLabel: function() {
+      this.$router.push({
+        name: "search",
+        params: { q: 'l: ' + this.label.name }
+      });
     },    
     doMerge() {
       this.$axios
@@ -538,6 +560,9 @@ export default {
     }    
   },
   computed: {
+    searchQuery() {
+      return this.label.name;
+    },       
     labelThumbnailUrl() {
       return this.label.mediumThumbnail.url; // + "?ts=" + new Date().getTime();
     },    
@@ -597,6 +622,10 @@ export default {
     ],
     menuItems: [],
     artistItems: [],
+    seachMenuItems: [
+      { title: "Search for Label",  click: "l:searchForLabel" },
+      { title: "Internet Name", click: "l:searchInternetName" }
+    ],    
     dropzoneOptions: {
       thumbnailWidth: 100,    
       maxFilesize: 5,

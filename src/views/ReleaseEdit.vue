@@ -89,6 +89,18 @@
         ></v-text-field>
       </v-layout>
       <v-layout row>
+        <v-text-field
+          v-model="release.sortTitle"
+          label="Sort Title"
+          v-validate="'max:250'"
+          :counter="250"
+          data-vv-name="release.sortTitle"
+          name="sortTitle"
+          :error-messages="errors.collect('release.sortTitle')"
+          required
+        ></v-text-field>
+      </v-layout>      
+      <v-layout row>
         <v-flex xs4>
           <v-menu
             ref="releaseDate"

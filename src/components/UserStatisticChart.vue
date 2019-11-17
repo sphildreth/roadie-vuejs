@@ -1,15 +1,15 @@
 <script>
-  import { Bar } from 'vue-chartjs'
+  import { Pie } from 'vue-chartjs'
 
   export default {
-    name: 'ReleasesByDateChart',
-    extends: Bar,
+    name: 'UserStatisticChart',
+    extends: Pie,
     props: {
       chartdata: {
         type: Object,
         default: null
       },
-      options: {
+      options: {    
         type: Object,
         default: null
       }
