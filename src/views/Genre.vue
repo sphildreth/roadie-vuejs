@@ -406,7 +406,7 @@ export default {
       this.searchGenreLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/genres?filter=" + val + "&limit=10"
+          process.env.VUE_APP_API_URL + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.genresItems = [];

@@ -246,7 +246,7 @@ export default {
         return;
       }
       this.searchUsersLoading = true;
-      this.$axios.get(process.env.VUE_APP_API_URL + '/users?filter=' + val + "&limit=10")
+      this.$axios.get(process.env.VUE_APP_API_URL + '/users?filter=' + encodeURIComponent(val) + "&limit=10")
       .then(res => {
         this.lookupData.userItems = [];
         res.data.rows.forEach((u) => {

@@ -766,7 +766,7 @@ export default {
       this.searchReleasesLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/releases?filter=" + val + "&limit=10"
+          process.env.VUE_APP_API_URL + "/releases?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.releaseItems = [];

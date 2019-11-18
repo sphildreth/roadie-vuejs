@@ -538,7 +538,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + val + "&limit=10"
+          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(a => {
@@ -567,7 +567,7 @@ export default {
       this.searchGenreLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/genres?filter=" + val + "&limit=10"
+          process.env.VUE_APP_API_URL + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(gr => {

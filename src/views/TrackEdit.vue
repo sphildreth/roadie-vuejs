@@ -262,7 +262,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + val + "&limit=10"
+          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(a => {
