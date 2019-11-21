@@ -22,7 +22,7 @@
             <v-icon color="pink" class="mr-1 hidden-xs-only" small>fas fa-archive</v-icon>
             <span class="caption mr-1 hidden-xs-only">Last System Scan: {{ this.$store.getters.lastScanDate }}</span>
             <v-spacer></v-spacer>
-            <a href="https://github.com/sphildreth/roadie-vuejs" style="color:white;" rel="noopener noreferrer" target="_blank"><span class="caption mr-1">v1.0.5</span></a>
+            <a href="https://github.com/sphildreth/roadie-vuejs" style="color:white;" rel="noopener noreferrer" target="_blank"><span class="caption mr-1">v1.0.6</span></a>
           </v-footer>
           <v-bottom-sheet v-model="showPlayer" persistent full-width hide-overlay>
             <TrackPlayingCard></TrackPlayingCard>

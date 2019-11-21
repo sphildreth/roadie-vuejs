@@ -29,6 +29,19 @@ export default new Vuex.Store({
       }
       return state.lastScanDate;
     },
+    appName: (state) => {
+      if (!state.isLoggedIn) {
+        return null;
+      }
+      if (!state.user || !state.user.instanceName) {
+        var data = localStorage.getItem("user");
+        if (!data) {
+          return {};
+        }
+        state.user = JSON.parse(data);
+      }
+      return state.user.instanceName;      
+    },
     user: (state) => {
       if (!state.isLoggedIn) {
         return {};

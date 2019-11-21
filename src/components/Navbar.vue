@@ -175,6 +175,11 @@ export default {
         ? this.$store.getters.userId
         : "";
     },
+    appName() {
+      return this.$store.state.isLoggedIn
+        ? this.$store.getters.appName
+        : process.env.VUE_APP_APP_NAME;      
+    },
     currentUserAvatarUrl() {
       return this.$store.getters.usersAvatarUrl;
     },
@@ -188,7 +193,6 @@ export default {
       drawer: false,
       searchQuery: "",
       rightDrawer: false,
-      appName: process.env.VUE_APP_APP_NAME,
       links: [
         { 
           icon: "dashboard", 

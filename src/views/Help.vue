@@ -210,9 +210,17 @@
 </template>
 
 <script>
+import store from "@/store";
 export default {
+  store,  
+  computed: {
+    appName() {
+      return this.$store.state.isLoggedIn
+        ? this.$store.getters.appName
+        : process.env.VUE_APP_APP_NAME;      
+    }
+  },
   data: () => ({
-    appName: process.env.VUE_APP_APP_NAME,
     apiUrl: process.env.VUE_APP_API_URL
   })
 };

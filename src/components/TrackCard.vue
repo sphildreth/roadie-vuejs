@@ -10,9 +10,8 @@
     <v-layout row wrap>
       <v-flex
         xs12
-        :lg8="(track.trackArtist || release) || (track.trackArtist || release)"
+        :lg8="track.trackArtist || release"
         :lg12="!track.trackArtist && !release"
-        :xl7="track.trackArtist || release"
         :xl8="track.trackArtist || release"
         :xl11="!track.trackArtist && !release"
       >
