@@ -1,7 +1,7 @@
 <template>
     <v-card height="105px"  class="mb-2 collection-card" hover :data-id="collection.id" >
         <v-layout>
-            <v-flex xs3>
+            <v-flex xs3 md2>
                 <router-link :to="'/collection/' + collection.id">
                 <v-img
                     :src="collection.thumbnail.url"
@@ -13,28 +13,38 @@
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs9>
-                <v-card-title primary-title class="pa-0 ma-0">
-                <div>
-                    <router-link :to="'/collection/' + collection.id">                   
-                      <div :title="collection.collection.text" class="secondary--text text--lighten-1 collection-name subheading font-weight-medium pointer">{{ collection.collection.text }}</div>
-                    </router-link>
-                    <div>                    
-                      <v-progress-linear class="ma-0 mt-1 mb-1" :color="collection.percentComplete == 100 ? 'green' : 'secondary'" height="6" :value="collection.percentComplete" ></v-progress-linear>
-                      </div>
-                    <div class="caption accent--text">
-                      <v-icon
-                        v-if="collection.isLocked"
-                        style="float:left;"
-                        title="Collection is locked!"
-                        small
-                        color="warning"
-                      >lock</v-icon>                       
-                      <span title="Releases Count">{{ collection.collectionCount | padNumber3 }}</span> | <span title="Releases Found Count">{{ collection.collectionFoundCount | padNumber4 }}</span>
+            <v-flex xs9 md10>
+                <v-card-text primary-title class="pa-0 ma-0">
+                    <div>
+                        <router-link :to="'/collection/' + collection.id">                   
+                            <div 
+                                :title="collection.collection.text" 
+                                class="secondary--text text--lighten-1 collection-name text-no-wrap text-truncate subheading font-weight-medium pointer"
+                            >{{ collection.collection.text }}</div>
+                        </router-link>
+                        <div>                    
+                            <v-progress-linear 
+                                class="ma-0 mt-1 mb-1" 
+                                :color="collection.percentComplete == 100 ? 'green' : 'secondary'" 
+                                height="6" 
+                                :value="collection.percentComplete" 
+                            ></v-progress-linear>
+                        </div>
+                        <div class="caption accent--text">
+                            <v-icon
+                                v-if="collection.isLocked"
+                                style="float:left;"
+                                title="Collection is locked!"
+                                small
+                                color="warning"
+                            >lock</v-icon>                       
+                            <span title="Releases Count">{{ collection.collectionCount | padNumber3 }}</span> | <span title="Releases Found Count">{{ collection.collectionFoundCount | padNumber4 }}</span>
+                        </div>
+                        <div v-if="listNumber" class="caption accent--text">
+                            <span title="Rank/Number in Collection">&num;{{ listNumber | padNumber3 }} of {{ collection.collectionCount | padNumber3 }}</span>
+                        </div>
                     </div>
-                    <div v-if="listNumber" class="caption accent--text"><span title="Rank/Number in Collection">&num;{{ listNumber | padNumber3 }} of {{ collection.collectionCount | padNumber3 }}</span></div>
-                </div>
-                </v-card-title>
+                </v-card-text>
             </v-flex>
         </v-layout>
     </v-card>   

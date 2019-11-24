@@ -3,7 +3,15 @@
     <v-toolbar flat app dense>
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
       <router-link to="/" tag="div">
-        <v-toolbar-title class="text-uppercase pointer funky">{{ appName }}</v-toolbar-title>
+        <v-toolbar-title class="text-uppercase pointer funky">{{ appName }}
+          <span v-if="$isDebugEnv" class="yellow--text title">
+            <span class="hidden-sm-and-up"> XSmall</span>          
+            <span class="hidden-md-and-up hidden-xs-only"> Small</span>
+            <span class="hidden-lg-and-up hidden-sm-and-down"> Medium</span>          
+            <span class="hidden-xl-and-up hidden-xl-only hidden-md-and-down"> Large</span>          
+            <span class="hidden-lg-and-down"> XLarge</span>          
+          </span>
+        </v-toolbar-title>
       </router-link>
       <v-spacer></v-spacer>
       <v-text-field 

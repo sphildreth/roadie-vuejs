@@ -13,6 +13,8 @@ var numeral = require("numeral");
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$isDebugEnv = process.env.VUE_APP_IS_DEBUG === "true";
+
 Vue.use(playQue);
 
 var myApi = Axios.create({

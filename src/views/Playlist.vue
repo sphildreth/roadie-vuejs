@@ -4,6 +4,8 @@
       :menuItems="menuItems"
       :hasDeleteRights="hasModifyRights"
       :hasEditRights="hasModifyRights"
+      :bookmarked="playlist.userBookmarked"
+      :doShowBookmark="true"         
       :toolbarIcon="'playlist_play'"
     ></Toolbar>
     <v-container fluid grid-list-md>
@@ -199,6 +201,7 @@ export default {
     EventBus.$on("pl:Edit", this.edit);  
     EventBus.$on("pl:EditTracks", this.editTracks);  
     EventBus.$on("toolbarRefresh", this.updateData);
+    EventBus.$on("bookmarkToogle", this.toggleBookmark);
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -207,6 +210,7 @@ export default {
     EventBus.$off("pl:PlayNow", this.playNow);
     EventBus.$off("pl:Edit", this.edit);  
     EventBus.$off("pl:EditTracks", this.editTracks);      
+    EventBus.$off("bookmarkToogle", this.toggleBookmark);    
   },
   async mounted() {
     this.updateData();
@@ -217,6 +221,29 @@ export default {
     }
   },
   methods: {
+    toggleBookmark: async function() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setPlaylistBookmark/" +
+            this.playlist.id +
+            "/" +
+            !this.playlist.userBookmarked
+        )
+        .then(response => {
+          if (!this.playlist.userBookmarked) {
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
+          } else if (response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully removed bookmark"
+            });
+          }
+          this.playlist.userBookmarked = !this.playlist.userBookmarked;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },      
     playNow: function() {
       this.$playQue.deleteAll()
       .then(() => {

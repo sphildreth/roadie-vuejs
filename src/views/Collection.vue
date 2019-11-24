@@ -3,6 +3,8 @@
     <Toolbar
       :menuItems="menuItems" 
       :adminItems="adminMenuItems" 
+      :bookmarked="collection.userBookmarked"
+      :doShowBookmark="true"
       :toolbarIcon="'collections'"
     ></Toolbar>
     <v-container fluid grid-list-md>
@@ -221,6 +223,7 @@ export default {
     EventBus.$on("c:Rescan", this.rescan);  
     EventBus.$on("c:Delete", this.delete);   
     EventBus.$on("c:Edit", this.edit);
+    EventBus.$on("bookmarkToogle", this.toggleBookmark);    
   },
   beforeDestroy() {
     EventBus.$off("toolbarRefresh", this.updateData);
@@ -228,6 +231,7 @@ export default {
     EventBus.$off("c:Rescan", this.rescan);   
     EventBus.$off("c:Delete", this.delete);     
     EventBus.$off("c:Edit", this.edit);
+    EventBus.$off("bookmarkToogle", this.toggleBookmark);     
   },
   async mounted() {
     this.updateData();
@@ -244,6 +248,29 @@ export default {
     }
   },
   methods: {
+    toggleBookmark: async function() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setCollectionBookmark/" +
+            this.collection.id +
+            "/" +
+            !this.collection.userBookmarked
+        )
+        .then(response => {
+          if (!this.collection.userBookmarked) {
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
+          } else if (response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully removed bookmark"
+            });
+          }
+          this.collection.userBookmarked = !this.collection.userBookmarked;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },    
     showMissing: function() {
       this.showingMissing = !this.showingMissing;
       this.updateData();

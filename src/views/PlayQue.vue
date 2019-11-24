@@ -1,6 +1,10 @@
 <template>
   <div class="playque-container">
-    <Toolbar v-if="!isFullScreen" :menuItems="menuItems" :toolbarIcon="'headset'"></Toolbar>
+    <Toolbar 
+      v-if="!isFullScreen" 
+      :menuItems="menuItems" 
+      :toolbarIcon="'headset'"
+    ></Toolbar>
     <v-layout v-if="!isFullScreen" align-center row wrap>      
       <span class="mt-2 hidden-md-and-down">
         <v-btn @click="selectAllTracks" flat small>Select All</v-btn>
@@ -85,7 +89,7 @@
                 @click="toggleSelectedTrack($event, props.item)"
                 class="mr-2 track-selector hidden-md-and-down"
               >
-              <span @click="playTrack(props.item.track.id)" class="track-list-number" :class="props.item.track.played ? 'played' : 'pending'">
+              <span @click="playTrack(props.item.track.id)" class="track-list-number no-rainbow" :class="props.item.track.played ? 'played' : 'pending'">
                 {{ props.item.listNumber | padNumber3 }}
               </span>
               <v-icon
@@ -103,24 +107,33 @@
             <td class="hidden-md-and-down">
               <v-progress-linear
                 height="12"
-                background-color="secondary"
-                color="orange lighten-3 no-rainbow"
+                background-color="secondary"                
+                color="orange lighten-3"
                 :value="props.item.track.rating * 20"
               ></v-progress-linear>
             </td>
-            <td class="hidden-md-and-down">{{ props.item.track.mediaNumber | padNumber2 }}</td>
-            <td class="hidden-md-and-down">{{ props.item.track.playedCount | padNumber5 }}</td>
-            <td class="hidden-xs-only">{{ props.item.track.trackNumber | padNumber4 }}</td>
-            <td class="track-text">
+            <td class="hidden-md-and-down no-rainbow">{{ props.item.track.mediaNumber | padNumber2 }}</td>
+            <td class="hidden-md-and-down no-rainbow">{{ props.item.track.playedCount | padNumber5 }}</td>
+            <td class="hidden-xs-only no-rainbow">{{ props.item.track.trackNumber | padNumber4 }}</td>
+            <td 
+              class="no-rainbow track-text"              
+            >
               <router-link
-                class="body-1"
+                class="body-1 truncate-text"
+                :title="props.item.track.title"
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/track/' + props.item.track.id"
-              >{{ props.item.track.title }}</router-link>
-            </td>
+              >
+              <span 
+                class="track-title pointer"
+                :class="nowPlaying && (playingTrackId === props.item.track.id) ? 'track-title-playing' : ''"
+              >{{ props.item.track.title }}</span>
+              </router-link>
+            </td>                    
             <td class="box release-text">
               <router-link
-                class="body-1"
+                class="body-1 truncate-text"
+                :title="props.item.track.release.text"
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/release/' + props.item.track.release.value"
               >
@@ -134,10 +147,11 @@
                 >{{ props.item.track.release.text }}</span>
               </router-link>
             </td>
-            <td class="hidden-xs-only">{{ props.item.track.release.releaseDate | formattedYear }}</td>
+            <td class="hidden-xs-only no-rainbow">{{ props.item.track.release.releaseDate | formattedYear }}</td>
             <td class="box artist-text">
               <router-link
-                class="body-1"
+                class="body-1 truncate-text"
+                :title="props.item.track.artist.artist.text"                
                 :style="{ color: $vuetify.dark ? 'white' : 'black' }"
                 :to="'/artist/' + props.item.track.artist.artist.value"
               >
@@ -151,7 +165,7 @@
                 >{{ props.item.track.artist.artist.text }}</span>
               </router-link>
             </td>
-            <td class="hidden-md-and-down">
+            <td class="no-rainbow hidden-md-and-down">
               <span class="mr-2">{{ props.item.track.durationTime }}</span>
               <v-icon
                 color="red"
@@ -534,16 +548,16 @@ export default {
     newPlaylistDescription: "",
     selectedTracks: [],
     headers: [
-      { text: "Index", value: "listNumber", width: "120"},
+      { text: "Index", value: "listNumber", width: "100"},
       { text: "Rating", value: "track.rating", class:"hidden-md-and-down", width: "55" },
       { text: "Media", value: "track.mediaNumber", class:"hidden-md-and-down", width: "50" },
       { text: "Played", value: "track.playedCount", class:"hidden-md-and-down", width: "50" },
       { text: "Number", value: "track.trackNumber", width: "50" },
-      { text: "Track", value: "track.track.text" },
-      { text: "Release", value: "track.release.text" },
+      { text: "Track", value: "track.track.text", width: "25%" },
+      { text: "Release", value: "track.release.text", width: "15%" },
       { text: "Year", value: "track.release.releaseDate", width: "50" },
-      { text: "Artist", value: "track.artist.artist.text" },
-      { text: "Time", value: "track.durationTime", class:"hidden-md-and-down", width: "50" }
+      { text: "Artist", value: "track.artist.artist.text", width: "15%" },
+      { text: "Time", value: "track.durationTime", class:"hidden-md-and-down", width: "90" }
     ],
     smallHeaders: [
       { text: "Index", value: "listNumber", width: "10"},
@@ -601,6 +615,25 @@ export default {
 .playque-container table.v-table thead th:first-child,
 .playque-container table.v-table tbody th:first-child {
   padding: 0 8px;
+}
+.playque-container table {
+  table-layout: fixed;
+}
+.playque-container .track-title-playing {
+  -webkit-background-clip: text;
+  color: transparent;
+  background-clip: text;  
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+}
+.playque-container a {
+  text-decoration: none;
+}
+.playque-container table a.truncate-text { 
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 95%;
+  overflow: hidden;
+  display: inline-block;
 }
 .box {
   display: flex;

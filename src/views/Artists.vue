@@ -254,12 +254,3 @@ export default {
   })
 };
 </script>
-
-<style>
-.artist-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 190px;
-}
-</style>

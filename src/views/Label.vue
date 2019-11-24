@@ -3,6 +3,8 @@
     <Toolbar 
       :menuItems="menuItems" 
       :searchItems="seachMenuItems"
+      :bookmarked="label.userBookmarked"
+      :doShowBookmark="true"      
       :adminItems="adminMenuItems" 
       :toolbarIcon="'label'">
     </Toolbar>
@@ -310,6 +312,7 @@ export default {
     EventBus.$on("l:MergeLabel", this.mergeLabel);
     EventBus.$on("l:searchForLabel", this.searchForLabel);    
     EventBus.$on("l:searchInternetName", this.internetNameSearch);    
+    EventBus.$on("bookmarkToogle", this.toggleBookmark);
     this.debouncedFindLabelImage = this.$_.debounce(this.findLabelImage, 800);
     this.debouncedMergeLabelSearch = this.$_.debounce(
       this.doMergeLabelSearch,
@@ -324,11 +327,35 @@ export default {
     EventBus.$off("l:MergeLabel", this.mergeLabel);
     EventBus.$off("l:searchForLabel", this.searchForLabel);    
     EventBus.$off("l:searchInternetName", this.internetNameSearch);    
+    EventBus.$off("bookmarkToogle", this.toggleBookmark);
   },
   async mounted() {
     this.updateData();
   },
   methods: {
+    toggleBookmark: async function() {
+      this.$axios
+        .post(
+          process.env.VUE_APP_API_URL +
+            "/users/setLabelBookmark/" +
+            this.label.id +
+            "/" +
+            !this.label.userBookmarked
+        )
+        .then(response => {
+          if (!this.label.userBookmarked) {
+            EventBus.$emit("showSnackbar", { text: "Successfully bookmarked" });
+          } else if (response.data.isSuccess) {
+            EventBus.$emit("showSnackbar", {
+              text: "Successfully removed bookmark"
+            });
+          }
+          this.label.userBookmarked = !this.label.userBookmarked;
+        })
+        .finally(() => {
+          EventBus.$emit("loadingComplete");
+        });
+    },       
     addToQue: function() {},
     mergeLabel: function() {
       this.showMergingLabel = true;

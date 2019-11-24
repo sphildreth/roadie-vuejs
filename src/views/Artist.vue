@@ -144,7 +144,7 @@
                   <v-dialog v-model="showModal" content-class="modal-image-container">
                     <v-card @click="showModal = !showModal" >
                       <v-card-title class="headline">{{ modalImage.caption}}</v-card-title>
-                      <v-card-text class="grey">
+                      <v-card-text class="black">
                         <img
                           style="max-height:800px;"
                           class="modal-image"
@@ -314,7 +314,6 @@
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" slider-color="accent">
             <v-tab v-if="artist.alternateNamesList.length">Alternate Names</v-tab>
-            <v-tab v-if="artist.genres.length">Genres</v-tab>
             <v-tab v-if="artist.tagsList.length">Tags</v-tab>
             <v-tab v-if="artist.urLsList.length">Urls</v-tab>
             <v-tab-item v-if="artist.alternateNamesList.length">
@@ -329,18 +328,6 @@
                     v-if="index + 1 < artist.alternateNamesList.length"
                     :key="`adivider-${index}`"
                   ></v-divider>
-                </template>
-              </v-list>
-            </v-tab-item>
-            <v-tab-item v-if="artist.genres.length">
-              <v-list>
-                <template v-for="(name, index) in artist.genres">
-                  <v-list-tile :key="`g-${name}-${index}`">
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ name.text }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index + 1 < artist.genres.length" :key="`gdivider-${index}`"></v-divider>
                 </template>
               </v-list>
             </v-tab-item>
@@ -375,7 +362,8 @@
         <v-flex d-flex xs12 sm6>
           <v-tabs class="artist-lists" color="primary" slider-color="accent">
             <v-tab v-if="artist.associatedArtists.length">Associated Artists</v-tab>
-            <v-tab v-if="artist.similarArtists.length">similar Artists</v-tab>
+            <v-tab v-if="artist.similarArtists.length">Similar Artists</v-tab>
+            <v-tab v-if="artist.genres.length">Genres</v-tab>            
             <v-tab>Labels</v-tab>
             <v-tab-item v-if="artist.associatedArtists.length">
               <v-card flat class="artist-associations">
@@ -408,7 +396,23 @@
                   </v-flex>
                 </v-data-iterator>
               </v-card>
-            </v-tab-item>            
+            </v-tab-item>       
+            <v-tab-item v-if="artist.genres.length">
+              <v-card flat class="genres">
+                <v-data-iterator
+                  :items="artist.genres"
+                  :total-items="artist.genres ? artist.genres.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <GenreCard :genre="props.item"></GenreCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>                
+            </v-tab-item>                 
             <v-tab-item>
               <v-card flat class="artist-labels">
                 <v-data-iterator
@@ -424,7 +428,7 @@
                   </v-flex>
                 </v-data-iterator>
               </v-card>
-            </v-tab-item>
+            </v-tab-item>            
           </v-tabs>
         </v-flex>
       </v-layout>
@@ -668,6 +672,7 @@ import LabelCard from "@/components/LabelCard";
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import CollectionCard from "@/components/CollectionCard";
+import GenreCard from "@/components/GenreCard";
 import PlaylistCard from "@/components/PlaylistCard";
 import CommentCard from "@/components/CommentCard";
 import ReleaseWithTracksCard from "@/components/ReleaseWithTracksCard";
@@ -688,6 +693,7 @@ export default {
     LabelCard,
     ArtistCard,
     CommentCard,
+    GenreCard,    
     ReleaseCard,
     CollectionCard,
     PlaylistCard,

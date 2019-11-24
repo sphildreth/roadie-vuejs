@@ -12,7 +12,11 @@
       :doShowHated="true"
       :hated="release.userRating && release.userRating.isDisliked"
     ></Toolbar>
-    <v-container v-if="!loading && !showMergingRelease && coverSearchItems.length === 0" fluid grid-list-md>
+    <v-container
+      v-if="!loading && !showMergingRelease && coverSearchItems.length === 0"
+      fluid
+      grid-list-md
+    >
       <v-layout row wrap>
         <v-flex xs12 sm7 md7>
           <v-layout row wrap>
@@ -41,15 +45,14 @@
             <v-flex xs12>
               <v-layout row wrap>
                 <v-flex xs12 md3>
-                  <v-img 
-                    :src="releaseCoverUrl" 
-                    :alt="release.title" 
-                    class="ma-1" 
+                  <v-img
+                    :src="releaseCoverUrl"
+                    :alt="release.title"
+                    class="ma-1"
                     aspect-ratio="1"
-                    lazy-src="data:image/jpeg;base64,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"                    
-                    >
-                  </v-img>
-                  <img id="releaseImage" :src="releaseCoverUrl" style="display:none;">
+                    lazy-src="data:image/jpeg;base64,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"
+                  ></v-img>
+                  <img id="releaseImage" :src="releaseCoverUrl" style="display:none;" />
                 </v-flex>
                 <v-flex xs12 md9 class="title">
                   <v-layout row wrap>
@@ -63,7 +66,7 @@
                       v-bind:value="release.sortTitle"
                       label="Sort Name"
                       readonly
-                    ></v-text-field>                    
+                    ></v-text-field>
                   </v-layout>
                   <v-layout row wrap>
                     <v-flex xs4>
@@ -78,9 +81,9 @@
                     </v-flex>
                     <v-flex xs4>
                       <v-text-field v-bind:value="release.trackCount" label="Track Count" readonly></v-text-field>
-                    </v-flex>                 
+                    </v-flex>
                   </v-layout>
-                  <v-layout row wrap>                 
+                  <v-layout row wrap>
                     <v-flex xs4>
                       <v-text-field
                         v-bind:value="release.releaseType"
@@ -96,8 +99,13 @@
                       ></v-text-field>
                     </v-flex>
                     <v-flex xs4 v-if="release.rank">
-                      <v-text-field v-bind:value="release.rank + ' (#' + release.rankPosition + ')'" title="Calculated Rank (# Position)" label="Rank" readonly></v-text-field>
-                    </v-flex>                      
+                      <v-text-field
+                        v-bind:value="release.rank + ' (#' + release.rankPosition + ')'"
+                        title="Calculated Rank (# Position)"
+                        label="Rank"
+                        readonly
+                      ></v-text-field>
+                    </v-flex>
                   </v-layout>
                 </v-flex>
               </v-layout>
@@ -118,8 +126,8 @@
                         :src="image.thumbnailUrl"
                         class="grey lighten-2"
                         @click="showImageModal(release.images[index])"
-                        :data-id="index"                        
-                        @contextmenu="show"                        
+                        :data-id="index"
+                        @contextmenu="show"
                       ></v-img>
                     </v-flex>
                   </v-layout>
@@ -139,7 +147,7 @@
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </v-list-tile>
                     </v-list>
-                  </v-menu>                   
+                  </v-menu>
                   <v-dialog v-model="showModal" content-class="modal-image-container">
                     <v-card @click="showModal = !showModal">
                       <v-card-title class="headline">{{ modalImage.caption}}</v-card-title>
@@ -150,7 +158,7 @@
                           v-bind:src="modalImage.url"
                           v-bind:title="modalImage.caption"
                           v-bind:alt="modalImage.caption"
-                        >
+                        />
                       </v-card-text>
                     </v-card>
                   </v-dialog>
@@ -300,10 +308,10 @@
         </v-flex>
       </v-layout>
       <v-layout row wrap>
-        <v-flex d-flex xs12 md6>
+        <v-flex xs12 md6>
           <v-tabs class="release-lists" color="primary" v-model="releaseTab" slider-color="accent">
-            <v-tab>Tracks</v-tab>           
-            <v-tab-item class="">
+            <v-tab>Tracks</v-tab>
+            <v-tab-item class>
               <v-card flat class="tracks">
                 <v-data-iterator
                   :items="release.medias"
@@ -313,7 +321,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs12>
+                  <v-flex slot="item" slot-scope="props">
                     <MediaCard
                       :media="props.item"
                       :release="release"
@@ -325,7 +333,7 @@
             </v-tab-item>
           </v-tabs>
         </v-flex>
-        <v-flex d-flex xs12 md6>
+        <v-flex xs12 md6>
           <v-tabs class="release-lists" color="primary" slider-color="accent">
             <v-tab v-if="release.playlists.length > 0">Playlists</v-tab>
             <v-tab v-if="release.tagsList.length > 0">Tags</v-tab>
@@ -334,7 +342,9 @@
             <v-tab v-if="release.genres.length">Genres</v-tab>
             <v-tab v-if="release.labels.length > 0">Labels</v-tab>
             <v-tab v-if="release.urLsList.length">Urls</v-tab>
-            <v-tab class="hidden-md-and-down">{{'Comments' + ( release.comments.length > 0 ? ' (' + release.comments.length + ')' : '') }}</v-tab>                                              
+            <v-tab
+              class="hidden-md-and-down"
+            >{{'Comments' + ( release.comments.length > 0 ? ' (' + release.comments.length + ')' : '') }}</v-tab>
             <v-tab-item v-if="release.playlists.length > 0">
               <v-card flat class="playlists">
                 <v-data-iterator
@@ -345,7 +355,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs12 md4>
+                  <v-flex slot="item" slot-scope="props" xs12 md6>
                     <PlaylistCard :playlist="props.item"></PlaylistCard>
                   </v-flex>
                 </v-data-iterator>
@@ -373,7 +383,7 @@
                   row
                   wrap
                 >
-                  <v-flex slot="item" slot-scope="props" xs12 lg6>
+                  <v-flex slot="item" slot-scope="props" xs12 md6>
                     <CollectionCard
                       :collection="props.item.collection"
                       :listNumber="props.item.listNumber"
@@ -398,16 +408,20 @@
               </v-list>
             </v-tab-item>
             <v-tab-item v-if="release.genres.length">
-              <v-list>
-                <template v-for="(name, index) in release.genres">
-                  <v-list-tile :key="`g-${name}-${index}`">
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ name.text }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider v-if="index + 1 < release.genres.length" :key="`gdivider-${index}`"></v-divider>
-                </template>
-              </v-list>
+              <v-card flat class="genres">
+                <v-data-iterator
+                  :items="release.genres"
+                  :total-items="release.genres ? release.genres.length : 0"
+                  content-tag="v-layout"
+                  hide-actions
+                  row
+                  wrap
+                >
+                  <v-flex slot="item" slot-scope="props" xs4>
+                    <GenreCard :genre="props.item"></GenreCard>
+                  </v-flex>
+                </v-data-iterator>
+              </v-card>             
             </v-tab-item>
             <v-tab-item v-if="release.labels.length > 0">
               <v-card flat class="labels">
@@ -451,7 +465,7 @@
               <v-flex>
                 <CommentCard :isNew="true" :addUrl="newCommentUrl"></CommentCard>
                 <div v-if="release.comments.length > 0">
-                  <hr class="ma-3"/>
+                  <hr class="ma-3" />
                   <v-data-iterator
                     :items="release.comments"
                     :total-items="release.comments ? release.comments.length : 0"
@@ -465,15 +479,18 @@
                     </v-flex>
                   </v-data-iterator>
                 </div>
-              </v-flex>              
-            </v-tab-item>              
-
+              </v-flex>
+            </v-tab-item>
           </v-tabs>
         </v-flex>
       </v-layout>
     </v-container>
     <confirm ref="confirm"></confirm>
-    <v-container v-if="!loading && !showMergingRelease && coverSearchItems.length > 0" fluid grid-list-md>
+    <v-container
+      v-if="!loading && !showMergingRelease && coverSearchItems.length > 0"
+      fluid
+      grid-list-md
+    >
       <v-flex xs1 offset-xs11>
         <v-btn color="warning" @click="coverSearchItems = []">Cancel</v-btn>
       </v-flex>
@@ -525,13 +542,7 @@
       </v-flex>
     </v-container>
     <v-container v-if="loading">
-        <v-progress-linear
-          v-if="loading"
-          height="2"
-          color="accent"
-          class="ma-0 pa-0"
-          indeterminate
-        ></v-progress-linear>
+      <v-progress-linear v-if="loading" height="2" color="accent" class="ma-0 pa-0" indeterminate></v-progress-linear>
     </v-container>
   </div>
 </template>
@@ -541,6 +552,7 @@ import Toolbar from "@/components/Toolbar";
 import LabelCard from "@/components/LabelCard";
 import ArtistCard from "@/components/ArtistCard";
 import CollectionCard from "@/components/CollectionCard";
+import GenreCard from "@/components/GenreCard";
 import PlaylistCard from "@/components/PlaylistCard";
 import MediaCard from "@/components/MediaCard";
 import CommentCard from "@/components/CommentCard";
@@ -559,12 +571,13 @@ export default {
     LabelCard,
     ArtistCard,
     CollectionCard,
-    CommentCard,        
+    CommentCard,
+    GenreCard,
     PlaylistCard,
     MediaCard,
     Confirm,
     vueDropzone: vue2Dropzone,
-    'vue-markdown': VueMarkdown
+    "vue-markdown": VueMarkdown
   },
   props: {
     id: String
@@ -574,7 +587,10 @@ export default {
     EventBus.$on("rr:PlayNow", this.playNow);
     EventBus.$on("rr:searchInternetTitle", this.internetTitleSearch);
     EventBus.$on("rr:searchInternetArtist", this.internetArtistSearch);
-    EventBus.$on("rr:searchInternetreleaseandTitle",this.searchInternetreleaseandTitle);
+    EventBus.$on(
+      "rr:searchInternetreleaseandTitle",
+      this.searchInternetreleaseandTitle
+    );
     EventBus.$on("rr:searchForTitle", this.searchForTitle);
     EventBus.$on("rr:searchForArtist", this.searchForArtist);
     EventBus.$on("toolbarRefresh", this.updateData);
@@ -593,12 +609,12 @@ export default {
     EventBus.$on("t:selected", track => this.addSelectedTrack(track));
     EventBus.$on("t:unselected", track => this.removeSelectedTrack(track));
     EventBus.$on("t:dislikeToggle", info => this.dislikeTrackToggle(info));
-    EventBus.$on("t:favoriteToggle", info => this.favoriteTrackToggle(info));       
+    EventBus.$on("t:favoriteToggle", info => this.favoriteTrackToggle(info));
     EventBus.$on("userTrackRatingChange", info => this.updateIfNeeded(info));
-    EventBus.$on("userTrackFavoriteChange",  info => this.updateIfNeeded(info));
+    EventBus.$on("userTrackFavoriteChange", info => this.updateIfNeeded(info));
     EventBus.$on("userTrackLikeChange", info => this.updateIfNeeded(info));
     EventBus.$on("addedComment", this.updateComments);
-    EventBus.$on("deletedComment", this.updateComments);    
+    EventBus.$on("deletedComment", this.updateComments);
     this.debouncedMergeReleaseSearch = this.$_.debounce(
       this.doMergeReleaseSearch,
       500
@@ -620,27 +636,29 @@ export default {
     EventBus.$off("rr:Delete", this.delete);
     EventBus.$off("rr:DeleteFiles", this.deleteWithFiles);
     EventBus.$off("rr:DeleteTracks", this.deleteTracks);
-    EventBus.$off("rr:DeleteTracksFiles", this.deleteTracksFiles);    
+    EventBus.$off("rr:DeleteTracksFiles", this.deleteTracksFiles);
     EventBus.$off("rr:MergeReleases", this.mergeReleases);
     EventBus.$off("rr:FindCover", this.findCover);
     EventBus.$off("rr:Edit", this.edit);
     EventBus.$off("t:selected");
     EventBus.$off("t:unselected");
     EventBus.$off("t:dislikeToggle", info => this.dislikeTrackToggle(info));
-    EventBus.$off("t:favoriteToggle", info => this.favoriteTrackToggle(info));      
+    EventBus.$off("t:favoriteToggle", info => this.favoriteTrackToggle(info));
     EventBus.$off("userTrackRatingChange");
     EventBus.$off("userTrackFavoriteChange");
     EventBus.$off("userTrackLikeChange");
     EventBus.$off("addedComment", this.updateComments);
-    EventBus.$off("deletedComment", this.updateComments);    
+    EventBus.$off("deletedComment", this.updateComments);
   },
   async mounted() {
     this.updateData();
   },
   computed: {
     newCommentUrl() {
-      return process.env.VUE_APP_API_URL + "/comments/add/release/" + this.release.id;
-    },    
+      return (
+        process.env.VUE_APP_API_URL + "/comments/add/release/" + this.release.id
+      );
+    },
     searchQuery() {
       return this.release.title;
     },
@@ -649,23 +667,51 @@ export default {
     },
     adminMenuItems() {
       let items = [];
-      if(this.$store.getters.isUserEditor) {
-        items.push({ title: "Edit", icon: "create", click: "rr:Edit" });        
-        items.push({ title: "Find Release Thumbnail", icon: "photo_library", click: "rr:FindCover" });
+      if (this.$store.getters.isUserEditor) {
+        items.push({ title: "Edit", icon: "create", click: "rr:Edit" });
+        items.push({
+          title: "Find Release Thumbnail",
+          icon: "photo_library",
+          click: "rr:FindCover"
+        });
         items.push({ title: "Rescan", icon: "refresh", click: "rr:Rescan" });
       }
-      if(this.$store.getters.isUserAdmin) {
-        items.push({ title: "Delete", icon: "delete", class: "warning--text", click: "rr:Delete" });
-        items.push({ title: "Delete (delete Files)", icon: "delete_forever", class: "warning--text", click: "rr:DeleteFiles" });
-        items.push({ title: "Tracks - Delete", icon: "delete_forever", class: "warning--text", click: "rr:DeleteTracks" });
-        items.push({ title: "Tracks - Delete (delete Files)", icon: "delete_forever", class: "warning--text", click: "rr:DeleteTracksFiles" });
-        items.push({ title: "Merge Release", icon: "call_merge", click: "rr:MergeReleases" });
-      }      
-      items.sort(function(a,b){
+      if (this.$store.getters.isUserAdmin) {
+        items.push({
+          title: "Delete",
+          icon: "delete",
+          class: "warning--text",
+          click: "rr:Delete"
+        });
+        items.push({
+          title: "Delete (delete Files)",
+          icon: "delete_forever",
+          class: "warning--text",
+          click: "rr:DeleteFiles"
+        });
+        items.push({
+          title: "Tracks - Delete",
+          icon: "delete_forever",
+          class: "warning--text",
+          click: "rr:DeleteTracks"
+        });
+        items.push({
+          title: "Tracks - Delete (delete Files)",
+          icon: "delete_forever",
+          class: "warning--text",
+          click: "rr:DeleteTracksFiles"
+        });
+        items.push({
+          title: "Merge Release",
+          icon: "call_merge",
+          click: "rr:MergeReleases"
+        });
+      }
+      items.sort(function(a, b) {
         const aTitle = a.title.toUpperCase();
         const bTitle = b.title.toUpperCase();
         return aTitle > bTitle ? 1 : -1;
-      });      
+      });
       return items;
     },
     fileUploadUrl() {
@@ -673,11 +719,11 @@ export default {
     },
     imageMenuItems() {
       let items = [];
-      if(this.$store.getters.isUserEditor) {
-        items.push({ title: 'Delete' });
-      }      
+      if (this.$store.getters.isUserEditor) {
+        items.push({ title: "Delete" });
+      }
       return items;
-    },    
+    },
     userRating() {
       return (
         this.release.userRating || {
@@ -689,37 +735,45 @@ export default {
     }
   },
   methods: {
-    show (e) {
-      e.preventDefault()
-      this.selectedImageIndex = parseInt(e.currentTarget.attributes["data-id"].value);
-      this.showImageMenu = false
-      this.imageMenuX = e.clientX
-      this.imageMenuY = e.clientY
+    show(e) {
+      e.preventDefault();
+      this.selectedImageIndex = parseInt(
+        e.currentTarget.attributes["data-id"].value
+      );
+      this.showImageMenu = false;
+      this.imageMenuX = e.clientX;
+      this.imageMenuY = e.clientY;
       this.$nextTick(() => {
-        this.showImageMenu = true
-      })
-    },       
+        this.showImageMenu = true;
+      });
+    },
     imageMenuClicked(e) {
-      if(e === 0) {
+      if (e === 0) {
         let releaseId = this.release.id;
         let selectedImageUrl = this.release.images[this.selectedImageIndex].url;
         this.$refs.confirm
           .open("Delete Release Image", "Are you sure?", { color: "red" })
           .then(confirm => {
             if (confirm) {
-              let apiPath = process.env.VUE_APP_API_URL + "/admin/delete/releasesecondaryimage/" + releaseId + "/" + this.selectedImageIndex;
-              if(!selectedImageUrl.includes('release-secondary')) {
-                apiPath = process.env.VUE_APP_API_URL + "/images/delete/" + selectedImageUrl.split('/').pop();
+              let apiPath =
+                process.env.VUE_APP_API_URL +
+                "/admin/delete/releasesecondaryimage/" +
+                releaseId +
+                "/" +
+                this.selectedImageIndex;
+              if (!selectedImageUrl.includes("release-secondary")) {
+                apiPath =
+                  process.env.VUE_APP_API_URL +
+                  "/images/delete/" +
+                  selectedImageUrl.split("/").pop();
               }
-              this.$axios
-                .post(apiPath)
-                .then(() => {
-                    this.updateData();
-                });
+              this.$axios.post(apiPath).then(() => {
+                this.updateData();
+              });
             }
-          });     
-      }      
-    },    
+          });
+      }
+    },
     dislikeTrackToggle: async function(toggleInfo) {
       this.$nextTick(() => {
         this.doUpdateIfNeeded = false;
@@ -728,8 +782,8 @@ export default {
           isDisliked: toggleInfo.isDisliked
         });
       });
-    },    
-    favoriteTrackToggle: async function(toggleInfo) {      
+    },
+    favoriteTrackToggle: async function(toggleInfo) {
       this.$nextTick(() => {
         this.doUpdateIfNeeded = false;
         this.trackFavoriteToggle({
@@ -737,7 +791,7 @@ export default {
           isFavorite: toggleInfo.isFavorite
         });
       });
-    },    
+    },
     doMerge() {
       this.$axios
         .post(
@@ -755,7 +809,7 @@ export default {
             });
             return false;
           }
-          this.showMergingRelease = false; 
+          this.showMergingRelease = false;
           this.$router.push("/release/" + this.selectedMergeRelease.value);
         });
     },
@@ -766,14 +820,17 @@ export default {
       this.searchReleasesLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/releases?filter=" + encodeURIComponent(val) + "&limit=10"
+          process.env.VUE_APP_API_URL +
+            "/releases?filter=" +
+            encodeURIComponent(val) +
+            "&limit=10"
         )
         .then(res => {
           this.lookupData.releaseItems = [];
           res.data.rows.forEach(a => {
             if (a.release.value != this.id) {
               this.lookupData.releaseItems.push({
-                text: a.artist.text + ' - ' + a.release.text,
+                text: a.artist.text + " - " + a.release.text,
                 value: a.release.value
               });
             }
@@ -792,8 +849,7 @@ export default {
       this.showMergingRelease = true;
     },
     playNow: function() {
-      this.$playQue.deleteAll()
-      .then(() => {
+      this.$playQue.deleteAll().then(() => {
         this.addToQue();
       });
     },
@@ -833,12 +889,15 @@ export default {
       window.open(url, "_blank");
     },
     searchForTitle: function() {
-      this.$router.push({ name: "search", params: { q: 'r: ' + this.searchQuery } });
+      this.$router.push({
+        name: "search",
+        params: { q: "r: " + this.searchQuery }
+      });
     },
     searchForArtist: function() {
       this.$router.push({
         name: "search",
-        params: { q: 'a: ' + this.release.artist.artist.text }
+        params: { q: "a: " + this.release.artist.artist.text }
       });
     },
     setRating: async function() {
@@ -848,14 +907,14 @@ export default {
           newVal: this.userRating.rating
         }).then(this.updatePartial);
       });
-    },    
+    },
     toggleFavorite: async function() {
       this.$nextTick(() => {
         this.releaseFavoriteToggle({
           releaseId: this.release.id,
           isFavorite: !this.userRating.isFavorite
         }).then(this.updatePartial);
-      })
+      });
     },
     toggleHated: async function() {
       this.releaseDislikeToggle({
@@ -897,11 +956,11 @@ export default {
           artistImageUrl: artist.thumbnail.url,
           userRating: tr.userRating || { rating: 0 }
         };
-        queTracks.push(queTrack); 
+        queTracks.push(queTrack);
       });
-      this.$playQue.add(queTracks)
-      .then(function(result) {
-        const message = result.message ||  "Added [" + result.addedCount + "] tracks to Que";
+      this.$playQue.add(queTracks).then(function(result) {
+        const message =
+          result.message || "Added [" + result.addedCount + "] tracks to Que";
         EventBus.$emit("showSnackbar", { text: message });
       });
     },
@@ -930,7 +989,7 @@ export default {
               setTimeout(function() {
                 var image = document.getElementById("releaseImage");
                 window.favIcon.image(image);
-              }, 500);              
+              }, 500);
             });
           }
         })
@@ -939,9 +998,9 @@ export default {
         });
     },
     findCover: async function() {
-      if(this.loading) {
+      if (this.loading) {
         return;
-      }      
+      }
       EventBus.$emit("loadingStarted");
       this.coverSearchQuery =
         this.coverSearchQuery ||
@@ -955,9 +1014,9 @@ export default {
         )
         .then(response => {
           this.coverSearchItems = response.data.data;
-          if(this.coverSearchItems.length == 0) {
-            this.coverSearchItems = [ "No Results "];
-          }          
+          if (this.coverSearchItems.length == 0) {
+            this.coverSearchItems = ["No Results "];
+          }
         })
         .finally(() => {
           EventBus.$emit("loadingComplete");
@@ -988,7 +1047,10 @@ export default {
             this.$axios
               .post(
                 process.env.VUE_APP_API_URL +
-                  "/admin/delete/release/" + releaseId + '?doDeleteFiles=' + deleteFiles
+                  "/admin/delete/release/" +
+                  releaseId +
+                  "?doDeleteFiles=" +
+                  deleteFiles
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -997,33 +1059,38 @@ export default {
           }
         });
     },
-    deleteTracks:  async function() {
+    deleteTracks: async function() {
       this.deleteTracksAction(false);
     },
-    deleteTracksFiles: async function() { 
+    deleteTracksFiles: async function() {
       this.deleteTracksAction(true);
     },
     deleteTracksAction: async function(deleteFiles) {
       let t = null;
       if (this.selectedTracks.length > 0) {
-        t = this.selectedTracks.map(x => x.track.value );
+        t = this.selectedTracks.map(x => x.track.value);
       }
-      if(!t) {
-        alert('No Tracks Selected!');
+      if (!t) {
+        alert("No Tracks Selected!");
         return false;
       }
       this.$refs.confirm
         .open("Delete Tracks", "Are you sure?", { color: "red" })
         .then(confirm => {
           if (confirm) {
-            EventBus.$emit("loadingStarted");            
+            EventBus.$emit("loadingStarted");
             this.$axios
-              .post(process.env.VUE_APP_API_URL + "/admin/delete/tracks?doDeleteFile=" + deleteFiles, t)
+              .post(
+                process.env.VUE_APP_API_URL +
+                  "/admin/delete/tracks?doDeleteFile=" +
+                  deleteFiles,
+                t
+              )
               .finally(() => {
-                this.updateData();                
+                this.updateData();
               });
           }
-        });       
+        });
     },
     toggleBookmark: async function() {
       this.$axios
@@ -1050,20 +1117,25 @@ export default {
     },
     updateIfNeeded: async function(info) {
       // If an user event happended and its related to this release then update release data
-      if(!info || !this.doUpdateIfNeeded) {
+      if (!info || !this.doUpdateIfNeeded) {
         return;
       }
-      if(info.artistId == this.release.artist.id || info.releaseId == this.id) {
+      if (
+        info.artistId == this.release.artist.id ||
+        info.releaseId == this.id
+      ) {
         await this.updateData();
         return;
       }
-      const releaseTracks = this.$_.flatMap(this.release.medias, function(media) {
+      const releaseTracks = this.$_.flatMap(this.release.medias, function(
+        media
+      ) {
         return media.tracks;
       });
       const trackOnThisRelease = this.$_.find(releaseTracks, function(t) {
         return t.id === info.trackId;
-      })
-      if(trackOnThisRelease) {
+      });
+      if (trackOnThisRelease) {
         await this.updateData();
       }
       this.doUpdateIfNeeded = true;
@@ -1078,40 +1150,39 @@ export default {
         .then(response => {
           this.release.comments = response.data.data.comments || [];
         })
-        .finally(() => {     
+        .finally(() => {
           this.$nextTick(() => {
-            EventBus.$emit("loadingComplete");                
+            EventBus.$emit("loadingComplete");
           });
-        });           
-    },    
+        });
+    },
     updateData: async function(isLoading) {
       this.loading = isLoading == undefined ? true : isLoading;
-      this.coverSearchQuery = null;        
+      this.coverSearchQuery = null;
       EventBus.$emit("loadingStarted");
       this.releaseById(this.id)
-      .then((response) => {
-        this.release = response.release;      
-      })
-      .finally(() =>{
-        this.dropzoneOptions.url =
-          process.env.VUE_APP_API_URL +
-          "/releases/uploadImage/" +
-          this.release.id;
-        this.dropzoneOptions.headers = {
-          Authorization: "Bearer " + this.$store.getters.authToken
-        };
-        this.$nextTick(() => {
-          this.loading = false;                 
-          this.selectedTracks = [];   
-          document.title = this.release.title;        
-          EventBus.$emit("loadingComplete");          
-          setTimeout(function() {
-            var image = document.getElementById("releaseImage");
-            window.favIcon.image(image);
-          }, 500);
+        .then(response => {
+          this.release = response.release;
+        })
+        .finally(() => {
+          this.dropzoneOptions.url =
+            process.env.VUE_APP_API_URL +
+            "/releases/uploadImage/" +
+            this.release.id;
+          this.dropzoneOptions.headers = {
+            Authorization: "Bearer " + this.$store.getters.authToken
+          };
+          this.$nextTick(() => {
+            this.loading = false;
+            this.selectedTracks = [];
+            document.title = this.release.title;
+            EventBus.$emit("loadingComplete");
+            setTimeout(function() {
+              var image = document.getElementById("releaseImage");
+              window.favIcon.image(image);
+            }, 500);
+          });
         });
-
-      });
     },
     metaDataSources: function() {
       return [
@@ -1149,7 +1220,7 @@ export default {
       this.updateData();
     },
     coverSearchQuery: function() {
-      if(!this.loading) {
+      if (!this.loading) {
         this.debouncedFindCover();
       }
     },
@@ -1165,7 +1236,7 @@ export default {
     showImageMenu: false,
     selectedImageIndex: null,
     imageMenuX: 0,
-    imageMenuY: 0,    
+    imageMenuY: 0,
     doUpdateIfNeeded: true,
     tab: 0,
     releaseTab: 2,
@@ -1187,7 +1258,7 @@ export default {
         thumbnail: {},
         artist: {}
       },
-      comments: [],      
+      comments: [],
       mediumThumbnail: {},
       userRating: {},
       statistics: {},
@@ -1230,7 +1301,7 @@ export default {
       }
     ],
     seachMenuItems: [
-      { title: "Search for Artist",  click: "rr:searchForArtist" },
+      { title: "Search for Artist", click: "rr:searchForArtist" },
       { title: "Search for Title", click: "rr:searchForTitle" },
       { title: "Internet Artist", click: "rr:searchInternetArtist" },
       { title: "Internet Title", click: "rr:searchInternetTitle" },
@@ -1270,11 +1341,12 @@ export default {
   max-height: 300px;
   overflow: auto;
 }
-.release-detail-container .markdown-editor, .release-detail-container .comments .v-card { 
+.release-detail-container .markdown-editor,
+.release-detail-container .comments .v-card {
   max-width: 717px;
   margin-left: 17px;
 }
-.release-detail-container .comments .v-card { 
+.release-detail-container .comments .v-card {
   max-width: 806px;
 }
 </style>

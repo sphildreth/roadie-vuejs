@@ -38,7 +38,7 @@
                 <div
                   :title="release.release.text"
                   :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
-                  class="release-title subheading font-weight-medium pointer"
+                  class="release-title subheading font-weight-medium pointer text-no-wrap text-truncate"
                 >{{ release.release.text }}</div>
               </router-link>
               <span class="on-hover pointer">
@@ -73,7 +73,14 @@
                 v-if="release.media.length > 1"
                 class="media-number accent--text"
               >{{ media.mediaNumber | padNumber2 }}</div>
-              <table>
+              <table class="release-tracks-table">
+                <thead>
+                  <tr>
+                    <th class="track-number">Num</th>
+                    <th class="track-title">Track</th>
+                    <th class="track-time">Time</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr
                     v-for="track in media.tracks"
@@ -257,4 +264,28 @@ export default {
     transparent 100%
   );
 }
+.release-with-tracks .release-tracks-table {
+  width:100%; 
+  white-space:nowrap;
+  table-layout:fixed;
+}
+.release-with-tracks .release-tracks-table thead {
+  display:none;
+}
+.release-with-tracks .release-tracks-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.release-with-tracks .track-time {
+  width: 30px;
+}
+.release-with-tracks .track-title {
+  width: 80%;
+}
+.release-with-tracks .track-time {
+  width: 60px;
+}
+
+
 </style>

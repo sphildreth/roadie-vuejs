@@ -3,7 +3,7 @@
     <Toolbar :menuItems="menuItems" :doMenuSelected=true :toolbarIcon="'playlist_play'"></Toolbar>
     <v-container fluid grid-list-md>
       <v-data-iterator :items="items" :rows-per-page-items="this.$store.getters.rowsPerPageItems" :total-items="pagination.totalItems"  :pagination.sync="pagination" content-tag="v-layout" :loading="true" row wrap>
-          <v-flex slot="item" slot-scope="props" xs12 sm6 lg2 xl2>
+          <v-flex slot="item" slot-scope="props" xs12 sm6 md4 xl3>
             <PlaylistCard :playlist="props.item"></PlaylistCard>
           </v-flex>
       </v-data-iterator>      

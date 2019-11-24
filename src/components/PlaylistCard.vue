@@ -1,7 +1,7 @@
 <template>
     <v-card max-height="100px"  class="mb-3" hover :data-id="playlist.id" >
         <v-layout>
-            <v-flex xs4 >
+            <v-flex xs4 md3 >
                 <router-link :to="'/playlist/' + playlist.id">
                 <v-img
                     :src="playlist.thumbnail.url"
@@ -12,13 +12,17 @@
                 ></v-img>                  
                 </router-link>
             </v-flex>
-            <v-flex xs8>
-                <v-card-title primary-title class="pa-0 ma-0">
+            <v-flex xs8 md9>
+                <v-card-text primary-title class="pa-0 ma-0">
                 <div>
-                    <router-link :to="'/playlist/' + playlist.id"><div :title="playlist.playlist.text" class="secondary--text text--lighten-1 playlist-name subheading font-weight-medium pointer">{{ playlist.playlist.text }}</div></router-link>
+                    <router-link :to="'/playlist/' + playlist.id">
+                    <div 
+                        :title="playlist.playlist.text" 
+                        class="secondary--text text--lighten-1 playlist-name text-no-wrap text-truncate subheading font-weight-medium pointer"
+                    >{{ playlist.playlist.text }}</div></router-link>
                     <div class="caption accent--text"><span title="Playlist Tracks">{{ playlist.playlistCount | padNumber4 }}</span> | <span title="Playlist Play time">{{ playlist.durationTime }}</span></div>
                 </div>
-                </v-card-title>
+                </v-card-text>
             </v-flex>
         </v-layout>
     </v-card>   

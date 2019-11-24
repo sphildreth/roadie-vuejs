@@ -76,6 +76,8 @@ blockquote p {
 
 img.modal-image {
   max-width: 100%;
+  display: inherit;
+  margin: auto;
 }
 
 .rainbow, .playing-artist, .playing-release, .playing-track {

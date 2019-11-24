@@ -47,26 +47,15 @@
             :color="userRating.isDisliked === true ? 'green' : 'accent'"
             @change.native="dislikeToggle"
           >far fa-thumbs-down</v-icon>
-        </v-layout>
-        <v-layout>
-          <router-link v-if="track.artist" :to="'/artist/' + track.artist.id">
+        </v-layout>      
+        <v-layout class="on-show-hover">            
+            <!-- Router link does not wrap -->
             <div
-              class="secondary--text text--lighten-1 artist-title short"
-            >{{ track.artist.artist.text}}</div>
-          </router-link>
-          <router-link v-if="track.release" :to="'/release/' + track.release.id">
-            <div
-              class="secondary--text text--lighten-1 release-title short"
-            >{{ '&nbsp;&#127932;&nbsp;' + track.release.release.text}}</div>
-          </router-link>
-        </v-layout>
-        <v-layout class="on-show-hover">
-          <router-link :to="'/track/' + track.id">
-            <div
-              class="secondary--text text--lighten-1 track-title"
+              :title="track.title"
+              @click="showTrack" 
+              class="secondary--text title text--lighten-1 track-title text-no-wrap text-truncate pointer"
               :class="{ 'playing-track': this.$store.getters.playingIndex.trackId == track.id }"
             >{{ track.title}}</div>
-          </router-link>
           <span class="on-hover">
             <span class="pointer" @click="playTrack(track)">
               <i class="fas fa-play mx-2" title="Play"></i>
@@ -76,6 +65,18 @@
             </span>
           </span>
         </v-layout>
+        <v-layout>
+          <div
+            v-if="track.partTitlesList && track.partTitlesList.length > 0"
+            class="my-1 body-1 font-italic text-no-wrap text-truncate"
+          >
+            <span
+              class="pr-2"
+              v-for="partTitle in track.partTitlesList"
+              :key="partTitle"
+            >{{ partTitle }}</span>
+          </div>
+        </v-layout>        
         <v-layout>
           <div class="caption accent--text">
             <span v-if="mediaCount > 1">
@@ -87,27 +88,23 @@
             <span title="Played Count">{{ track.playedCount | padNumber4 }}</span> |
             <span title="Track Play Time">{{ track.durationTime }}</span>
           </div>
-          <div
-            v-if="track.partTitlesList && track.partTitlesList.length > 0"
-            class="caption font-italic text-no-wrap text-truncate"
-          >
-            <span
-              class="pr-2 ml-1"
-              v-for="partTitle in track.partTitlesList"
-              :key="partTitle"
-            >{{ partTitle }}</span>
-          </div>
         </v-layout>
       </v-flex>
-      <v-flex lg5 xl4 d-flex v-if="track.trackArtist">
+      <v-flex lg4 xl4 d-flex v-if="track.trackArtist">
         <ArtistCard
-          class="mt-2 hidden-md-and-down"
+          class="mt-2 mr-2 hidden-md-and-down"
           v-if="track.trackArtist"
           :artist="track.trackArtist"
+          :isInline="true"
         ></ArtistCard>
       </v-flex>
-      <v-flex lg5 xl4 d-flex v-if="release && !track.trackArtist" class="">
-        <ReleaseCard class="hidden-md-and-down" v-if="release" :release="release"></ReleaseCard>
+      <v-flex lg4 xl4 d-flex v-if="release && !track.trackArtist" class="">
+        <ReleaseCard 
+          class="mt-2 mr-2 hidden-md-and-down" 
+          v-if="release" 
+          :release="release"
+          :isInline="true"
+        ></ReleaseCard>
       </v-flex>
     </v-layout>
   </v-card>
@@ -142,6 +139,9 @@ export default {
     doShowSelector: Boolean
   },
   methods: {
+    showTrack: function() {
+        this.$router.push({ name: "track", params: { id: this.track.id } });
+    },
     selectedTrack: function(e) {
       var isTrackSelected = e.target.checked;
       EventBus.$emit(
@@ -231,7 +231,6 @@ export default {
   float: left;
   margin-top: 27px;
 }
-
 .track-card .artist-title.short,
 .track-card .release-title.short {
   float: left;

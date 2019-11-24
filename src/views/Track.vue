@@ -47,15 +47,17 @@
                 </v-flex>
                 <v-flex xs9>
                   <v-layout row wrap>
-                    <v-flex xs12 md4 class="mt-2">
-                      <ArtistCard :artist="track.artist"></ArtistCard>
+                    <v-flex xs12 md6 class="mt-2">
+                      <span v-if="track.trackArtist">Artist:</span>
+                      <ArtistCard class="mt-1" :artist="track.artist"></ArtistCard>
                     </v-flex>
-                    <v-flex v-if="track.trackArtist" xs4 class="mt-2">
-                      <ArtistCard :artist="track.trackArtist"></ArtistCard>
+                    <v-flex v-if="track.trackArtist" xs12 md6 class="mt-2">
+                      <span>Track Artist:</span>
+                      <ArtistCard class="mt-1" :artist="track.trackArtist"></ArtistCard>
                     </v-flex>
                   </v-layout>
                   <v-layout row wrap>
-                    <v-flex xs12 md6 class="mt-2">
+                    <v-flex class="mt-2">
                       <ReleaseCard :release="track.release"></ReleaseCard>
                     </v-flex>
                   </v-layout>

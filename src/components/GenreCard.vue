@@ -19,7 +19,7 @@
             <router-link :to="'/genre/' + genre.genre.value">
               <div
                 :title="genre.genre.text"
-                class="secondary--text text--lighten-1 genre-name subheading font-weight-medium pointer"
+                class="secondary--text text--lighten-1 genre-name text-no-wrap text-truncate subheading font-weight-medium pointer"
               >{{ genre.genre.text }}</div>
             </router-link>
           </div>

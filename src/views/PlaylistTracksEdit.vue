@@ -66,7 +66,7 @@
                   :src="props.item.artist.thumbnail.url"
                   :alt="props.item.artist.artist.text"
                 >
-                <span class="thumbnail-text artist-name pointer">{{ props.item.artist.artist.text }}</span>
+                <span class="thumbnail-text artist-name text-no-wrap pointer">{{ props.item.artist.artist.text }}</span>
               </router-link>
             </td>
             <td class>
