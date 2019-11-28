@@ -49,8 +49,8 @@
             <div v-if="showStats">
               <div class="mt-1 caption accent--text">
                 <span title="User Favorite Artists">
-                  <v-icon :color="user.statistics.favoriteArtists > 0 ? 'red' : 'secondary'" class="hidden-xs-only" small>fas fa-users</v-icon>
-                  {{ user.statistics.favoriteArtists | padNumber4 }}
+                  <v-icon :color="user.statistics.favoritedArtists > 0 ? 'red' : 'secondary'" class="hidden-xs-only" small>fas fa-users</v-icon>
+                  {{ user.statistics.favoritedArtists | padNumber4 }}
                   </span> |
                 <span title="User Favorite Releases">
                   <v-icon :color="user.statistics.favoritedReleases > 0 ? 'red' : 'secondary'" class="hidden-xs-only" small>library_music</v-icon>

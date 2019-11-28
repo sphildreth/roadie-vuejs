@@ -9,7 +9,7 @@
         row
         wrap
       >
-        <v-flex slot="item" slot-scope="props" d-flex xs12>
+        <v-flex slot="item" slot-scope="props" xs12 >
           <TrackCard
             :track="props.item"
             :doShowSelector="true"

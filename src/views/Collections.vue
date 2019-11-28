@@ -126,7 +126,7 @@ export default {
     },    
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/collections?page=${this.pagination.page}&limit=${this.pagination.rowsPerPage}&filterToStatus=${this.filterToStatus}&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`

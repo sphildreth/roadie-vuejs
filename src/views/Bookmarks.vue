@@ -220,7 +220,7 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/bookmarks?page=${this.pagination.page}&limit=${this.pagination.rowsPerPage}&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`

@@ -57,9 +57,9 @@ export default {
     EventBus.$off("t:viewRecentlyPlayed", this.viewRecentlyPlayed);
     EventBus.$off("t:viewAll", this.viewAll);
     EventBus.$off("toolbarRefresh", this.updateData);
-    EventBus.$off("t:ratingChange", info => this.ratingChange(info));
-    EventBus.$off("t:dislikeToggle", info => this.dislikeToggle(info));
-    EventBus.$off("t:favoriteToggle", info => this.favoriteToggle(info));
+    EventBus.$off("t:ratingChange");
+    EventBus.$off("t:dislikeToggle");
+    EventBus.$off("t:favoriteToggle");
   },
   async mounted() {
     this.viewRandom();
@@ -110,7 +110,7 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/tracks?page=${this.pagination.page}&limit=${
@@ -146,7 +146,7 @@ export default {
         });
       });
     },
-    favoriteToggle: async function(toggleInfo) {      
+    favoriteToggle: async function(toggleInfo) {     
       const that = this;
       this.$nextTick(() => {
         this.trackFavoriteToggle({

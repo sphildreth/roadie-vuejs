@@ -38,7 +38,7 @@
                 <div
                   :title="release.release.text"
                   :class="this.$store.getters.playingIndex.releaseId == release.id ? 'playing-release' : ''"
-                  class="release-title subheading font-weight-medium pointer text-no-wrap text-truncate"
+                  class="release-title subheading font-weight-medium pointer "
                 >{{ release.release.text }}</div>
               </router-link>
               <span class="on-hover pointer">

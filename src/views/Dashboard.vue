@@ -273,7 +273,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       const that = this;
-      this.$axios
+      await this.$axios
         .get(process.env.VUE_APP_API_URL + `/stats/library`)
         .then(rr => {
           that.statistics = rr.data.data;

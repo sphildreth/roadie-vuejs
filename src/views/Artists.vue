@@ -139,7 +139,7 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/artists?page=${this.pagination.page}&limit=${

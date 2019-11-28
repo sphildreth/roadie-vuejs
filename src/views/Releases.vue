@@ -130,7 +130,7 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/releases?page=${this.pagination.page}&limit=${
@@ -151,7 +151,8 @@ export default {
         });
     },
     toggleFavorite: async function(toggleInfo) {
-      this.releaseFavoriteToggle(toggleInfo).then(this.updateData);
+      console.log('release toggleFavorite:' + toggleInfo.trackId);
+    //  this.releaseFavoriteToggle(toggleInfo).then(this.updateData);
     },
     hateToggle: async function(toggleInfo) {
       this.releaseDislikeToggle(toggleInfo).then(this.updateData);

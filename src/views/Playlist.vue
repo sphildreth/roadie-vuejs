@@ -169,7 +169,7 @@
               row
               wrap
             >
-              <v-flex slot="item" slot-scope="props" d-flex xs12 md6>
+              <v-flex slot="item" slot-scope="props" xs12 md6>
                 <TrackCard :track="props.item" :release="props.item.release"></TrackCard>
               </v-flex>
             </v-data-iterator>
@@ -222,7 +222,7 @@ export default {
   },
   methods: {
     toggleBookmark: async function() {
-      this.$axios
+      await this.$axios
         .post(
           process.env.VUE_APP_API_URL +
             "/users/setPlaylistBookmark/" +
@@ -321,7 +321,7 @@ export default {
     },
     updateData: async function() {
       EventBus.$emit("loadingStarted");
-      this.$axios
+      await this.$axios
         .get(process.env.VUE_APP_API_URL + `/playlists/${this.id}`)
         .then(response => {
           this.playlist = response.data.data;

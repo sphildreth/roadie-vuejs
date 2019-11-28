@@ -73,7 +73,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.loading = true;
-      this.$axios
+      await this.$axios
         .get(
           process.env.VUE_APP_API_URL +
             `/genres?page=${this.pagination.page}&limit=${

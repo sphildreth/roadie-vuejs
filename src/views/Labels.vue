@@ -66,7 +66,7 @@
       },        
       updateData: async function() {
         EventBus.$emit("loadingStarted"); 
-          this.$axios.get(process.env.VUE_APP_API_URL + `/labels?page=${ this.pagination.page }&limit=${ this.pagination.rowsPerPage }&order=${ this.pagination.sortOrder  }&sort=${ this.pagination.sortBy }&doRandomize=${ this.doRandomize}`)
+          await this.$axios.get(process.env.VUE_APP_API_URL + `/labels?page=${ this.pagination.page }&limit=${ this.pagination.rowsPerPage }&order=${ this.pagination.sortOrder  }&sort=${ this.pagination.sortBy }&doRandomize=${ this.doRandomize}`)
           .then(response => {
             this.items = response.data.rows;
             this.pagination.totalItems = response.data.totalCount;    
