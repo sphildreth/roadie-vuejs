@@ -151,8 +151,7 @@ export default {
         });
     },
     toggleFavorite: async function(toggleInfo) {
-      console.log('release toggleFavorite:' + toggleInfo.trackId);
-    //  this.releaseFavoriteToggle(toggleInfo).then(this.updateData);
+      this.releaseFavoriteToggle(toggleInfo).then(this.updateData);
     },
     hateToggle: async function(toggleInfo) {
       this.releaseDislikeToggle(toggleInfo).then(this.updateData);
