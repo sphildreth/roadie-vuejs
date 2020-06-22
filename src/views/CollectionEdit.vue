@@ -272,8 +272,7 @@ export default {
             this.lookupData.userItems.push(this.collection.maintainer);
           // ▟
 
-          this.imageUrl =
-            this.collection.mediumThumbnail.url + "?ts=" + new Date().getTime();
+          this.imageUrl = this.collection.mediumThumbnail.url + "?ts=" + new Date().getTime();
           this.collection.alternateNames = this.collection.alternateNames || [];
           this.collection.tags = this.collection.tags || [];
           this.$axios
@@ -305,6 +304,7 @@ export default {
             that.collection.mediumThumbnail = null;
             that.collection.thumbnail = null;
           }
+          that.collection.collectionCount = parseInt(that.collection.collectionCount);
           that.$axios
             .post("/collections/edit", that.collection)
             .then(response => {
