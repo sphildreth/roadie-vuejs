@@ -25,7 +25,7 @@
     "vue-async-computed": "^3.7.0",
     "vue-chartjs": "^3.4.2",
     "vue-markdown": "^2.2.4",
-    "vue-moment": "^4.0.0",
+    "vue-moment": "^4.1.0",
     "vue-router": "^3.1.2",
     "vue-scrollto": "^2.15.0",
     "vue-simplemde": "^0.5.2",
