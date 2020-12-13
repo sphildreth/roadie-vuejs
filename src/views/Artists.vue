@@ -24,6 +24,7 @@
 import Toolbar from "@/components/Toolbar";
 import ArtistCard from "@/components/ArtistCard";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import artistMixin from "@/mixins/artist.js";
 
@@ -141,7 +142,7 @@ export default {
       EventBus.$emit("loadingStarted");
       await this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/artists?page=${this.pagination.page}&limit=${
               this.pagination.rowsPerPage
             }&order=${this.pagination.sortOrder}&sort=${

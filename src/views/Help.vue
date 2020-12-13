@@ -211,17 +211,18 @@
 
 <script>
 import store from "@/store";
+import getEnv from '@/utils/env.js';
 export default {
   store,  
   computed: {
     appName() {
       return this.$store.state.isLoggedIn
         ? this.$store.getters.appName
-        : process.env.VUE_APP_APP_NAME;      
+        : getEnv('ROADIE_VUE_APP_NAME');      
     }
   },
   data: () => ({
-    apiUrl: process.env.VUE_APP_API_URL
+    apiUrl: getEnv('ROADIE_API_URL')
   })
 };
 </script>

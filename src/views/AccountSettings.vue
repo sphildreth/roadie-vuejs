@@ -225,6 +225,7 @@
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
+import getEnv from '@/utils/env.js';
 
 import Vue from "vue";
 import VeeValidate from "vee-validate";
@@ -274,7 +275,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + `/users/accountsettings/${this.$store.getters.userId}`
+          getEnv('ROADIE_API_URL') + `/users/accountsettings/${this.$store.getters.userId}`
         )
         .then(rr => {
           this.profile = rr.data.data;

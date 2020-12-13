@@ -188,6 +188,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
@@ -246,7 +247,7 @@ export default {
         return;
       }
       this.searchUsersLoading = true;
-      this.$axios.get(process.env.VUE_APP_API_URL + '/users?filter=' + encodeURIComponent(val) + "&limit=10")
+      this.$axios.get(getEnv('ROADIE_API_URL') + '/users?filter=' + encodeURIComponent(val) + "&limit=10")
       .then(res => {
         this.lookupData.userItems = [];
         res.data.rows.forEach((u) => {
@@ -265,7 +266,7 @@ export default {
       EventBus.$emit("loadingStarted");
       var url = this.id == "__new__" ? '/collections/add' : `/collections/${this.id}`;
       this.$axios
-        .get(process.env.VUE_APP_API_URL + url)
+        .get(getEnv('ROADIE_API_URL') + url)
         .then(rr => {
           this.collection = rr.data.data;          
           // ▜ Setup values to work with the autocompletes
@@ -276,7 +277,7 @@ export default {
           this.collection.alternateNames = this.collection.alternateNames || [];
           this.collection.tags = this.collection.tags || [];
           this.$axios
-            .get(process.env.VUE_APP_API_URL + "/lookups/collectionTypes")
+            .get(getEnv('ROADIE_API_URL') + "/lookups/collectionTypes")
             .then(rt => {
               this.lookupData.collectionTypes = [];
               rt.data.data.forEach(ct => {

@@ -33,6 +33,7 @@
 import Toolbar from "@/components/Toolbar";
 import CollectionCard from "@/components/CollectionCard";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import Confirm from "@/views/Confirm";
 
 export default {
@@ -100,7 +101,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL + "/admin/missingcollectionreleases"
+          getEnv('ROADIE_API_URL') + "/admin/missingcollectionreleases"
         )
         .then(rr => {
           this.missingData = rr.data.data;
@@ -115,7 +116,7 @@ export default {
             EventBus.$emit("loadingStarted");
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL + "/admin/scan/collection/rescanall"
+                getEnv('ROADIE_API_URL') + "/admin/scan/collection/rescanall"
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -128,7 +129,7 @@ export default {
       EventBus.$emit("loadingStarted");
       await this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/collections?page=${this.pagination.page}&limit=${this.pagination.rowsPerPage}&filterToStatus=${this.filterToStatus}&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`
         )
         .then(response => {

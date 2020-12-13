@@ -210,7 +210,9 @@
 import Toolbar from "@/components/Toolbar";
 import ReleaseCard from "@/components/ReleaseCard";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import Confirm from "@/views/Confirm";
+
 export default {
   components: { Toolbar, ReleaseCard, Confirm },
   props: {
@@ -251,7 +253,7 @@ export default {
     toggleBookmark: async function() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/users/setCollectionBookmark/" +
             this.collection.id +
             "/" +
@@ -282,7 +284,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL + "/admin/scan/collection/" + this.collection.id
+          getEnv('ROADIE_API_URL') + "/admin/scan/collection/" + this.collection.id
         )
         .then(() => {
           this.updateData();
@@ -296,7 +298,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/collections/delete/" +
                   collectionId
               )
@@ -318,7 +320,7 @@ export default {
       let queTracks = [];
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?filterToCollectionId=${this.id}`
         )
         .then(response => {
@@ -361,7 +363,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/collections/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/collections/${this.id}`)
         .then(response => {
           this.collection = response.data.data;
           this.collection.tagsList = this.collection.tagsList || [];
@@ -378,7 +380,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/releases?page=${this.pagination.page}&limit=${
               this.pagination.rowsPerPage
             }&filterToCollectionId=${this.id}&filterToStatus=${this.showingMissing ? 4 : 0 }`

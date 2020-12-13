@@ -78,6 +78,7 @@ import { EventBus } from "@/event-bus.js";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 import VueMarkdown from "vue-markdown";
 import Confirm from "@/views/Confirm";
+import getEnv from '@/utils/env.js';
 
 export default {
   components: { markdownEditor, 'vue-markdown': VueMarkdown, Confirm },  
@@ -114,7 +115,7 @@ export default {
         "\n\n");        
     },
     setReaction(reaction) {          
-      this.$axios.post(process.env.VUE_APP_API_URL + "/comments/setreaction/" + this.comment.id + "/" + reaction ).then(response => {
+      this.$axios.post(getEnv('ROADIE_API_URL') + "/comments/setreaction/" + this.comment.id + "/" + reaction ).then(response => {
         if (!response.data.isSuccess) {
           EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });
           return false;
@@ -140,7 +141,7 @@ export default {
         })
         .then(confirm => {
           if (confirm) {
-            this.$axios.post(process.env.VUE_APP_API_URL + "/comments/delete/" + this.comment.id).then(response => {
+            this.$axios.post(getEnv('ROADIE_API_URL') + "/comments/delete/" + this.comment.id).then(response => {
               if (!response.data.isSuccess) {
                 EventBus.$emit("showSnackbar", { text: "An error has occured", color: "red" });
                 return false;

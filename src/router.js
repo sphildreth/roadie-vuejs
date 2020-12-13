@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
+import getEnv from './utils/env';
 
 Vue.use(VueRouter);
 
@@ -322,7 +323,7 @@ router.beforeEach((to, from, next) => {
   window.favIcon.reset();
   window.currentRoute = to;
   window.prevRoute = from;
-  document.title = process.env.VUE_APP_APP_NAME;
+  document.title = getEnv('ROADIE_VUE_APP_NAME');
   if(to.matched.some(record => !record.meta.guest)) {
     if (!store.state.isLoggedIn) {
         next({

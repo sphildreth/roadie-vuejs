@@ -149,6 +149,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
@@ -210,7 +211,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/tracks/${this.id}`)
         .then(rr => {
           this.track = rr.data.data;
           // ▜ Setup values to work with the autocompletes
@@ -262,7 +263,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(a => {

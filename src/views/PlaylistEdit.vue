@@ -96,6 +96,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
@@ -156,7 +157,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/playlists/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/playlists/${this.id}`)
         .then(rr => {
           this.playlist = rr.data.data;
           // ▜ Setup values to work with the autocompletes

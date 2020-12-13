@@ -290,6 +290,8 @@ import TrackCard from "@/components/TrackCard";
 import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
+
 export default {
   components: { 
     Toolbar, 
@@ -375,7 +377,7 @@ export default {
         this.ratedTrackPagination.page = this.ratedTrackPagination.page + 1;
         this.$axios
         .get(
-          process.env.VUE_APP_API_URL + 
+          getEnv('ROADIE_API_URL') + 
           `/playactivities/${ this.id }?page=${this.ratedTrackPagination.page}&limit=${this.ratedTrackPagination.rowsPerPage}&filterRatedOnly=true`)
         .then(response => {
           this.$nextTick(() => {
@@ -396,7 +398,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/admin/delete/user/" +
                   userId
               )
@@ -410,14 +412,14 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/users/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/users/${this.id}`)
         .then(response => {
           this.user = response.data.data;
         })
         .then(() => {
           this.$axios
           .get(
-            process.env.VUE_APP_API_URL + 
+            getEnv('ROADIE_API_URL') + 
             `/playactivities/${ this.id }?page=${this.ratedTrackPagination.page}&limit=${this.ratedTrackPagination.rowsPerPage}&filterRatedOnly=true`)
           .then(response => {
             this.ratedTrackHistory = [];

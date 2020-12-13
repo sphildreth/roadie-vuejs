@@ -24,6 +24,7 @@
 import Toolbar from "@/components/Toolbar";
 import GenreCard from "@/components/GenreCard";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 export default {
   components: { Toolbar, GenreCard },
@@ -75,7 +76,7 @@ export default {
       this.loading = true;
       await this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/genres?page=${this.pagination.page}&limit=${
               this.pagination.rowsPerPage
             }&order=${this.pagination.descending ? 'DESC' : 'ASC'}&sort=${this.pagination.sortBy}`

@@ -89,6 +89,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import Sortable from "sortablejs";
 
 export default {
@@ -169,7 +170,7 @@ export default {
       this.items = [];
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?page=1&limit=1000&filterToPlaylistId=${this.id}`
         )
         .then(response => {

@@ -300,6 +300,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -364,10 +365,10 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/releases/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/releases/${this.id}`)
         .then(rr => {
           this.release = rr.data.data;
-          this.dropzoneOptions.url = process.env.VUE_APP_API_URL + "/releases/uploadImage/" + this.release.id;
+          this.dropzoneOptions.url = getEnv('ROADIE_API_URL') + "/releases/uploadImage/" + this.release.id;
           this.dropzoneOptions.headers = {
             Authorization: "Bearer " + this.$store.getters.authToken
           };              
@@ -392,7 +393,7 @@ export default {
             this.release.mediumThumbnail.url + "?ts=" + new Date().getTime();
           this.release.alternateNames = this.release.alternateNames || [];
           this.$axios
-            .get(process.env.VUE_APP_API_URL + "/lookups/libraryStatus")
+            .get(getEnv('ROADIE_API_URL') + "/lookups/libraryStatus")
             .then(rt => {
               this.lookupData.libraryStatusItems = [];
               rt.data.data.forEach(ls => {
@@ -404,7 +405,7 @@ export default {
             })
             .finally(() => {
               this.$axios
-                .get(process.env.VUE_APP_API_URL + "/lookups/releaseTypes")
+                .get(getEnv('ROADIE_API_URL') + "/lookups/releaseTypes")
                 .then(rt => {
                   this.lookupData.releaseTypeItems = [];
                   rt.data.data.forEach(rt => {
@@ -463,7 +464,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.artistItems = [];
@@ -490,7 +491,7 @@ export default {
       this.searchGenreLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(gr => {

@@ -299,6 +299,8 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import VueMarkdown from "vue-markdown";
 
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
+
 export default {
   components: { Toolbar, ArtistCard, Confirm,     vueDropzone: vue2Dropzone, 'vue-markdown': VueMarkdown },
   props: {
@@ -336,7 +338,7 @@ export default {
     toggleBookmark: async function() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/users/setLabelBookmark/" +
             this.label.id +
             "/" +
@@ -376,7 +378,7 @@ export default {
     doMerge() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/labels/mergeLabels/" +
             this.label.id +
             "/" +
@@ -401,7 +403,7 @@ export default {
       this.searchLabelLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/labels?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/labels?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.labelsItems = [];
@@ -445,7 +447,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL + "/admin/delete/label/" + labelId
+                getEnv('ROADIE_API_URL') + "/admin/delete/label/" + labelId
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -459,7 +461,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/labels/setImageByUrl/" +
             this.label.id +
             "/" +
@@ -489,7 +491,7 @@ export default {
         this.labelImageSearchQuery || this.label.name;
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/images/search/label/" +
             encodeURIComponent(this.labelImageSearchQuery) +
             "/25"
@@ -507,7 +509,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/labels/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/labels/${this.id}`)
         .then(response => {
           this.label = response.data.data;
           this.label.alternateNamesList = this.label.alternateNamesList || [];
@@ -517,7 +519,7 @@ export default {
         })
         .finally(() => {
           this.dropzoneOptions.url =
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
             "/labels/uploadImage/" +
             this.label.id;
           this.dropzoneOptions.headers = {
@@ -536,7 +538,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/artists?page=${this.artistPagination.page}&limit=${
               this.artistPagination.rowsPerPage
             }&order=${this.artistPagination.sortOrder}&sort=${

@@ -442,6 +442,7 @@
 import { Howl, Howler } from "howler";
 import trackMixin from "@/mixins/track.js";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 export default {
   name: "TrackPlayingCard",
@@ -743,7 +744,7 @@ export default {
       }
     },
     sendScrobble() {
-      this.$axios.post(process.env.VUE_APP_API_URL + `/play/track/scrobble/${this.currentTrack.id}/${this.startedPlayingCurrentTrack}/${this.isRandomized}`)
+      this.$axios.post(getEnv('ROADIE_API_URL') + `/play/track/scrobble/${this.currentTrack.id}/${this.startedPlayingCurrentTrack}/${this.isRandomized}`)
     },    
     updatePlaying() {
       document.title = this.currentTrack.title;

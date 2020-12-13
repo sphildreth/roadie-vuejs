@@ -1,13 +1,14 @@
 import {
   EventBus
 } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 export default {
   data: () => ({}),
   methods: {
     releaseRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseRating/' + changeInfo.releaseId + '/' + changeInfo.newVal)
+          this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setReleaseRating/' + changeInfo.releaseId + '/' + changeInfo.newVal)
             .then(response => {
               if (response.data.isSuccess && changeInfo.newVal > 0) {
                 EventBus.$emit("showSnackbar", {
@@ -28,7 +29,7 @@ export default {
     },
     releaseFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setReleaseFavorite/' + toggleInfo.releaseId + '/' + toggleInfo.isFavorite)
         .then(response => {
           if(response.data.isSuccess && toggleInfo.isFavorite) {
             EventBus.$emit("showSnackbar", { text: "Release is now a favorite" });            
@@ -44,7 +45,7 @@ export default {
     },
     releaseDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setReleaseDisliked/' + toggleInfo.releaseId + '/' + toggleInfo.isDisliked)
         .then(response => {
           if(response.data.isSuccess && toggleInfo.isDisliked) {
               EventBus.$emit("showSnackbar", { text: "You now hate this Release" });              
@@ -65,7 +66,7 @@ export default {
           EventBus.$emit("loadingStarted");
         }
         this.$axios
-          .get(process.env.VUE_APP_API_URL + `/releases/${id}`)
+          .get(getEnv('ROADIE_API_URL') + `/releases/${id}`)
           .then(response => {
             release = response.data.data;
             release.artist = release.artist || {};

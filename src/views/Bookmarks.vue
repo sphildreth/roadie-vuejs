@@ -122,6 +122,7 @@ import CollectionCard from "@/components/CollectionCard";
 import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 export default {
   components: {
@@ -210,7 +211,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +"/users/deleteAllBookmarks/"
+                getEnv('ROADIE_API_URL') +"/users/deleteAllBookmarks/"
               )
               .then(() => {
                 this.updateData();
@@ -222,7 +223,7 @@ export default {
       EventBus.$emit("loadingStarted");
       await this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/bookmarks?page=${this.pagination.page}&limit=${this.pagination.rowsPerPage}&order=${this.pagination.sortOrder}&sort=${this.pagination.sortBy}`
         )
         .then(response => {

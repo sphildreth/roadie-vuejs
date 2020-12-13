@@ -70,6 +70,7 @@
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
 import Confirm from "@/views/Confirm";
+import getEnv from '@/utils/env.js';
 
 const signalR = require("@aspnet/signalr");
 
@@ -89,7 +90,7 @@ export default {
   },
   async mounted() {
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(process.env.VUE_APP_API_URL + "/scanActivityHub")
+      .withUrl(getEnv('ROADIE_API_URL') + "/scanActivityHub")
       .build();
 
     this.connection.start().catch(function(err) {
@@ -123,7 +124,7 @@ export default {
       this.userLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/users?page=${this.userPagination.page}&limit=${
               this.userPagination.rowsPerPage
             }&order=${this.userPagination.descending ? "DESC" : "ASC"}&sort=${
@@ -142,14 +143,14 @@ export default {
     },
     clearCache: async function() {
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/admin/clearcache`)
+        .get(getEnv('ROADIE_API_URL') + `/admin/clearcache`)
         .then(() => {
           EventBus.$emit("showSnackbar", { text: "Cleared Cache" });
         });
     },
     scanInbound: async function() {
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/admin/scan/inbound`)
+        .get(getEnv('ROADIE_API_URL') + `/admin/scan/inbound`)
         .then(() => {
           this.isScanning = true;
         });
@@ -162,7 +163,7 @@ export default {
         .then(confirm => {
           if (confirm) {
             this.$axios
-              .get(process.env.VUE_APP_API_URL + `/admin/scan/library`)
+              .get(getEnv('ROADIE_API_URL') + `/admin/scan/library`)
               .then(() => {
                 this.isScanning = true;
               });

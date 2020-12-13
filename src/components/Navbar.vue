@@ -120,7 +120,7 @@
 import store from "@/store";
 import router from "@/router";
 import ThemeSettings from "@/components/ThemeSettings";
-
+import getEnv from '@/utils/env.js';
 export default {
   store,
   router,
@@ -186,7 +186,7 @@ export default {
     appName() {
       return this.$store.state.isLoggedIn
         ? this.$store.getters.appName
-        : process.env.VUE_APP_APP_NAME;      
+        : getEnv('ROADIE_VUE_APP_NAME');      
     },
     currentUserAvatarUrl() {
       return this.$store.getters.usersAvatarUrl;

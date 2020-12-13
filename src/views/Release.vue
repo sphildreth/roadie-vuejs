@@ -558,6 +558,7 @@ import MediaCard from "@/components/MediaCard";
 import CommentCard from "@/components/CommentCard";
 import Confirm from "@/views/Confirm";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import VueMarkdown from "vue-markdown";
@@ -656,7 +657,7 @@ export default {
   computed: {
     newCommentUrl() {
       return (
-        process.env.VUE_APP_API_URL + "/comments/add/release/" + this.release.id
+        getEnv('ROADIE_API_URL') + "/comments/add/release/" + this.release.id
       );
     },
     searchQuery() {
@@ -715,7 +716,7 @@ export default {
       return items;
     },
     fileUploadUrl() {
-      return process.env.VUE_APP_API_URL + "/uploadImage/" + this.release.id;
+      return getEnv('ROADIE_API_URL') + "/uploadImage/" + this.release.id;
     },
     imageMenuItems() {
       let items = [];
@@ -756,14 +757,14 @@ export default {
           .then(confirm => {
             if (confirm) {
               let apiPath =
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                 "/admin/delete/releasesecondaryimage/" +
                 releaseId +
                 "/" +
                 this.selectedImageIndex;
               if (!selectedImageUrl.includes("release-secondary")) {
                 apiPath =
-                  process.env.VUE_APP_API_URL +
+                  getEnv('ROADIE_API_URL') +
                   "/images/delete/" +
                   selectedImageUrl.split("/").pop();
               }
@@ -795,7 +796,7 @@ export default {
     doMerge() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/releases/mergeReleases/" +
             this.release.id +
             "/" +
@@ -820,7 +821,7 @@ export default {
       this.searchReleasesLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/releases?filter=" +
             encodeURIComponent(val) +
             "&limit=10"
@@ -973,7 +974,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/releases/setImageByUrl/" +
             this.release.id +
             "/" +
@@ -1007,7 +1008,7 @@ export default {
         this.release.artist.artist.text + " " + this.release.title;
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/images/search/release/" +
             encodeURIComponent(this.coverSearchQuery) +
             "/25"
@@ -1026,7 +1027,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL + "/admin/scan/release/" + this.release.id
+          getEnv('ROADIE_API_URL') + "/admin/scan/release/" + this.release.id
         )
         .then(() => {
           this.updateData();
@@ -1046,7 +1047,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/admin/delete/release/" +
                   releaseId +
                   "?doDeleteFiles=" +
@@ -1081,7 +1082,7 @@ export default {
             EventBus.$emit("loadingStarted");
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/admin/delete/tracks?doDeleteFile=" +
                   deleteFiles,
                 t
@@ -1095,7 +1096,7 @@ export default {
     toggleBookmark: async function() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/users/setReleaseBookmark/" +
             this.release.id +
             "/" +
@@ -1146,7 +1147,7 @@ export default {
     updateComments: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/releases/${this.id}?inc=comments`)
+        .get(getEnv('ROADIE_API_URL') + `/releases/${this.id}?inc=comments`)
         .then(response => {
           this.release.comments = response.data.data.comments || [];
         })
@@ -1166,7 +1167,7 @@ export default {
         })
         .finally(() => {
           this.dropzoneOptions.url =
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
             "/releases/uploadImage/" +
             this.release.id;
           this.dropzoneOptions.headers = {

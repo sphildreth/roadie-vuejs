@@ -277,6 +277,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import ArtistCard from "@/components/ArtistCard";
 import ReleaseCard from "@/components/ReleaseCard";
 import trackMixin from "@/mixins/track.js";
@@ -331,7 +332,7 @@ export default {
   },
   computed: {
     newCommentUrl() {
-      return process.env.VUE_APP_API_URL + "/comments/add/track/" + this.track.id;
+      return getEnv('ROADIE_API_URL') + "/comments/add/track/" + this.track.id;
     },     
     rating() {
       return this.track.rating;
@@ -380,7 +381,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/admin/delete/track/" + trackId + '?doDeleteFile=' + andDeleteFile
               )
               .then(() => {
@@ -457,7 +458,7 @@ export default {
     updateComments: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}?inc=comments`)
+        .get(getEnv('ROADIE_API_URL') + `/tracks/${this.id}?inc=comments`)
         .then(response => {
           this.track.comments = response.data.data.comments || [];
         })
@@ -471,7 +472,7 @@ export default {
       this.loaded = isLoading == undefined ? false : isLoading;
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/tracks/${this.id}`)
         .then(response => {
           this.track = response.data.data;
           this.track.alternateNamesList = this.track.alternateNamesList || [];          

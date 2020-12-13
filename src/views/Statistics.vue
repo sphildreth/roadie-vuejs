@@ -101,6 +101,7 @@
 <script>
   import Toolbar from '@/components/Toolbar';
   import { EventBus } from '@/event-bus.js';
+  import getEnv from '@/utils/env.js';
   import ArtistsByDateChart from '@/components/ArtistsByDateChart';
   import ReleasesByDateChart from '@/components/ReleasesByDateChart';
   import ReleasesByDecadeChart from '@/components/ReleasesByDecadeChart';
@@ -137,7 +138,7 @@
         return (c);
       },
       updateArtistByDate: async function() {
-        await this.$axios.get(process.env.VUE_APP_API_URL + `/stats/artistsByDate`)
+        await this.$axios.get(getEnv('ROADIE_API_URL') + `/stats/artistsByDate`)
         .then(response => {
           let labels = [];
           let data = [];
@@ -158,7 +159,7 @@
         });
       },
       updateReleasesByDate: async function() {
-        await this.$axios.get(process.env.VUE_APP_API_URL + `/stats/releasesByDate`)
+        await this.$axios.get(getEnv('ROADIE_API_URL') + `/stats/releasesByDate`)
         .then(response => {
           let labels = [];
           let data = [];
@@ -179,7 +180,7 @@
         });        
       },
       updateReleasesByDecade: async function() {
-        await this.$axios.get(process.env.VUE_APP_API_URL + `/stats/releasesByDecade`)
+        await this.$axios.get(getEnv('ROADIE_API_URL') + `/stats/releasesByDecade`)
         .then(response => {
           let labels = [];
           let data = [];
@@ -200,7 +201,7 @@
         });
       },
       updateSongsPlayedByDate: async function() {
-        await this.$axios.get(process.env.VUE_APP_API_URL + `/stats/songsPlayedByDate`)
+        await this.$axios.get(getEnv('ROADIE_API_URL') + `/stats/songsPlayedByDate`)
         .then(response => {
           let labels = [];
           let data = [];
@@ -221,7 +222,7 @@
         });
       },    
       updateUserStats: async function() {
-        await this.$axios.get(process.env.VUE_APP_API_URL + '/users?page=1&limit=50')
+        await this.$axios.get(getEnv('ROADIE_API_URL') + '/users?page=1&limit=50')
         .then(response => {
           let labels = [];
           let spData = [];

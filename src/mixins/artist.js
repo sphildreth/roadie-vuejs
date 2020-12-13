@@ -1,13 +1,14 @@
 import {
   EventBus
 } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 export default {
   data: () => ({}),
   methods: {
     artistRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistRating/' + changeInfo.artistId + '/' + changeInfo.newVal)
+          this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setArtistRating/' + changeInfo.artistId + '/' + changeInfo.newVal)
             .then(response => {
               if (response.data.isSuccess && changeInfo.newVal > 0) {
                 EventBus.$emit("showSnackbar", {
@@ -28,7 +29,7 @@ export default {
     },
     artistFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistFavorite/' + toggleInfo.artistId + '/' + toggleInfo.isFavorite)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setArtistFavorite/' + toggleInfo.artistId + '/' + toggleInfo.isFavorite)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isFavorite > 0) {
               EventBus.$emit("showSnackbar", {
@@ -48,7 +49,7 @@ export default {
     },
     artistDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setArtistDisliked/' + toggleInfo.artistId + '/' + toggleInfo.isDisliked)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setArtistDisliked/' + toggleInfo.artistId + '/' + toggleInfo.isDisliked)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isDisliked) {
               EventBus.$emit("showSnackbar", {

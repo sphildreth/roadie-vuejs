@@ -1,12 +1,13 @@
 import {
   EventBus
 } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 export default {
   data: () => ({}),
   methods: {
     trackBookmarkToggle(bookmarkInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackBookmark/' + bookmarkInfo.trackId + '/' + bookmarkInfo.userBookmarked)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setTrackBookmark/' + bookmarkInfo.trackId + '/' + bookmarkInfo.userBookmarked)
           .then(response => {
             if (response.data.isSuccess && bookmarkInfo.userBookmarked) {
               EventBus.$emit("showSnackbar", {
@@ -31,7 +32,7 @@ export default {
     trackRatingChange(changeInfo) {
       return new Promise(resolve => {
         if (changeInfo.newVal !== changeInfo.oldVal) {
-          this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackRating/' + changeInfo.trackId + '/' + changeInfo.newVal)
+          this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setTrackRating/' + changeInfo.trackId + '/' + changeInfo.newVal)
             .then(response => {
               if (response.data.isSuccess && changeInfo.newVal > 0) {
                 EventBus.$emit("showSnackbar", {
@@ -56,7 +57,7 @@ export default {
     },
     trackFavoriteToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackFavorite/' + toggleInfo.trackId + '/' + toggleInfo.isFavorite)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setTrackFavorite/' + toggleInfo.trackId + '/' + toggleInfo.isFavorite)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isFavorite > 0) {
               EventBus.$emit("showSnackbar", {
@@ -80,7 +81,7 @@ export default {
     },
     trackDislikeToggle(toggleInfo) {
       return new Promise(resolve => {
-        this.$axios.post(process.env.VUE_APP_API_URL + '/users/setTrackDisliked/' + toggleInfo.trackId + '/' + toggleInfo.isDisliked)
+        this.$axios.post(getEnv('ROADIE_API_URL') + '/users/setTrackDisliked/' + toggleInfo.trackId + '/' + toggleInfo.isDisliked)
           .then(response => {
             if (response.data.isSuccess && toggleInfo.isDisliked) {
               EventBus.$emit("showSnackbar", {
@@ -116,7 +117,7 @@ export default {
     getTrackDetail(trackId) {
       return new Promise(resolve => {
         this.$axios
-        .get(process.env.VUE_APP_API_URL + `/tracks/${trackId}`)
+        .get(getEnv('ROADIE_API_URL') + `/tracks/${trackId}`)
         .then(response => {
           resolve(response);
         })

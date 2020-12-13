@@ -181,6 +181,7 @@ import Toolbar from "@/components/Toolbar";
 import ReleaseCard from "@/components/ReleaseCard";
 import ArtistCard from "@/components/ArtistCard";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import store from "@/store";
 import trackMixin from "@/mixins/track.js";
 
@@ -226,7 +227,7 @@ export default {
         .deleteAll()
         .then(() => {
           return this.$axios.get(
-            process.env.VUE_APP_API_URL + `/tracks?doRandomize=true`
+            getEnv('ROADIE_API_URL') + `/tracks?doRandomize=true`
           );
         })
         .then(response => {
@@ -242,7 +243,7 @@ export default {
         .deleteAll()
         .then(() => {
           return this.$axios.get(
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
               `/tracks?doRandomize=true&FilterRatedOnly=true`
           );
         })
@@ -259,7 +260,7 @@ export default {
         .deleteAll()
         .then(() => {
           return this.$axios.get(
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
               `/tracks?doRandomize=true&FilterFavoriteOnly=true`
           );
         })
@@ -274,13 +275,13 @@ export default {
       EventBus.$emit("loadingStarted");
       const that = this;
       await this.$axios
-        .get(process.env.VUE_APP_API_URL + `/stats/library`)
+        .get(getEnv('ROADIE_API_URL') + `/stats/library`)
         .then(rr => {
           that.statistics = rr.data.data;
           that.$store.commit("updateLastScan", rr.data.data.lastScan);
           that.$axios
             .get(
-              process.env.VUE_APP_API_URL +
+              getEnv('ROADIE_API_URL') +
                 `/releases?page=1&limit=${
                   this.recentLimit
                 }&sort=CreatedDate&order=DESC`
@@ -291,7 +292,7 @@ export default {
             });
           that.$axios
             .get(
-              process.env.VUE_APP_API_URL +
+              getEnv('ROADIE_API_URL') +
                 `/artists?page=1&limit=${
                   this.recentLimit
                 }&sort=CreatedDate&order=DESC`

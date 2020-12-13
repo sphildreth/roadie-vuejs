@@ -364,6 +364,7 @@
 <script>
 import Toolbar from "@/components/Toolbar";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -428,7 +429,7 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/artists/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/artists/${this.id}`)
         .then(rr => {
           this.artist = rr.data.data;
           // ▜ Setup values to work with the autocompletes
@@ -467,7 +468,7 @@ export default {
             this.artist.mediumThumbnail.url + "?ts=" + new Date().getTime();
           this.artist.alternateNames = this.artist.alternateNames || [];
           this.$axios
-            .get(process.env.VUE_APP_API_URL + "/lookups/artistTypes")
+            .get(getEnv('ROADIE_API_URL') + "/lookups/artistTypes")
             .then(rt => {
               this.lookupData.artistTypes = [];
               rt.data.data.forEach(at => {
@@ -480,7 +481,7 @@ export default {
             .finally(() => {
               this.lookupData.bandStatus = [];
               this.$axios
-                .get(process.env.VUE_APP_API_URL + "/lookups/bandStatus")
+                .get(getEnv('ROADIE_API_URL') + "/lookups/bandStatus")
                 .then(rt => {
                   this.lookupData.bandStatus = [];
                   rt.data.data.forEach(at => {
@@ -491,7 +492,7 @@ export default {
                   });
                 })
                 .finally(() => {
-                  this.dropzoneOptions.url = process.env.VUE_APP_API_URL + "/artists/uploadImage/" + this.artist.id;
+                  this.dropzoneOptions.url = getEnv('ROADIE_API_URL') + "/artists/uploadImage/" + this.artist.id;
                   this.dropzoneOptions.headers = {
                     Authorization: "Bearer " + this.$store.getters.authToken
                   };                  
@@ -538,7 +539,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(a => {
@@ -567,7 +568,7 @@ export default {
       this.searchGenreLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           res.data.rows.forEach(gr => {

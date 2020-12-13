@@ -6,6 +6,7 @@ import router from './router';
 import Axios from 'axios';
 import store from './store';
 import AsyncComputed from 'vue-async-computed';
+import getEnv from './utils/env.js';
 
 import moment from 'moment-timezone';
 
@@ -13,12 +14,12 @@ var numeral = require("numeral");
 
 Vue.config.productionTip = false;
 
-Vue.prototype.$isDebugEnv = process.env.VUE_APP_IS_DEBUG === "true";
+Vue.prototype.$isDebugEnv = process.env.ROADIE_VUE_APP_IS_DEBUG === "true";
 
 Vue.use(playQue);
 
 var myApi = Axios.create({
-  baseURL: process.env.VUE_APP_API_URL,
+  baseURL: getEnv('ROADIE_API_URL'),
   timeout: 60000
 });
 

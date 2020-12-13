@@ -188,6 +188,8 @@ import TrackCard from "@/components/TrackCard";
 import Confirm from "@/views/Confirm";
 
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
+
 export default {
   components: { Toolbar, UserCard, TrackCard, Confirm },
   props: {
@@ -224,7 +226,7 @@ export default {
     toggleBookmark: async function() {
       await this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/users/setPlaylistBookmark/" +
             this.playlist.id +
             "/" +
@@ -263,7 +265,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/playlists/delete/" +
                   this.playlist.id
               )
@@ -279,7 +281,7 @@ export default {
       let queTracks = [];      
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?page=1&limit=${this.playlist.statistics.trackCount}&filterToPlaylistId=${this.playlist.id}`
         )
         .then(response => {
@@ -322,14 +324,14 @@ export default {
     updateData: async function() {
       EventBus.$emit("loadingStarted");
       await this.$axios
-        .get(process.env.VUE_APP_API_URL + `/playlists/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/playlists/${this.id}`)
         .then(response => {
           this.playlist = response.data.data;
           this.playlist.tagsList = this.playlist.tagsList || [];
           this.playlist.urLsList = this.playlist.urLsList || [];
           this.$axios
             .get(
-              process.env.VUE_APP_API_URL +
+              getEnv('ROADIE_API_URL') +
                 `/tracks?page=${this.trackPagination.page}&limit=${
                   this.trackPagination.rowsPerPage
                 }&filterToPlaylistId=${this.playlist.id}`

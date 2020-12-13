@@ -682,6 +682,7 @@ import Confirm from "@/views/Confirm";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import VueMarkdown from "vue-markdown";
+import getEnv from '@/utils/env.js';
 
 import artistMixin from "@/mixins/artist.js";
 
@@ -755,7 +756,7 @@ export default {
   },
   computed: {
     newCommentUrl() {
-      return process.env.VUE_APP_API_URL + "/comments/add/artist/" + this.artist.id;
+      return getEnv('ROADIE_API_URL') + "/comments/add/artist/" + this.artist.id;
     }, 
     rating() {
       return this.artist.rating;
@@ -815,9 +816,9 @@ export default {
           .open("Delete Artist Image", "Are you sure?", { color: "red" })
           .then(confirm => {
             if (confirm) {
-              let apiPath = process.env.VUE_APP_API_URL + "/admin/delete/artistsecondaryimage/" + artistId + "/" + this.selectedImageIndex;
+              let apiPath = getEnv('ROADIE_API_URL') + "/admin/delete/artistsecondaryimage/" + artistId + "/" + this.selectedImageIndex;
               if(!selectedImageUrl.includes('artist-secondary')) {
-                apiPath = process.env.VUE_APP_API_URL + "/images/delete/" + selectedImageUrl.split('/').pop();
+                apiPath = getEnv('ROADIE_API_URL') + "/images/delete/" + selectedImageUrl.split('/').pop();
               }
               this.$axios
                 .post(apiPath)
@@ -831,7 +832,7 @@ export default {
     doMerge() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/artists/mergeArtists/" +
             this.artist.id +
             "/" +
@@ -856,7 +857,7 @@ export default {
       this.searchArtistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/artists?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.artistItems = [];
@@ -883,7 +884,7 @@ export default {
       let queTracks = [];
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?page=1&limit=${this.playTrackLimit}&sort=Rating&order=DESC&FilterToArtistId=${this.artist.id}`
         )
         .then(response => {
@@ -903,7 +904,7 @@ export default {
       let queTracks = [];
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?page=1&limit=${
               this.playTrackLimit
             }&sort=PlayedCount&order=DESC&FilterToArtistId=${this.artist.id}`
@@ -977,7 +978,7 @@ export default {
       let queTracks = [];
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/tracks?page=1&limit=500&FilterToArtistId=" +
             this.artist.id
         )
@@ -1003,7 +1004,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL + "/admin/scan/artist/" + this.artist.id
+          getEnv('ROADIE_API_URL') + "/admin/scan/artist/" + this.artist.id
         )
         .then(() => {
           this.updateData();
@@ -1017,7 +1018,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL + "/admin/delete/artist/" + artistId
+                getEnv('ROADIE_API_URL') + "/admin/delete/artist/" + artistId
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -1036,7 +1037,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/admin/delete/artist/releases/" +
                   artistId
               )
@@ -1075,7 +1076,7 @@ export default {
     toogleBookmark: async function() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/users/setArtistBookmark/" +
             this.artist.id +
             "/" +
@@ -1101,7 +1102,7 @@ export default {
     updateComments: async function() {
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/artists/${this.id}?inc=comments`)
+        .get(getEnv('ROADIE_API_URL') + `/artists/${this.id}?inc=comments`)
         .then(response => {
           this.artist.comments = response.data.data.comments || [];
         })
@@ -1116,7 +1117,7 @@ export default {
       this.artistImageSearchQuery = null;
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/artists/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/artists/${this.id}`)
         .then(response => {
           this.artist = response.data.data;
           this.artist.genres = this.artist.genres || [];
@@ -1143,7 +1144,7 @@ export default {
           };
           this.$axios
             .get(
-              process.env.VUE_APP_API_URL +
+              getEnv('ROADIE_API_URL') +
                 `/releases?filterToArtistId=${this.id}&inc=tracks&limit=500`
             )
             .then(rr => {
@@ -1191,7 +1192,7 @@ export default {
         })
         .finally(() => {
           this.dropzoneOptions.url =
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
             "/artists/uploadImage/" +
             this.artist.id;
           this.dropzoneOptions.headers = {
@@ -1249,7 +1250,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/artists/setImageByUrl/" +
             this.artist.id +
             "/" +
@@ -1281,7 +1282,7 @@ export default {
       this.artistImageSearchQuery = this.artistImageSearchQuery || this.artist.name;
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/images/search/artist/" +
             encodeURIComponent(this.artistImageSearchQuery) +
             "/25"

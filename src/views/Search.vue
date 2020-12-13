@@ -294,6 +294,7 @@
 
 <script>
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 import ArtistCard from "@/components/ArtistCard";
 import CollectionCard from "@/components/CollectionCard";
 import GenreCard from "@/components/GenreCard";
@@ -518,7 +519,7 @@ export default {
       this.artistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/artists?page=${this.artistPagination.page}&limit=${this.artistPagination.rowsPerPage}&order=${this.artistPagination.sortOrder}&sort=${this.artistPagination.sortBy}&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
@@ -535,7 +536,7 @@ export default {
       this.releasesLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/releases?page=${this.releasePagination.page}&limit=${this.releasePagination.rowsPerPage}&order=${this.releasePagination.sortOrder}&sort=${this.releasePagination.sortBy}&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
@@ -552,7 +553,7 @@ export default {
       this.tracksLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/tracks?page=${this.trackPagination.page}&limit=${this.trackPagination.rowsPerPage}&order=${this.trackPagination.sortOrder}&sort=${this.trackPagination.sortBy}&filter=${this.query}&FilterMinimumRating=${this.filterToRated}`
         )
         .then(response => {
@@ -569,7 +570,7 @@ export default {
       this.collectionsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/collections?page=${this.collectionPagination.page}&limit=${this.collectionPagination.rowsPerPage}&order=${this.collectionPagination.sortOrder}&sort=${this.collectionPagination.sortBy}&filter=${this.query}`
         )
         .then(response => {
@@ -586,7 +587,7 @@ export default {
       this.genresLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/genres?page=${this.genrePagination.page}&limit=${this.genrePagination.rowsPerPage}&order=${this.genrePagination.sortOrder}&sort=${this.genrePagination.sortBy}&filter=${this.query}`
         )
         .then(response => {
@@ -603,7 +604,7 @@ export default {
       this.labelsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/labels?page=${this.labelPagination.page}&limit=${this.labelPagination.rowsPerPage}&order=${this.labelPagination.sortOrder}&sort=${this.labelPagination.sortBy}&filter=${this.query}`
         )
         .then(response => {
@@ -620,7 +621,7 @@ export default {
       this.playlistsLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/playlists?page=${this.playlistPagination.page}&limit=${this.playlistPagination.rowsPerPage}&order=${this.playlistPagination.sortOrder}&sort=${this.playlistPagination.sortBy}&filter=${this.query}`
         )
         .then(response => {

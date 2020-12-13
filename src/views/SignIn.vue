@@ -61,6 +61,7 @@
 <script>
 import Confirm from "@/views/Confirm";
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
 export default {
   components: {
     Confirm
@@ -113,7 +114,7 @@ export default {
               "/resetpassword";
             this.$axios
               .get(
-                process.env.VUE_APP_API_URL +
+                getEnv('ROADIE_API_URL') +
                   "/auth/sendpasswordresetemail?username=" +
                   encodeURIComponent(that.username) +
                   "&callbackurl=" +

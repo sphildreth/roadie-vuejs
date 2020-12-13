@@ -268,6 +268,8 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import VueMarkdown from "vue-markdown";
 
 import { EventBus } from "@/event-bus.js";
+import getEnv from '@/utils/env.js';
+
 export default {
   components: {
     Toolbar,
@@ -334,7 +336,7 @@ export default {
       this.genreImageSearchQuery = this.genreImageSearchQuery || this.genre.name;
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/images/search/genre/" +
             encodeURIComponent(this.genreImageSearchQuery) +
             "/25"
@@ -354,7 +356,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/genres/setImageByUrl/" +
             this.genre.id +
             "/" +
@@ -381,7 +383,7 @@ export default {
     doMerge() {
       this.$axios
         .post(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             "/genres/mergeGenres/" +
             this.genre.id +
             "/" +
@@ -406,7 +408,7 @@ export default {
       this.searchGenreLoading = true;
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
+          getEnv('ROADIE_API_URL') + "/genres?filter=" + encodeURIComponent(val) + "&limit=10"
         )
         .then(res => {
           this.lookupData.genresItems = [];
@@ -447,7 +449,7 @@ export default {
           if (confirm) {
             this.$axios
               .post(
-                process.env.VUE_APP_API_URL + "/admin/delete/genre/" + genrelId
+                getEnv('ROADIE_API_URL') + "/admin/delete/genre/" + genrelId
               )
               .then(() => {
                 EventBus.$emit("loadingComplete");
@@ -460,7 +462,7 @@ export default {
       this.loading = true;
       EventBus.$emit("loadingStarted");
       this.$axios
-        .get(process.env.VUE_APP_API_URL + `/genres/${this.id}`)
+        .get(getEnv('ROADIE_API_URL') + `/genres/${this.id}`)
         .then(response => {
           this.genre = response.data.data;
           this.genre.alternateNamesList = this.genre.alternateNamesList || [];
@@ -473,7 +475,7 @@ export default {
         })
         .finally(() => {
           this.dropzoneOptions.url =
-            process.env.VUE_APP_API_URL +
+            getEnv('ROADIE_API_URL') +
             "/genres/uploadImage/" +
             this.genre.id;       
           this.dropzoneOptions.headers = {
@@ -493,7 +495,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/artists?page=${this.artistPagination.page}&limit=${this.artistPagination.rowsPerPage}&order=${this.artistPagination.sortOrder}&sort=${this.artistPagination.sortBy}&filterToGenreId=${this.id}`
         )
         .then(response => {
@@ -508,7 +510,7 @@ export default {
       EventBus.$emit("loadingStarted");
       this.$axios
         .get(
-          process.env.VUE_APP_API_URL +
+          getEnv('ROADIE_API_URL') +
             `/releases?page=${this.releasePagination.page}&limit=${this.releasePagination.rowsPerPage}&order=${this.releasePagination.sortOrder}&sort=${this.releasePagination.sortBy}&filterToGenreId=${this.id}`
         )
         .then(response => {
