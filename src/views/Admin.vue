@@ -98,7 +98,7 @@ export default {
       return console.error(err.toString());
     });
 
-    this.connection.on("SendSystemActivity", message => {
+    this.connection.on("SendSystemActivityAsync", message => {
       const li = document.createElement("li");
       li.textContent = message;
       document.getElementById("messagesList").appendChild(li);
