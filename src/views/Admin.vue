@@ -6,7 +6,7 @@
         <v-card v-show="isScanning">
           <v-card-text>Scanning</v-card-text>
           <v-card-text :style="{ background: 'black' }">
-            <ul id="messagesList"></ul>
+            <div id="messagesList"></div>
           </v-card-text>
         </v-card>
       </div>
@@ -98,10 +98,11 @@ export default {
       return console.error(err.toString());
     });
 
-    this.connection.on("SendSystemActivityAsync", message => {
-      const li = document.createElement("li");
-      li.textContent = message;
-      document.getElementById("messagesList").appendChild(li);
+    this.connection.on("SendSystemActivityAsync", (level, message) => {
+      const di = document.createElement("div");
+      di.innerHTML = message;
+      di.classList.add("message-level-" + level);
+      document.getElementById("messagesList").appendChild(di);
     });
     this.updateData();
   },
@@ -274,5 +275,14 @@ export default {
 #messagesList {
   max-height: 600px;
   overflow: auto;
+}
+.message-level-0, .message-level-1, .message-level-2 {
+  color: lightgreen;
+}
+.message-level-3 {
+  color: yellow;
+}
+.message-level-4 {
+  color: red;
 }
 </style>
